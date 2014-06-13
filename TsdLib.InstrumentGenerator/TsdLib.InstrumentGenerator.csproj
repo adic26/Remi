@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B12037D0-EDD5-41A2-A68D-D2170EAFFCB0}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TsdLib.InstrumentGenerator</RootNamespace>
+    <AssemblyName>TsdLib.InstrumentGenerator</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="InstrumentGenerator.cs" />
+    <Compile Include="InstrumentGeneratorException.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Instruments.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
+      <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
+      <Name>TsdLib.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instrument.Telnet\TsdLib.Instrument.Telnet.csproj">
+      <Project>{fbcd8cc2-a747-4979-9507-ae356d466e5a}</Project>
+      <Name>TsdLib.Instrument.Telnet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instrument.UsbIp\TsdLib.Instrument.UsbIp.csproj">
+      <Project>{2313ae43-15df-4884-b67e-35fad60b7f90}</Project>
+      <Name>TsdLib.Instrument.UsbIp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj">
+      <Project>{a9ab58d9-08ea-43cc-ab6a-9e934bdd3c7b}</Project>
+      <Name>TsdLib.Instrument.Visa</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instrument\TsdLib.Instrument.csproj">
+      <Project>{4be9beea-3fa2-452d-9d2d-1b4f165670cd}</Project>
+      <Name>TsdLib.Instrument</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
