@@ -106,12 +106,12 @@ namespace TsdLib.InstrumentGenerator
                 instrumentClass.CustomAttributes.Add(identifierAttribute);
 
                 //Generate methods
-                foreach (XElement methodElement in instrumentElement.Elements())
+                foreach (XElement methodElement in instrumentElement.Elements("Command"))
                 {
 // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
                     CodeMemberMethod methodMember = new CodeMemberMethod
                     {
-                        Name = methodElement.Name.LocalName,
+                        Name = methodElement.Attribute("Name").Value,
                         Attributes = MemberAttributes.Public | MemberAttributes.Final
                     };
 
@@ -121,7 +121,7 @@ namespace TsdLib.InstrumentGenerator
                         methodMember.ImplementationTypes.Add(interfaceName);
 
                     //add method parameters
-                    List<CodeExpression> innerMethodParameters = new List<CodeExpression> { new CodePrimitiveExpression(methodElement.Attribute("Command").Value) };
+                    List<CodeExpression> innerMethodParameters = new List<CodeExpression> { new CodePrimitiveExpression(methodElement.Attribute("Message").Value) };
                     foreach (XElement parameterElement in methodElement.Elements("Parameter"))
                     {
                         string type = parameterElement.Attribute("Type").Value;
@@ -134,7 +134,7 @@ namespace TsdLib.InstrumentGenerator
                     CodeFieldReferenceExpression connectionReference = new CodeFieldReferenceExpression(null, "Connection");
                     CodeMethodReferenceExpression sendCommandMethodReference = new CodeMethodReferenceExpression(connectionReference, "SendCommand");
                     CodeMethodInvokeExpression sendCommandMethodInvoke = new CodeMethodInvokeExpression(sendCommandMethodReference, innerMethodParameters.ToArray());
-
+                    
                     string returnType = (string) methodElement.Attribute("ReturnType");
                     if (returnType == null || returnType == "Void")
                         methodMember.Statements.Add(sendCommandMethodInvoke);

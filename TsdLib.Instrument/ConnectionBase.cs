@@ -4,13 +4,14 @@ using System.Text.RegularExpressions;
 
 namespace TsdLib.Instrument
 {
-    public abstract class ConnectionBase
+    public abstract class ConnectionBase : IDisposable
     {
         protected abstract void Write(string message);
         protected abstract string Query(string message);
         protected abstract bool CheckForError();
 
         public abstract void Connect();
+        public abstract void Disconnect();
         public abstract bool IsConnected { get; }
 
         public string Address { get; internal set;}
@@ -47,14 +48,13 @@ namespace TsdLib.Instrument
             Write(fullCommand);
             CheckForError();
         }
-    }
 
-    public class CommandException : TsdLibException
-    {
-        public CommandException(string message)
-            : base(message) { }
-
-        public CommandException(string message, Exception inner)
-            : base(message, inner) { }
+        /// <summary>
+        /// Calls the Disconnect method. Overload to add additional logic.
+        /// </summary>
+        public virtual void Dispose()
+        {
+            Disconnect();
+        }
     }
 }

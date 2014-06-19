@@ -1,34 +1,55 @@
 ﻿using System;
+using NationalInstruments.VisaNS;
 
 namespace TsdLib.Instrument.Visa
 {
     public class VisaConnection : ConnectionBase
-    {//TODO: implement VisaConnection
-        private VisaConnection() { }
+    {
+        private MessageBasedSession _session;
+        private readonly object _locker;
 
-        protected override void Write(string message)
+        private VisaConnection()
         {
-            throw new NotImplementedException();
-        }
-
-        protected override string Query(string message)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override bool CheckForError()
-        {
-            throw new NotImplementedException();
+            _locker = new object();
         }
 
         public override void Connect()
         {
-            throw new NotImplementedException();
+            lock (_locker)
+            {
+                _session = (MessageBasedSession) ResourceManager.GetLocalManager().Open(Address);
+                _session.Write("*RST");
+                _session.Write("*CLS");
+            }
+        }
+
+        public override void Disconnect()
+        {
+            lock (_locker)
+                _session.Dispose();
+        }
+
+        protected override void Write(string message)
+        {
+            lock (_locker)
+                _session.Write(message);
+        }
+
+        protected override string Query(string message)
+        {
+            lock (_locker)
+                return _session.Query(message);
+        }
+
+        protected override bool CheckForError()
+        {
+            lock (_locker)
+                return _session.Query("*STB?").Contains("No error");
         }
 
         public override bool IsConnected
         {
-            get { throw new NotImplementedException(); }
+            get { return _session != null; }
         }
     }
 }

@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using NationalInstruments.VisaNS;
 
 namespace TsdLib.Instrument.Visa
 {
     public class VisaFactory : FactoryBase<VisaConnection>
-    {//TODO: implement VisaFactory
+    {
         protected override IEnumerable<string> SearchForInstruments()
         {
-            throw new NotImplementedException();
+            return ResourceManager.GetLocalManager().FindResources("?*INSTR");
         }
 
         protected override string GetInstrumentIdentifier(string instrumentAddress)
         {
-            throw new NotImplementedException();
+            using (MessageBasedSession session = (MessageBasedSession)ResourceManager.GetLocalManager().Open(instrumentAddress))
+                return session.Query("*IDN?");
         }
     }
 }
