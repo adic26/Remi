@@ -24,7 +24,11 @@ namespace TsdLib.InstrumentGenerator
         {
             StringBuilder sb = new StringBuilder();
             foreach (CompilerError compilerError in collection)
+            {
                 sb.Append(compilerError);
+                if (compilerError.ErrorNumber == "CS0006")
+                    sb.Append(". Please make sure your client has a reference to the dll.");
+            }
             return sb.ToString();
         }
     }
