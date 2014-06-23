@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
-using TsdLib.Instrument.UsbIp;
 
 namespace TsdLib.Instrument.Telnet
 {
