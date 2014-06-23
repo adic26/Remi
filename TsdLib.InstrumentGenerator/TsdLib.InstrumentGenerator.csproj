@@ -61,10 +61,6 @@
       <Project>{fbcd8cc2-a747-4979-9507-ae356d466e5a}</Project>
       <Name>TsdLib.Instrument.Telnet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument.UsbIp\TsdLib.Instrument.UsbIp.csproj">
-      <Project>{2313ae43-15df-4884-b67e-35fad60b7f90}</Project>
-      <Name>TsdLib.Instrument.UsbIp</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj">
       <Project>{a9ab58d9-08ea-43cc-ab6a-9e934bdd3c7b}</Project>
       <Name>TsdLib.Instrument.Visa</Name>

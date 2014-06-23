@@ -14,17 +14,13 @@ namespace TsdLib.Instrument
         public TInstrument GetInstrument<TInstrument>(string address = null)
             where TInstrument : InstrumentBase<TConnection>
         {
-            IEnumerable<string> visaInstumentAddresses = SearchForInstruments(); //TODO: cache instruments to increase search performance
+            IEnumerable<string> instumentAddresses = SearchForInstruments(); //TODO: cache instruments to increase search performance
 
             IdentifierAttribute identifierAttribute = (IdentifierAttribute)Attribute.GetCustomAttribute(typeof(TInstrument), typeof(IdentifierAttribute), true);
 
-            string foundAddress;
-            if (address == null)
-                foundAddress = visaInstumentAddresses
-                    .FirstOrDefault(addr => GetInstrumentIdentifier(addr) == identifierAttribute.Identifier);
-            else
-                foundAddress = visaInstumentAddresses
-                    .FirstOrDefault(addr => addr == address && GetInstrumentIdentifier(addr) == identifierAttribute.Identifier);
+            string foundAddress = address == null ? 
+                instumentAddresses.FirstOrDefault(addr => GetInstrumentIdentifier(addr) == identifierAttribute.Identifier) :
+                instumentAddresses.FirstOrDefault(addr => addr == address && GetInstrumentIdentifier(addr) == identifierAttribute.Identifier);
 
             if (foundAddress == null)
                 throw new InstrumentFinderException("Could not find any instruments");

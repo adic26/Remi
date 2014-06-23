@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Net.NetworkInformation;
 
-namespace TsdLib.Instrument.UsbIp
+namespace TsdLib.Instrument.Telnet
 {
-    public class UsbIpFactory : FactoryBase<UsbIpConnection>
+    public class TelnetFactory : FactoryBase<TelnetConnection>
     {
         protected override IEnumerable<string> SearchForInstruments()
         {
@@ -15,7 +15,7 @@ namespace TsdLib.Instrument.UsbIp
                 .ToArray();
 
             if (!result.Any())
-                throw new UsbIpException("Could not detect any network instruments");
+                throw new TelnetException("Could not detect any network instruments");
 
             return result;
         }
@@ -30,9 +30,10 @@ namespace TsdLib.Instrument.UsbIp
                 .FirstOrDefault();
 
             if (identifier == null)
-                throw new UsbIpException("Could not locate instrument with address " + instrumentAddress);
+                throw new TelnetException("Could not locate instrument with address " + instrumentAddress);
 
             return identifier;
         }
     }
+
 }

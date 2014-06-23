@@ -42,6 +42,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TelnetConnection.cs" />
     <Compile Include="TelnetExceptions.cs.cs" />
+    <Compile Include="TelnetFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
