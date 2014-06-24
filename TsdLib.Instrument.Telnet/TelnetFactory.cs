@@ -20,7 +20,7 @@ namespace TsdLib.Instrument.Telnet
             return result;
         }
 
-        protected override string GetInstrumentIdentifier(string instrumentAddress)
+        protected override string GetInstrumentIdentifier(string instrumentAddress, string idCommand)
         {
             string identifier =
                 (from ni in NetworkInterface.GetAllNetworkInterfaces()

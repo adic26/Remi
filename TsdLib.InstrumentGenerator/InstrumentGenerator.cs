@@ -91,67 +91,29 @@ namespace TsdLib.InstrumentGenerator
 
                 ns.Imports.Add(new CodeNamespaceImport("TsdLib.Instrument." + connectionType.Split(new[] { "Connection" }, StringSplitOptions.RemoveEmptyEntries)[0]));
 
-                IEnumerable<string> interfaceNames = instrumentElement
-                    .Attribute("Interfaces")
-                    .Value
-                    .Split(new[] {',', ' '}, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (string interfaceName in interfaceNames)
-                    instrumentClass.BaseTypes.Add(interfaceName);
+                //Add interface references
+                InterfaceReferenceCollection interfaceReferences = new InterfaceReferenceCollection(instrumentElement);
+                instrumentClass.BaseTypes.AddRange(interfaceReferences);
 
                 ns.Types.Add(instrumentClass);
-                
-                string identifier = (string)instrumentElement.Attribute("Identifier");
-                CodeAttributeDeclaration identifierAttribute = new CodeAttributeDeclaration("Identifier", new CodeAttributeArgument(new CodePrimitiveExpression(identifier)));
-                instrumentClass.CustomAttributes.Add(identifierAttribute);
 
-                //Generate methods
-                foreach (XElement methodElement in instrumentElement.Elements("Command"))
+                //Add ID attributes
+                string idCommand = (string)instrumentElement.Attribute("IdCommand");
+                instrumentClass.CustomAttributes.Add(new IdAttribute("IdCommand", idCommand));
+                instrumentClass.CustomAttributes.Add(new IdAttribute("IdResponse", (string)instrumentElement.Attribute("IdResponse")));
+
+                //Add info property overloads
+                foreach (XElement infoElement in instrumentElement.Elements("Info"))
                 {
-// ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-                    CodeMemberMethod methodMember = new CodeMemberMethod
-                    {
-                        Name = methodElement.Attribute("Name").Value,
-                        Attributes = MemberAttributes.Public | MemberAttributes.Final
-                    };
-
-                    //Required for VB code generation
-                    string interfaceName = interfaceNames.FirstOrDefault(); //should add VB support for defining interface at the method level
-                    if (interfaceName != null)
-                        methodMember.ImplementationTypes.Add(interfaceName);
-
-                    //add method parameters
-                    List<CodeExpression> innerMethodParameters = new List<CodeExpression> { new CodePrimitiveExpression(methodElement.Attribute("Message").Value) };
-                    foreach (XElement parameterElement in methodElement.Elements("Parameter"))
-                    {
-                        string type = parameterElement.Attribute("Type").Value;
-                        string name = parameterElement.Attribute("Name").Value;
-                        methodMember.Parameters.Add(new CodeParameterDeclarationExpression(type, name));
-                        innerMethodParameters.Add(new CodeArgumentReferenceExpression(name));
-                    }
-
-                    //add internal connection reference
-                    CodeFieldReferenceExpression connectionReference = new CodeFieldReferenceExpression(null, "Connection");
-                    CodeMethodReferenceExpression sendCommandMethodReference = new CodeMethodReferenceExpression(connectionReference, "SendCommand");
-                    CodeMethodInvokeExpression sendCommandMethodInvoke = new CodeMethodInvokeExpression(sendCommandMethodReference, innerMethodParameters.ToArray());
-                    
-                    string returnType = (string) methodElement.Attribute("ReturnType");
-                    if (returnType == null || returnType == "Void")
-                        methodMember.Statements.Add(sendCommandMethodInvoke);
-                    else
-                    {
-                        CodeTypeReference returnTypeReference = new CodeTypeReference(returnType);
-                        methodMember.ReturnType = returnTypeReference;
-                        sendCommandMethodReference.TypeArguments.Add(returnTypeReference);
-                        CodeMethodReturnStatement returnStatement =
-                            new CodeMethodReturnStatement(sendCommandMethodInvoke);
-                        string parser = (string) methodElement.Attribute("ResponseParser") ?? ".*";
-                        sendCommandMethodInvoke.Parameters.Insert(1, new CodePrimitiveExpression(parser));
-                        methodMember.Statements.Add(returnStatement);
-                    }
-
-                    instrumentClass.Members.Add(methodMember);
+                    instrumentClass.Members.Add(new InfoProperty(infoElement, "Message", idCommand));
+                    if ((string)infoElement.Attribute("RegEx") != null)
+                    instrumentClass.Members.Add(new InfoProperty(infoElement, "RegEx", ".*"));
                 }
+
+                //Generate command methods
+                foreach (XElement methodElement in instrumentElement.Elements("Command"))
+                    instrumentClass.Members.Add(new CommandMethod(methodElement));
+
             }
             return ns;
         }
@@ -194,6 +156,94 @@ namespace TsdLib.InstrumentGenerator
                 throw new CompilerException("Error compiling.", cr.Errors);
 
             return cr.CompiledAssembly;
+        }
+    }
+
+    class IdAttribute : CodeAttributeDeclaration
+    {
+        public IdAttribute(string name, string command)
+        {
+            Name = name;
+            Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(command)));
+        }
+    }
+
+    class InterfaceReferenceCollection : CodeTypeReferenceCollection
+    {
+        public InterfaceReferenceCollection(XElement instrumentElement)
+        {
+            InterfaceNames = instrumentElement
+                    .Attribute("Interfaces")
+                    .Value
+                    .Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            AddRange(InterfaceNames
+                .Select(s => new CodeTypeReference(s))
+                .ToArray());
+        }
+
+        public IEnumerable<string> InterfaceNames { get; private set; }
+    }
+
+    class InfoProperty : CodeMemberProperty
+    {
+        public InfoProperty(XElement infoElement, string attributeName, string defaultValue)
+        {
+            Name = infoElement.Attribute("Name").Value + attributeName;
+            Type = new CodeTypeReference(typeof (string));
+// ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
+            Attributes = MemberAttributes.Family | MemberAttributes.Override;
+
+            GetStatements.Add(new CodeMethodReturnStatement(
+                            new CodePrimitiveExpression((string)infoElement.Attribute(attributeName) ?? defaultValue)));
+        }
+    }
+
+    class CommandMethod : CodeMemberMethod
+    {
+        public CommandMethod(XElement methodElement)
+        {
+            Name = methodElement.Attribute("Name").Value;
+// ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
+            Attributes = MemberAttributes.Public | MemberAttributes.Final;
+
+            //Required for VB code generation
+            string interfaceImplementation = (string) methodElement.Attribute("Implements");
+            if (interfaceImplementation != null)
+                ImplementationTypes.Add(interfaceImplementation);
+            else
+            {
+                if (methodElement.Parent != null)
+                    ImplementationTypes.Add((string)methodElement.Parent.Attribute("Interfaces"));
+            }
+
+            //Method parameters
+            List<CodeExpression> innerMethodParameters = new List<CodeExpression> { new CodePrimitiveExpression(methodElement.Attribute("Message").Value) };
+            foreach (XElement parameterElement in methodElement.Elements("Parameter"))
+            {
+                string type = parameterElement.Attribute("Type").Value;
+                string name = parameterElement.Attribute("Name").Value;
+                Parameters.Add(new CodeParameterDeclarationExpression(type, name));
+                innerMethodParameters.Add(new CodeArgumentReferenceExpression(name));
+            }
+
+            CodeMethodReferenceExpression sendCommandMethodReference = new CodeMethodReferenceExpression(new CodeFieldReferenceExpression(null, "Connection"), "SendCommand");
+            CodeMethodInvokeExpression sendCommandMethodInvoke = new CodeMethodInvokeExpression(sendCommandMethodReference, innerMethodParameters.ToArray());
+
+            string returnType = (string)methodElement.Attribute("ReturnType");
+            if (returnType == null || returnType == "Void")
+                Statements.Add(sendCommandMethodInvoke);
+            else
+            {
+                CodeTypeReference returnTypeReference = new CodeTypeReference(returnType);
+                ReturnType = returnTypeReference;
+                sendCommandMethodReference.TypeArguments.Add(returnTypeReference);
+                CodeMethodReturnStatement returnStatement =
+                    new CodeMethodReturnStatement(sendCommandMethodInvoke);
+                string parser = (string)methodElement.Attribute("RegEx") ?? ".*";
+                sendCommandMethodInvoke.Parameters.Insert(1, new CodePrimitiveExpression(parser));
+                Statements.Add(returnStatement);
+            }
         }
     }
 }

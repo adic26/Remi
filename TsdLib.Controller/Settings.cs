@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Configuration;
-using System.Data;
 
 namespace TsdLib.Controller
 {
@@ -32,7 +30,6 @@ namespace TsdLib.Controller
         public void Edit()
         {
             new SettingsForm(this).ShowDialog();
-            var p = this.Properties;
         }
 
         //Example setting

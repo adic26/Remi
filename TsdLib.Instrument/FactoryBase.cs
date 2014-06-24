@@ -9,21 +9,27 @@ namespace TsdLib.Instrument
     {
         protected abstract IEnumerable<string> SearchForInstruments();
 
-        protected abstract string GetInstrumentIdentifier(string instrumentAddress);
+        protected abstract string GetInstrumentIdentifier(string instrumentAddress, string idCommand);
 
         public TInstrument GetInstrument<TInstrument>(string address = null)
             where TInstrument : InstrumentBase<TConnection>
         {
-            IEnumerable<string> instumentAddresses = SearchForInstruments(); //TODO: cache instruments to increase search performance
+            IEnumerable<string> instumentAddresses = SearchForInstruments(); //TODO: cache instruments to increase performance of subsequenct searches
 
-            IdentifierAttribute identifierAttribute = (IdentifierAttribute)Attribute.GetCustomAttribute(typeof(TInstrument), typeof(IdentifierAttribute), true);
+            IdCommandAttribute idCmdAtt = 
+                (IdCommandAttribute)
+                    Attribute.GetCustomAttribute(typeof(TInstrument), typeof(IdCommandAttribute), true);
 
-            string foundAddress = address == null ? 
-                instumentAddresses.FirstOrDefault(addr => GetInstrumentIdentifier(addr) == identifierAttribute.Identifier) :
-                instumentAddresses.FirstOrDefault(addr => addr == address && GetInstrumentIdentifier(addr) == identifierAttribute.Identifier);
+            IdResponseAttribute idRespAtt =
+                (IdResponseAttribute)
+                    Attribute.GetCustomAttribute(typeof (TInstrument), typeof (IdResponseAttribute), true);
+
+            string foundAddress = address == null ?
+                instumentAddresses.FirstOrDefault(addr => GetInstrumentIdentifier(addr, idCmdAtt.IdCommand) == idRespAtt.IdResponse) :
+                instumentAddresses.FirstOrDefault(addr => addr == address && GetInstrumentIdentifier(addr, idCmdAtt.IdCommand) == idRespAtt.IdResponse);
 
             if (foundAddress == null)
-                throw new InstrumentFinderException("Could not find any instruments");
+                throw new InstrumentFinderException("Could not find any " + typeof(TInstrument).Name + " instruments");
 
             TConnection connection = (TConnection)Activator.CreateInstance(typeof(TConnection), true);
             connection.Address = foundAddress;

@@ -1,4 +1,5 @@
-﻿namespace TsdLib.Instrument
+﻿//TODO: move to 2nd-order instrument library
+namespace TsdLib.Instrument
 {
     public interface IPowerSupply
     {
@@ -6,8 +7,12 @@
         double ReadCurrent();
     }
 
-    public interface IBlackBerry
+    public interface IBlackBerryRadio
     {
         void Reboot();
+        void EnableRadio();
+        void DisableRadio();
+        bool IsRadioEnabled();
+        void PlacePhoneCall(int phoneNumber);
     }
 }

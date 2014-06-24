@@ -1,5 +1,4 @@
-﻿using System;
-using NationalInstruments.VisaNS;
+﻿using NationalInstruments.VisaNS;
 
 namespace TsdLib.Instrument.Visa
 {
