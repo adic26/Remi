@@ -5,6 +5,7 @@ using System.Text;
 
 namespace TsdLib.InstrumentGenerator
 {
+    [Serializable]
     class InstrumentGeneratorException : TsdLibException
     {
         public InstrumentGeneratorException(string message) : base(message) { }
@@ -12,6 +13,7 @@ namespace TsdLib.InstrumentGenerator
         protected InstrumentGeneratorException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 
+    [Serializable]
     class CompilerException : TsdLibException
     {
         public CompilerException(string message, CompilerErrorCollection errors)

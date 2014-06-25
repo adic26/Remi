@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 
 namespace TsdLib
 {
+    [Serializable]
     public abstract class TsdLibException : Exception
     {
         static void LogException(TsdLibException ex)
@@ -43,5 +44,10 @@ namespace TsdLib
         }
 #endif
 
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+            info.AddValue("LogFile", LogFile, typeof (string));
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace TsdLib.Instrument.Telnet
 {
+    [Serializable]
     public class TelnetException : TsdLibException
     {
         public TelnetException(string message)

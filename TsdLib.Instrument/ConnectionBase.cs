@@ -52,9 +52,16 @@ namespace TsdLib.Instrument
         /// <summary>
         /// Calls the Disconnect method. Overload to add additional logic.
         /// </summary>
-        public virtual void Dispose()
+        public void Dispose()
         {
-            Disconnect();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && IsConnected)
+                Disconnect();
         }
     }
 }

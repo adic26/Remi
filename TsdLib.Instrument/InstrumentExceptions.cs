@@ -2,6 +2,7 @@
 
 namespace TsdLib.Instrument
 {
+    [Serializable]
     public class InstrumentFinderException : TsdLibException
     {
         public InstrumentFinderException(string message)
@@ -15,6 +16,7 @@ namespace TsdLib.Instrument
         }
     }
 
+    [Serializable]
     public class CommandException : TsdLibException
     {
         public CommandException(string message)
