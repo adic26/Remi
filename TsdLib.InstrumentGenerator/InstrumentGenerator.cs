@@ -59,30 +59,34 @@ namespace TsdLib.InstrumentGenerator
             return asy;
         }
 
-        static CodeNamespace GenerateCodeNamespace(string xml, string schema)
+        static CodeNamespace GenerateCodeNamespace(string xmlFileOrFolder, string schema)
         {
-            IEnumerable<string> files = File.GetAttributes(xml).HasFlag(FileAttributes.Directory) ? Directory.EnumerateFiles(xml) : new[] { xml };
+            var files = (File.GetAttributes(xmlFileOrFolder).HasFlag(FileAttributes.Directory) ? (Directory.EnumerateFiles(xmlFileOrFolder)) : (new[] {xmlFileOrFolder}))
+                .Where(file => Path.GetExtension(file) == ".xml")
+                .Select(file => XDocument.Load(file, LoadOptions.SetBaseUri))
+                .Where(doc => doc.Root != null && doc.Root.Name.LocalName == "Instrument")
+                ;
 
             CodeNamespace ns = new CodeNamespace("TsdLib.Instrument.Dynamic");
             ns.Imports.Add(new CodeNamespaceImport("System"));
             ns.Imports.Add(new CodeNamespaceImport("TsdLib.Instrument"));
 
-            foreach (string file in files)
+            foreach (XDocument doc in files)
             {
-                XDocument doc = XDocument.Load(file);
+                //XDocument doc = XDocument.Load(file);
 
                 XmlSchemaSet schemas = new XmlSchemaSet();
                 schemas.Add(null, schema);
 
-                string file1 = file; //introduce local variable to avoid capturing foreach iteration variable in closure
+                string docName = doc.BaseUri.Replace("file:///", "");
                 doc.Validate(schemas,
-                    (o, e) => { throw new InstrumentGeneratorException("File: " + file1 + " could not be validated against schema: " + schema, e.Exception); });
+                    (o, e) => { throw new InstrumentGeneratorException("File: " + docName + " could not be validated against schema: " + schema, e.Exception); });
 
                 XElement instrumentElement = doc.Root;
-                Debug.Assert(instrumentElement != null, "File: " + file + " does not have a valid root element.");
+                Debug.Assert(instrumentElement != null, "File: " + docName + " does not have a valid root element.");
 
                 //Generate instrument class
-                CodeTypeDeclaration instrumentClass = new CodeTypeDeclaration(instrumentElement.Name.LocalName);
+                CodeTypeDeclaration instrumentClass = new CodeTypeDeclaration(instrumentElement.Attribute("Name").Value);
 
                 string connectionType = (string)instrumentElement.Attribute("ConnectionType");
                 CodeTypeReference instrumentBaseReference = new CodeTypeReference(typeof(InstrumentBase<>));

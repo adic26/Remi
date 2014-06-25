@@ -1,10 +1,111 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="Instruments"
-    targetNamespace="http://tempuri.org/Instruments.xsd"
+    targetNamespace="TsdLib/Instruments.xsd"
     elementFormDefault="qualified"
-    xmlns="http://tempuri.org/Instruments.xsd"
-    xmlns:mstns="http://tempuri.org/Instruments.xsd"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema"
->
+    xmlns="TsdLib/Instruments.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:annotation>
+    <xs:appinfo>TsdLib Instrument Schema</xs:appinfo>
+    <xs:documentation xml:lang="en">Schema for defining 1st-order element XML definitions in the TsdLib Framework.</xs:documentation>
+  </xs:annotation>
+  
+  <xs:element name="Instrument">
+    <xs:annotation>
+      <xs:documentation>Defines a method parameter</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Info" type="InfoElement" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="Command" type="CommandElement" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="Name" use="required">
+        <xs:annotation>
+          <xs:documentation>Name of the instrument. Will be used to name the CLR class generated.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="ConnectionType" use="required">
+        <xs:annotation>
+          <xs:documentation>Type of the connection protocol. Must be a CLR type derived from TsdLib.Instrument.ConnectionBase.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="Interfaces">
+        <xs:annotation>
+          <xs:documentation>Optional: Interfaces that the generated class will implement. Multiple interfaces can be defined using a comma-separated list. Interfaces must be defined in the TsdLib.Instrument namespace.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="IdCommand">
+        <xs:annotation>
+          <xs:documentation>Optional: Command string that will be send to request the instrument to identify itself.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="IdResponse" use="required">
+        <xs:annotation>
+          <xs:documentation>Expected identification response from the instrument. Used by the Framework to search the system for the specified instrument.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:complexType name="InfoElement">
+    <xs:annotation>
+      <xs:documentation>Defines a CLR property used to obtain information from the instrument.</xs:documentation>
+    </xs:annotation>
+    <xs:attributeGroup ref="CommandAttributes"/>
+  </xs:complexType>
+  
+  <xs:complexType name="CommandElement">
+    <xs:annotation>
+      <xs:documentation>Defines a CLR method used to send a command or query to the instrument.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Parameter" type="ParameterElement" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="CommandAttributes"/>
+    <xs:attribute name="Implements">
+      <xs:annotation>
+        <xs:documentation>Optional: Required only for VB code generatation. Specifies the interface from which the command method is implemented. When omitted, the first interface in the Instrument@Interfaces attribute will be used.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="ReturnType">
+      <xs:annotation>
+        <xs:documentation>Optional: Required only when reading from the instrument. CLR type that the command method will return. When omitted, a void method will be generated.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  
+  <xs:complexType name="ParameterElement">
+    <xs:annotation>
+      <xs:documentation>Defines a method parameter.</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="Type" use="required">
+      <xs:annotation>
+        <xs:documentation>CLR type of the parameter.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="Name" use="required">
+      <xs:annotation>
+        <xs:documentation>Name of the parameter. Will be used to name the CLR method parameter generated.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:attributeGroup name="CommandAttributes">
+    <xs:attribute name="Name" use="required">
+      <xs:annotation>
+        <xs:documentation>Name of the command. Will be used to name the CLR property/method generated.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="Message" use="required">
+      <xs:annotation>
+        <xs:documentation>Raw string to send to the instrument.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="RegEx">
+      <xs:annotation>
+        <xs:documentation>Optional: Regular expression used to filter/parse the response from the instrument.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:attributeGroup>
+  
 </xs:schema>
-<!--TODO: define XML schema-->
