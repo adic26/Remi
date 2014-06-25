@@ -107,7 +107,7 @@ namespace TsdLib.InstrumentGenerator
                 instrumentClass.CustomAttributes.Add(new IdAttribute("IdResponse", (string)instrumentElement.Attribute("IdResponse")));
 
                 //Add info property overloads
-                foreach (XElement infoElement in instrumentElement.Elements("Info"))
+                foreach (XElement infoElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "Info"))
                 {
                     instrumentClass.Members.Add(new InfoProperty(infoElement, "Message", idCommand));
                     if ((string)infoElement.Attribute("RegEx") != null)
@@ -115,7 +115,7 @@ namespace TsdLib.InstrumentGenerator
                 }
 
                 //Generate command methods
-                foreach (XElement methodElement in instrumentElement.Elements("Command"))
+                foreach (XElement methodElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "Command"))
                     instrumentClass.Members.Add(new CommandMethod(methodElement));
 
             }
@@ -223,7 +223,7 @@ namespace TsdLib.InstrumentGenerator
 
             //Method parameters
             List<CodeExpression> innerMethodParameters = new List<CodeExpression> { new CodePrimitiveExpression(methodElement.Attribute("Message").Value) };
-            foreach (XElement parameterElement in methodElement.Elements("Parameter"))
+            foreach (XElement parameterElement in methodElement.Elements().Where(e => e.Name.LocalName == "Parameter"))
             {
                 string type = parameterElement.Attribute("Type").Value;
                 string name = parameterElement.Attribute("Name").Value;
