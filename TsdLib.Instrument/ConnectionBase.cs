@@ -3,18 +3,21 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace TsdLib.Instrument
-{
+{//TODO: add support for termination character at the command level (some commands may have term chars, but not necessarily all commands for a given instrument)
     public abstract class ConnectionBase : IDisposable
     {
         protected abstract void Write(string message);
         protected abstract string Query(string message);
         protected abstract bool CheckForError();
 
-        public abstract void Connect();
-        public abstract void Disconnect();
         public abstract bool IsConnected { get; }
 
-        public string Address { get; internal set;}
+        public string Address { get; private set;}
+
+        protected ConnectionBase(string address)
+        {
+            Address = address;
+        }
 
         public T SendCommand<T>(string command, string regex = ".*", params object[] args)
         {
@@ -52,16 +55,9 @@ namespace TsdLib.Instrument
         /// <summary>
         /// Calls the Disconnect method. Overload to add additional logic.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing && IsConnected)
-                Disconnect();
         }
     }
 }

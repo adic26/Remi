@@ -21,7 +21,7 @@ namespace TsdLib.InstrumentGenerator
     
     public class InstrumentGenerator
     {
-        static int Main(string[] args) //Console entry point
+        public static int Main(string[] args) //Console entry point
         {
             if (args.Length == 0)
             {
@@ -30,11 +30,12 @@ namespace TsdLib.InstrumentGenerator
                     "TsdLib Dynamic Instrument Assembly Generator",
                     "Dynamically generates class library (*.dll) files",
                     "",
-                    "Usage: TsdLib.InstrumentGenerator.exe <xmlFileOrFolder> -cs|-vb",
+                    "Usage: TsdLib.InstrumentGenerator.exe -f c|<xmlFileOrFolder> [-vb]",
                     "",
-                    "   <xmlFileOrFolder>".PadRight(width) + "absolute or relative path to the instrument file or folder",
-                    "   -cs".PadRight(width) + "generate C# code",
-                    "   -vb".PadRight(width) + "generate Visual Basic code",
+                    "   -f <xmlFileOrFolder>".PadRight(width) + "XML source location. Can be a file or folder.",
+                    "       <xmlFileOrFolder>".PadRight(width) + "absolute or relative path to the instrument file or folder",
+                    "       -c".PadRight(width) + "use current execution directory",
+                    "   -vb".PadRight(width) + "Visual Basic code (C# is default)",
                     "",
                     "Press Enter to exit..."
                     ));
@@ -45,7 +46,23 @@ namespace TsdLib.InstrumentGenerator
 
             Trace.Listeners.Add(new ConsoleTraceListener());
 
-            GenerateInstrumentAssembly(args[0], args.Contains("-vb") ? Language.VisualBasic : Language.CSharp);
+            var location = args.ElementAt(Array.IndexOf(args, "-f") + 1);
+
+            if (location == "c")
+                location = Directory.GetCurrentDirectory();
+
+            //string location = args.Contains("-f c") ? Directory.GetCurrentDirectory() : args.ElementAt(Array.IndexOf(args, "-f") + 1);
+
+            try
+            {
+                GenerateInstrumentAssembly(location, args.Contains("-vb") ? Language.VisualBasic : Language.CSharp);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+                return 2;
+            }
+            
 
             return 0;
         }
@@ -73,8 +90,6 @@ namespace TsdLib.InstrumentGenerator
 
             foreach (XDocument doc in files)
             {
-                //XDocument doc = XDocument.Load(file);
-
                 XmlSchemaSet schemas = new XmlSchemaSet();
                 schemas.Add(null, schema);
 
@@ -103,8 +118,20 @@ namespace TsdLib.InstrumentGenerator
 
                 //Add ID attributes
                 string idCommand = (string)instrumentElement.Attribute("IdCommand");
-                instrumentClass.CustomAttributes.Add(new IdAttribute("IdCommand", idCommand));
-                instrumentClass.CustomAttributes.Add(new IdAttribute("IdResponse", (string)instrumentElement.Attribute("IdResponse")));
+                if (idCommand != null)
+                    instrumentClass.CustomAttributes.Add(new IdCommandAttribute(idCommand));
+                instrumentClass.CustomAttributes.Add(new IdResponseAttribute((string) instrumentElement.Attribute("IdResponse"), (string)instrumentElement.Attribute("IdResponseTermChar")));
+
+                //Add VisaAttributes
+                foreach (XElement visaAttributeElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "VisaAttribute"))
+                    instrumentClass.CustomAttributes.Add(new VisaAttributeAttribute(visaAttributeElement));
+
+                //TODO: Add initialization commands
+                var initCommands = (string)instrumentElement.Attribute("InitCommands");
+                if (initCommands != null)
+                {
+                    
+                }
 
                 //Add info property overloads
                 foreach (XElement infoElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "Info"))
@@ -113,6 +140,10 @@ namespace TsdLib.InstrumentGenerator
                     if ((string)infoElement.Attribute("RegEx") != null)
                     instrumentClass.Members.Add(new InfoProperty(infoElement, "RegEx", ".*"));
                 }
+
+                instrumentClass.Members.Add(new InfoProperty(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "ModelNumber"), "Message", idCommand));
+                instrumentClass.Members.Add(new InfoProperty(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "SerialNumber"), "Message", idCommand));
+                instrumentClass.Members.Add(new InfoProperty(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "FirmwareVersion"), "Message", idCommand));
 
                 //Generate command methods
                 foreach (XElement methodElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "Command"))
@@ -163,43 +194,75 @@ namespace TsdLib.InstrumentGenerator
         }
     }
 
-    class IdAttribute : CodeAttributeDeclaration
+    class IdCommandAttribute : CodeAttributeDeclaration
     {
-        public IdAttribute(string name, string command)
+        public IdCommandAttribute(string command)
         {
-            Name = name;
+            Name = "IdCommand";
             Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(command)));
+        }
+    }
+
+    class IdResponseAttribute : CodeAttributeDeclaration
+    {
+        public IdResponseAttribute(string command, string termChar = null)
+        {
+            Name = "IdResponse";
+            Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(command)));
+            if (termChar != null)
+                Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(termChar[0])));
+        }
+    }
+
+    class VisaAttributeAttribute : CodeAttributeDeclaration
+    {
+        public VisaAttributeAttribute(XElement visaAttributeElement)
+        {
+            Name = "VisaAttribute";
+            Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression((string)visaAttributeElement.Attribute("Name"))));
+            Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression((string)visaAttributeElement.Attribute("Type"))));
+            Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression((string)visaAttributeElement.Attribute("Value"))));
         }
     }
 
     class InterfaceReferenceCollection : CodeTypeReferenceCollection
     {
+        public IEnumerable<string> InterfaceNames { get; private set; }
+
         public InterfaceReferenceCollection(XElement instrumentElement)
         {
-            InterfaceNames = instrumentElement
-                    .Attribute("Interfaces")
-                    .Value
-                    .Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string interfaces = (string) instrumentElement.Attribute("Interfaces");
+            if (interfaces != null)
+            {
+                InterfaceNames = interfaces
+                    .Split(new[] {',', ' '}, StringSplitOptions.RemoveEmptyEntries);
 
-            AddRange(InterfaceNames
-                .Select(s => new CodeTypeReference(s))
-                .ToArray());
+                AddRange(InterfaceNames
+                    .Select(s => new CodeTypeReference(s))
+                    .ToArray());
+            }
         }
-
-        public IEnumerable<string> InterfaceNames { get; private set; }
     }
-
+    //new InfoProperty(instrumentElement.Element("ModelNumber"), "Message", idCommand)
     class InfoProperty : CodeMemberProperty
     {
         public InfoProperty(XElement infoElement, string attributeName, string defaultValue)
         {
-            Name = infoElement.Attribute("Name").Value + attributeName;
+            Name = infoElement.Name.LocalName + attributeName;
             Type = new CodeTypeReference(typeof (string));
 // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
             Attributes = MemberAttributes.Family | MemberAttributes.Override;
 
             GetStatements.Add(new CodeMethodReturnStatement(
                             new CodePrimitiveExpression((string)infoElement.Attribute(attributeName) ?? defaultValue)));
+        }
+    }
+
+    class InitCommandMethod : CodeMemberMethod
+    {
+        public InitCommandMethod(string initCommand)
+        {
+            Name = "Init";
         }
     }
 

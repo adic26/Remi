@@ -4,18 +4,19 @@ using System.Linq;
 
 namespace TsdLib.Instrument
 {
-    public abstract class FactoryBase<TConnection>
+    public abstract class FactoryBase<TConnection, TAttribute>
         where TConnection : ConnectionBase
+        where TAttribute : Attribute
     {
         protected abstract IEnumerable<string> SearchForInstruments();
+        
+        protected abstract TConnection CreateConnection(string address, params TAttribute[] attributes);
 
-        protected abstract string GetInstrumentIdentifier(string instrumentAddress, string idCommand);
+        protected abstract string GetInstrumentIdentifier(TConnection connection, string idCommand);
 
         public TInstrument GetInstrument<TInstrument>(string address = null)
             where TInstrument : InstrumentBase<TConnection>
-        {
-            IEnumerable<string> instumentAddresses = SearchForInstruments(); //TODO: cache instruments to increase performance of subsequenct searches
-
+        {//TODO: cache instruments to increase performance of subsequenct searches
             IdCommandAttribute idCmdAtt = 
                 (IdCommandAttribute)
                     Attribute.GetCustomAttribute(typeof(TInstrument), typeof(IdCommandAttribute), true);
@@ -24,20 +25,27 @@ namespace TsdLib.Instrument
                 (IdResponseAttribute)
                     Attribute.GetCustomAttribute(typeof (TInstrument), typeof (IdResponseAttribute), true);
 
-            string foundAddress = address == null ?
-                instumentAddresses.FirstOrDefault(addr => GetInstrumentIdentifier(addr, idCmdAtt.IdCommand) == idRespAtt.IdResponse) :
-                instumentAddresses.FirstOrDefault(addr => addr == address && GetInstrumentIdentifier(addr, idCmdAtt.IdCommand) == idRespAtt.IdResponse);
+            //TODO: extend to find multiple attributes of the same type
+            TAttribute customAttributes =
+                (TAttribute)
+                    Attribute.GetCustomAttribute(typeof (TInstrument), typeof (TAttribute), true);
+            
+            IEnumerable<string> instrumentAddresses = SearchForInstruments();
 
-            if (foundAddress == null)
-                throw new InstrumentFinderException("Could not find any " + typeof(TInstrument).Name + " instruments");
+            List<TConnection> connections = new List<TConnection>();
+            foreach (string instrumentAddress in instrumentAddresses)
+            {
+                TConnection conn = CreateConnection(instrumentAddress, customAttributes);
+                string id = GetInstrumentIdentifier(conn, idCmdAtt.ToString());
+                if (id == idRespAtt.ToString())
+                    connections.Add(conn);
+                else
+                    conn.Dispose();
+            }
 
-            TConnection connection = (TConnection)Activator.CreateInstance(typeof(TConnection), true);
-            connection.Address = foundAddress;
+            //TODO: Create instrument and inject the connection
 
-            TInstrument newInstrument = (TInstrument)Activator.CreateInstance(typeof(TInstrument), true);
-            newInstrument.Connection = connection;
-
-            return newInstrument;
+            throw new NotImplementedException();
         }
     }
 }

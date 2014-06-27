@@ -8,12 +8,8 @@ namespace TsdLib.Instrument.Telnet
     {
         private TcpClient _tcpSocket;
 
-        protected override bool CheckForError()
-        {
-            return IsConnected;
-        }
-
-        public override void Connect()
+        internal TelnetConnection(string address)
+            : base(address)
         {
             try
             {
@@ -27,10 +23,10 @@ namespace TsdLib.Instrument.Telnet
                 if (!sb.ToString().TrimEnd().EndsWith(":"))
                     throw new TelnetException("Could not connect to " + Address + " via telnet: no password prompt");
                 WriteLine("root");
-                
+
                 sb.Append(Read());
 
-                if(sb.Length == 0)
+                if (sb.Length == 0)
                     throw new TelnetException("Could not read any data from " + Address + " via Telnet");
             }
             catch (SocketException ex)
@@ -39,9 +35,9 @@ namespace TsdLib.Instrument.Telnet
             }
         }
 
-        public override void Disconnect()
+        protected override bool CheckForError()
         {
-            _tcpSocket.Close();
+            return IsConnected;
         }
 
         public override bool IsConnected
@@ -58,6 +54,11 @@ namespace TsdLib.Instrument.Telnet
         protected override void Write(string message)
         {
             WriteLine(message);
+        }
+
+        public override void Dispose()
+        {
+            _tcpSocket.Close();
         }
 
         #region This code has been adapted from minimalistic telnet implementation conceived by Tom Janssens on 2007/06/06  for codeproject http://www.corebvba.be

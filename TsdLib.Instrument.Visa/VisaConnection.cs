@@ -1,31 +1,21 @@
-﻿using NationalInstruments.VisaNS;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using NationalInstruments.VisaNS;
 
 namespace TsdLib.Instrument.Visa
 {
     public class VisaConnection : ConnectionBase
     {
-        private MessageBasedSession _session;
         private readonly object _locker;
+        private readonly MessageBasedSession _session;
 
-        private VisaConnection()
+        internal VisaConnection(MessageBasedSession session)
+            : base(session.ResourceName)
         {
             _locker = new object();
-        }
-
-        public override void Connect()
-        {
-            lock (_locker)
-            {
-                _session = (MessageBasedSession) ResourceManager.GetLocalManager().Open(Address);
-                _session.Write("*RST");
-                _session.Write("*CLS");
-            }
-        }
-
-        public override void Disconnect()
-        {
-            lock (_locker)
-                _session.Dispose();
+            _session = session;
         }
 
         protected override void Write(string message)
@@ -41,7 +31,7 @@ namespace TsdLib.Instrument.Visa
         }
 
         protected override bool CheckForError()
-        {
+        {//TODO: this won't work for some serial devices
             lock (_locker)
                 return _session.Query("*STB?").Contains("No error");
         }

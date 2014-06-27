@@ -5,6 +5,47 @@
     xmlns="TsdLib/Instruments.xsd"
     xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+  <xs:simpleType name="InfoValues">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ModelNumber"/>
+      <xs:enumeration value="SerialNumber"/>
+      <xs:enumeration value="FirmwareVersion"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ConnectionTypes">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="VisaConnection"/>
+      <xs:enumeration value="TelnetConnection"/>
+      <xs:enumeration value="SshConnection"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="VisaAttributeTypes">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Boolean"/>
+      <xs:enumeration value="Byte"/>
+      <xs:enumeration value="Int16"/>
+      <xs:enumeration value="Int32"/>
+      <xs:enumeration value="Int64"/>
+      <xs:enumeration value="String"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ClrTypes">
+    <xs:union memberTypes="VisaAttributeTypes">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="Double"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+
+  <!--<xs:simpleType name="ClrTypes2">
+    <xs:union memberTypes="xs:string ClrTypes" />
+  </xs:simpleType>-->
+  
   <xs:annotation>
     <xs:appinfo>TsdLib Instrument Schema</xs:appinfo>
     <xs:documentation xml:lang="en">Schema for defining 1st-order element XML definitions in the TsdLib Framework.</xs:documentation>
@@ -16,7 +57,10 @@
     </xs:annotation>
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="Info" type="InfoElement" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="VisaAttribute" type="VisaAttributeElement" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="ModelNumber" type="InfoElement" minOccurs="1" maxOccurs="1" />
+        <xs:element name="SerialNumber" type="InfoElement" minOccurs="1" maxOccurs="1" />
+        <xs:element name="FirmwareVersion" type="InfoElement" minOccurs="1" maxOccurs="1" />
         <xs:element name="Command" type="CommandElement" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="Name" use="required">
@@ -24,7 +68,7 @@
           <xs:documentation>Name of the instrument. Will be used to name the CLR class generated.</xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="ConnectionType" use="required">
+      <xs:attribute name="ConnectionType" type="ConnectionTypes" use="required">
         <xs:annotation>
           <xs:documentation>Type of the connection protocol. Must be a CLR type derived from TsdLib.Instrument.ConnectionBase.</xs:documentation>
         </xs:annotation>
@@ -44,14 +88,79 @@
           <xs:documentation>Expected identification response from the instrument. Used by the Framework to search the system for the specified instrument.</xs:documentation>
         </xs:annotation>
       </xs:attribute>
+      <xs:attribute name="IdResponseTermChar">
+        <xs:annotation>
+          <xs:documentation>Optional: Termination character that the instrument sends to indicate the end of the identification response.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="InitCommands">
+        <xs:annotation>
+          <xs:documentation>Optional: Semicolon-separated list of raw string command to send to the instrument on initialization.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
     </xs:complexType>
   </xs:element>
+
+  <xs:complexType name="VisaAttributeElement">
+    <xs:annotation>
+      <xs:documentation>Optional: Sets an NI-VISA drivel-level attribute.</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="Name" use="required">
+      <xs:annotation>
+        <xs:documentation>Name of the attribute to set. Must be defined on the NationalInstrument.VisaNS.AttributeType enumeration.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="Type" type="VisaAttributeTypes" use="required">
+      <xs:annotation>
+        <xs:documentation>Data type of the value specified in @Value</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="Value" use="required">
+      <xs:annotation>
+        <xs:documentation>Value to assign to the attribute specified in @Name</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
   
+  <!--obsolete-->
   <xs:complexType name="InfoElement">
     <xs:annotation>
       <xs:documentation>Defines a CLR property used to obtain information from the instrument.</xs:documentation>
     </xs:annotation>
-    <xs:attributeGroup ref="CommandAttributes"/>
+    <xs:attribute name="Message" use="required">
+      <xs:annotation>
+        <xs:documentation>Raw string to send to the instrument.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="RegEx">
+      <xs:annotation>
+        <xs:documentation>Optional: Regular expression used to filter/parse the response from the instrument.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:attributeGroup name="InfoAttributes">
+    <xs:attribute name="Message" use="required">
+      <xs:annotation>
+        <xs:documentation>Raw string to send to the instrument.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="RegEx">
+      <xs:annotation>
+        <xs:documentation>Optional: Regular expression used to filter/parse the response from the instrument.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:attributeGroup>
+
+  <xs:complexType name="InitCommandElement">
+    <xs:annotation>
+      <xs:documentation>Command to send to the instrument on initialization.</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="Message" use="required">
+      <xs:annotation>
+        <xs:documentation>Semicolon-separated list of raw strings to send to the instrument.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:complexType>
   
   <xs:complexType name="CommandElement">
@@ -61,7 +170,21 @@
     <xs:sequence>
       <xs:element name="Parameter" type="ParameterElement" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
-    <xs:attributeGroup ref="CommandAttributes"/>
+    <xs:attribute name="Name" use="required">
+      <xs:annotation>
+        <xs:documentation>Name of the command. Will be used to name the CLR method generated.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="Message" use="required">
+      <xs:annotation>
+        <xs:documentation>Raw string to send to the instrument.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="RegEx">
+      <xs:annotation>
+        <xs:documentation>Optional: Regular expression used to filter/parse the response from the instrument.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="Implements">
       <xs:annotation>
         <xs:documentation>Optional: Required only for VB code generatation. Specifies the interface from which the command method is implemented. When omitted, the first interface in the Instrument@Interfaces attribute will be used.</xs:documentation>
@@ -78,9 +201,9 @@
     <xs:annotation>
       <xs:documentation>Defines a method parameter.</xs:documentation>
     </xs:annotation>
-    <xs:attribute name="Type" use="required">
+    <xs:attribute name="Type" type="ClrTypes" use="required">
       <xs:annotation>
-        <xs:documentation>CLR type of the parameter.</xs:documentation>
+        <xs:documentation>Type of the parameter.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="Name" use="required">
@@ -89,23 +212,5 @@
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>
-
-  <xs:attributeGroup name="CommandAttributes">
-    <xs:attribute name="Name" use="required">
-      <xs:annotation>
-        <xs:documentation>Name of the command. Will be used to name the CLR property/method generated.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="Message" use="required">
-      <xs:annotation>
-        <xs:documentation>Raw string to send to the instrument.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="RegEx">
-      <xs:annotation>
-        <xs:documentation>Optional: Regular expression used to filter/parse the response from the instrument.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-  </xs:attributeGroup>
   
 </xs:schema>
