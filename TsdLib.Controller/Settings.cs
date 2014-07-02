@@ -3,14 +3,6 @@ using System.Configuration;
 
 namespace TsdLib.Controller
 {
-    //TODO: figure out how to hide inhertied members from intellisense
-    //Composition instead of inhertiance?
-    //Expose via interface? - need to
-    //Declare private new to hide? Doesn't seem to work
-    //DesignerSerializationVisibility - doesn't seem to work
-    //EditorBrowsableAttribute - only works for different assemblies
-    //Make custom settings engine to use serialization and save settings to special folders
-
     /// <summary>
     /// Common settings that will be used for every test station
     /// </summary>
@@ -46,6 +38,7 @@ namespace TsdLib.Controller
         
     }
 
+    //Expose via interface to hide inhertied members from intellisense
     public interface ISettings
     {
         void Edit();
