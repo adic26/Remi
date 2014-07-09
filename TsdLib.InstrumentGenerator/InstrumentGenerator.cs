@@ -60,7 +60,6 @@ namespace TsdLib.InstrumentGenerator
                 Trace.WriteLine(ex);
                 return 2;
             }
-            
 
             return 0;
         }
@@ -131,13 +130,19 @@ namespace TsdLib.InstrumentGenerator
                 foreach (XElement connectionAttributeElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "ConnectionSetting"))
                     instrumentClass.CustomAttributes.Add(new ConnectionSettingAttributeDeclaration(connectionAttributeElement));
 
+                //Add factory reference
+                instrumentClass.Members.Add(new FactoryReference(connectionType));
+                instrumentClass.Members.Add(new GetInstanceMethod(instrumentClass.Name));
+                instrumentClass.Members.Add(new GetInstanceMethod(instrumentClass.Name, "address"));
+                //instrumentClass.Members.AddRange(new GetInstanceMethodCollection(instrumentClass.Name));
+
                 //Add constructor
                 CodeConstructor ctor = new CodeConstructor {Attributes = MemberAttributes.Assembly};
                 ctor.Parameters.Add(new CodeParameterDeclarationExpression(connectionType, "connection"));
                 ctor.BaseConstructorArgs.Add(new CodeVariableReferenceExpression("connection"));
                 instrumentClass.Members.Add(ctor);
 
-                ////Add info property overloads
+                //Add info property overloads
                 instrumentClass.Members.AddRange(new InfoPropertyCollection(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "ModelNumber")));
                 instrumentClass.Members.AddRange(new InfoPropertyCollection(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "SerialNumber")));
                 instrumentClass.Members.AddRange(new InfoPropertyCollection(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "FirmwareVersion")));
@@ -265,6 +270,43 @@ namespace TsdLib.InstrumentGenerator
                     .ToArray());
             }
         }
+    }
+
+    class FactoryReference : CodeMemberField
+    {
+        public FactoryReference(string connectionType)
+        {
+            string typeName = connectionType.Split(new[] {"Connection"}, StringSplitOptions.RemoveEmptyEntries)[0];
+            Type = new CodeTypeReference(typeName + "Factory");
+            Name = "_factory";
+            Attributes = MemberAttributes.Static;
+            InitExpression = new CodeObjectCreateExpression(Type);
+        }
+    }
+
+    class GetInstanceMethod : CodeMemberMethod
+    {
+         public GetInstanceMethod(string instrumentName, string argumentName = null)
+         {
+             Attributes = MemberAttributes.Public | MemberAttributes.Static;
+             Name = "GetInstance";
+             ReturnType = new CodeTypeReference(instrumentName);
+             CodeMethodReferenceExpression factoryMethodReference =
+                 new CodeMethodReferenceExpression(
+                     new CodeVariableReferenceExpression("_factory"),
+                     "GetInstrument");
+             factoryMethodReference.TypeArguments.Add(new CodeTypeReference(instrumentName));
+
+             CodeMethodInvokeExpression factoryMethodInvoke = new CodeMethodInvokeExpression(factoryMethodReference);
+
+             if (argumentName != null)
+             {
+                 Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "address"));
+                 factoryMethodInvoke.Parameters.Add(new CodePrimitiveExpression(argumentName));
+             }
+             Statements.Add(new CodeMethodReturnStatement(factoryMethodInvoke));
+
+         }
     }
 
     class InfoPropertyCollection : CodeTypeMemberCollection

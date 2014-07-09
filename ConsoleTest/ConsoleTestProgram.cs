@@ -24,7 +24,7 @@ namespace ConsoleTest
 
         static void GetBlackBerryInfo()
         {
-            using (BlackBerryRadio radio = new TelnetFactory().GetInstrument<BlackBerryRadio>())
+            using (BlackBerryRadio radio = BlackBerryRadio.GetInstance())
             {
                 Console.WriteLine("Connected to: " + radio.Description);
                 Console.WriteLine("Model: " + radio.ModelNumber);
@@ -36,7 +36,7 @@ namespace ConsoleTest
 
         static void MeasureImpedanceWithAimAnalyzer()
         {
-            using (AIM4170C aim = new VisaFactory().GetInstrument<AIM4170C>("COM11"))
+            using (AIM4170C aim = AIM4170C.GetInstance("COM11"))
             {
                 Console.WriteLine("Connected to: " + aim.Description);
                 Console.WriteLine("Model: " + aim.ModelNumber);
@@ -56,7 +56,7 @@ namespace ConsoleTest
 
         static void MeasureCurrentWithPowerSupply()
         {
-            using (Aglient6632B ps = new VisaFactory().GetInstrument<Aglient6632B>())
+            using (Aglient6632B ps = Aglient6632B.GetInstance())
             {
                 Console.WriteLine("Connected to: " + ps.Description);
                 Console.WriteLine("Model: " + ps.ModelNumber);
