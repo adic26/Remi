@@ -6,11 +6,20 @@ using TsdLib.Instrument.Visa;
 
 namespace ConsoleTest
 {
+    /* Three example instrument definitions are povided in the files:
+     *      BlackBerryRadio.xml
+     *      AIM4170C.xml
+     *      Agilent6632B.xml
+     *  
+     * Each xml file generates an instrument class of the same name, in the TsdLib.Instrument.Dynamic namespace.
+     * Modify the contents of the XML files to add/remove/modify class methods and behaviour.
+     */
+
     class ConsoleTestProgram
     {
         static void Main(string[] args)
         {
-            //Comment out this line to suppress detailed console logging
+            //Uncomment this line to enable detailed console logging
             //Trace.Listeners.Add(new ConsoleTraceListener());
 
             //Uncomment one or more of the methods to test functionality
