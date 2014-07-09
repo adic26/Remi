@@ -1,43 +1,24 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace TsdLib.Instrument.Telnet
 {
     public class TelnetConnection : ConnectionBase
     {
-        private TcpClient _tcpSocket;
+        private readonly TcpClient _tcpSocket;
 
-        internal TelnetConnection(string address)
-            : base(address)
+        internal TelnetConnection(TcpClient tcpClient, int defaultDelay = 200)
+            : base(((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString(), defaultDelay)
         {
-            try
-            {
-                _tcpSocket = new TcpClient(Address, 23);
-                StringBuilder sb = new StringBuilder(Read(timeout: 750));
-                if (!sb.ToString().TrimEnd().EndsWith(":"))
-                    throw new TelnetException("Could not connect to " + Address + " via telnet: no login prompt");
-                WriteLine("root");
-
-                sb.Append(Read());
-                if (!sb.ToString().TrimEnd().EndsWith(":"))
-                    throw new TelnetException("Could not connect to " + Address + " via telnet: no password prompt");
-                WriteLine("root");
-
-                sb.Append(Read());
-
-                if (sb.Length == 0)
-                    throw new TelnetException("Could not read any data from " + Address + " via Telnet");
-            }
-            catch (SocketException ex)
-            {
-                throw new TelnetException("Could not connect to " + Address + " via Telnet, the connection was actively refused. Possibly due to a secure device.", ex);
-            }
+            _tcpSocket = tcpClient;
         }
 
         protected override bool CheckForError()
         {
-            return IsConnected;
+            return !IsConnected;
         }
 
         public override bool IsConnected
@@ -45,10 +26,14 @@ namespace TsdLib.Instrument.Telnet
             get { return _tcpSocket != null && _tcpSocket.Connected; }
         }
 
-        protected override string Query(string message)
+        protected override byte ReadByte()
         {
-            WriteLine(message);
-            return Read();
+            throw new NotImplementedException();
+        }
+        
+        protected override string ReadString()
+        {
+            return Read(DefaultDelay);
         }
 
         protected override void Write(string message)
@@ -56,9 +41,10 @@ namespace TsdLib.Instrument.Telnet
             WriteLine(message);
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
             _tcpSocket.Close();
+            base.Dispose(disposing);
         }
 
         #region This code has been adapted from minimalistic telnet implementation conceived by Tom Janssens on 2007/06/06  for codeproject http://www.corebvba.be
@@ -70,16 +56,16 @@ namespace TsdLib.Instrument.Telnet
             _tcpSocket.GetStream().Write(buf, 0, buf.Length);
         }
 
-        string Read(int minimumBytes = 0, int timeout = 200)
+        string Read(int timeout)
         {
             if (!_tcpSocket.Connected) return null;
             StringBuilder sb = new StringBuilder();
-            while (_tcpSocket.Available <= minimumBytes)
-                System.Threading.Thread.Sleep(100);
+            while (_tcpSocket.Available == 0)
+                Thread.Sleep(100);
             do
             {
                 ParseTelnet(sb);
-                System.Threading.Thread.Sleep(timeout);//Needs to be longer for login
+                Thread.Sleep(timeout);//Needs to be longer for login
             } while (_tcpSocket.Available > 0);
             return sb.ToString();
         }

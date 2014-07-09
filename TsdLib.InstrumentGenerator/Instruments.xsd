@@ -5,14 +5,6 @@
     xmlns="TsdLib/Instruments.xsd"
     xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  <xs:simpleType name="InfoValues">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="ModelNumber"/>
-      <xs:enumeration value="SerialNumber"/>
-      <xs:enumeration value="FirmwareVersion"/>
-    </xs:restriction>
-  </xs:simpleType>
-
   <xs:simpleType name="ConnectionTypes">
     <xs:restriction base="xs:string">
       <xs:enumeration value="VisaConnection"/>
@@ -21,7 +13,7 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="VisaAttributeTypes">
+  <xs:simpleType name="ConnectionSettingTypes">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Boolean"/>
       <xs:enumeration value="Byte"/>
@@ -33,7 +25,7 @@
   </xs:simpleType>
 
   <xs:simpleType name="ClrTypes">
-    <xs:union memberTypes="VisaAttributeTypes">
+    <xs:union memberTypes="ConnectionSettingTypes">
       <xs:simpleType>
         <xs:restriction base="xs:string">
           <xs:enumeration value="Double"/>
@@ -41,10 +33,6 @@
       </xs:simpleType>
     </xs:union>
   </xs:simpleType>
-
-  <!--<xs:simpleType name="ClrTypes2">
-    <xs:union memberTypes="xs:string ClrTypes" />
-  </xs:simpleType>-->
   
   <xs:annotation>
     <xs:appinfo>TsdLib Instrument Schema</xs:appinfo>
@@ -57,11 +45,14 @@
     </xs:annotation>
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="VisaAttribute" type="VisaAttributeElement" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="IdQuery" type="IdQueryElement" minOccurs="1" maxOccurs="1" />
+        <xs:element name="ConnectionSetting" type="ConnectionSettingElement" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element name="ModelNumber" type="InfoElement" minOccurs="1" maxOccurs="1" />
         <xs:element name="SerialNumber" type="InfoElement" minOccurs="1" maxOccurs="1" />
         <xs:element name="FirmwareVersion" type="InfoElement" minOccurs="1" maxOccurs="1" />
         <xs:element name="Command" type="CommandElement" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="Query" type="QueryElement" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="ByteQuery" type="ByteQueryElement" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="Name" use="required">
         <xs:annotation>
@@ -78,51 +69,61 @@
           <xs:documentation>Optional: Interfaces that the generated class will implement. Multiple interfaces can be defined using a comma-separated list. Interfaces must be defined in the TsdLib.Instrument namespace.</xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="IdCommand">
-        <xs:annotation>
-          <xs:documentation>Optional: Command string that will be send to request the instrument to identify itself.</xs:documentation>
-        </xs:annotation>
-      </xs:attribute>
-      <xs:attribute name="IdResponse" use="required">
-        <xs:annotation>
-          <xs:documentation>Expected identification response from the instrument. Used by the Framework to search the system for the specified instrument.</xs:documentation>
-        </xs:annotation>
-      </xs:attribute>
-      <xs:attribute name="IdResponseTermChar">
-        <xs:annotation>
-          <xs:documentation>Optional: Termination character that the instrument sends to indicate the end of the identification response.</xs:documentation>
-        </xs:annotation>
-      </xs:attribute>
       <xs:attribute name="InitCommands">
         <xs:annotation>
           <xs:documentation>Optional: Semicolon-separated list of raw string command to send to the instrument on initialization.</xs:documentation>
         </xs:annotation>
       </xs:attribute>
+      <xs:attribute name="CommandDelay" type="xs:unsignedInt">
+        <xs:annotation>
+          <xs:documentation>Optional: A delay (in milliseconds) to wait before sending each command.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
     </xs:complexType>
   </xs:element>
 
-  <xs:complexType name="VisaAttributeElement">
+  <xs:complexType name="ConnectionSettingElement">
     <xs:annotation>
-      <xs:documentation>Optional: Sets an NI-VISA drivel-level attribute.</xs:documentation>
+      <xs:documentation>Optional: Sets a custom connection attribute, ie. an NI-VISA drivel-level attribute.</xs:documentation>
     </xs:annotation>
     <xs:attribute name="Name" use="required">
       <xs:annotation>
-        <xs:documentation>Name of the attribute to set. Must be defined on the NationalInstrument.VisaNS.AttributeType enumeration.</xs:documentation>
+        <xs:documentation>Name of the attribute to set.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="Type" type="VisaAttributeTypes" use="required">
+    <xs:attribute name="ArgumentType" type="ConnectionSettingTypes" use="required">
       <xs:annotation>
         <xs:documentation>Data type of the value specified in @Value</xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="Value" use="required">
+    <xs:attribute name="ArgumentValue" use="required">
       <xs:annotation>
         <xs:documentation>Value to assign to the attribute specified in @Name</xs:documentation>
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>
+
+  <xs:complexType name="IdQueryElement">
+    <xs:annotation>
+      <xs:documentation>Defines a message/response pair used to query an instrument for identification.</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="Response" use="required">
+      <xs:annotation>
+        <xs:documentation>A string expected to be contained within the response from the instrument.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="Command">
+      <xs:annotation>
+        <xs:documentation>Message to send to the instrument to request identification.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="TermChar">
+      <xs:annotation>
+        <xs:documentation>Optional: A character that signals the end of the expected response from the instrument.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
   
-  <!--obsolete-->
   <xs:complexType name="InfoElement">
     <xs:annotation>
       <xs:documentation>Defines a CLR property used to obtain information from the instrument.</xs:documentation>
@@ -137,20 +138,12 @@
         <xs:documentation>Optional: Regular expression used to filter/parse the response from the instrument.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="TermChar">
+      <xs:annotation>
+        <xs:documentation>Optional: Optional: A character that signals the end of the expected response from the instrument.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:complexType>
-
-  <xs:attributeGroup name="InfoAttributes">
-    <xs:attribute name="Message" use="required">
-      <xs:annotation>
-        <xs:documentation>Raw string to send to the instrument.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="RegEx">
-      <xs:annotation>
-        <xs:documentation>Optional: Regular expression used to filter/parse the response from the instrument.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-  </xs:attributeGroup>
 
   <xs:complexType name="InitCommandElement">
     <xs:annotation>
@@ -162,27 +155,71 @@
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>
-  
+
   <xs:complexType name="CommandElement">
     <xs:annotation>
-      <xs:documentation>Defines a CLR method used to send a command or query to the instrument.</xs:documentation>
+      <xs:documentation>Defines a method to send a command to the instrument without reading a return value.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="Parameter" type="ParameterElement" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
+    <xs:attributeGroup ref="MethodAttributes"/>
+  </xs:complexType>
+
+  <xs:complexType name="QueryElement">
+    <xs:annotation>
+      <xs:documentation>Defines a method to send a command to the instrument, read a return string and optionally filter/parse the response.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Parameter" type="ParameterElement" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="MethodAttributes"/>
+    <xs:attribute name="RegEx">
+      <xs:annotation>
+        <xs:documentation>Optional: Regular expression used to filter the raw response from the instrument.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="ReturnType">
+      <xs:annotation>
+        <xs:documentation>CLR type that the response will be parsed into.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="ByteQueryElement">
+    <xs:annotation>
+      <xs:documentation>Defines a method to send a command to the instrument and read back a specified number of bytes.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Parameter" type="ParameterElement" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="MethodAttributes"/>
+    <xs:attribute name="ByteCount" type="xs:int">
+      <xs:annotation>
+        <xs:documentation>Number of bytes to read back from the instrument.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="TermChar">
+      <xs:annotation>
+        <xs:documentation>A character that signals the end of the expected response from the instrument.</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:length value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:attributeGroup name="MethodAttributes">
     <xs:attribute name="Name" use="required">
       <xs:annotation>
-        <xs:documentation>Name of the command. Will be used to name the CLR method generated.</xs:documentation>
+        <xs:documentation>Name to assign to the method.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="Message" use="required">
       <xs:annotation>
-        <xs:documentation>Raw string to send to the instrument.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="RegEx">
-      <xs:annotation>
-        <xs:documentation>Optional: Regular expression used to filter/parse the response from the instrument.</xs:documentation>
+        <xs:documentation>String to send to the instrument. Use {0}, {1} to specify locations to insert parameters.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="Implements">
@@ -190,13 +227,13 @@
         <xs:documentation>Optional: Required only for VB code generatation. Specifies the interface from which the command method is implemented. When omitted, the first interface in the Instrument@Interfaces attribute will be used.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="ReturnType">
+    <xs:attribute name="Delay" type="xs:unsignedInt">
       <xs:annotation>
-        <xs:documentation>Optional: Required only when reading from the instrument. CLR type that the command method will return. When omitted, a void method will be generated.</xs:documentation>
+        <xs:documentation>Optional: A delay (in milliseconds) to wait before sending the command. Overrides the global delay set in Instrument@CommandDelay</xs:documentation>
       </xs:annotation>
     </xs:attribute>
-  </xs:complexType>
-  
+  </xs:attributeGroup>
+
   <xs:complexType name="ParameterElement">
     <xs:annotation>
       <xs:documentation>Defines a method parameter.</xs:documentation>

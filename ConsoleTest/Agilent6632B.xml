@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Instrument xmlns="TsdLib/Instruments.xsd" Name="Aglient6632B" ConnectionType="VisaConnection" Interfaces="IPowerSupply" InitCommands="*RST;*CLS">
+  <IdQuery Command="*IDN?" Response="6632B"/>
+  <ModelNumber Message="*IDN?" RegEx="(?&lt;=(.*,){1}).*(?=(,.*){2})"/>
+  <SerialNumber Message="*IDN?" RegEx="(?&lt;=.*,.*,).*(?=,)"/>
+  <FirmwareVersion Message="*IDN?" RegEx="(?&lt;=(.*,){3}).*"/>
+  <Command Name="SetVoltage" Message="SOURce:VOLTage:LEVel {0}" Implements="IPowerSupply">
+   <Parameter Type="Double" Name="voltage"/>
+  </Command>
+  <Query Name="ReadCurrent" Message="MEASure:CURRent?" ReturnType="Double"/>
+</Instrument>

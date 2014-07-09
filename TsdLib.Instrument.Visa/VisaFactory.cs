@@ -2,50 +2,36 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using System.Text;
 using NationalInstruments.VisaNS;
 
 namespace TsdLib.Instrument.Visa
 {
-    public class VisaFactory : FactoryBase<VisaConnection, VisaAttributeAttribute>
+    public class VisaFactory : FactoryBase<VisaConnection>
     {
         protected override IEnumerable<string> SearchForInstruments()
         {
             return ResourceManager.GetLocalManager().FindResources("?*INSTR");
         }
 
-        protected override VisaConnection CreateConnection(string address, params VisaAttributeAttribute[] attributes)
-        {
-            MessageBasedSession session = (MessageBasedSession) ResourceManager.GetLocalManager().Open(address);
-
-            foreach (VisaAttributeAttribute attribute in attributes)
-            {
-                Assembly niVisa = Assembly.GetAssembly(typeof(AttributeType));
-                Type t = niVisa.GetType("NationalInstruments.VisaNS.AttributeType");
-
-                Type argType = Type.GetType("System." + attribute.Type);
-                if (argType == null)
-                    throw new CommandException(attribute.Type + " is not a valid type for the attribute " + attribute.Name);
-
-                object argVal = Convert.ChangeType(attribute.Value, argType);
-
-                AttributeType typeEnum = (AttributeType)Enum.Parse(t, attribute.Name);
-
-                session.SetAttribute(typeEnum, argVal);
-            }
-            
-            return new VisaConnection(session); 
-        }
-
-        protected override string GetInstrumentIdentifier(VisaConnection connection, string idCommand)
+        protected override VisaConnection CreateConnection(string address, int defaultDelay, params ConnectionSettingAttribute[] attributes)
         {
             try
             {
                 try
                 {
-                    if (!connection.IsConnected)
-                        Debug.Fail("Passed a disconnected connection into GetInstrumentIdentifier!");
-                    return connection.SendCommand<string>(idCommand, "");
+                    MessageBasedSession session = (MessageBasedSession)ResourceManager.GetLocalManager().Open(address);
+
+                    foreach (ConnectionSettingAttribute attribute in attributes)
+                    {
+                        Assembly niVisa = Assembly.GetAssembly(typeof(AttributeType));
+                        Type tVisaAttribute = niVisa.GetType("NationalInstruments.VisaNS.AttributeType");
+
+                        AttributeType typeEnum = (AttributeType)Enum.Parse(tVisaAttribute, attribute.Name);
+
+                        session.SetAttribute(typeEnum, attribute.ArgumentValue);
+                    }
+
+                    return new VisaConnection(session, defaultDelay); 
                 }
                 catch (TargetInvocationException ex)
                 {
@@ -54,14 +40,35 @@ namespace TsdLib.Instrument.Visa
             }
             catch (VisaException ex)
             {
-                if (ex.ErrorCode == VisaStatusCode.ErrorTimeout || ex.ErrorCode == VisaStatusCode.ErrorSystemError || ex.ErrorCode == VisaStatusCode.ErrorResourceBusy)
+                if (ex.ErrorCode == VisaStatusCode.ErrorSystemError)
+                    return null;
+                throw;
+            }
+        }
+
+        protected override string GetInstrumentIdentifier(VisaConnection connection, IdQueryAttribute idAttribute)
+        {
+            try
+            {
+                if (!connection.IsConnected)
+                    Debug.Fail("Passed a disconnected connection into VisaFactory.GetInstrumentIdentifier!");
+
+                connection.SendCommand(idAttribute.Command);
+
+                string response = idAttribute.TermChar == '\uD800' ? connection.GetResponse<string>() : connection.GetResponse<string>(terminationCharacter:idAttribute.TermChar);
+                
+                return response;
+            }
+            catch (VisaException ex)
+            {
+                if (ex.ErrorCode == VisaStatusCode.ErrorTimeout || ex.ErrorCode == VisaStatusCode.ErrorResourceBusy)
                     return ex.ErrorCode.ToString();
                 throw;
             }
         }
     }
 
-    static class MbsExtensions
+    static class MessageBasedSessionExtensions
     {
         public static void SetAttribute(this MessageBasedSession session, AttributeType attribute, object value)
         {

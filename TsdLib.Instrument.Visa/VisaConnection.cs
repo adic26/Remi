@@ -1,44 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using NationalInstruments.VisaNS;
+﻿using NationalInstruments.VisaNS;
 
 namespace TsdLib.Instrument.Visa
 {
     public class VisaConnection : ConnectionBase
     {
-        private readonly object _locker;
-        private readonly MessageBasedSession _session;
+        private MessageBasedSession _session;
 
-        internal VisaConnection(MessageBasedSession session)
-            : base(session.ResourceName)
+        internal VisaConnection(MessageBasedSession session, int defaultDelay = 0)
+            : base(session.ResourceName, defaultDelay)
         {
-            _locker = new object();
             _session = session;
         }
 
         protected override void Write(string message)
         {
-            lock (_locker)
-                _session.Write(message);
+            _session.Write(message);
         }
 
-        protected override string Query(string message)
+        protected override string ReadString()
         {
-            lock (_locker)
-                return _session.Query(message);
+            return _session.ReadString();
+        }
+
+        protected override byte ReadByte()
+        {
+            return _session.ReadByteArray(1)[0];
         }
 
         protected override bool CheckForError()
-        {//TODO: this won't work for some serial devices
-            lock (_locker)
-                return _session.Query("*STB?").Contains("No error");
+        {
+            return _session.LastStatus != VisaStatusCode.Success && _session.LastStatus != VisaStatusCode.SuccessMaxCountRead;
         }
 
         public override bool IsConnected
         {
             get { return _session != null; }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _session.Dispose();
+            _session = null;
+            base.Dispose(disposing);
         }
     }
 }

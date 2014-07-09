@@ -3,14 +3,14 @@
 namespace TsdLib.Instrument
 {
     [Serializable]
-    public class InstrumentFinderException : TsdLibException
+    public class InstrumentFactoryException : TsdLibException
     {
-        public InstrumentFinderException(string message)
+        public InstrumentFactoryException(string message)
             : base(message)
         {
         }
 
-        public InstrumentFinderException(string message, Exception inner)
+        public InstrumentFactoryException(string message, Exception inner)
             : base(message, inner)
         {
         }
@@ -26,6 +26,20 @@ namespace TsdLib.Instrument
 
         public CommandException(string message, Exception inner)
             : base(message, inner)
+        {
+        }
+    }
+
+    [Serializable]
+    public class ConnectionSettingAttributeException : TsdLibException
+    {
+        public ConnectionSettingAttributeException(string type, string name)
+            : this(type, name, null)
+        {
+        }
+
+        public ConnectionSettingAttributeException(string type, string name, Exception inner)
+            : base(type + " is not a valid type for the connection setting: " + name, inner)
         {
         }
     }

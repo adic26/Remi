@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C49C6555-46C2-4313-8B10-8D2632A1FF66}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ConsoleTest</RootNamespace>
+    <AssemblyName>ConsoleTest</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NationalInstruments.Common, Version=13.0.40.190, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
+    <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TsdLib.Instrument.Dynamic">
+      <HintPath>..\..\..\..\..\..\ProgramData\TsdLib\Assemblies\TsdLib.Instrument.Dynamic.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ConsoleTestProgram.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
+      <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
+      <Name>TsdLib.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Controller\TsdLib.Controller.csproj">
+      <Project>{5ea97a7f-f898-4279-889e-910a4c38c7b1}</Project>
+      <Name>TsdLib.Controller</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instrument.Telnet\TsdLib.Instrument.Telnet.csproj">
+      <Project>{fbcd8cc2-a747-4979-9507-ae356d466e5a}</Project>
+      <Name>TsdLib.Instrument.Telnet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj">
+      <Project>{a9ab58d9-08ea-43cc-ab6a-9e934bdd3c7b}</Project>
+      <Name>TsdLib.Instrument.Visa</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.InstrumentGenerator\TsdLib.InstrumentGenerator.csproj">
+      <Project>{b12037d0-edd5-41a2-a68d-d2170eaffcb0}</Project>
+      <Name>TsdLib.InstrumentGenerator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instrument\TsdLib.Instrument.csproj">
+      <Project>{4be9beea-3fa2-452d-9d2d-1b4f165670cd}</Project>
+      <Name>TsdLib.Instrument</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Agilent6632B.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="AIM4170C.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="BlackBerryRadio.xml">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>xcopy /y $(ProjectDir)*.xml $(TargetDir)
+TsdLib.InstrumentGenerator.exe -f c</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

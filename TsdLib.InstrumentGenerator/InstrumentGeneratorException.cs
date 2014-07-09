@@ -6,7 +6,7 @@ using System.Text;
 namespace TsdLib.InstrumentGenerator
 {
     [Serializable]
-    class InstrumentGeneratorException : TsdLibException
+    public class InstrumentGeneratorException : TsdLibException
     {
         public InstrumentGeneratorException(string message) : base(message) { }
         public InstrumentGeneratorException(string message, Exception inner) : base(message, inner) { }
@@ -14,7 +14,7 @@ namespace TsdLib.InstrumentGenerator
     }
 
     [Serializable]
-    class CompilerException : TsdLibException
+    public class CompilerException : TsdLibException
     {
         public CompilerException(string message, CompilerErrorCollection errors)
             : base(message + Environment.NewLine + errors.ToStringEx()) { }
@@ -27,7 +27,7 @@ namespace TsdLib.InstrumentGenerator
             StringBuilder sb = new StringBuilder();
             foreach (CompilerError compilerError in collection)
             {
-                sb.Append(compilerError);
+                sb.AppendLine(compilerError.ToString());
                 if (compilerError.ErrorNumber == "CS0006")
                     sb.Append(". Please make sure your client has a reference to the dll.");
             }

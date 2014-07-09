@@ -21,7 +21,7 @@ namespace TsdLib.InstrumentGenerator
     
     public class InstrumentGenerator
     {
-        public static int Main(string[] args) //Console entry point
+        static int Main(string[] args) //Console entry point
         {
             if (args.Length == 0)
             {
@@ -50,8 +50,6 @@ namespace TsdLib.InstrumentGenerator
 
             if (location == "c")
                 location = Directory.GetCurrentDirectory();
-
-            //string location = args.Contains("-f c") ? Directory.GetCurrentDirectory() : args.ElementAt(Array.IndexOf(args, "-f") + 1);
 
             try
             {
@@ -93,22 +91,22 @@ namespace TsdLib.InstrumentGenerator
                 XmlSchemaSet schemas = new XmlSchemaSet();
                 schemas.Add(null, schema);
 
-                string docName = doc.BaseUri.Replace("file:///", "");
+                string docName = doc.BaseUri.TrimStart("file:///".ToCharArray());
                 doc.Validate(schemas,
                     (o, e) => { throw new InstrumentGeneratorException("File: " + docName + " could not be validated against schema: " + schema, e.Exception); });
 
                 XElement instrumentElement = doc.Root;
                 Debug.Assert(instrumentElement != null, "File: " + docName + " does not have a valid root element.");
 
-                //Generate instrument class
-                CodeTypeDeclaration instrumentClass = new CodeTypeDeclaration(instrumentElement.Attribute("Name").Value);
-
                 string connectionType = (string)instrumentElement.Attribute("ConnectionType");
+                ns.Imports.Add(new CodeNamespaceImport("TsdLib.Instrument." + connectionType.Split(new[] { "Connection" }, StringSplitOptions.RemoveEmptyEntries)[0]));
+
+                //Generate instrument class
+                CodeTypeDeclaration instrumentClass = new CodeTypeDeclaration((string)instrumentElement.Attribute("Name"));
+
                 CodeTypeReference instrumentBaseReference = new CodeTypeReference(typeof(InstrumentBase<>));
                 instrumentBaseReference.TypeArguments.Add(connectionType);
                 instrumentClass.BaseTypes.Add(instrumentBaseReference);
-
-                ns.Imports.Add(new CodeNamespaceImport("TsdLib.Instrument." + connectionType.Split(new[] { "Connection" }, StringSplitOptions.RemoveEmptyEntries)[0]));
 
                 //Add interface references
                 InterfaceReferenceCollection interfaceReferences = new InterfaceReferenceCollection(instrumentElement);
@@ -117,37 +115,46 @@ namespace TsdLib.InstrumentGenerator
                 ns.Types.Add(instrumentClass);
 
                 //Add ID attributes
-                string idCommand = (string)instrumentElement.Attribute("IdCommand");
-                if (idCommand != null)
-                    instrumentClass.CustomAttributes.Add(new IdCommandAttribute(idCommand));
-                instrumentClass.CustomAttributes.Add(new IdResponseAttribute((string) instrumentElement.Attribute("IdResponse"), (string)instrumentElement.Attribute("IdResponseTermChar")));
+                instrumentClass.CustomAttributes.Add(new IdQueryAttributeDeclaration(instrumentElement.Elements().First(e => e.Name.LocalName == "IdQuery")));
 
-                //Add VisaAttributes
-                foreach (XElement visaAttributeElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "VisaAttribute"))
-                    instrumentClass.CustomAttributes.Add(new VisaAttributeAttribute(visaAttributeElement));
-
-                //TODO: Add initialization commands
-                var initCommands = (string)instrumentElement.Attribute("InitCommands");
+                //Add initialization command attributes
+                string initCommands = (string)instrumentElement.Attribute("InitCommands");
                 if (initCommands != null)
-                {
-                    
-                }
+                    instrumentClass.CustomAttributes.Add(new CustomAttributeDeclaration("InitCommands", initCommands));
 
-                //Add info property overloads
-                foreach (XElement infoElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "Info"))
-                {
-                    instrumentClass.Members.Add(new InfoProperty(infoElement, "Message", idCommand));
-                    if ((string)infoElement.Attribute("RegEx") != null)
-                    instrumentClass.Members.Add(new InfoProperty(infoElement, "RegEx", ".*"));
-                }
+                //Add command delay attribute
+                string commandDelay = (string)instrumentElement.Attribute("CommandDelay");
+                if (commandDelay != null)
+                    instrumentClass.CustomAttributes.Add(new CustomAttributeDeclaration("CommandDelay", commandDelay));
 
-                instrumentClass.Members.Add(new InfoProperty(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "ModelNumber"), "Message", idCommand));
-                instrumentClass.Members.Add(new InfoProperty(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "SerialNumber"), "Message", idCommand));
-                instrumentClass.Members.Add(new InfoProperty(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "FirmwareVersion"), "Message", idCommand));
+                //Add Connection Attributes
+                foreach (XElement connectionAttributeElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "ConnectionSetting"))
+                    instrumentClass.CustomAttributes.Add(new ConnectionSettingAttributeDeclaration(connectionAttributeElement));
+
+                //Add constructor
+                CodeConstructor ctor = new CodeConstructor {Attributes = MemberAttributes.Assembly};
+                ctor.Parameters.Add(new CodeParameterDeclarationExpression(connectionType, "connection"));
+                ctor.BaseConstructorArgs.Add(new CodeVariableReferenceExpression("connection"));
+                instrumentClass.Members.Add(ctor);
+
+                ////Add info property overloads
+                instrumentClass.Members.AddRange(new InfoPropertyCollection(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "ModelNumber")));
+                instrumentClass.Members.AddRange(new InfoPropertyCollection(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "SerialNumber")));
+                instrumentClass.Members.AddRange(new InfoPropertyCollection(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "FirmwareVersion")));
 
                 //Generate command methods
                 foreach (XElement methodElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "Command"))
                     instrumentClass.Members.Add(new CommandMethod(methodElement));
+
+                //Generate query methods
+                foreach (XElement methodElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "Query"))
+                    instrumentClass.Members.Add(new QueryMethod(methodElement));
+
+                //Generate byte query methods
+                foreach (XElement methodElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "ByteQuery"))
+                    instrumentClass.Members.Add(new ByteQueryMethod(methodElement));
+
+
 
             }
             return ns;
@@ -164,7 +171,6 @@ namespace TsdLib.InstrumentGenerator
                     provider.GenerateCodeFromNamespace(codeNamespace, writer, new CodeGeneratorOptions { BracingStyle = "C" });
             }
 
-            CodeAttributeDeclaration attribute = new CodeAttributeDeclaration(new CodeTypeReference(typeof (InternalsVisibleToAttribute)), new CodeAttributeArgument(new CodePrimitiveExpression("TsdLib.Instrument")));
 
             string[] namespaces = codeNamespace.Imports
                 .Cast<CodeNamespaceImport>()
@@ -172,7 +178,8 @@ namespace TsdLib.InstrumentGenerator
                 .ToArray();
 
             CodeCompileUnit ccu = new CodeCompileUnit();
-            ccu.AssemblyCustomAttributes.Add(attribute);
+            CodeAttributeDeclaration friendAssemblyAttribute = new CodeAttributeDeclaration(new CodeTypeReference(typeof(InternalsVisibleToAttribute)), new CodeAttributeArgument(new CodePrimitiveExpression("TsdLib.Instrument")));
+            ccu.AssemblyCustomAttributes.Add(friendAssemblyAttribute);
 
             ccu.ReferencedAssemblies.AddRange(namespaces);
 
@@ -194,34 +201,50 @@ namespace TsdLib.InstrumentGenerator
         }
     }
 
-    class IdCommandAttribute : CodeAttributeDeclaration
+#region Custom Code Member Classes
+
+    class CustomAttributeDeclaration : CodeAttributeDeclaration
     {
-        public IdCommandAttribute(string command)
+        public CustomAttributeDeclaration(string name, string argumentValue)
         {
-            Name = "IdCommand";
-            Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(command)));
+            Name = name;
+            Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(argumentValue)));
         }
     }
 
-    class IdResponseAttribute : CodeAttributeDeclaration
+    class IdQueryAttributeDeclaration : CodeAttributeDeclaration
     {
-        public IdResponseAttribute(string command, string termChar = null)
+        public IdQueryAttributeDeclaration(XElement xElement)
         {
-            Name = "IdResponse";
-            Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(command)));
-            if (termChar != null)
-                Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(termChar[0])));
+            Name = xElement.Name.LocalName;
+
+            string response = (string)xElement.Attribute("Response");
+            Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(response)));
+
+            string command = (string)xElement.Attribute("Command");
+            if (command != null)
+                Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(command)));
+
+            string termchar = (string)xElement.Attribute("TermChar");
+            if (termchar != null)
+                Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(termchar)));
         }
     }
 
-    class VisaAttributeAttribute : CodeAttributeDeclaration
+    class ConnectionSettingAttributeDeclaration : CodeAttributeDeclaration
     {
-        public VisaAttributeAttribute(XElement visaAttributeElement)
+        public ConnectionSettingAttributeDeclaration(XElement xElement)
         {
-            Name = "VisaAttribute";
-            Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression((string)visaAttributeElement.Attribute("Name"))));
-            Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression((string)visaAttributeElement.Attribute("Type"))));
-            Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression((string)visaAttributeElement.Attribute("Value"))));
+            Name = xElement.Name.LocalName;
+
+            string name = (string)xElement.Attribute("Name");
+            Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(name)));
+
+            string argType = (string)xElement.Attribute("ArgumentType");
+            Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(argType)));
+
+            string argValue = (string)xElement.Attribute("ArgumentValue");
+            Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(argValue)));
         }
     }
 
@@ -243,74 +266,169 @@ namespace TsdLib.InstrumentGenerator
             }
         }
     }
-    //new InfoProperty(instrumentElement.Element("ModelNumber"), "Message", idCommand)
-    class InfoProperty : CodeMemberProperty
-    {
-        public InfoProperty(XElement infoElement, string attributeName, string defaultValue)
-        {
-            Name = infoElement.Name.LocalName + attributeName;
-            Type = new CodeTypeReference(typeof (string));
-// ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-            Attributes = MemberAttributes.Family | MemberAttributes.Override;
 
-            GetStatements.Add(new CodeMethodReturnStatement(
-                            new CodePrimitiveExpression((string)infoElement.Attribute(attributeName) ?? defaultValue)));
+    class InfoPropertyCollection : CodeTypeMemberCollection
+    {
+        public InfoPropertyCollection(XElement infoElement)
+        {
+            CodeMemberProperty messageMember = new CodeMemberProperty
+            {
+                Name = infoElement.Name.LocalName + "Message",
+                Type = new CodeTypeReference(typeof (string)),
+                Attributes = MemberAttributes.Family | MemberAttributes.Override
+            };
+            messageMember.GetStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression((string)infoElement.Attribute("Message"))));
+            Add(messageMember);
+
+            if ((string)infoElement.Attribute("RegEx") != null)
+            {
+                CodeMemberProperty regexMember = new CodeMemberProperty
+                {
+                    Name = infoElement.Name.LocalName + "RegEx",
+                    Type = new CodeTypeReference(typeof(string)),
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override
+                };
+                regexMember.GetStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression((string)infoElement.Attribute("RegEx"))));
+                Add(regexMember);
+            }
+
+            if ((string)infoElement.Attribute("TermChar") != null)
+            {
+                CodeMemberProperty regexMember = new CodeMemberProperty
+                {
+                    Name = infoElement.Name.LocalName + "TermChar",
+                    Type = new CodeTypeReference(typeof(char)),
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override
+                };
+                regexMember.GetStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(((string)infoElement.Attribute("TermChar"))[0])));
+                Add(regexMember);
+            }
         }
     }
 
-    class InitCommandMethod : CodeMemberMethod
+    class Method : CodeMemberMethod
     {
-        public InitCommandMethod(string initCommand)
+        public Method(XElement methodElement)
         {
-            Name = "Init";
-        }
-    }
-
-    class CommandMethod : CodeMemberMethod
-    {
-        public CommandMethod(XElement methodElement)
-        {
-            Name = methodElement.Attribute("Name").Value;
-// ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
+            Name = (string)methodElement.Attribute("Name");
             Attributes = MemberAttributes.Public | MemberAttributes.Final;
 
             //Required for VB code generation
-            string interfaceImplementation = (string) methodElement.Attribute("Implements");
+            string interfaceImplementation = (string)methodElement.Attribute("Implements");
             if (interfaceImplementation != null)
                 ImplementationTypes.Add(interfaceImplementation);
             else
-            {
                 if (methodElement.Parent != null)
                     ImplementationTypes.Add((string)methodElement.Parent.Attribute("Interfaces"));
-            }
 
-            //Method parameters
-            List<CodeExpression> innerMethodParameters = new List<CodeExpression> { new CodePrimitiveExpression(methodElement.Attribute("Message").Value) };
-            foreach (XElement parameterElement in methodElement.Elements().Where(e => e.Name.LocalName == "Parameter"))
-            {
-                string type = parameterElement.Attribute("Type").Value;
-                string name = parameterElement.Attribute("Name").Value;
-                Parameters.Add(new CodeParameterDeclarationExpression(type, name));
-                innerMethodParameters.Add(new CodeArgumentReferenceExpression(name));
-            }
+            var parameters = methodElement.Elements().Where(e => e.Name.LocalName == "Parameter")
+                .Select(e => new CodeParameterDeclarationExpression((string)e.Attribute("Type"), (string)e.Attribute("Name")));
+            Parameters.AddRange(parameters.ToArray());
 
-            CodeMethodReferenceExpression sendCommandMethodReference = new CodeMethodReferenceExpression(new CodeFieldReferenceExpression(null, "Connection"), "SendCommand");
-            CodeMethodInvokeExpression sendCommandMethodInvoke = new CodeMethodInvokeExpression(sendCommandMethodReference, innerMethodParameters.ToArray());
-
-            string returnType = (string)methodElement.Attribute("ReturnType");
-            if (returnType == null || returnType == "Void")
-                Statements.Add(sendCommandMethodInvoke);
-            else
-            {
-                CodeTypeReference returnTypeReference = new CodeTypeReference(returnType);
-                ReturnType = returnTypeReference;
-                sendCommandMethodReference.TypeArguments.Add(returnTypeReference);
-                CodeMethodReturnStatement returnStatement =
-                    new CodeMethodReturnStatement(sendCommandMethodInvoke);
-                string parser = (string)methodElement.Attribute("RegEx") ?? ".*";
-                sendCommandMethodInvoke.Parameters.Insert(1, new CodePrimitiveExpression(parser));
-                Statements.Add(returnStatement);
-            }
+            Statements.Add(new SendCommandMethodInvoke(methodElement));
         }
     }
+
+    class CommandMethod : Method
+    {
+        public CommandMethod(XElement methodElement)
+            : base(methodElement)
+        {
+            
+        }
+    }
+
+    class QueryMethod : Method
+    {
+        public QueryMethod(XElement queryMethodElement)
+            : base(queryMethodElement)
+        {
+            string returnType = (string)queryMethodElement.Attribute("ReturnType");
+            ReturnType = new CodeTypeReference(returnType);
+
+            //CodeMethodReturnStatement returnStatement = new CodeMethodReturnStatement(SendCommandMethodInvoke);
+            //string parser = (string)queryMethodElement.Attribute("RegEx") ?? ".*";
+            //SendCommandMethodInvoke.Parameters.Insert(1, new CodePrimitiveExpression(parser));
+            //Statements.Add(returnStatement);
+
+            CodeMethodReturnStatement returnStatement = new CodeMethodReturnStatement(new GetResponseTypedMethodInvoke(queryMethodElement));
+            Statements.Add(returnStatement);
+        }
+    }
+
+    class ByteQueryMethod : Method
+    {
+        public ByteQueryMethod(XElement byteQueryMethodElement)
+            : base(byteQueryMethodElement)
+        {
+            ReturnType = new CodeTypeReference(typeof(byte[]));
+
+            CodeMethodReturnStatement returnStatement = new CodeMethodReturnStatement(new GetResponseBytesMethodInvoke(byteQueryMethodElement));
+            Statements.Add(returnStatement);
+        }
+    }
+
+    class SendCommandMethodInvoke : CodeMethodInvokeExpression
+    {
+        public SendCommandMethodInvoke(XElement methodElement)
+        {
+            Method = new CodeMethodReferenceExpression(new CodeVariableReferenceExpression("Connection"), "SendCommand");
+            string message = (string)methodElement.Attribute("Message");
+            Parameters.Add(new CodePrimitiveExpression(message));
+            string delay = (string) methodElement.Attribute("Delay");
+            Parameters.Add(new CodePrimitiveExpression(delay != null ? int.Parse(delay) : -1));
+
+            IEnumerable<CodeExpression> query = methodElement.Elements()
+                .Where(e => e.Name.LocalName == "Parameter")
+                .Select(e => new CodeArgumentReferenceExpression((string)e.Attribute("Name")));
+            Parameters.AddRange(query.ToArray());
+        }
+    }
+
+    class GetResponseMethodInvoke : CodeMethodInvokeExpression
+    {
+        public GetResponseMethodInvoke(XElement methodElement)
+        {
+            string termChar = (string)methodElement.Attribute("TermChar");
+            if (termChar != null)
+                Parameters.Add(new CodePrimitiveExpression(termChar[0]));
+
+            string delay = (string) methodElement.Attribute("Delay");
+            if (delay != null)
+                Parameters.Add(new CodePrimitiveExpression(int.Parse(delay)));
+        }
+    }
+
+    class GetResponseTypedMethodInvoke : GetResponseMethodInvoke
+    {
+        public GetResponseTypedMethodInvoke(XElement queryMethodElement)
+            : base(queryMethodElement)
+        {
+            Method = new CodeMethodReferenceExpression(new CodeVariableReferenceExpression("Connection"), "GetResponse");
+
+            string returnType = (string)queryMethodElement.Attribute("ReturnType");
+            Method.TypeArguments.Add(returnType);
+
+            string regEx = (string) queryMethodElement.Attribute("RegEx");
+            if (regEx != null)
+                Parameters.Insert(0, new CodePrimitiveExpression(regEx));
+            
+            
+        }
+    }
+
+    class GetResponseBytesMethodInvoke : GetResponseMethodInvoke
+    {
+        public GetResponseBytesMethodInvoke(XElement byteQueryMethodElement)
+            : base(byteQueryMethodElement)
+        {
+            Method = new CodeMethodReferenceExpression(new CodeVariableReferenceExpression("Connection"), "GetByteResponse");
+
+            string byteCount = (string) byteQueryMethodElement.Attribute("ByteCount");
+            if (byteCount != null)
+                Parameters.Insert(0, new CodePrimitiveExpression(int.Parse(byteCount)));
+        }
+    }
+
+#endregion
 }

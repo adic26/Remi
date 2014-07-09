@@ -1,110 +1,158 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace TsdLib.Instrument
 {
-    public abstract class InstrumentBase<TConnection>
+    public abstract class InstrumentBase<TConnection> : IDisposable
         where TConnection : ConnectionBase
     {
         internal protected TConnection Connection;
 
-        //TODO: check and see if it's ok to send an empty string - might be a nice way to validate the connection in cases where no init command is specified
-        protected virtual string InitMessage { get { return ""; }}
-        protected void Init()
-        {
+        public string Description { get; private set; }
 
+        protected InstrumentBase(TConnection connection)
+        {
+            Connection = connection;
+
+            InitCommandsAttribute initCommands = (InitCommandsAttribute)Attribute.GetCustomAttribute(GetType(), typeof(InitCommandsAttribute), true);
+            if (initCommands != null)
+                foreach (string command in initCommands.Commands)
+                    Connection.SendCommand(command);
+
+            Description = GetType().Name + " via " + connection.Description;
         }
+
+        protected virtual string InitCommands { get { return ""; } }
 
         protected abstract string ModelNumberMessage { get; }
         protected virtual string ModelNumberRegEx { get { return ".*"; } }
+        protected virtual char ModelNumberTermChar { get { return '\uD800'; } }
         private string _modelNumber;
         public string ModelNumber
         {
             get
             {
-                return _modelNumber ??
-                       (_modelNumber = Connection.SendCommand<string>(ModelNumberMessage, ModelNumberRegEx));
+                if (_modelNumber == null)
+                {
+                    lock (this)
+                    {
+                        Connection.SendCommand(ModelNumberMessage);
+                        _modelNumber = Connection.GetResponse<string>(ModelNumberRegEx, ModelNumberTermChar);
+                    }
+                }
+                return _modelNumber;
             }
         }
 
         protected abstract string SerialNumberMessage { get; }
         protected virtual string SerialNumberRegEx { get { return ".*"; } }
+        protected virtual char SerialNumberTermChar { get { return '\uD800'; } }
         private string _serialNumber;
         public string SerialNumber
         {
             get
             {
-                return _serialNumber ??
-                       (_serialNumber = Connection.SendCommand<string>(SerialNumberMessage, SerialNumberRegEx));
+                lock (this)
+                {
+                    if (_serialNumber == null)
+                    {
+                        Connection.SendCommand(SerialNumberMessage);
+                        _serialNumber = Connection.GetResponse<string>(SerialNumberRegEx, SerialNumberTermChar);
+                    }
+                }
+                return _serialNumber;
             }
         }
 
         protected abstract string FirmwareVersionMessage { get; }
         protected virtual string FirmwareVersionRegEx { get { return ".*"; } }
+        protected virtual char FirmwareVersionTermChar { get { return '\uD800'; } }
         private string _firmwareVersion;
         public string FirmwareVersion
         {
             get
             {
-                return _firmwareVersion ??
-                       (_firmwareVersion = Connection.SendCommand<string>(FirmwareVersionMessage, FirmwareVersionRegEx));
+                lock (this)
+                {
+                    if (_firmwareVersion == null)
+                    {
+                        Connection.SendCommand(FirmwareVersionMessage);
+                        _firmwareVersion = Connection.GetResponse<string>(FirmwareVersionRegEx, FirmwareVersionTermChar);
+                    }
+                    return _firmwareVersion;
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Debug.WriteLine("Disposing " + Description);
+                Connection.Dispose();
             }
         }
     }
 
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class IdCommandAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    public class InitCommandsAttribute : Attribute
     {
-        public string IdCommand { get; private set; }
+        public string[] Commands { get; private set; }
 
-        public IdCommandAttribute(string idCommand)
+        public InitCommandsAttribute(params string[] commands)
         {
-            IdCommand = idCommand ?? "";
+            Commands = commands;
         }
 
-        /// <summary>
-        /// Gets the identification command.
-        /// </summary>
-        /// <returns>The identification command assigned to the instrument.</returns>
-        public override string ToString()
-        {
-            return IdCommand;
-        }
     }
 
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class IdResponseAttribute : Attribute
+    public class IdQueryAttribute : Attribute
     {
-        public string IdResponse { get; private set; }
-        public char TerminationCharacter { get; private set; }
+        public string Response { get; private set; }
+        public string Command { get; private set; }
+        public char TermChar { get; private set; }
 
-        public IdResponseAttribute(string idResponse, char terminationCharacter = '\0')
+        public IdQueryAttribute(string response, string command = "", string termChar = null)
         {
-            IdResponse = idResponse ?? "";
-            TerminationCharacter = terminationCharacter;
-        }
-
-        /// <summary>
-        /// Gets the expected identification response.
-        /// </summary>
-        /// <returns>The expected identification response assigned to the instrument.</returns>
-        public override string ToString()
-        {
-            return IdResponse;
+            Response = response;
+            Command = command;
+            TermChar = termChar != null ? termChar[0] : '\uD800';
         }
     }
 
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
-    public class VisaAttributeAttribute : Attribute
+    public class ConnectionSettingAttribute : Attribute
     {
         public string Name { get; private set; }
-        public string Type { get; private set; }
-        public string Value { get; private set; }
+        public Type ArgumentType { get; private set; }
+        public object ArgumentValue { get; private set; }
 
-        public VisaAttributeAttribute(string name, string type, string val)
+        public ConnectionSettingAttribute(string name, string type, string val)
         {
             Name = name;
-            Type = type;
-            Value = val;
+
+            ArgumentType = Type.GetType("System." + type);
+            if (ArgumentType == null)
+                throw new ConnectionSettingAttributeException(type, name);
+
+            ArgumentValue = Convert.ChangeType(val, ArgumentType);
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    public class CommandDelayAttribute : Attribute
+    {
+        public int Delay { get; private set; }
+
+        public CommandDelayAttribute(string delay)
+        {
+            Delay = int.Parse(delay);
         }
     }
 }

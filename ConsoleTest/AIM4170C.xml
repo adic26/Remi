@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Instrument xmlns="TsdLib/Instruments.xsd" Name="AIM4170C" ConnectionType="VisaConnection" InitCommands="D0" CommandDelay="500">
+  <IdQuery Response="4170C" Command="V" TermChar="@"/>
+  <ConnectionSetting Name="AsrlBaud" ArgumentType="Int32" ArgumentValue="57600"/>
+  <ModelNumber Message="V" TermChar="@" RegEx="(?&lt;=\s).*?(?=\s)"/>
+  <SerialNumber Message="V" TermChar="@" RegEx="(?&lt;=DATE.*\s.*\s.*\s).*?(?=\s)"/>
+  <FirmwareVersion Message="V" TermChar="@" RegEx="(?&lt;=ver ).*?(?=\s)"/>
+  <Command Name="CloseRelay" Message="K3"/>
+  <Command Name="OpenRelay" Message="K0"/>
+  <ByteQuery Name="MeasureWLC" Message="F0010624E" ByteCount="72"/>
+  <ByteQuery Name="MeasureNFC" Message="F08ADAB9F" ByteCount="72"/>
+  <ByteQuery Name="Measure" Message="F{0}" ByteCount="72">
+    <Parameter Name="frequencystring" Type="String"/>
+  </ByteQuery>
+</Instrument>
