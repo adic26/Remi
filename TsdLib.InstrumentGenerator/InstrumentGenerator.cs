@@ -34,7 +34,7 @@ namespace TsdLib.InstrumentGenerator
                     "",
                     "   -f <xmlFileOrFolder>".PadRight(width) + "XML source location. Can be a file or folder.",
                     "       <xmlFileOrFolder>".PadRight(width) + "absolute or relative path to the instrument file or folder",
-                    "       -c".PadRight(width) + "use current execution directory",
+                    "       c".PadRight(width) + "use current execution directory",
                     "   -vb".PadRight(width) + "Visual Basic code (C# is default)",
                     "",
                     "Press Enter to exit..."
