@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.MicroController", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.InstrumentGenerator", "TsdLib.InstrumentGenerator\TsdLib.InstrumentGenerator.csproj", "{B12037D0-EDD5-41A2-A68D-D2170EAFFCB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Instrument", "TsdLib.Instrument\TsdLib.Instrument.csproj", "{4BE9BEEA-3FA2-452D-9D2D-1B4F165670CD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Instrument.Base", "TsdLib.Instrument.Base\TsdLib.Instrument.Base.csproj", "{4BE9BEEA-3FA2-452D-9D2D-1B4F165670CD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Instrument.Visa", "TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj", "{A9AB58D9-08EA-43CC-AB6A-9E934BDD3C7B}"
 EndProject
@@ -27,6 +27,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.View", "TsdLib.View\TsdLib.View.csproj", "{148B46EA-2C9A-41B7-9B64-89B189CDBC5C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{C49C6555-46C2-4313-8B10-8D2632A1FF66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Instrument", "TsdLib.Instrument\TsdLib.Instrument.csproj", "{33AE2E67-1EC5-4D0B-A09D-26482859C3F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneratorTest", "GeneratorTest\GeneratorTest.csproj", "{31FA289C-12FC-45B8-AC72-2FD116870CC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,6 +82,14 @@ Global
 		{C49C6555-46C2-4313-8B10-8D2632A1FF66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C49C6555-46C2-4313-8B10-8D2632A1FF66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C49C6555-46C2-4313-8B10-8D2632A1FF66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33AE2E67-1EC5-4D0B-A09D-26482859C3F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33AE2E67-1EC5-4D0B-A09D-26482859C3F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33AE2E67-1EC5-4D0B-A09D-26482859C3F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33AE2E67-1EC5-4D0B-A09D-26482859C3F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31FA289C-12FC-45B8-AC72-2FD116870CC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31FA289C-12FC-45B8-AC72-2FD116870CC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31FA289C-12FC-45B8-AC72-2FD116870CC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31FA289C-12FC-45B8-AC72-2FD116870CC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

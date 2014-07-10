@@ -5,6 +5,7 @@ namespace TsdLib
 {
     public static class SpecialFolders
     {
+        [Obsolete("Source files are generated to the project directory and must be specified. Assembly files are generated to the current directory.")]
         public static string Assemblies
         {
             get

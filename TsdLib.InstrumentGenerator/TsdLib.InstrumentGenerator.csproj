@@ -57,18 +57,6 @@
       <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
       <Name>TsdLib.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument.Telnet\TsdLib.Instrument.Telnet.csproj">
-      <Project>{fbcd8cc2-a747-4979-9507-ae356d466e5a}</Project>
-      <Name>TsdLib.Instrument.Telnet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj">
-      <Project>{a9ab58d9-08ea-43cc-ab6a-9e934bdd3c7b}</Project>
-      <Name>TsdLib.Instrument.Visa</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument\TsdLib.Instrument.csproj">
-      <Project>{4be9beea-3fa2-452d-9d2d-1b4f165670cd}</Project>
-      <Name>TsdLib.Instrument</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

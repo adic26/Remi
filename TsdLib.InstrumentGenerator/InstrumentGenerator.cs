@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using TsdLib.Instrument;
 
 namespace TsdLib.InstrumentGenerator
 {
@@ -21,16 +20,22 @@ namespace TsdLib.InstrumentGenerator
     
     public class InstrumentGenerator
     {
+        /// <summary>
+        /// Dynamically generates code file (*.cs or *.vb) or class library (*.dll) files.
+        /// Console entry point. Runs in a separate process.
+        /// </summary>
+        /// <param name="args">TODO: describe args</param>
+        /// <returns>No error: 0, No arguments: 1, Compiler error: 2</returns>
         static int Main(string[] args) //Console entry point
         {
             if (args.Length == 0)
             {
                 const int width = 20;
-                Console.WriteLine(string.Join(Environment.NewLine,
+                Console.WriteLine(string.Join(Environment.NewLine,"",
                     "TsdLib Dynamic Instrument Assembly Generator",
-                    "Dynamically generates class library (*.dll) files",
+                    "Dynamically generates code file (*.cs or *.vb) or class library (*.dll) files",
                     "",
-                    "Usage: TsdLib.InstrumentGenerator.exe -f c|<xmlFileOrFolder> [-vb]",
+                    "Usage: TsdLib.InstrumentGenerator.exe <-source|-assembly|-both> <input path> <output path> [-vb] [<schema filename>]",
                     "",
                     "   -f <xmlFileOrFolder>".PadRight(width) + "XML source location. Can be a file or folder.",
                     "       <xmlFileOrFolder>".PadRight(width) + "absolute or relative path to the instrument file or folder",
@@ -46,14 +51,14 @@ namespace TsdLib.InstrumentGenerator
 
             Trace.Listeners.Add(new ConsoleTraceListener());
 
-            var location = args.ElementAt(Array.IndexOf(args, "-f") + 1);
-
-            if (location == "c")
-                location = Directory.GetCurrentDirectory();
+            Language language = args.Contains("-vb") ? Language.VisualBasic : Language.CSharp;
 
             try
             {
-                GenerateInstrumentAssembly(location, args.Contains("-vb") ? Language.VisualBasic : Language.CSharp);
+                if (args.Contains("-source") || args.Contains("-both"))
+                    GenerateCodeFile(args[1], args[2], language, args[4]);
+                if (args.Contains("-assembly") || args.Contains("-both"))
+                    GenerateAssembly(args[1], args[2], language, args[4]);
             }
             catch (Exception ex)
             {
@@ -64,16 +69,27 @@ namespace TsdLib.InstrumentGenerator
             return 0;
         }
 
-        public static Assembly GenerateInstrumentAssembly(string xmlFileOrFolder, Language language, string schemaFile = "Instruments.xsd") //Library entry point
+        public static void GenerateAssembly(string inputPath, string outputPath, Language language = Language.CSharp, string schemaFile = "Instruments.xsd") //Library entry point
         {
-            CodeNamespace ns = GenerateCodeNamespace(xmlFileOrFolder, schemaFile);
+            CodeNamespace ns = generateCodeNamespace(inputPath, schemaFile);
 
-            Assembly asy = GenerateAssembly(ns, language, true);
-
-            return asy;
+            generateAssembly(ns, outputPath, language);
         }
 
-        static CodeNamespace GenerateCodeNamespace(string xmlFileOrFolder, string schema)
+        public static string GenerateCodeFile(string inputPath, string outputPath, Language language = Language.CSharp, string schemaFile = "Instruments.xsd")
+        {
+            CodeNamespace codeNamespace = generateCodeNamespace(inputPath, schemaFile);
+
+            CodeDomProvider provider = CodeDomProvider.CreateProvider(language.ToString());
+
+            string fileName = Path.Combine(outputPath, "Instrument." + provider.FileExtension);
+            using (StreamWriter writer = new StreamWriter(fileName, false))
+                provider.GenerateCodeFromNamespace(codeNamespace, writer, new CodeGeneratorOptions { BracingStyle = "C" });
+
+            return fileName;
+        }
+
+        static CodeNamespace generateCodeNamespace(string xmlFileOrFolder, string schemaFile)
         {
             var files = (File.GetAttributes(xmlFileOrFolder).HasFlag(FileAttributes.Directory) ? (Directory.EnumerateFiles(xmlFileOrFolder)) : (new[] {xmlFileOrFolder}))
                 .Where(file => Path.GetExtension(file) == ".xml")
@@ -81,18 +97,18 @@ namespace TsdLib.InstrumentGenerator
                 .Where(doc => doc.Root != null && doc.Root.Name.LocalName == "Instrument")
                 ;
 
-            CodeNamespace ns = new CodeNamespace("TsdLib.Instrument.Dynamic");
+            CodeNamespace ns = new CodeNamespace("TsdLib.Instrument");
             ns.Imports.Add(new CodeNamespaceImport("System"));
             ns.Imports.Add(new CodeNamespaceImport("TsdLib.Instrument"));
 
             foreach (XDocument doc in files)
             {
                 XmlSchemaSet schemas = new XmlSchemaSet();
-                schemas.Add(null, schema);
+                schemas.Add(null, schemaFile);
 
                 string docName = doc.BaseUri.TrimStart("file:///".ToCharArray());
                 doc.Validate(schemas,
-                    (o, e) => { throw new InstrumentGeneratorException("File: " + docName + " could not be validated against schema: " + schema, e.Exception); });
+                    (o, e) => { throw new InstrumentGeneratorException("File: " + docName + " could not be validated against schema: " + schemaFile, e.Exception); });
 
                 XElement instrumentElement = doc.Root;
                 Debug.Assert(instrumentElement != null, "File: " + docName + " does not have a valid root element.");
@@ -102,16 +118,16 @@ namespace TsdLib.InstrumentGenerator
 
                 //Generate instrument class
                 CodeTypeDeclaration instrumentClass = new CodeTypeDeclaration((string)instrumentElement.Attribute("Name"));
+                ns.Types.Add(instrumentClass);
 
-                CodeTypeReference instrumentBaseReference = new CodeTypeReference(typeof(InstrumentBase<>));
+                //Add InstrumentBase reference
+                CodeTypeReference instrumentBaseReference = new CodeTypeReference("InstrumentBase");
                 instrumentBaseReference.TypeArguments.Add(connectionType);
                 instrumentClass.BaseTypes.Add(instrumentBaseReference);
 
                 //Add interface references
                 InterfaceReferenceCollection interfaceReferences = new InterfaceReferenceCollection(instrumentElement);
                 instrumentClass.BaseTypes.AddRange(interfaceReferences);
-
-                ns.Types.Add(instrumentClass);
 
                 //Add ID attributes
                 instrumentClass.CustomAttributes.Add(new IdQueryAttributeDeclaration(instrumentElement.Elements().First(e => e.Name.LocalName == "IdQuery")));
@@ -130,16 +146,15 @@ namespace TsdLib.InstrumentGenerator
                 foreach (XElement connectionAttributeElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "ConnectionSetting"))
                     instrumentClass.CustomAttributes.Add(new ConnectionSettingAttributeDeclaration(connectionAttributeElement));
 
-                //Add factory reference
-                instrumentClass.Members.Add(new FactoryReference(connectionType));
-                instrumentClass.Members.Add(new GetInstanceMethod(instrumentClass.Name));
-                instrumentClass.Members.Add(new GetInstanceMethod(instrumentClass.Name, "address"));
-                //instrumentClass.Members.AddRange(new GetInstanceMethodCollection(instrumentClass.Name));
-
                 //Add constructor
                 CodeConstructor ctor = new CodeConstructor {Attributes = MemberAttributes.Assembly};
                 ctor.Parameters.Add(new CodeParameterDeclarationExpression(connectionType, "connection"));
                 ctor.BaseConstructorArgs.Add(new CodeVariableReferenceExpression("connection"));
+
+                //Add factory field and methods
+                instrumentClass.Members.Add(new FactoryReference(connectionType));
+                instrumentClass.Members.Add(new GetInstanceMethod(instrumentClass.Name));
+                instrumentClass.Members.Add(new GetInstanceMethod(instrumentClass.Name, "address"));
                 instrumentClass.Members.Add(ctor);
 
                 //Add info property overloads
@@ -147,35 +162,24 @@ namespace TsdLib.InstrumentGenerator
                 instrumentClass.Members.AddRange(new InfoPropertyCollection(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "SerialNumber")));
                 instrumentClass.Members.AddRange(new InfoPropertyCollection(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "FirmwareVersion")));
 
-                //Generate command methods
+                //Add command methods
                 foreach (XElement methodElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "Command"))
                     instrumentClass.Members.Add(new CommandMethod(methodElement));
 
-                //Generate query methods
+                //Add query methods
                 foreach (XElement methodElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "Query"))
                     instrumentClass.Members.Add(new QueryMethod(methodElement));
 
-                //Generate byte query methods
+                //Add byte query methods
                 foreach (XElement methodElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "ByteQuery"))
                     instrumentClass.Members.Add(new ByteQueryMethod(methodElement));
-
-
-
             }
             return ns;
         }
 
-        static Assembly GenerateAssembly(CodeNamespace codeNamespace, Language language, bool generateCodeFile)
+        static void generateAssembly(CodeNamespace codeNamespace, string outputPath, Language language = Language.CSharp)
         {
             CodeDomProvider provider = CodeDomProvider.CreateProvider(language.ToString());
-
-            if (generateCodeFile)
-            {
-                string fileName = Path.Combine(SpecialFolders.Assemblies, codeNamespace.Name + "." + provider.FileExtension);
-                using (StreamWriter writer = new StreamWriter(fileName, false))
-                    provider.GenerateCodeFromNamespace(codeNamespace, writer, new CodeGeneratorOptions { BracingStyle = "C" });
-            }
-
 
             string[] namespaces = codeNamespace.Imports
                 .Cast<CodeNamespaceImport>()
@@ -183,16 +187,20 @@ namespace TsdLib.InstrumentGenerator
                 .ToArray();
 
             CodeCompileUnit ccu = new CodeCompileUnit();
-            CodeAttributeDeclaration friendAssemblyAttribute = new CodeAttributeDeclaration(new CodeTypeReference(typeof(InternalsVisibleToAttribute)), new CodeAttributeArgument(new CodePrimitiveExpression("TsdLib.Instrument")));
-            ccu.AssemblyCustomAttributes.Add(friendAssemblyAttribute);
 
+            //CodeAttributeDeclaration friendAssemblyAttribute =
+            //    new CodeAttributeDeclaration(
+            //        new CodeTypeReference(typeof(InternalsVisibleToAttribute)),
+            //        new CodeAttributeArgument(
+            //            new CodePrimitiveExpression("TsdLib.Instrument")));
+            //ccu.AssemblyCustomAttributes.Add(friendAssemblyAttribute);
+            
             ccu.ReferencedAssemblies.AddRange(namespaces);
-
             ccu.Namespaces.Add(codeNamespace);
             
             CompilerParameters cp = new CompilerParameters
             {
-                OutputAssembly = Path.Combine(SpecialFolders.Assemblies, codeNamespace.Name + ".dll"),
+                OutputAssembly = Path.Combine(outputPath, "TsdLib.Instrument.dll"),
                 IncludeDebugInformation = true,
                 GenerateExecutable = false,
             };
@@ -201,8 +209,6 @@ namespace TsdLib.InstrumentGenerator
 
             if (cr.Errors.HasErrors)
                 throw new CompilerException("Error compiling.", cr.Errors);
-
-            return cr.CompiledAssembly;
         }
     }
 

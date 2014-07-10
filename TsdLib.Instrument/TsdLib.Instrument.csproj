@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4BE9BEEA-3FA2-452D-9D2D-1B4F165670CD}</ProjectGuid>
+    <ProjectGuid>{33AE2E67-1EC5-4D0B-A09D-26482859C3F0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TsdLib.Instrument</RootNamespace>
@@ -39,20 +39,51 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConnectionBase.cs" />
-    <Compile Include="FactoryBase.cs" />
-    <Compile Include="InstrumentBase.cs" />
-    <Compile Include="InstrumentExceptions.cs" />
-    <Compile Include="InstrumentInterfaces.cs" />
+    <Compile Include="Instrument.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Agilent6632B.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="AIM4170C.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="BlackBerryRadio.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
       <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
       <Name>TsdLib.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instrument.Base\TsdLib.Instrument.Base.csproj">
+      <Project>{4be9beea-3fa2-452d-9d2d-1b4f165670cd}</Project>
+      <Name>TsdLib.Instrument.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instrument.Telnet\TsdLib.Instrument.Telnet.csproj">
+      <Project>{fbcd8cc2-a747-4979-9507-ae356d466e5a}</Project>
+      <Name>TsdLib.Instrument.Telnet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj">
+      <Project>{a9ab58d9-08ea-43cc-ab6a-9e934bdd3c7b}</Project>
+      <Name>TsdLib.Instrument.Visa</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.InstrumentGenerator\TsdLib.InstrumentGenerator.csproj">
+      <Project>{b12037d0-edd5-41a2-a68d-d2170eaffcb0}</Project>
+      <Name>TsdLib.InstrumentGenerator</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>rem csc.exe /out:TsdLib.InstrumentGenerator.exe /define:DEBUG /define:TRACE $(SolutionDir)TsdLib.InstrumentGenerator\*.cs 
+$(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\TsdLib.InstrumentGenerator.exe -source $(ProjectDir) $(ProjectDir) -cs $(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\Instruments.xsd"
+
+</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

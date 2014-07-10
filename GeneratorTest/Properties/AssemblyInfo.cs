@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TsdLib.Instrument")]
+[assembly: AssemblyTitle("GeneratorTest")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BlackBerry")]
-[assembly: AssemblyProduct("TsdLib.Instrument")]
+[assembly: AssemblyProduct("GeneratorTest")]
 [assembly: AssemblyCopyright("Copyright © BlackBerry 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("729fc082-b06c-41b3-ac5a-7b613e19ca9d")]
+[assembly: Guid("c26d0ae7-ba70-4b6b-8545-ce970f5eae43")]
 
 // Version information for an assembly consists of the following four values:
 //

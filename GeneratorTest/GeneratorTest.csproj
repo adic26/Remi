@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FBCD8CC2-A747-4979-9507-AE356D466E5A}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{31FA289C-12FC-45B8-AC72-2FD116870CC7}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TsdLib.Instrument.Telnet</RootNamespace>
-    <AssemblyName>TsdLib.Instrument.Telnet</AssemblyName>
+    <RootNamespace>GeneratorTest</RootNamespace>
+    <AssemblyName>GeneratorTest</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -39,19 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GeneratorTestProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TelnetConnection.cs" />
-    <Compile Include="TelnetExceptions.cs.cs" />
-    <Compile Include="TelnetFactory.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
-      <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
-      <Name>TsdLib.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument.Base\TsdLib.Instrument.Base.csproj">
-      <Project>{4be9beea-3fa2-452d-9d2d-1b4f165670cd}</Project>
-      <Name>TsdLib.Instrument.Base</Name>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TsdLib.InstrumentGenerator\TsdLib.InstrumentGenerator.csproj">
+      <Project>{b12037d0-edd5-41a2-a68d-d2170eaffcb0}</Project>
+      <Name>TsdLib.InstrumentGenerator</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -74,26 +74,15 @@
       <Project>{b12037d0-edd5-41a2-a68d-d2170eaffcb0}</Project>
       <Name>TsdLib.InstrumentGenerator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument\TsdLib.Instrument.csproj">
+    <ProjectReference Include="..\TsdLib.Instrument.Base\TsdLib.Instrument.Base.csproj">
       <Project>{4be9beea-3fa2-452d-9d2d-1b4f165670cd}</Project>
-      <Name>TsdLib.Instrument</Name>
+      <Name>TsdLib.Instrument.Base</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Agilent6632B.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="AIM4170C.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="BlackBerryRadio.xml">
-      <SubType>Designer</SubType>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>xcopy /y $(ProjectDir)*.xml $(TargetDir)
-TsdLib.InstrumentGenerator.exe -f c</PreBuildEvent>
+    <PreBuildEvent>rem xcopy /y $(ProjectDir)*.xml $(TargetDir)
+rem TsdLib.InstrumentGenerator.exe -f c</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
