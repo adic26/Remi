@@ -5,8 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.StateMachine", "TsdL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Common", "TsdLib.Common\TsdLib.Common.csproj", "{84ACB4F7-C908-491A-96D9-9305A0B29295}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.MicroController", "TsdLib.MicroController\TsdLib.MicroController.csproj", "{BB66A0A7-1F5F-497A-BE4A-B4418F128A8A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.InstrumentGenerator", "TsdLib.InstrumentGenerator\TsdLib.InstrumentGenerator.csproj", "{B12037D0-EDD5-41A2-A68D-D2170EAFFCB0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Instrument.Base", "TsdLib.Instrument.Base\TsdLib.Instrument.Base.csproj", "{4BE9BEEA-3FA2-452D-9D2D-1B4F165670CD}"
@@ -44,10 +42,6 @@ Global
 		{84ACB4F7-C908-491A-96D9-9305A0B29295}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84ACB4F7-C908-491A-96D9-9305A0B29295}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84ACB4F7-C908-491A-96D9-9305A0B29295}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BB66A0A7-1F5F-497A-BE4A-B4418F128A8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BB66A0A7-1F5F-497A-BE4A-B4418F128A8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BB66A0A7-1F5F-497A-BE4A-B4418F128A8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BB66A0A7-1F5F-497A-BE4A-B4418F128A8A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B12037D0-EDD5-41A2-A68D-D2170EAFFCB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B12037D0-EDD5-41A2-A68D-D2170EAFFCB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B12037D0-EDD5-41A2-A68D-D2170EAFFCB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
