@@ -43,7 +43,6 @@
     <Compile Include="FactoryBase.cs" />
     <Compile Include="InstrumentBase.cs" />
     <Compile Include="InstrumentExceptions.cs" />
-    <Compile Include="InstrumentInterfaces.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

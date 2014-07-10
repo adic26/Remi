@@ -20,25 +20,25 @@ namespace TsdLib.InstrumentGenerator
     {
         /// <summary>
         /// Dynamically generates code file (*.cs or *.vb) or class library (*.dll) files.
-        /// Console entry point. Runs in a separate process.
         /// </summary>
-        /// <param name="args">TODO: describe args</param>
-        /// <returns>No error: 0, No arguments: 1, Compiler error: 2</returns>
-        static int Main(string[] args) //Console entry point
+        /// <param name="args">source|assembly|both input_path output_path CSharp|VisualBasic schema_filename</param>
+        /// <returns>No error: 0, No arguments supplied: 1, Invalid language: 2, Compiler error: 3, Unknown error: -1</returns>
+        static int Main(string[] args)
         {
-            if (args.Length == 0)
+            if (args.Length != 5)
             {
-                const int width = 20;
+                const int width = 35;
                 Console.WriteLine(string.Join(Environment.NewLine,"",
-                    "TsdLib Dynamic Instrument Assembly Generator",
+                    "                 TsdLib Dynamic Instrument Assembly Generator",
                     "Dynamically generates code file (*.cs or *.vb) or class library (*.dll) files",
                     "",
-                    "Usage: TsdLib.InstrumentGenerator.exe <-source|-assembly|-both> <input path> <output path> [-vb] [<schema filename>]",
+                    "Usage: TsdLib.InstrumentGenerator.exe <-source|-assembly|-both> <input path> <output path> CSharp|VisualBasic <schema filename>",
                     "",
-                    "   -f <xmlFileOrFolder>".PadRight(width) + "XML source location. Can be a file or folder.",
-                    "       <xmlFileOrFolder>".PadRight(width) + "absolute or relative path to the instrument file or folder",
-                    "       c".PadRight(width) + "use current execution directory",
-                    "   -vb".PadRight(width) + "Visual Basic code (C# is default)",
+                    "   source|assembly|both".PadRight(width) + "Generate a source code file (*.cs or *.vb) or an assembly (*.dll).",
+                    "   <input path>".PadRight(width) + "XML source location. Can be an individual file or a folder containing multiple files.",
+                    "   <output path>".PadRight(width) + "Location for the output file.",
+                    "   CSharp|VisualBasic".PadRight(width) + "Language to use.",
+                    "   <schema filename>".PadRight(width) + "Name of the XML schema (*.xsd) used to validate the XML source files",
                     "",
                     "Press Enter to exit..."
                     ));
@@ -48,20 +48,32 @@ namespace TsdLib.InstrumentGenerator
             }
 
             Trace.Listeners.Add(new ConsoleTraceListener());
-
-            Language language = args.Contains("-vb") ? Language.VisualBasic : Language.CSharp;
+            Trace.Listeners.Add(new TextWriterTraceListener(@"C:\temp\CompilerErrors.txt"));
+            Trace.AutoFlush = true;
 
             try
             {
-                if (args.Contains("-source") || args.Contains("-both"))
-                    GenerateCodeFile(args[1], args[2], language, args[4]);
-                if (args.Contains("-assembly") || args.Contains("-both"))
-                    GenerateAssembly(args[1], args[2], language, args[4]);
+                Language lang = (Language)Enum.Parse(typeof(Language), args[3]);
+
+                if (args[0] == "source" || args[0] == "both")
+                    GenerateCodeFile(args[1], args[2], lang, args[4]);
+                if (args[0] == "assembly" || args[0] == "both")
+                    GenerateAssembly(args[1], args[2], lang, args[4]);
+            }
+            catch (ArgumentException ex)
+            {
+                Trace.WriteLine(ex);
+                return 2;
+            }
+            catch (TsdLibException ex)
+            {
+                Trace.WriteLine(ex);
+                return 3;
             }
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
-                return 2;
+                return -1;
             }
 
             return 0;
