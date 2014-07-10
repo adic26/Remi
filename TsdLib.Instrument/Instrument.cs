@@ -1,9 +1,8 @@
 namespace TsdLib.Instrument
 {
     using System;
-    using TsdLib.Instrument;
-    using TsdLib.Instrument.Visa;
-    using TsdLib.Instrument.Telnet;
+    using Visa;
+    using Telnet;
     
     
     [IdQuery("6632B", "*IDN?")]
@@ -73,7 +72,7 @@ namespace TsdLib.Instrument
         
         public static Aglient6632B GetInstance(string address)
         {
-            return _factory.GetInstrument<Aglient6632B>("address");
+            return _factory.GetInstrument<Aglient6632B>(address);
         }
         
         public void SetVoltage(Double voltage)
@@ -181,7 +180,7 @@ namespace TsdLib.Instrument
         
         public static AIM4170C GetInstance(string address)
         {
-            return _factory.GetInstrument<AIM4170C>("address");
+            return _factory.GetInstrument<AIM4170C>(address);
         }
         
         public void CloseRelay()
@@ -280,7 +279,7 @@ namespace TsdLib.Instrument
         
         public static BlackBerryRadio GetInstance(string address)
         {
-            return _factory.GetInstrument<BlackBerryRadio>("address");
+            return _factory.GetInstrument<BlackBerryRadio>(address);
         }
         
         public void Reboot()

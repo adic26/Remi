@@ -42,9 +42,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TsdLib.Instrument.Dynamic">
-      <HintPath>..\..\..\..\..\..\ProgramData\TsdLib\Assemblies\TsdLib.Instrument.Dynamic.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleTestProgram.cs" />
@@ -77,6 +74,10 @@
     <ProjectReference Include="..\TsdLib.Instrument.Base\TsdLib.Instrument.Base.csproj">
       <Project>{4be9beea-3fa2-452d-9d2d-1b4f165670cd}</Project>
       <Name>TsdLib.Instrument.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instrument\TsdLib.Instrument.csproj">
+      <Project>{33ae2e67-1ec5-4d0b-a09d-26482859c3f0}</Project>
+      <Name>TsdLib.Instrument</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using System.Xml.Schema;
 
@@ -99,7 +97,6 @@ namespace TsdLib.InstrumentGenerator
 
             CodeNamespace ns = new CodeNamespace("TsdLib.Instrument");
             ns.Imports.Add(new CodeNamespaceImport("System"));
-            ns.Imports.Add(new CodeNamespaceImport("TsdLib.Instrument"));
 
             foreach (XDocument doc in files)
             {
@@ -114,7 +111,7 @@ namespace TsdLib.InstrumentGenerator
                 Debug.Assert(instrumentElement != null, "File: " + docName + " does not have a valid root element.");
 
                 string connectionType = (string)instrumentElement.Attribute("ConnectionType");
-                ns.Imports.Add(new CodeNamespaceImport("TsdLib.Instrument." + connectionType.Split(new[] { "Connection" }, StringSplitOptions.RemoveEmptyEntries)[0]));
+                ns.Imports.Add(new CodeNamespaceImport(connectionType.Split(new[] { "Connection" }, StringSplitOptions.RemoveEmptyEntries)[0]));
 
                 //Generate instrument class
                 CodeTypeDeclaration instrumentClass = new CodeTypeDeclaration((string)instrumentElement.Attribute("Name"));
@@ -307,8 +304,8 @@ namespace TsdLib.InstrumentGenerator
 
              if (argumentName != null)
              {
-                 Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "address"));
-                 factoryMethodInvoke.Parameters.Add(new CodePrimitiveExpression(argumentName));
+                 Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), argumentName));
+                 factoryMethodInvoke.Parameters.Add(new CodeVariableReferenceExpression(argumentName));
              }
              Statements.Add(new CodeMethodReturnStatement(factoryMethodInvoke));
 

@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TsdLib.Instrument</RootNamespace>
-    <AssemblyName>TsdLib.Instrument</AssemblyName>
+    <AssemblyName>TsdLib.Instrument.Base</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

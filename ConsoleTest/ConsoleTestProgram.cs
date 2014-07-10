@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using TsdLib.Instrument.Dynamic;
+using TsdLib.Instrument;
 using TsdLib.Instrument.Telnet;
 using TsdLib.Instrument.Visa;
 
@@ -17,7 +17,7 @@ namespace ConsoleTest
 
     class ConsoleTestProgram
     {
-        static void Main(string[] args)
+        static void Main()
         {
             //Uncomment this line to enable detailed console logging
             //Trace.Listeners.Add(new ConsoleTraceListener());
