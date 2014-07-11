@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Instrument xmlns="TsdLib/Instruments.xsd" Name="BlackBerryRadio" ConnectionType="TelnetConnection" Interfaces="IBlackBerryRadio" CommandDelay="200">
+<Instrument xmlns="TsdLib.Instrument.xsd" Name="BlackBerryRadio" ConnectionType="TelnetConnection" Interfaces="IBlackBerryRadio" CommandDelay="200">
   <IdQuery Response="BlackBerry Device"/>
   <ModelNumber Message="cat /pps/services/hw_info/inventory" RegEx="(?&lt;=Board_Type::).*(?=\r\nBoot_Devices)"/>
   <SerialNumber Message="cat /pps/system/nvram/deviceinfo" RegEx="(?&lt;=BSN::).*(?=\r\nBTMAC)"/>

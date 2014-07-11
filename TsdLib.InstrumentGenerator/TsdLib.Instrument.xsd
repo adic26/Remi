@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="Instruments"
-    targetNamespace="TsdLib/Instruments.xsd"
+<xs:schema id="Instrument"
+    targetNamespace="TsdLib.Instrument.xsd"
     elementFormDefault="qualified"
-    xmlns="TsdLib/Instruments.xsd"
+    xmlns="TsdLib.Instrument.xsd"
     xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
   <xs:simpleType name="ConnectionTypes">
