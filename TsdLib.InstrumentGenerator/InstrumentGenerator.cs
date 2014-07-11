@@ -16,6 +16,14 @@ namespace TsdLib.InstrumentGenerator
         CSharp,
         VisualBasic
     }
+
+    [Flags]
+    public enum OutputTypes
+    {
+        Source = 1,
+        Assembly = 2,
+        Both = Source | Assembly
+    }
     
     public class InstrumentGenerator
     {
@@ -23,7 +31,7 @@ namespace TsdLib.InstrumentGenerator
         /// Dynamically generates code file (*.cs or *.vb) or class library (*.dll) files.
         /// </summary>
         /// <param name="args">source|assembly|both input_path output_path CSharp|VisualBasic schema_filename</param>
-        /// <returns>No error: 0, No arguments supplied: 1, Invalid language: 2, Compiler error: 3, Unknown error: -1</returns>
+        /// <returns>No error: 0, No arguments supplied: 1, Invalid arguments: 2, Compiler error: 3, Unknown error: -1</returns>
         static int Main(string[] args)
         {
             if (args.Length < 5)
@@ -35,7 +43,7 @@ namespace TsdLib.InstrumentGenerator
                     "",
                     "Usage: TsdLib.InstrumentGenerator.exe <-source|-assembly|-both> <input path> <output path> CSharp|VisualBasic <schema filename>",
                     "",
-                    "   source|assembly|both".PadRight(width) + "Generate a source code file (*.cs or *.vb) or an assembly (*.dll).",
+                    "   Source|Assembly|Both".PadRight(width) + "Generate a source code file (*.cs or *.vb) or an assembly (*.dll).",
                     "   <input path>".PadRight(width) + "XML source location. Can be an individual file or a folder containing multiple files.",
                     "   <output path>".PadRight(width) + "Location for the output file.",
                     "   CSharp|VisualBasic".PadRight(width) + "Language to use.",
@@ -50,18 +58,16 @@ namespace TsdLib.InstrumentGenerator
 
             Trace.Listeners.Add(new ConsoleTraceListener());
 
-            string outputType;
-            string inputPath;
+            OutputTypes outputType;
+            IEnumerable<string> xmlFiles;
             string outputPath;
             Language language;
             string schemaFile;
 
-            string[] xmlFiles;
-
             try //Validate arguments and get input files
             {
-                outputType = args[0];
-                inputPath = args[1];
+                outputType = (OutputTypes) Enum.Parse(typeof (OutputTypes), args[0]);
+                string inputPath = args[1];
                 outputPath = args[2];
                 language = (Language)Enum.Parse(typeof(Language), args[3]);
                 schemaFile = args[4];
@@ -110,13 +116,8 @@ namespace TsdLib.InstrumentGenerator
 
             try //Generate code and/or assembly
             {
-
-                //if (args[0] == "source" || args[0] == "both")
-                //    GenerateCodeFile(args[1], args[2], language, args[4]);
-                //if (args[0] == "assembly" || args[0] == "both")
-                //    GenerateAssembly(args[1], args[2], language, args[4]);
+                Generate(outputType, xmlFiles, outputPath, language, schemaFile);
             }
-
             catch (TsdLibException ex)
             {
                 Trace.WriteLine(ex);
@@ -131,22 +132,27 @@ namespace TsdLib.InstrumentGenerator
             return 0;
         }
 
-        //three cases:
-        //single file (xml extension)
-        //folder ((File.GetAttributes(xmlFileOrFolder).HasFlag(FileAttributes.Directory))
-        //project file - enumerate included files
-
-        public static void GenerateAssembly(string inputPath, string outputPath, Language language = Language.CSharp, string schemaFile = "Instruments.xsd", params string[] inputFiles) //Library entry point
+        public static void Generate(OutputTypes outputType, IEnumerable<string> xmlFiles, string outputPath, Language language = Language.CSharp, string schemaFile = "TsdLib.Instrument.xsd")
         {
-            //TODO: pass filename array instead of a folder
-            CodeNamespace ns = generateCodeNamespace(inputPath, schemaFile);
+            CodeNamespace ns = generateCodeNamespace(xmlFiles, schemaFile);
+
+            if (outputType.HasFlag(OutputTypes.Source))
+                generateSource(ns, outputPath, language);
+
+            if (outputType.HasFlag(OutputTypes.Assembly))
+                generateAssembly(ns, outputPath, language);
+        }
+
+        public static void GenerateAssembly(IEnumerable<string> xmlFiles, string outputPath, Language language = Language.CSharp, string schemaFile = "TsdLib.Instrument.xsd")
+        {
+            CodeNamespace ns = generateCodeNamespace(xmlFiles, schemaFile);
 
             generateAssembly(ns, outputPath, language);
         }
 
-        public static string GenerateCodeFile(string inputPath, string outputPath, Language language = Language.CSharp, string schemaFile = "Instruments.xsd", params string[] inputFiles)
+        public static string GenerateCodeFile(IEnumerable<string> xmlFiles, string outputPath, Language language = Language.CSharp, string schemaFile = "TsdLib.Instrument.xsd")
         {
-            CodeNamespace codeNamespace = generateCodeNamespace(inputPath, schemaFile);
+            CodeNamespace codeNamespace = generateCodeNamespace(xmlFiles, schemaFile);
 
             CodeDomProvider provider = CodeDomProvider.CreateProvider(language.ToString());
 
@@ -157,24 +163,33 @@ namespace TsdLib.InstrumentGenerator
             return fileName;
         }
 
-        //TODO: take params string[] inputFiles instead of folder
-        static CodeNamespace generateCodeNamespace(string xmlFileOrFolder, string schemaFile)
+        static CodeNamespace generateCodeNamespace(IEnumerable<string> files, string schemaFile)
         {
-            IEnumerable<XDocument> files = (File.GetAttributes(xmlFileOrFolder).HasFlag(FileAttributes.Directory) ? (Directory.EnumerateFiles(xmlFileOrFolder)) : (new[] {xmlFileOrFolder}))
-                .Where(file => Path.GetExtension(file) == ".xml")
+            XmlSchemaSet schemas = new XmlSchemaSet();
+            var s = schemas.Add(null, schemaFile);
+            string tns = s.TargetNamespace;
+
+            XDocument[] docs = files
                 .Select(file => XDocument.Load(file, LoadOptions.SetBaseUri))
-                .Where(doc => doc.Root != null && doc.Root.Name.LocalName == "Instrument")
-                ;
+                .Where(doc => doc.Root != null && doc.Root.Attribute("xmlns") != null && (string)doc.Root.Attribute("xmlns") == tns)
+                .ToArray();
+
+            if (docs.Length != files.Count())
+            {
+                Trace.WriteLine("Warning: Some input files do not conform to the schema:" + Path.GetFileName(schemaFile));
+
+                IEnumerable<string> badFiles = files.Except(docs.Select(doc => Path.GetFileName(doc.BaseUri)));
+                foreach (string badFile in badFiles)
+                    Trace.WriteLine("\t" + badFile);
+            }
 
             CodeNamespace ns = new CodeNamespace("TsdLib.Instrument");
             ns.Imports.Add(new CodeNamespaceImport("System"));
 
-            foreach (XDocument doc in files)
+            foreach (XDocument doc in docs)
             {
-                XmlSchemaSet schemas = new XmlSchemaSet();
-                schemas.Add(null, schemaFile);
+                string docName = new Uri(doc.BaseUri).AbsolutePath;
 
-                string docName = doc.BaseUri.TrimStart("file:///".ToCharArray());
                 doc.Validate(schemas,
                     (o, e) => { throw new InstrumentGeneratorException("File: " + docName + " could not be validated against schema: " + schemaFile, e.Exception); });
 
@@ -277,6 +292,14 @@ namespace TsdLib.InstrumentGenerator
 
             if (cr.Errors.HasErrors)
                 throw new CompilerException("Error compiling.", cr.Errors);
+        }
+
+        static void generateSource(CodeNamespace codeNamespace, string outputPath, Language language = Language.CSharp)
+        {
+            CodeDomProvider provider = CodeDomProvider.CreateProvider(language.ToString());
+            string fileName = Path.Combine(outputPath, "Instrument." + provider.FileExtension);
+            using (StreamWriter writer = new StreamWriter(fileName, false))
+                provider.GenerateCodeFromNamespace(codeNamespace, writer, new CodeGeneratorOptions { BracingStyle = "C" });
         }
     }
 
