@@ -134,7 +134,7 @@ namespace TsdLib.InstrumentGenerator
 
         public static void Generate(OutputTypes outputType, IEnumerable<string> xmlFiles, string outputPath, Language language = Language.CSharp, string schemaFile = "TsdLib.Instrument.xsd")
         {
-            CodeNamespace ns = generateCodeNamespace(xmlFiles, schemaFile);
+            CodeNamespace ns = generateCodeNamespace(xmlFiles.ToArray(), schemaFile);
 
             if (outputType.HasFlag(OutputTypes.Source))
                 generateSource(ns, outputPath, language);
@@ -143,42 +143,22 @@ namespace TsdLib.InstrumentGenerator
                 generateAssembly(ns, outputPath, language);
         }
 
-        public static void GenerateAssembly(IEnumerable<string> xmlFiles, string outputPath, Language language = Language.CSharp, string schemaFile = "TsdLib.Instrument.xsd")
-        {
-            CodeNamespace ns = generateCodeNamespace(xmlFiles, schemaFile);
-
-            generateAssembly(ns, outputPath, language);
-        }
-
-        public static string GenerateCodeFile(IEnumerable<string> xmlFiles, string outputPath, Language language = Language.CSharp, string schemaFile = "TsdLib.Instrument.xsd")
-        {
-            CodeNamespace codeNamespace = generateCodeNamespace(xmlFiles, schemaFile);
-
-            CodeDomProvider provider = CodeDomProvider.CreateProvider(language.ToString());
-
-            string fileName = Path.Combine(outputPath, "Instrument." + provider.FileExtension);
-            using (StreamWriter writer = new StreamWriter(fileName, false))
-                provider.GenerateCodeFromNamespace(codeNamespace, writer, new CodeGeneratorOptions { BracingStyle = "C" });
-
-            return fileName;
-        }
-
-        static CodeNamespace generateCodeNamespace(IEnumerable<string> files, string schemaFile)
+        static CodeNamespace generateCodeNamespace(string[] xmlFiles, string schemaFile)
         {
             XmlSchemaSet schemas = new XmlSchemaSet();
             var s = schemas.Add(null, schemaFile);
             string tns = s.TargetNamespace;
 
-            XDocument[] docs = files
+            XDocument[] docs = xmlFiles
                 .Select(file => XDocument.Load(file, LoadOptions.SetBaseUri))
                 .Where(doc => doc.Root != null && doc.Root.Attribute("xmlns") != null && (string)doc.Root.Attribute("xmlns") == tns)
                 .ToArray();
 
-            if (docs.Length != files.Count())
+            if (docs.Length != xmlFiles.Count())
             {
                 Trace.WriteLine("Warning: Some input files do not conform to the schema:" + Path.GetFileName(schemaFile));
 
-                IEnumerable<string> badFiles = files.Except(docs.Select(doc => Path.GetFileName(doc.BaseUri)));
+                IEnumerable<string> badFiles = xmlFiles.Except(docs.Select(doc => Path.GetFileName(doc.BaseUri)));
                 foreach (string badFile in badFiles)
                     Trace.WriteLine("\t" + badFile);
             }
@@ -197,7 +177,7 @@ namespace TsdLib.InstrumentGenerator
                 Debug.Assert(instrumentElement != null, "File: " + docName + " does not have a valid root element.");
 
                 string connectionType = (string)instrumentElement.Attribute("ConnectionType");
-                ns.Imports.Add(new CodeNamespaceImport(connectionType.Split(new[] { "Connection" }, StringSplitOptions.RemoveEmptyEntries)[0]));
+                ns.Imports.Add(new CodeNamespaceImport(connectionType));
 
                 //Generate instrument class
                 CodeTypeDeclaration instrumentClass = new CodeTypeDeclaration((string)instrumentElement.Attribute("Name"));
@@ -205,7 +185,7 @@ namespace TsdLib.InstrumentGenerator
 
                 //Add InstrumentBase reference
                 CodeTypeReference instrumentBaseReference = new CodeTypeReference("InstrumentBase");
-                instrumentBaseReference.TypeArguments.Add(connectionType);
+                instrumentBaseReference.TypeArguments.Add(connectionType + "Connection");
                 instrumentClass.BaseTypes.Add(instrumentBaseReference);
 
                 //Add interface references
@@ -231,7 +211,7 @@ namespace TsdLib.InstrumentGenerator
 
                 //Add constructor
                 CodeConstructor ctor = new CodeConstructor {Attributes = MemberAttributes.Assembly};
-                ctor.Parameters.Add(new CodeParameterDeclarationExpression(connectionType, "connection"));
+                ctor.Parameters.Add(new CodeParameterDeclarationExpression(connectionType + "Connection", "connection"));
                 ctor.BaseConstructorArgs.Add(new CodeVariableReferenceExpression("connection"));
 
                 //Add factory field and methods
@@ -373,7 +353,7 @@ namespace TsdLib.InstrumentGenerator
     {
         public FactoryReference(string connectionType)
         {
-            string typeName = connectionType.Split(new[] {"Connection"}, StringSplitOptions.RemoveEmptyEntries)[0];
+            string typeName = connectionType;
             Type = new CodeTypeReference(typeName + "Factory");
             Name = "_factory";
             Attributes = MemberAttributes.Static;

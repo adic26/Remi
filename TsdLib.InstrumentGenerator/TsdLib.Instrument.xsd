@@ -7,9 +7,9 @@
 
   <xs:simpleType name="ConnectionTypes">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="VisaConnection"/>
-      <xs:enumeration value="TelnetConnection"/>
-      <xs:enumeration value="SshConnection"/>
+      <xs:enumeration value="Visa"/>
+      <xs:enumeration value="Telnet"/>
+      <xs:enumeration value="Ssh"/>
     </xs:restriction>
   </xs:simpleType>
 
