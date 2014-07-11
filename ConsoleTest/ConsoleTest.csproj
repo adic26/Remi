@@ -60,7 +60,7 @@
       <Project>{4be9beea-3fa2-452d-9d2d-1b4f165670cd}</Project>
       <Name>TsdLib.Instrument.Base</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument\TsdLib.Instruments.csproj">
+    <ProjectReference Include="..\TsdLib.Instruments\TsdLib.Instruments.csproj">
       <Project>{33ae2e67-1ec5-4d0b-a09d-26482859c3f0}</Project>
       <Name>TsdLib.Instruments</Name>
     </ProjectReference>

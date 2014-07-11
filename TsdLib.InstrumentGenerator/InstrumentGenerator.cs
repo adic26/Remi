@@ -32,7 +32,7 @@ namespace TsdLib.InstrumentGenerator
         /// </summary>
         /// <param name="args">source|assembly|both input_path output_path CSharp|VisualBasic schema_filename</param>
         /// <returns>No error: 0, No arguments supplied: 1, Invalid arguments: 2, Compiler error: 3, Unknown error: -1</returns>
-        static int Main(string[] args)
+        public static int Main(string[] args)
         {
             if (args.Length < 5)
             {
