@@ -46,9 +46,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Agilent6632B.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="AIM4170C.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -80,8 +77,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>rem csc.exe /out:TsdLib.InstrumentGenerator.exe /define:DEBUG /define:TRACE $(SolutionDir)TsdLib.InstrumentGenerator\*.cs 
-$(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\TsdLib.InstrumentGenerator.exe source $(ProjectDir) $(ProjectDir) CSharp $(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\Instruments.xsd"
+    <PreBuildEvent>rem csc.exe /out:TsdLib.InstrumentGenerator.exe /define:DEBUG /define:TRACE $(SolutionDir)TsdLib.InstrumentGenerator\*.cs
+
+$(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\TsdLib.InstrumentGenerator.exe source $(ProjectPath) $(ProjectDir) CSharp $(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\Instruments.xsd"
 
 </PreBuildEvent>
   </PropertyGroup>

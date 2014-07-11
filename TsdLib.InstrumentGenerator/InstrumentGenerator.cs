@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.Schema;
+using Microsoft.Build.Evaluation;
 
 namespace TsdLib.InstrumentGenerator
 {
@@ -25,7 +26,7 @@ namespace TsdLib.InstrumentGenerator
         /// <returns>No error: 0, No arguments supplied: 1, Invalid language: 2, Compiler error: 3, Unknown error: -1</returns>
         static int Main(string[] args)
         {
-            if (args.Length != 5)
+            if (args.Length < 5)
             {
                 const int width = 35;
                 Console.WriteLine(string.Join(Environment.NewLine,"",
@@ -48,23 +49,74 @@ namespace TsdLib.InstrumentGenerator
             }
 
             Trace.Listeners.Add(new ConsoleTraceListener());
-            Trace.Listeners.Add(new TextWriterTraceListener(@"C:\temp\CompilerErrors.txt"));
-            Trace.AutoFlush = true;
 
-            try
+            string outputType;
+            string inputPath;
+            string outputPath;
+            Language language;
+            string schemaFile;
+
+            string[] xmlFiles;
+
+            try //Validate arguments and get input files
             {
-                Language lang = (Language)Enum.Parse(typeof(Language), args[3]);
+                outputType = args[0];
+                inputPath = args[1];
+                outputPath = args[2];
+                language = (Language)Enum.Parse(typeof(Language), args[3]);
+                schemaFile = args[4];
 
-                if (args[0] == "source" || args[0] == "both")
-                    GenerateCodeFile(args[1], args[2], lang, args[4]);
-                if (args[0] == "assembly" || args[0] == "both")
-                    GenerateAssembly(args[1], args[2], lang, args[4]);
+                IEnumerable<string> inputFiles;
+
+                if (Path.GetExtension(inputPath) == ".csproj" || Path.GetExtension(inputPath) == ".vbproj")
+                {
+                    Debug.WriteLine("Input path is a project: " + inputPath);
+
+                    string projectFolder = Path.GetDirectoryName(inputPath);
+
+                    Debug.Assert(projectFolder != null);
+
+                    inputFiles = new Project(inputPath)
+                        .GetItems("Content")
+                        .Select(p => Path.Combine(projectFolder, p.EvaluatedInclude));
+                }
+
+                else if (File.GetAttributes(inputPath).HasFlag(FileAttributes.Directory))
+                {
+                    Debug.WriteLine("Input path is a directory: " + inputPath);
+                    inputFiles = Directory.EnumerateFiles(inputPath);
+                }
+
+                else
+                {
+                    Debug.WriteLine("Input path is a single file: " + inputPath);
+                    inputFiles = new[] {inputPath};
+                }
+
+                xmlFiles = inputFiles
+                    .Where(file => Path.GetExtension(file) == ".xml")
+                    .ToArray();
+
+                Debug.WriteLine("Input files:");
+                foreach (string xmlFile in xmlFiles)
+                    Debug.WriteLine("\t" + xmlFile);
+
             }
-            catch (ArgumentException ex)
+            catch(Exception ex)
             {
                 Trace.WriteLine(ex);
                 return 2;
             }
+
+            try //Generate code and/or assembly
+            {
+
+                //if (args[0] == "source" || args[0] == "both")
+                //    GenerateCodeFile(args[1], args[2], language, args[4]);
+                //if (args[0] == "assembly" || args[0] == "both")
+                //    GenerateAssembly(args[1], args[2], language, args[4]);
+            }
+
             catch (TsdLibException ex)
             {
                 Trace.WriteLine(ex);
@@ -79,14 +131,20 @@ namespace TsdLib.InstrumentGenerator
             return 0;
         }
 
-        public static void GenerateAssembly(string inputPath, string outputPath, Language language = Language.CSharp, string schemaFile = "Instruments.xsd") //Library entry point
+        //three cases:
+        //single file (xml extension)
+        //folder ((File.GetAttributes(xmlFileOrFolder).HasFlag(FileAttributes.Directory))
+        //project file - enumerate included files
+
+        public static void GenerateAssembly(string inputPath, string outputPath, Language language = Language.CSharp, string schemaFile = "Instruments.xsd", params string[] inputFiles) //Library entry point
         {
+            //TODO: pass filename array instead of a folder
             CodeNamespace ns = generateCodeNamespace(inputPath, schemaFile);
 
             generateAssembly(ns, outputPath, language);
         }
 
-        public static string GenerateCodeFile(string inputPath, string outputPath, Language language = Language.CSharp, string schemaFile = "Instruments.xsd")
+        public static string GenerateCodeFile(string inputPath, string outputPath, Language language = Language.CSharp, string schemaFile = "Instruments.xsd", params string[] inputFiles)
         {
             CodeNamespace codeNamespace = generateCodeNamespace(inputPath, schemaFile);
 
@@ -99,9 +157,10 @@ namespace TsdLib.InstrumentGenerator
             return fileName;
         }
 
+        //TODO: take params string[] inputFiles instead of folder
         static CodeNamespace generateCodeNamespace(string xmlFileOrFolder, string schemaFile)
         {
-            var files = (File.GetAttributes(xmlFileOrFolder).HasFlag(FileAttributes.Directory) ? (Directory.EnumerateFiles(xmlFileOrFolder)) : (new[] {xmlFileOrFolder}))
+            IEnumerable<XDocument> files = (File.GetAttributes(xmlFileOrFolder).HasFlag(FileAttributes.Directory) ? (Directory.EnumerateFiles(xmlFileOrFolder)) : (new[] {xmlFileOrFolder}))
                 .Where(file => Path.GetExtension(file) == ".xml")
                 .Select(file => XDocument.Load(file, LoadOptions.SetBaseUri))
                 .Where(doc => doc.Root != null && doc.Root.Name.LocalName == "Instrument")
