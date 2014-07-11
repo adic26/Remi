@@ -240,6 +240,14 @@ namespace TsdLib.InstrumentGenerator
             return ns;
         }
 
+        static void generateSource(CodeNamespace codeNamespace, string outputPath, Language language = Language.CSharp)
+        {
+            CodeDomProvider provider = CodeDomProvider.CreateProvider(language.ToString());
+            string fileName = Path.Combine(outputPath, "Instruments." + provider.FileExtension);
+            using (StreamWriter writer = new StreamWriter(fileName, false))
+                provider.GenerateCodeFromNamespace(codeNamespace, writer, new CodeGeneratorOptions { BracingStyle = "C" });
+        }
+
         static void generateAssembly(CodeNamespace codeNamespace, string outputPath, Language language = Language.CSharp)
         {
             CodeDomProvider provider = CodeDomProvider.CreateProvider(language.ToString());
@@ -263,7 +271,7 @@ namespace TsdLib.InstrumentGenerator
             
             CompilerParameters cp = new CompilerParameters
             {
-                OutputAssembly = Path.Combine(outputPath, "TsdLib.Instrument.dll"),
+                OutputAssembly = Path.Combine(outputPath, "TsdLib.Instruments.dll"),
                 IncludeDebugInformation = true,
                 GenerateExecutable = false,
             };
@@ -272,14 +280,6 @@ namespace TsdLib.InstrumentGenerator
 
             if (cr.Errors.HasErrors)
                 throw new CompilerException("Error compiling.", cr.Errors);
-        }
-
-        static void generateSource(CodeNamespace codeNamespace, string outputPath, Language language = Language.CSharp)
-        {
-            CodeDomProvider provider = CodeDomProvider.CreateProvider(language.ToString());
-            string fileName = Path.Combine(outputPath, "Instrument." + provider.FileExtension);
-            using (StreamWriter writer = new StreamWriter(fileName, false))
-                provider.GenerateCodeFromNamespace(codeNamespace, writer, new CodeGeneratorOptions { BracingStyle = "C" });
         }
     }
 

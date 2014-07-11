@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.View", "TsdLib.View\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{C49C6555-46C2-4313-8B10-8D2632A1FF66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Instrument", "TsdLib.Instrument\TsdLib.Instrument.csproj", "{33AE2E67-1EC5-4D0B-A09D-26482859C3F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Instruments", "TsdLib.Instrument\TsdLib.Instruments.csproj", "{33AE2E67-1EC5-4D0B-A09D-26482859C3F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
