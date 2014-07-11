@@ -32,11 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NationalInstruments.Common, Version=13.0.40.190, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL" />
-    <Reference Include="NationalInstruments.VisaNS, Version=13.0.45.167, Culture=neutral, PublicKeyToken=4febd62461bf11a4, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,14 +48,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
-      <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
-      <Name>TsdLib.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Controller\TsdLib.Controller.csproj">
-      <Project>{5ea97a7f-f898-4279-889e-910a4c38c7b1}</Project>
-      <Name>TsdLib.Controller</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TsdLib.Instrument.Telnet\TsdLib.Instrument.Telnet.csproj">
       <Project>{fbcd8cc2-a747-4979-9507-ae356d466e5a}</Project>
       <Name>TsdLib.Instrument.Telnet</Name>
@@ -66,10 +55,6 @@
     <ProjectReference Include="..\TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj">
       <Project>{a9ab58d9-08ea-43cc-ab6a-9e934bdd3c7b}</Project>
       <Name>TsdLib.Instrument.Visa</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.InstrumentGenerator\TsdLib.InstrumentGenerator.csproj">
-      <Project>{b12037d0-edd5-41a2-a68d-d2170eaffcb0}</Project>
-      <Name>TsdLib.InstrumentGenerator</Name>
     </ProjectReference>
     <ProjectReference Include="..\TsdLib.Instrument.Base\TsdLib.Instrument.Base.csproj">
       <Project>{4be9beea-3fa2-452d-9d2d-1b4f165670cd}</Project>

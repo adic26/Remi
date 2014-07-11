@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using TsdLib.Instrument;
-using TsdLib.Instrument.Telnet;
-using TsdLib.Instrument.Visa;
 
 namespace ConsoleTest
 {
