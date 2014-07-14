@@ -20,10 +20,18 @@ namespace ConsoleTest
             //Uncomment this line to enable detailed console logging
             //Trace.Listeners.Add(new ConsoleTraceListener());
 
+
             //Uncomment one or more of the methods to test functionality
-            GetBlackBerryInfo();
-            //MeasureImpedanceWithAimAnalyzer();
-            //MeasureCurrentWithPowerSupply();
+            try
+            {
+                GetBlackBerryInfo();
+                //MeasureImpedanceWithAimAnalyzer();
+                //MeasureCurrentWithPowerSupply();
+            }
+            catch (InstrumentFactoryException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
             Console.WriteLine("Press Enter to exit...");
             Console.ReadLine();
