@@ -1,6 +1,8 @@
-﻿namespace TsdLib.Instrument
+﻿using TsdLib.Instrument.Visa;
+
+namespace TsdLib.Instrument
 {
-    public class AIM4170C_Wrapper
+    public class AIM4170C_Wrapper : InstrumentWrapper<VisaConnection>
     {
         private AIM4170C _aim4170C;
 

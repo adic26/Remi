@@ -43,6 +43,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="InstrumentInterfaces.cs" />
+    <Compile Include="InstrumentWrapper.cs" />
     <Compile Include="InstrumentWrappers\AIM4170C_Wrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
