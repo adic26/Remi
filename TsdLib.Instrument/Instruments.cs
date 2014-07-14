@@ -65,12 +65,12 @@ namespace TsdLib.Instrument
             }
         }
         
-        public static Aglient6632B GetInstance()
+        public static Aglient6632B Connect()
         {
             return _factory.GetInstrument<Aglient6632B>();
         }
         
-        public static Aglient6632B GetInstance(string address)
+        public static Aglient6632B Connect(string address)
         {
             return _factory.GetInstrument<Aglient6632B>(address);
         }
@@ -173,12 +173,12 @@ namespace TsdLib.Instrument
             }
         }
         
-        public static AIM4170C GetInstance()
+        public static AIM4170C Connect()
         {
             return _factory.GetInstrument<AIM4170C>();
         }
         
-        public static AIM4170C GetInstance(string address)
+        public static AIM4170C Connect(string address)
         {
             return _factory.GetInstrument<AIM4170C>(address);
         }
@@ -272,12 +272,12 @@ namespace TsdLib.Instrument
             }
         }
         
-        public static BlackBerryRadio GetInstance()
+        public static BlackBerryRadio Connect()
         {
             return _factory.GetInstrument<BlackBerryRadio>();
         }
         
-        public static BlackBerryRadio GetInstance(string address)
+        public static BlackBerryRadio Connect(string address)
         {
             return _factory.GetInstrument<BlackBerryRadio>(address);
         }
