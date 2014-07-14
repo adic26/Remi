@@ -216,8 +216,8 @@ namespace TsdLib.InstrumentGenerator
 
                 //Add factory field and methods
                 instrumentClass.Members.Add(new FactoryReference(connectionType));
-                instrumentClass.Members.Add(new GetInstanceMethod(instrumentClass.Name));
-                instrumentClass.Members.Add(new GetInstanceMethod(instrumentClass.Name, "address"));
+                instrumentClass.Members.Add(new ConnectMethod(instrumentClass.Name));
+                instrumentClass.Members.Add(new ConnectMethod(instrumentClass.Name, "address"));
                 instrumentClass.Members.Add(ctor);
 
                 //Add info property overloads
@@ -361,12 +361,12 @@ namespace TsdLib.InstrumentGenerator
         }
     }
 
-    class GetInstanceMethod : CodeMemberMethod
+    class ConnectMethod : CodeMemberMethod
     {
-         public GetInstanceMethod(string instrumentName, string argumentName = null)
+         public ConnectMethod(string instrumentName, string argumentName = null)
          {
              Attributes = MemberAttributes.Public | MemberAttributes.Static;
-             Name = "GetInstance";
+             Name = "Connect";
              ReturnType = new CodeTypeReference(instrumentName);
              CodeMethodReferenceExpression factoryMethodReference =
                  new CodeMethodReferenceExpression(
