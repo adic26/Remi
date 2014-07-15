@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace TsdLib
+namespace TsdLib.View
 {
     delegate void AppendTextDelegate(string text);
 

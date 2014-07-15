@@ -3,6 +3,7 @@ namespace TsdLib.Instrument
     using System;
     using Visa;
     using Telnet;
+    using Dummy;
     
     
     [IdQuery("6632B", "*IDN?")]
@@ -311,6 +312,96 @@ namespace TsdLib.Instrument
             Connection.SendCommand("grep -q power_status::ON /pps/services/radioctrl/modem0/status_public && echo tru" +
                     "e || echo false", -1);
             return Connection.GetResponse<Boolean>("(?<=\\r\\0\\r\\n).*(?=\\r\\n#)");
+        }
+    }
+    
+    [IdQuery("6632B", "*IDN?")]
+    [InitCommands("*RST;*CLS")]
+    public class Dummy_Aglient6632B : InstrumentBase<DummyConnection>, IPowerSupply
+    {
+        
+        static DummyFactory _factory = new DummyFactory();
+        
+        internal Dummy_Aglient6632B(DummyConnection connection) : 
+                base(connection)
+        {
+        }
+        
+        public virtual DummyConnection DummyConnection
+        {
+            get
+            {
+                return Connection;
+            }
+        }
+        
+        protected override string ModelNumberMessage
+        {
+            get
+            {
+                return "*IDN?";
+            }
+        }
+        
+        protected override string ModelNumberRegEx
+        {
+            get
+            {
+                return "(?<=(.*,){1}).*(?=(,.*){2})";
+            }
+        }
+        
+        protected override string SerialNumberMessage
+        {
+            get
+            {
+                return "*IDN?";
+            }
+        }
+        
+        protected override string SerialNumberRegEx
+        {
+            get
+            {
+                return "(?<=.*,.*,).*(?=,)";
+            }
+        }
+        
+        protected override string FirmwareVersionMessage
+        {
+            get
+            {
+                return "*IDN?";
+            }
+        }
+        
+        protected override string FirmwareVersionRegEx
+        {
+            get
+            {
+                return "(?<=(.*,){3}).*";
+            }
+        }
+        
+        public static Dummy_Aglient6632B Connect()
+        {
+            return _factory.GetInstrument<Dummy_Aglient6632B>();
+        }
+        
+        public static Dummy_Aglient6632B Connect(string address)
+        {
+            return _factory.GetInstrument<Dummy_Aglient6632B>(address);
+        }
+        
+        public void SetVoltage(Double voltage)
+        {
+            Connection.SendCommand("SOURce:VOLTage:LEVel {0}", -1, voltage);
+        }
+        
+        public Double ReadCurrent()
+        {
+            Connection.SendCommand("MEASure:CURRent?", -1);
+            return Connection.GetResponse<Double>();
         }
     }
 }

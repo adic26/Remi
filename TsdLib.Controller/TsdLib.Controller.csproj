@@ -56,6 +56,16 @@
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
+      <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
+      <Name>TsdLib.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.TestSequence\TsdLib.TestSequence.Base.csproj">
+      <Project>{93baed86-052b-49fa-b7d4-eeb4bfc73bef}</Project>
+      <Name>TsdLib.TestSequence.Base</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

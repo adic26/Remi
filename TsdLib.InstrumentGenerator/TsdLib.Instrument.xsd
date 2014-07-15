@@ -10,6 +10,7 @@
       <xs:enumeration value="Visa"/>
       <xs:enumeration value="Telnet"/>
       <xs:enumeration value="Ssh"/>
+      <xs:enumeration value="Dummy"/>
     </xs:restriction>
   </xs:simpleType>
 

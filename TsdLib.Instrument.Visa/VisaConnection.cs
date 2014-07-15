@@ -6,6 +6,11 @@ namespace TsdLib.Instrument.Visa
     {
         private MessageBasedSession _session;
 
+        public override bool IsConnected
+        {
+            get { return _session != null; }
+        }
+
         internal VisaConnection(MessageBasedSession session, int defaultDelay = 0)
             : base(session.ResourceName, defaultDelay)
         {
@@ -30,11 +35,6 @@ namespace TsdLib.Instrument.Visa
         protected override bool CheckForError()
         {
             return _session.LastStatus != VisaStatusCode.Success && _session.LastStatus != VisaStatusCode.SuccessMaxCountRead;
-        }
-
-        public override bool IsConnected
-        {
-            get { return _session != null; }
         }
 
         protected override void Dispose(bool disposing)

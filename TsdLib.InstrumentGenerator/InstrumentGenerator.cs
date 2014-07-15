@@ -195,6 +195,10 @@ namespace TsdLib.InstrumentGenerator
                 //Add ID attributes
                 instrumentClass.CustomAttributes.Add(new IdQueryAttributeDeclaration(instrumentElement.Elements().First(e => e.Name.LocalName == "IdQuery")));
 
+                //If connection is a dummy object, expose it through a public property
+                if (connectionType == "Dummy")
+                    instrumentClass.Members.Add(new ConnectionReferenceProperty());
+
                 //Add initialization command attributes
                 string initCommands = (string)instrumentElement.Attribute("InitCommands");
                 if (initCommands != null)
@@ -327,6 +331,20 @@ namespace TsdLib.InstrumentGenerator
 
             string argValue = (string)xElement.Attribute("ArgumentValue");
             Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(argValue)));
+        }
+    }
+
+    class ConnectionReferenceProperty : CodeMemberProperty
+    {
+        public ConnectionReferenceProperty()
+        {
+            Name = "DummyConnection";
+            Type = new CodeTypeReference("DummyConnection");
+            Attributes = MemberAttributes.Public;
+            GetStatements.Add(
+                new CodeMethodReturnStatement(
+                    new CodeFieldReferenceExpression(null, "Connection")
+                    ));
         }
     }
 
