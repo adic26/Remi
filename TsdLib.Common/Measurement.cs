@@ -21,6 +21,7 @@ namespace TsdLib
 
     public abstract class Measurement
     {
+        public readonly string Name;
         public readonly object MeasuredVal;
         public readonly object LowerLim;
         public readonly object UpperLim;
@@ -32,8 +33,9 @@ namespace TsdLib
         public abstract MeasurementResult Result { get; }
         public abstract Type MeasuremenType { get; }
 
-        protected Measurement(object measuredValue, string units, object lowerLimit, object upperLimit, MeasurementParameterCollection parameters)
+        protected Measurement(string name, object measuredValue, string units, object lowerLimit, object upperLimit, MeasurementParameterCollection parameters)
         {
+            Name = name;
             MeasuredVal = measuredValue;
             Units = units;
             LowerLim = lowerLimit;
@@ -42,8 +44,8 @@ namespace TsdLib
             Timestamp = DateTime.Now;
         }
 
-        protected Measurement(object measuredValue, string units, object lowerLimit, object upperLimit, params MeasurementParameter[] parameters)
-            : this(measuredValue, units, lowerLimit, upperLimit, new MeasurementParameterCollection(parameters))
+        protected Measurement(string name, object measuredValue, string units, object lowerLimit, object upperLimit, params MeasurementParameter[] parameters)
+            : this(name, measuredValue, units, lowerLimit, upperLimit, new MeasurementParameterCollection(parameters))
         {
 
         }
@@ -55,8 +57,8 @@ namespace TsdLib
 
         public string ToString(string separator)
         {
-            string pToString = string.Join(separator, Parameters.Select(kvp => kvp.Key + "=" + kvp.Value));
-            return string.Join(separator, MeasuredVal, Units, LowerLim, UpperLim, Result, pToString).TrimEnd(',');
+            string parametersToString = string.Join(separator, Parameters.Select(kvp => kvp.Key + " = " + kvp.Value));
+            return string.Join(separator, Name, MeasuredVal, Units, LowerLim, UpperLim, Result, parametersToString).TrimEnd(',');
         }
     }
 
@@ -72,8 +74,8 @@ namespace TsdLib
 
         public override Type MeasuremenType { get { return typeof(T); } }
 
-        public Measurement(T measuredValue, string units, T lowerLimit, T upperLimit, MeasurementParameterCollection parameters)
-            : base(measuredValue, units, lowerLimit, upperLimit, parameters)
+        public Measurement(string name, T measuredValue, string units, T lowerLimit, T upperLimit, MeasurementParameterCollection parameters)
+            : base(name, measuredValue, units, lowerLimit, upperLimit, parameters)
         {
 
             MeasuredValue = measuredValue;
@@ -88,8 +90,8 @@ namespace TsdLib
                 _result = MeasurementResult.Pass;
         }
 
-        public Measurement(T measuredValue, string units, T lowerLimit, T upperLimit, params MeasurementParameter[] parameters)
-            : this(measuredValue, units, lowerLimit, upperLimit, new MeasurementParameterCollection(parameters))
+        public Measurement(string name, T measuredValue, string units, T lowerLimit, T upperLimit, params MeasurementParameter[] parameters)
+            : this(name, measuredValue, units, lowerLimit, upperLimit, new MeasurementParameterCollection(parameters))
         {
 
         }
@@ -97,16 +99,16 @@ namespace TsdLib
 
     public class MeasurementCollection : BindingList<Measurement>
     {
-        public void AddMeasurement<T>(T measuredValue, string units, T lowerLimit, T upperLimit, MeasurementParameterCollection parameters)
+        public void AddMeasurement<T>(string name, T measuredValue, string units, T lowerLimit, T upperLimit, MeasurementParameterCollection parameters)
             where T : IComparable<T>
         {
-            Add(new Measurement<T>(measuredValue, units, lowerLimit, upperLimit, parameters));
+            Add(new Measurement<T>(name, measuredValue, units, lowerLimit, upperLimit, parameters));
         }
 
-        public void AddMeasurement<T>(T measuredValue, string units, T lowerLimit, T upperLimit, params MeasurementParameter[] parameters)
+        public void AddMeasurement<T>(string name, T measuredValue, string units, T lowerLimit, T upperLimit, params MeasurementParameter[] parameters)
             where T : IComparable<T>
         {
-            AddMeasurement(measuredValue, units, lowerLimit, upperLimit, new MeasurementParameterCollection(parameters));
+            AddMeasurement(name, measuredValue, units, lowerLimit, upperLimit, new MeasurementParameterCollection(parameters));
         }
 
         public override string ToString()

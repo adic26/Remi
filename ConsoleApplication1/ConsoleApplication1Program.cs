@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using TsdLib;
 using TsdLib.TestSequence;
 using TsdLib.Controller;
+using TsdLib.View;
 
 namespace ConsoleApplication1
 {
@@ -14,11 +12,10 @@ namespace ConsoleApplication1
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
 
-            var c = new ControllerBase(new Settings(), new TestSequenceBase());
-            c.Run();
+            var c = new ControllerBase(new ViewBase(), new DummyTestSequence(), new Settings());
 
             Console.WriteLine("Done");
-            Console.ReadLine();
+            
         }
     }
 }

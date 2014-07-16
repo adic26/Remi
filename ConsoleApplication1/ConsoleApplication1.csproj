@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -56,9 +57,17 @@
       <Project>{5ea97a7f-f898-4279-889e-910a4c38c7b1}</Project>
       <Name>TsdLib.Controller</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TsdLib.TestSequences\TsdLib.TestSequences.csproj">
+      <Project>{19B0FEB9-2354-4CD6-B452-F924182EE828}</Project>
+      <Name>TsdLib.TestSequences</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TsdLib.TestSequence\TsdLib.TestSequence.Base.csproj">
       <Project>{93baed86-052b-49fa-b7d4-eeb4bfc73bef}</Project>
       <Name>TsdLib.TestSequence.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.View\TsdLib.View.csproj">
+      <Project>{148B46EA-2C9A-41B7-9B64-89B189CDBC5C}</Project>
+      <Name>TsdLib.View</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
