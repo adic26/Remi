@@ -14,9 +14,12 @@ namespace TsdLib.TestSequence
         //TODO: figure out how to pull the instrument.Connect calls out of the test sequence?
         protected override void Execute(CancellationToken token)
         {
-            Dummy_Aglient6632B ps = Dummy_Aglient6632B.Connect();
+            Dummy_Aglient6632B powerSupply = Dummy_Aglient6632B.Connect();
+            Measurements.AddMeasurement("Model Number", powerSupply.ModelNumber, "Identification", "n/a", "n/a");
+            Measurements.AddMeasurement("Serial Number", powerSupply.SerialNumber, "Identification", "n/a", "n/a");
+            Measurements.AddMeasurement("Firmware Version", powerSupply.FirmwareVersion, "Identification", "n/a", "n/a");
 
-            ps.SetVoltage(4.0);
+            powerSupply.SetVoltage(4.0);
 
             Random random = new Random();
 
@@ -25,8 +28,8 @@ namespace TsdLib.TestSequence
                 token.ThrowIfCancellationRequested();
                 Thread.Sleep(2000);
                 double randomOffset = random.NextDouble() + 0.5; //Random double between 0.5 and 1.5
-                ps.DummyConnection.StringToRead = randomOffset.ToString(CultureInfo.InvariantCulture);
-                Measurements.AddMeasurement("Current", ps.ReadCurrent(), "Amps", 0.7, 1.3,
+                powerSupply.DummyConnection.StringToRead = randomOffset.ToString(CultureInfo.InvariantCulture);
+                Measurements.AddMeasurement("Current", powerSupply.ReadCurrent(), "Amps", 0.7, 1.3,
                     new MeasurementParameter("Temperature", temp));
             }
         }

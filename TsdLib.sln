@@ -29,8 +29,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "ConsoleTest\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Instruments", "TsdLib.Instruments\TsdLib.Instruments.csproj", "{33AE2E67-1EC5-4D0B-A09D-26482859C3F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{1A48A6BC-1E21-4BDF-9E62-8457B96DD5B6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.TestSequences", "TsdLib.TestSequences\TsdLib.TestSequences.csproj", "{19B0FEB9-2354-4CD6-B452-F924182EE828}"
 EndProject
 Global
@@ -83,10 +81,6 @@ Global
 		{33AE2E67-1EC5-4D0B-A09D-26482859C3F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33AE2E67-1EC5-4D0B-A09D-26482859C3F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33AE2E67-1EC5-4D0B-A09D-26482859C3F0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1A48A6BC-1E21-4BDF-9E62-8457B96DD5B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1A48A6BC-1E21-4BDF-9E62-8457B96DD5B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1A48A6BC-1E21-4BDF-9E62-8457B96DD5B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1A48A6BC-1E21-4BDF-9E62-8457B96DD5B6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{19B0FEB9-2354-4CD6-B452-F924182EE828}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{19B0FEB9-2354-4CD6-B452-F924182EE828}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19B0FEB9-2354-4CD6-B452-F924182EE828}.Release|Any CPU.ActiveCfg = Release|Any CPU
