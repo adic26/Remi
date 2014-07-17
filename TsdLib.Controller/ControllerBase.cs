@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using TsdLib.TestSequence;
 using TsdLib.View;
@@ -13,6 +14,8 @@ namespace TsdLib.Controller
         private readonly ISettings _settings;
         private readonly TestSequenceBase _testSequence;
 
+        private readonly LocalMeasurementWriter _localMeasurementWriter;
+
         private CancellationTokenSource _tokenSource;
 
         public ControllerBase(IView view, TestSequenceBase testSequence, ISettings settings)
@@ -20,6 +23,8 @@ namespace TsdLib.Controller
             _view = view;
             _testSequence = testSequence;
             _settings = settings;
+
+            _localMeasurementWriter = new LocalMeasurementWriter();
         }
 
         public void Launch()
@@ -68,7 +73,11 @@ namespace TsdLib.Controller
         {
             IBindingList list = sender as IBindingList;
             if (list != null)
-                _view.AddMeasurement((Measurement)list[e.NewIndex]);
+            {
+                Measurement measurement = (Measurement) list[e.NewIndex];
+                _view.AddMeasurement(measurement);
+                _localMeasurementWriter.Write(measurement);
+            }
         }
 
         public void Configure()

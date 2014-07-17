@@ -37,9 +37,9 @@
             this.measurementDataGridView1 = new TsdLib.View.MeasurementDataGridView();
             this.MeasurementName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MeasuredValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Units = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LowerLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UpperLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Units = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Result = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -110,9 +110,9 @@
             this.measurementDataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.MeasurementName,
             this.MeasuredValue,
+            this.Units,
             this.LowerLimit,
             this.UpperLimit,
-            this.Units,
             this.Result});
             this.measurementDataGridView1.Location = new System.Drawing.Point(12, 143);
             this.measurementDataGridView1.Name = "measurementDataGridView1";
@@ -135,6 +135,13 @@
             this.MeasuredValue.ReadOnly = true;
             this.MeasuredValue.Width = 106;
             // 
+            // Units
+            // 
+            this.Units.HeaderText = "Units";
+            this.Units.Name = "Units";
+            this.Units.ReadOnly = true;
+            this.Units.Width = 56;
+            // 
             // LowerLimit
             // 
             this.LowerLimit.HeaderText = "LowerLimit";
@@ -148,13 +155,6 @@
             this.UpperLimit.Name = "UpperLimit";
             this.UpperLimit.ReadOnly = true;
             this.UpperLimit.Width = 82;
-            // 
-            // Units
-            // 
-            this.Units.HeaderText = "Units";
-            this.Units.Name = "Units";
-            this.Units.ReadOnly = true;
-            this.Units.Width = 56;
             // 
             // Result
             // 
@@ -194,9 +194,9 @@
         private MeasurementDataGridView measurementDataGridView1;
         private System.Windows.Forms.DataGridViewTextBoxColumn MeasurementName;
         private System.Windows.Forms.DataGridViewTextBoxColumn MeasuredValue;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Units;
         private System.Windows.Forms.DataGridViewTextBoxColumn LowerLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn UpperLimit;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Units;
         private System.Windows.Forms.DataGridViewTextBoxColumn Result;
     }
 }
