@@ -29,7 +29,7 @@ namespace TsdLib.Instrument
             if (address == null)
             {
                 instrumentAddresses = SearchForInstruments().ToArray();
-                Debug.WriteLine("Found instruments:" + Environment.NewLine + string.Join(Environment.NewLine, instrumentAddresses));
+                Debug.WriteLine("Found instruments:" + Environment.NewLine + string.Join(Environment.NewLine, "\t" + instrumentAddresses));
             }
             else
             {
@@ -46,7 +46,7 @@ namespace TsdLib.Instrument
                     Debug.WriteLine("Connecting to " + instrumentAddress);
 
                     string id = GetInstrumentIdentifier(conn, idAtt);
-                    if (id.Contains(idAtt.Response))
+                    if (id.Contains(idAtt.Response) || id == "Dummy_Device")
                     {
                         Debug.WriteLine("Found identifier match: " + id);
                         connections.Add(conn);

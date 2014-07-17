@@ -57,6 +57,7 @@
     <Content Include="InstrumentDefinitions\BlackBerryRadio.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="InstrumentDefinitions\Dummy_Agilent6632B.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
@@ -83,10 +84,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>rem csc.exe /out:TsdLib.InstrumentGenerator.exe /define:DEBUG /define:TRACE $(SolutionDir)TsdLib.InstrumentGenerator\*.cs
-$(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\TsdLib.InstrumentGenerator.exe Source $(ProjectPath) $(ProjectDir) CSharp $(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\TsdLib.Instrument.xsd"
-
-</PreBuildEvent>
+    <PreBuildEvent>$(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\TsdLib.InstrumentGenerator.exe Source $(ProjectPath) $(ProjectDir) CSharp $(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\TsdLib.Instrument.xsd"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

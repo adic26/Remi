@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TsdLib.TestSequence</RootNamespace>
-    <AssemblyName>TsdLib.TestSequence</AssemblyName>
+    <AssemblyName>TsdLib.TestSequence.Base</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -39,8 +39,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestSequenceBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
+      <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
+      <Name>TsdLib.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instrument.Base\TsdLib.Instrument.Base.csproj">
+      <Project>{4be9beea-3fa2-452d-9d2d-1b4f165670cd}</Project>
+      <Name>TsdLib.Instrument.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instrument.Telnet\TsdLib.Instrument.Telnet.csproj">
+      <Project>{fbcd8cc2-a747-4979-9507-ae356d466e5a}</Project>
+      <Name>TsdLib.Instrument.Telnet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instruments\TsdLib.Instruments.csproj">
+      <Project>{33ae2e67-1ec5-4d0b-a09d-26482859c3f0}</Project>
+      <Name>TsdLib.Instruments</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
