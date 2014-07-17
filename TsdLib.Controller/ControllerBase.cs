@@ -2,14 +2,12 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using TsdLib.TestSequence;
 using TsdLib.View;
 
 namespace TsdLib.Controller
 {
-    public class ControllerBase //TODO: make abstract
+    public class ControllerBase //TODO: make abstract?
     {
         private readonly IView _view;
         private readonly ISettings _settings;
@@ -53,11 +51,11 @@ namespace TsdLib.Controller
             {
                 _tokenSource.Dispose();
                 Trace.WriteLine("Test sequence cancelled.");
+                //TODO: reset UI state to 'Ready to Test'
             }
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
-                //TOOD: reset UI state to 'Ready to Test'
             }
         }
 

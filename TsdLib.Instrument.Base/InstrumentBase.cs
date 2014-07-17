@@ -3,7 +3,14 @@ using System.Diagnostics;
 
 namespace TsdLib.Instrument
 {
-    public abstract class InstrumentBase<TConnection> : IDisposable
+    public interface IInstrument : IDisposable
+    {
+        string ModelNumber { get; }
+        string SerialNumber { get; }
+        string FirmwareVersion { get; }
+    }
+
+    public abstract class InstrumentBase<TConnection> : IInstrument
         where TConnection : ConnectionBase
     {
         internal protected TConnection Connection;
