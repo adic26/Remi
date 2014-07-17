@@ -13,6 +13,7 @@ namespace ConsoleTest
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
 
+            //Define test sequence in TsdLib.TestSequences.TestSequenceDefinitions.DummyTestSequence.cs
             var c = new ControllerBase(new ViewBase(), new DummyTestSequence(), new Settings());
             c.Launch();
 
