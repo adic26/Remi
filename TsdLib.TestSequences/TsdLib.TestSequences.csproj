@@ -55,7 +55,7 @@
       <Project>{33ae2e67-1ec5-4d0b-a09d-26482859c3f0}</Project>
       <Name>TsdLib.Instruments</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TsdLib.TestSequence\TsdLib.TestSequence.Base.csproj">
+    <ProjectReference Include="..\TsdLib.TestSequence.Base\TsdLib.TestSequence.Base.csproj">
       <Project>{93baed86-052b-49fa-b7d4-eeb4bfc73bef}</Project>
       <Name>TsdLib.TestSequence.Base</Name>
     </ProjectReference>

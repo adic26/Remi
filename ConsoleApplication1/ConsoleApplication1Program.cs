@@ -13,6 +13,7 @@ namespace ConsoleApplication1
             Trace.Listeners.Add(new ConsoleTraceListener());
 
             var c = new ControllerBase(new ViewBase(), new DummyTestSequence(), new Settings());
+            c.Launch();
 
             Console.WriteLine("Done");
             

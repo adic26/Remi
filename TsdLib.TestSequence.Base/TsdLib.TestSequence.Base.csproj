@@ -39,8 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ITestSequence.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestSequenceBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">

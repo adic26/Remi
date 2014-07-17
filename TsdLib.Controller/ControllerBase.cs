@@ -1,5 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TsdLib.TestSequence;
 using TsdLib.View;
@@ -10,23 +13,28 @@ namespace TsdLib.Controller
     {
         private readonly IView _view;
         private readonly ISettings _settings;
-        private readonly ITestSequence _testSequence;
+        private readonly TestSequenceBase _testSequence;
 
-        public ControllerBase(IView view, ITestSequence testSequence,  ISettings settings)
+        private CancellationTokenSource _tokenSource;
+
+        public ControllerBase(IView view, TestSequenceBase testSequence, ISettings settings)
+        {
+            _view = view;
+            _testSequence = testSequence;
+            _settings = settings;
+        }
+
+        public void Launch()
         {
             //subscribe to view events
-            _view = view;
             _view.Configure += _view_Configure;
             _view.ExecuteTestSequence += _view_ExecuteTestSequence;
             _view.AbortTestSequence += _view_AbortTestSequence;
-            
+
             //subscribe to test sequence events
-            _testSequence = testSequence;
             _testSequence.Measurements.ListChanged += Measurements_ListChanged;
 
-            _settings = settings;
-
-            _view.Launch(); //TODO: should this be removed from constructor?
+            _view.Launch(); 
         }
 
         void _view_Configure(object sender, EventArgs e)
@@ -34,14 +42,28 @@ namespace TsdLib.Controller
             _settings.Edit();
         }
 
-        void _view_ExecuteTestSequence(object sender, EventArgs e)
+        async void _view_ExecuteTestSequence(object sender, EventArgs e)
         {
-            _testSequence.Execute();
+            try
+            {
+                _tokenSource = new CancellationTokenSource();
+                await _testSequence.ExecuteAsync(_tokenSource.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                _tokenSource.Dispose();
+                Trace.WriteLine("Test sequence cancelled.");
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+                //TOOD: reset UI state to 'Ready to Test'
+            }
         }
 
         void _view_AbortTestSequence(object sender, EventArgs e)
         {
-            //TODO: call TestSequence.Abort, which will set cancellation token
+            _tokenSource.Cancel();
         }
 
         void Measurements_ListChanged(object sender, ListChangedEventArgs e)

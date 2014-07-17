@@ -61,7 +61,7 @@
       <Project>{19B0FEB9-2354-4CD6-B452-F924182EE828}</Project>
       <Name>TsdLib.TestSequences</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TsdLib.TestSequence\TsdLib.TestSequence.Base.csproj">
+    <ProjectReference Include="..\TsdLib.TestSequence.Base\TsdLib.TestSequence.Base.csproj">
       <Project>{93baed86-052b-49fa-b7d4-eeb4bfc73bef}</Project>
       <Name>TsdLib.TestSequence.Base</Name>
     </ProjectReference>

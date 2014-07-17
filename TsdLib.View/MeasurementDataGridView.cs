@@ -13,10 +13,23 @@ namespace TsdLib.View
         {
             string[] measurementObjects = measurement.ToString(",").Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);
 
-            for (int i = 1; i <= measurementObjects.Length - ColumnCount; i ++)
-                Columns.Add("Parameter_" + i, "Parameter_" + i);
+            Action addRows = () => Rows.Add(measurementObjects.Select(obj => (object)obj).ToArray());
+            Action addColumns = () =>
+            {
+                for (int i = 1; i <= measurementObjects.Length - ColumnCount; i++)
+                    Columns.Add("Parameter_" + i, "Parameter_" + i);
+            };
 
-            Rows.Add(measurementObjects.Select(obj => (object)obj).ToArray());
+            if (InvokeRequired)
+            {
+                Invoke(addRows);
+                Invoke(addColumns);
+            }
+            else
+            {
+                addRows();
+                addColumns();
+            }
         }
     }
 }

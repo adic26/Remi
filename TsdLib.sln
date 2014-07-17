@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Controller", "TsdLib.Controller\TsdLib.Controller.csproj", "{5EA97A7F-F898-4279-889E-910A4C38C7B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.TestSequence.Base", "TsdLib.TestSequence\TsdLib.TestSequence.Base.csproj", "{93BAED86-052B-49FA-B7D4-EEB4BFC73BEF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.TestSequence.Base", "TsdLib.TestSequence.Base\TsdLib.TestSequence.Base.csproj", "{93BAED86-052B-49FA-B7D4-EEB4BFC73BEF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.View", "TsdLib.View\TsdLib.View.csproj", "{148B46EA-2C9A-41B7-9B64-89B189CDBC5C}"
 EndProject
