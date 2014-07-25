@@ -47,6 +47,10 @@
       <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
       <Name>TsdLib.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Config\TsdLib.Config.csproj">
+      <Project>{b8eb70d6-e5cb-46ff-9cb9-382ab1e6bd7d}</Project>
+      <Name>TsdLib.Config</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TsdLib.Instrument.Base\TsdLib.Instrument.Base.csproj">
       <Project>{4be9beea-3fa2-452d-9d2d-1b4f165670cd}</Project>
       <Name>TsdLib.Instrument.Base</Name>

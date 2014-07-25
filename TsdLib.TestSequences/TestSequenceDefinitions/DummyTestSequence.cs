@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+using TsdLib.Config;
 using TsdLib.Instrument;
 
 namespace TsdLib.TestSequence
@@ -14,6 +11,9 @@ namespace TsdLib.TestSequence
         //TODO: figure out how to pull the instrument.Connect calls out of the test sequence?
         protected override void Execute(CancellationToken token)
         {
+            //config object holds all product and station config properties
+            IConfigGroup<ProductConfig> config = Config.Config.Manager.GetConfigGroup<ProductConfig>();
+
             Dummy_Aglient6632B powerSupply = Dummy_Aglient6632B.Connect();
             Measurements.AddMeasurement("Model Number", powerSupply.ModelNumber, "Identification", "n/a", "n/a");
             Measurements.AddMeasurement("Serial Number", powerSupply.SerialNumber, "Identification", "n/a", "n/a");

@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+
+    <p>
+        Git Integration Tips for Visual Studio 2012</p>
+    <p>
+        1) Download Visual Studio Tools for Git here: <a href="http://visualstudiogallery.msdn.microsoft.com/abafc7d6-dcaa-40f4-8a5e-d6724bdb980c/file/93137/7/Microsoft.TeamFoundation.Git.Provider.msi">http://visualstudiogallery.msdn.microsoft.com/abafc7d6-dcaa-40f4-8a5e-d6724bdb980c/file/93137/7/Microsoft.TeamFoundation.Git.Provider.msi</a></p>
+    <p>
+        2) In the Visual Studio menu, click TOOLS -&gt; Options. Expand the Source Control node and select Plug-in Selection. Change the Current source control plug-in to Microsoft Git Provider</p>
+    <p>
+        3) In the Visual Studio menu, click VIEW -&gt; Team Explorer. Click the drop-down menu and select Settings -&gt; Git Settings. Enter your information and click Update</p>
+    <p>
+        &nbsp;</p>
+    <p>
+        Once you restart Visual Studio, your Solution Explorer should display icons (blue lock symbols or red chack marks) to show file status.</p>
+    <p>
+        The Team Explorer window can be used to view changes, manage branches, make commits, etc.</p>
+    <p>
+        Please note that the Visual Studio plug-in does not support transfers using the SSH protocol, so cannot push/pull to/from GitLab remote repositories.</p>
+    <p>
+        &nbsp;</p>
+    <p>
+        The following steps are optional:</p>
+    <p>
+        4) In the Visual Studio menu, click TOOLS -&gt; External Tools. Click the Add button to create three custom tools with the following information:</p>
+    <p style="margin-left: 40px">
+        Tool #1:</p>
+    <p style="margin-left: 80px">
+        Title: Git Bash</p>
+    <p style="margin-left: 80px">
+        Command: C:\Program Files (x86)\Git\bin\sh.exe</p>
+    <p style="margin-left: 80px">
+        Arguments: --login -i</p>
+    <p style="margin-left: 80px">
+        Initial directory: $(SolutionDir)</p>
+    <p style="margin-left: 80px">
+        Additional: Close on exit</p>
+    <p style="margin-left: 40px">
+        Tool #2:</p>
+    <p style="margin-left: 80px">
+        Title: Git Status</p>
+    <p style="margin-left: 80px">
+        Command: C:\Program Files (x86)\Git\bin\git.exe</p>
+    <p style="margin-left: 80px">
+        Arguments: status</p>
+    <p style="margin-left: 80px">
+        Initial directory: $(SolutionDir)</p>
+    <p style="margin-left: 40px">
+        Tool #3 (note that git push will only work if your local branch is tracking a remote branch)</p>
+    <p style="margin-left: 80px">
+        Title: Git Push</p>
+    <p style="margin-left: 80px">
+        Command: C:\Program Files (x86)\Git\bin\git.exe</p>
+    <p style="margin-left: 80px">
+        Arguments: push</p>
+    <p style="margin-left: 80px">
+        Initial directory: $(SolutionDir)</p>
+    <p style="margin-left: 80px">
+        Additional: Use Output window, Close on exit</p>
+    <p>
+        5) Use the Move Up button to move the three newly created tools to the top of the list</p>
+    <p>
+        6) In the Visual Studio menu, click VIEW -&gt; Toolbars -&gt; Customize... Click New and name the new toolbar Git</p>
+    <p>
+        7) Click the Commands tab, select the Toolbar radio button and change the drop-down menu to Git</p>
+    <p>
+        8) Click Add Command... In the Categories list, select Tools. In the Commands list, select External Command 1</p>
+    <p>
+        9) Repeat step (8) to add External Command 2 and External Command 3</p>
+    <p>
+        10) Use the Move Up and Move Down buttons to rearrange the External Commands in ascending order. You should now see a new toolbar near the top of your Visual Studio IDE, with buttons for Git Bash, Git Status and Git Push</p>
+
+</body>
+</html>
