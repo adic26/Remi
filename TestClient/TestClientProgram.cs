@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Diagnostics;
 using TsdLib.Controller;
-using TsdLib.Instrument;
 using TsdLib.TestSequence;
-using TsdLib.View;
 
-namespace ConsoleTest
+namespace TestClient
 {
-    class ConsoleTestProgram
+    class TestClientProgram
     {
         private static void Main()
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
 
             //Define test sequence in TsdLib.TestSequences.TestSequenceDefinitions.DummyTestSequence.cs
-            var c = new Controller(new ViewBase(), new DummyTestSequence(), new Settings());
+            var c = new ControllerBase(new TestClientView(), new DummyTestSequence(), new Settings());
             c.Launch();
 
             Console.WriteLine("Done");

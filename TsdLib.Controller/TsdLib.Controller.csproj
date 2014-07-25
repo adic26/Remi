@@ -62,6 +62,10 @@
       <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
       <Name>TsdLib.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Config\TsdLib.Config.csproj">
+      <Project>{b8eb70d6-e5cb-46ff-9cb9-382ab1e6bd7d}</Project>
+      <Name>TsdLib.Config</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TsdLib.TestSequence.Base\TsdLib.TestSequence.Base.csproj">
       <Project>{93baed86-052b-49fa-b7d4-eeb4bfc73bef}</Project>
       <Name>TsdLib.TestSequence.Base</Name>

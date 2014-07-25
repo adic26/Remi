@@ -176,7 +176,6 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox_Status);
             this.Name = "ViewBase";
-            this.Text = "ViewBase";
             ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using TsdLib.Instrument.Visa;
 
 namespace TsdLib.Instrument
 {
-    public class AIM4170C_Wrapper : InstrumentWrapper<VisaConnection>
+    public class AIM4170C_Wrapper
     {
         const double CharacteristicResistance = 100.9;
 
-        private AIM4170C _aim4170C;
+        private readonly AIM4170C _aim4170C;
 
         public AIM4170C_Wrapper(AIM4170C aim4170C)
         {
@@ -40,7 +38,7 @@ namespace TsdLib.Instrument
                     throw new InstrumentException("Invalid data received from AIM device. Checksum failure.");
 
                 string freqStr = string.Join("", rawMeasurementData.Take(4).Select(b => b.ToString("X2")));
-                double rawFreq = (double)Convert.ToInt32(freqStr, 16);
+                double rawFreq = Convert.ToInt32(freqStr, 16);
 
                 double receivedFrequency = (rawFreq - 0.5) * 400d / 4294967296d;
 

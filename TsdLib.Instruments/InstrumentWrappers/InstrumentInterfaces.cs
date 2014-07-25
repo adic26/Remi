@@ -1,5 +1,4 @@
-﻿//TODO: move to 2nd-order instrument library
-namespace TsdLib.Instrument
+﻿namespace TsdLib.Instrument
 {
     public interface IPowerSupply
     {

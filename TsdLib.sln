@@ -26,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.TestSequence.Base", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.View", "TsdLib.View\TsdLib.View.csproj", "{148B46EA-2C9A-41B7-9B64-89B189CDBC5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{C49C6555-46C2-4313-8B10-8D2632A1FF66}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient", "TestClient\TestClient.csproj", "{C49C6555-46C2-4313-8B10-8D2632A1FF66}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Instruments", "TsdLib.Instruments\TsdLib.Instruments.csproj", "{33AE2E67-1EC5-4D0B-A09D-26482859C3F0}"
 EndProject
@@ -34,7 +34,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.TestSequences", "Tsd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Config", "TsdLib.Config\TsdLib.Config.csproj", "{B8EB70D6-E5CB-46FF-9CB9-382AB1E6BD7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigTest", "ConfigTest\ConfigTest.csproj", "{8541A1B2-3D15-4E70-AC59-7CD7D0D86F47}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestClient", "TestClient", "{2B4BC237-7C38-4086-99EB-51ED689EE88D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,12 +94,13 @@ Global
 		{B8EB70D6-E5CB-46FF-9CB9-382AB1E6BD7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8EB70D6-E5CB-46FF-9CB9-382AB1E6BD7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8EB70D6-E5CB-46FF-9CB9-382AB1E6BD7D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8541A1B2-3D15-4E70-AC59-7CD7D0D86F47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8541A1B2-3D15-4E70-AC59-7CD7D0D86F47}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8541A1B2-3D15-4E70-AC59-7CD7D0D86F47}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8541A1B2-3D15-4E70-AC59-7CD7D0D86F47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{33AE2E67-1EC5-4D0B-A09D-26482859C3F0} = {2B4BC237-7C38-4086-99EB-51ED689EE88D}
+		{19B0FEB9-2354-4CD6-B452-F924182EE828} = {2B4BC237-7C38-4086-99EB-51ED689EE88D}
+		{C49C6555-46C2-4313-8B10-8D2632A1FF66} = {2B4BC237-7C38-4086-99EB-51ED689EE88D}
 	EndGlobalSection
 EndGlobal

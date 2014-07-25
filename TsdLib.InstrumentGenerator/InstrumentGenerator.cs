@@ -41,7 +41,7 @@ namespace TsdLib.InstrumentGenerator
                     "                 TsdLib Dynamic Instrument Assembly Generator",
                     "Dynamically generates code file (*.cs or *.vb) or class library (*.dll) files",
                     "",
-                    "Usage: TsdLib.InstrumentGenerator.exe <-source|-assembly|-both> <input path> <output path> CSharp|VisualBasic <schema filename>",
+                    "Usage: TsdLib.InstrumentGenerator.exe <Source|Assembly|Both> <input path> <output path> <CSharp|VisualBasic> <schema filename>",
                     "",
                     "   Source|Assembly|Both".PadRight(width) + "Generate a source code file (*.cs or *.vb) or an assembly (*.dll).",
                     "   <input path>".PadRight(width) + "XML source location. Can be an individual file or a folder containing multiple files.",

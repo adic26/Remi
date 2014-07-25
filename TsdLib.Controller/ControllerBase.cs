@@ -1,14 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Threading;
+using TsdLib.Config;
 using TsdLib.TestSequence;
 using TsdLib.View;
 
 namespace TsdLib.Controller
 {
-    public class ControllerBase //TODO: make abstract?
+    public class ControllerBase
     {
         private readonly IView _view;
         private readonly ISettings _settings;
@@ -42,7 +42,9 @@ namespace TsdLib.Controller
 
         void _view_Configure(object sender, EventArgs e)
         {
-            _settings.Edit();
+            //TODO: update to all-config updater
+            //or put a ConfigItem type in eventargs
+            Config.Config.Manager.EditConfig<ProductConfig>();
         }
 
         async void _view_ExecuteTestSequence(object sender, EventArgs e)
@@ -56,6 +58,7 @@ namespace TsdLib.Controller
             {
                 _tokenSource.Dispose();
                 Trace.WriteLine("Test sequence cancelled.");
+                _view.SetState(State.ReadyToTest);
                 //TODO: reset UI state to 'Ready to Test'
             }
             catch (Exception ex)

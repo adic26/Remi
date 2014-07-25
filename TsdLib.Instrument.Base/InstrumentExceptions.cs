@@ -3,6 +3,22 @@
 namespace TsdLib.Instrument
 {
     [Serializable]
+    public class InstrumentException : TsdLibException
+    {
+        public InstrumentException(string message)
+            : base(message)
+        {
+
+        }
+
+        public InstrumentException(string message, Exception inner)
+            : base(message, inner)
+        {
+
+        }
+    }
+
+    [Serializable]
     public class InstrumentFactoryException : TsdLibException
     {
         public InstrumentFactoryException(string message)

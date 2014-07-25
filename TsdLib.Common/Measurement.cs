@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.Windows.Forms.VisualStyles;
 
 namespace TsdLib
 {
@@ -16,8 +13,6 @@ namespace TsdLib
         Fail_High = 2,
         Fail = Fail_Low | Fail_High
     }
-
-    //TODO make base measurement class non-generic? Would allow different types of measurements to go into the same collection
 
     public abstract class Measurement
     {
@@ -45,10 +40,7 @@ namespace TsdLib
         }
 
         protected Measurement(string name, object measuredValue, string units, object lowerLimit, object upperLimit, params MeasurementParameter[] parameters)
-            : this(name, measuredValue, units, lowerLimit, upperLimit, new MeasurementParameterCollection(parameters))
-        {
-
-        }
+            : this(name, measuredValue, units, lowerLimit, upperLimit, new MeasurementParameterCollection(parameters)) { }
 
         public override string ToString()
         {

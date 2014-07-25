@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TsdLib.View
 {
@@ -13,6 +9,7 @@ namespace TsdLib.View
         event EventHandler AbortTestSequence;
 
         void Launch();
+        void SetState(State state);
         void AddMeasurement(Measurement measurement);
     }
 }
