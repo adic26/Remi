@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace TsdLib.View
 {
-    public abstract partial class ViewBase : Form, IView //TODO: make abstract
+    public partial class ViewBase : Form, IView
     {
         private readonly TextBoxTraceListener _textBoxTraceListener;
 

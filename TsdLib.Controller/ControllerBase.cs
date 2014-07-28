@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading;
 using TsdLib.Configuration;
 using TsdLib.TestSequence;
@@ -8,21 +9,21 @@ using TsdLib.View;
 
 namespace TsdLib.Controller
 {
-    public class ControllerBase
+    public abstract class ControllerBase
     {
         private readonly IView _view;
-        private readonly ISettings _settings;
         private readonly TestSequenceBase _testSequence;
+        private readonly Assembly _callingAssembly;
 
         private readonly LocalMeasurementWriter _localMeasurementWriter;
 
         private CancellationTokenSource _tokenSource;
 
-        public ControllerBase(IView view, TestSequenceBase testSequence, ISettings settings)
+        protected ControllerBase(IView view, TestSequenceBase testSequence)
         {
             _view = view;
             _testSequence = testSequence;
-            _settings = settings;
+            _callingAssembly = Assembly.GetCallingAssembly();
 
             _localMeasurementWriter = new LocalMeasurementWriter();
         }
@@ -42,9 +43,9 @@ namespace TsdLib.Controller
 
         void _view_Configure(object sender, EventArgs e)
         {
-            //TODO: update to all-config updater
-            //or put a ConfigItem type in eventargs
+            //TODO: update to all-config updater or make this abstract
             Config.Manager.EditConfig<ProductConfig>();
+            //Config.Manager.EditConfig(_callingAssembly);
         }
 
         async void _view_ExecuteTestSequence(object sender, EventArgs e)
@@ -81,11 +82,6 @@ namespace TsdLib.Controller
                 _view.AddMeasurement(measurement);
                 _localMeasurementWriter.Write(measurement);
             }
-        }
-
-        public void Configure()
-        {
-            _settings.Edit();
         }
     }
 }

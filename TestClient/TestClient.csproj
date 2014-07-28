@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -42,10 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config.cs" />
+    <Compile Include="Controller.cs" />
     <Compile Include="TestClientProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestClientView.cs">
+    <Compile Include="View.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View.Designer.cs">
+      <DependentUpon>View.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +61,10 @@
     <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
       <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
       <Name>TsdLib.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Configuration\TsdLib.Configuration.csproj">
+      <Project>{B8EB70D6-E5CB-46FF-9CB9-382AB1E6BD7D}</Project>
+      <Name>TsdLib.Configuration</Name>
     </ProjectReference>
     <ProjectReference Include="..\TsdLib.Controller\TsdLib.Controller.csproj">
       <Project>{5ea97a7f-f898-4279-889e-910a4c38c7b1}</Project>
