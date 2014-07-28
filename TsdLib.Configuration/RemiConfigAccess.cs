@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace TsdLib.Config
+namespace TsdLib.Configuration
 {
     public interface IRemiConfigAccess
     {

@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace TsdLib.Config
+namespace TsdLib.Configuration
 {
     public class RemiSettingsProvider : LocalFileSettingsProvider
     {

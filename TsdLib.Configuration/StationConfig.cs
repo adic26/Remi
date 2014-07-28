@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace TsdLib.Config
+namespace TsdLib.Configuration
 {
     public class StationConfig : ConfigItem
     {

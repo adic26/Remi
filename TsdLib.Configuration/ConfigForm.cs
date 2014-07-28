@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows.Forms;
 
-namespace TsdLib.Config
+namespace TsdLib.Configuration
 {//TODO: make popup on designer to input new configitem name
     sealed partial class ConfigForm<T> : Form
         where T : ConfigItem, new()

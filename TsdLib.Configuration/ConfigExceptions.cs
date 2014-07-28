@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TsdLib.Config
+namespace TsdLib.Configuration
 {
     public class ConfigException : TsdLibException
     {

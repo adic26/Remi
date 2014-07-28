@@ -1,4 +1,4 @@
-﻿namespace TsdLib.Config
+﻿namespace TsdLib.Configuration
 {
     sealed partial class ConfigForm<T> where T : ConfigItem, new()
     {

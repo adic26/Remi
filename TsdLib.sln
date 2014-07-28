@@ -32,7 +32,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Instruments", "TsdLi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.TestSequences", "TsdLib.TestSequences\TsdLib.TestSequences.csproj", "{19B0FEB9-2354-4CD6-B452-F924182EE828}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Config", "TsdLib.Config\TsdLib.Config.csproj", "{B8EB70D6-E5CB-46FF-9CB9-382AB1E6BD7D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Configuration", "TsdLib.Configuration\TsdLib.Configuration.csproj", "{B8EB70D6-E5CB-46FF-9CB9-382AB1E6BD7D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestClient", "TestClient", "{2B4BC237-7C38-4086-99EB-51ED689EE88D}"
 EndProject

@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
-using TsdLib.Config;
+using TsdLib.Configuration;
 using TsdLib.TestSequence;
 using TsdLib.View;
 
@@ -44,7 +44,7 @@ namespace TsdLib.Controller
         {
             //TODO: update to all-config updater
             //or put a ConfigItem type in eventargs
-            Config.Config.Manager.EditConfig<ProductConfig>();
+            Config.Manager.EditConfig<ProductConfig>();
         }
 
         async void _view_ExecuteTestSequence(object sender, EventArgs e)

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TsdLib.Config")]
+[assembly: AssemblyTitle("TsdLib.Configuration")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BlackBerry")]
-[assembly: AssemblyProduct("TsdLib.Config")]
+[assembly: AssemblyProduct("TsdLib.Configuration")]
 [assembly: AssemblyCopyright("Copyright © BlackBerry 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

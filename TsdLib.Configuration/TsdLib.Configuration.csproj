@@ -7,8 +7,8 @@
     <ProjectGuid>{B8EB70D6-E5CB-46FF-9CB9-382AB1E6BD7D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TsdLib.Config</RootNamespace>
-    <AssemblyName>TsdLib.Config</AssemblyName>
+    <RootNamespace>TsdLib.Configuration</RootNamespace>
+    <AssemblyName>TsdLib.Configuration</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
