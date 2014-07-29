@@ -11,20 +11,14 @@ namespace TsdLib.View
         protected ViewBase()
         {
             InitializeComponent();
-            Text = Application.ProductName + " v." + Application.ProductVersion;
             _textBoxTraceListener = new TextBoxTraceListener(textBox_Status);
             Trace.Listeners.Add(_textBoxTraceListener);
             Disposed += (o, e) => Trace.Listeners.Remove(_textBoxTraceListener);
         }
-
-        public override sealed string Text
-        {
-            get { return base.Text; }
-            set { base.Text = value; }
-        }
-
+        
         public void Launch()
         {
+            Text = Application.ProductName + " v." + Application.ProductVersion;
             ShowDialog();
         }
 

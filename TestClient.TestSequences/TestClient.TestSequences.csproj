@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{33AE2E67-1EC5-4D0B-A09D-26482859C3F0}</ProjectGuid>
+    <ProjectGuid>{C2E929E9-3A83-4F84-B932-EF77D4B13AA0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TsdLib.Instrument</RootNamespace>
-    <AssemblyName>TsdLib.Instruments</AssemblyName>
+    <RootNamespace>TestClient.TestSequences</RootNamespace>
+    <AssemblyName>TestClient.TestSequences</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,58 +32,30 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Instruments.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="InstrumentWrappers\InstrumentInterfaces.cs" />
-    <Compile Include="InstrumentWrappers\AIM4170C_Wrapper.cs" />
+    <Compile Include="DummyTestSequence.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="InstrumentDefinitions\Agilent6632B.xml" />
-    <Content Include="InstrumentDefinitions\AIM4170C.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="InstrumentDefinitions\BlackBerryRadio.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="InstrumentDefinitions\Dummy_Agilent6632B.xml" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\TestClient.Instruments\TestClient.Instruments.csproj">
+      <Project>{3B4E18DB-0495-4C9F-A283-5EADA3C4FB17}</Project>
+      <Name>TestClient.Instruments</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
       <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
       <Name>TsdLib.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\TsdLib.Instrument.Base\TsdLib.Instrument.Base.csproj">
-      <Project>{4be9beea-3fa2-452d-9d2d-1b4f165670cd}</Project>
+      <Project>{4BE9BEEA-3FA2-452D-9D2D-1B4F165670CD}</Project>
       <Name>TsdLib.Instrument.Base</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument.Telnet\TsdLib.Instrument.Telnet.csproj">
-      <Project>{fbcd8cc2-a747-4979-9507-ae356d466e5a}</Project>
-      <Name>TsdLib.Instrument.Telnet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj">
-      <Project>{a9ab58d9-08ea-43cc-ab6a-9e934bdd3c7b}</Project>
-      <Name>TsdLib.Instrument.Visa</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.InstrumentGenerator\TsdLib.InstrumentGenerator.csproj">
-      <Project>{b12037d0-edd5-41a2-a68d-d2170eaffcb0}</Project>
-      <Name>TsdLib.InstrumentGenerator</Name>
+    <ProjectReference Include="..\TsdLib.TestSequence.Base\TsdLib.TestSequence.Base.csproj">
+      <Project>{93baed86-052b-49fa-b7d4-eeb4bfc73bef}</Project>
+      <Name>TsdLib.TestSequence.Base</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>$(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\TsdLib.InstrumentGenerator.exe Source $(ProjectPath) $(ProjectDir) CSharp $(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\TsdLib.Instrument.xsd"</PreBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

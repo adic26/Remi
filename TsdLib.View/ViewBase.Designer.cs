@@ -35,6 +35,7 @@
             this.button_AbortTestSequence = new System.Windows.Forms.Button();
             this.button_StationConfig = new System.Windows.Forms.Button();
             this.button_ProductConfig = new System.Windows.Forms.Button();
+            this.button_TestConfig = new System.Windows.Forms.Button();
             this.measurementDataGridView1 = new TsdLib.View.MeasurementDataGridView();
             this.MeasurementName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MeasuredValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -42,7 +43,6 @@
             this.LowerLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UpperLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Result = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.button_TestConfig = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -113,6 +113,16 @@
             this.button_ProductConfig.UseVisualStyleBackColor = true;
             this.button_ProductConfig.Click += new System.EventHandler(this.button_ProductConfig_Click);
             // 
+            // button_TestConfig
+            // 
+            this.button_TestConfig.Location = new System.Drawing.Point(12, 70);
+            this.button_TestConfig.Name = "button_TestConfig";
+            this.button_TestConfig.Size = new System.Drawing.Size(125, 23);
+            this.button_TestConfig.TabIndex = 10;
+            this.button_TestConfig.Text = "Test Config";
+            this.button_TestConfig.UseVisualStyleBackColor = true;
+            this.button_TestConfig.Click += new System.EventHandler(this.button_TestConfig_Click);
+            // 
             // measurementDataGridView1
             // 
             this.measurementDataGridView1.AllowUserToAddRows = false;
@@ -175,16 +185,6 @@
             this.Result.ReadOnly = true;
             this.Result.Width = 62;
             // 
-            // button_TestConfig
-            // 
-            this.button_TestConfig.Location = new System.Drawing.Point(12, 70);
-            this.button_TestConfig.Name = "button_TestConfig";
-            this.button_TestConfig.Size = new System.Drawing.Size(125, 23);
-            this.button_TestConfig.TabIndex = 10;
-            this.button_TestConfig.Text = "Test Config";
-            this.button_TestConfig.UseVisualStyleBackColor = true;
-            this.button_TestConfig.Click += new System.EventHandler(this.button_TestConfig_Click);
-            // 
             // ViewBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -208,20 +208,20 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox_Status;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button_ExecuteTestSequence;
-        private System.Windows.Forms.Button button_AbortTestSequence;
-        private System.Windows.Forms.Button button_StationConfig;
-        private MeasurementDataGridView measurementDataGridView1;
         private System.Windows.Forms.DataGridViewTextBoxColumn MeasurementName;
         private System.Windows.Forms.DataGridViewTextBoxColumn MeasuredValue;
         private System.Windows.Forms.DataGridViewTextBoxColumn Units;
         private System.Windows.Forms.DataGridViewTextBoxColumn LowerLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn UpperLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Result;
-        private System.Windows.Forms.Button button_ProductConfig;
-        private System.Windows.Forms.Button button_TestConfig;
+        protected System.Windows.Forms.TextBox textBox_Status;
+        protected System.Windows.Forms.Label label1;
+        protected System.Windows.Forms.Label label2;
+        protected System.Windows.Forms.Button button_ExecuteTestSequence;
+        protected System.Windows.Forms.Button button_AbortTestSequence;
+        protected System.Windows.Forms.Button button_StationConfig;
+        protected MeasurementDataGridView measurementDataGridView1;
+        protected System.Windows.Forms.Button button_ProductConfig;
+        protected System.Windows.Forms.Button button_TestConfig;
     }
 }

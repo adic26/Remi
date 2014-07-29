@@ -59,10 +59,6 @@
       <Project>{fbcd8cc2-a747-4979-9507-ae356d466e5a}</Project>
       <Name>TsdLib.Instrument.Telnet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instruments\TsdLib.Instruments.csproj">
-      <Project>{33ae2e67-1ec5-4d0b-a09d-26482859c3f0}</Project>
-      <Name>TsdLib.Instruments</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

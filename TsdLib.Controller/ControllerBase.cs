@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using TsdLib.Configuration;
 using TsdLib.TestSequence;
@@ -11,44 +8,28 @@ using TsdLib.View;
 
 namespace TsdLib.Controller
 {
-    public abstract class ControllerBase
+    public abstract class ControllerBase<TStationConfig, TProductConfig, TTestConfig>
+        where TStationConfig : StationConfigCommon, new()
+        where TProductConfig : ProductConfigCommon, new()
+        where TTestConfig : TestConfigCommon, new()
     {
+        #region Private Fields
+
         private readonly IView _view;
         private readonly TestSequenceBase _testSequence;
-        
-        private readonly Assembly _clientAssembly;
-
 
         private readonly LocalMeasurementWriter _localMeasurementWriter;
 
         private CancellationTokenSource _tokenSource;
 
-        public virtual void EditStationConfig()
-        {
-            Trace.WriteLine("Station config has not been defined for this system.");
-        }
+        #endregion
 
-        public virtual void EditProductConfig()
-        {
-            Trace.WriteLine("Product config has not been defined for this system.");
-        }
+        #region Constructor and Launch
 
-        public virtual void EditTestConfig()
-        {
-            Trace.WriteLine("Test config has not been defined for this system.");
-        }
-
-        //TODO: figure out how to remove type arguments from config
         protected ControllerBase(IView view, TestSequenceBase testSequence)
         {
             _view = view;
             _testSequence = testSequence;
-
-            _clientAssembly = Assembly.GetCallingAssembly();
-
-            var types = Assembly.GetCallingAssembly()
-                .GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(ConfigItem)));
 
             _localMeasurementWriter = new LocalMeasurementWriter();
         }
@@ -65,54 +46,52 @@ namespace TsdLib.Controller
             //subscribe to test sequence events
             _testSequence.Measurements.ListChanged += Measurements_ListChanged;
 
-            _view.Launch(); 
+            _view.Launch();
+        }
+
+        #endregion
+
+        #region Config
+
+        public void Edit<T>()
+            where T : ConfigItem, new()
+        {
+            Config<T>.Manager.Edit();
+        }
+
+        public virtual void EditStationConfig()
+        {
+            Trace.WriteLine("Station config has not been defined for this system.");
+        }
+
+        public virtual void EditProductConfig()
+        {
+            Trace.WriteLine("Product config has not been defined for this system.");
+        }
+
+        public virtual void EditTestConfig()
+        {
+            Trace.WriteLine("Test config has not been defined for this system.");
         }
 
         void _view_EditStationConfig(object sender, EventArgs e)
         {
-            EditStationConfig();
+            Config<TStationConfig>.Manager.Edit();
         }
 
         void _view_EditProductConfig(object sender, EventArgs e)
         {
-            EditProductConfig();
+            Config<TProductConfig>.Manager.Edit();
         }
 
         void _view_EditTestConfig(object sender, EventArgs e)
         {
-            EditTestConfig();
+            Config<TTestConfig>.Manager.Edit();
         }
 
-        //void _view_Configure(object sender, ConfigEventArgs e)
-        //{
-        //    Assembly asy = Assembly.GetAssembly(typeof (ConfigItem));
-        //    Type configBaseType = asy.GetType(asy.GetName().Name + "." +  e.ConfigType);
+        #endregion
 
-        //    IEnumerable<Type> configTypes = _clientAssembly
-        //        .GetTypes()
-        //        .Where(t => t.IsSubclassOf(configBaseType));
-
-        //    foreach (Type configType in configTypes)
-        //    {
-        //        Config<ProductConfig>.Manager.Edit();
-        //    }
-
-        //    throw new NotImplementedException();
-        //}
-
-        //void _view_Configure(object sender, EventArgs e)
-        //{
-        //    //TODO: update to all-config updater or make this abstract
-
-        //    var types = _clientAssembly
-        //        .GetTypes()
-        //        .Where(t => t.IsSubclassOf(typeof (ConfigItem)));
-
-        //    //foreach (IConfigGroup<ProductConfig> configGroup in _configGroups)
-        //    //{
-                
-        //    //}
-        //}
+        #region View event handlers
 
         async void _view_ExecuteTestSequence(object sender, EventArgs e)
         {
@@ -126,7 +105,6 @@ namespace TsdLib.Controller
                 _tokenSource.Dispose();
                 Trace.WriteLine("Test sequence cancelled.");
                 _view.SetState(State.ReadyToTest);
-                //TODO: reset UI state to 'Ready to Test'
             }
             catch (Exception ex)
             {
@@ -144,10 +122,12 @@ namespace TsdLib.Controller
             IBindingList list = sender as IBindingList;
             if (list != null)
             {
-                Measurement measurement = (Measurement) list[e.NewIndex];
+                Measurement measurement = (Measurement)list[e.NewIndex];
                 _view.AddMeasurement(measurement);
                 _localMeasurementWriter.Write(measurement);
             }
         }
+
+        #endregion
     }
 }

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 namespace TsdLib.Configuration
-{//TODO: make popup on designer to input new configitem name
+{
     sealed partial class ConfigForm<T> : Form
         where T : ConfigItem, new()
     {
@@ -17,16 +17,8 @@ namespace TsdLib.Configuration
             comboBox_SettingsGroup.DataSource = _configGroup;
             if (_configGroup.Any())
                 propertyGrid_Settings.SelectedObject = _configGroup.ElementAt(0);
-            Shown += ConfigForm_Shown;
-        }
-
-        void ConfigForm_Shown(object sender, EventArgs e)
-        {
-            if (!_configGroup.Any())
-            {
+            else
                 new ConfigFormCreate<T>(_configGroup).ShowDialog();
-                //comboBox_SettingsGroup.SelectedIndex = comboBox_SettingsGroup.Items.Count - 1;
-            }
         }
 
         private void closeForm(object sender, EventArgs e)

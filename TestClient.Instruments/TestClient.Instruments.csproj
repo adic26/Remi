@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{33AE2E67-1EC5-4D0B-A09D-26482859C3F0}</ProjectGuid>
+    <ProjectGuid>{3B4E18DB-0495-4C9F-A283-5EADA3C4FB17}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TsdLib.Instrument</RootNamespace>
-    <AssemblyName>TsdLib.Instruments</AssemblyName>
+    <RootNamespace>TestClient.Instruments</RootNamespace>
+    <AssemblyName>TestClient.Instruments</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -33,29 +33,12 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Instruments.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="InstrumentWrappers\InstrumentInterfaces.cs" />
-    <Compile Include="InstrumentWrappers\AIM4170C_Wrapper.cs" />
+    <Compile Include="AIM4170C_Wrapper.cs" />
+    <Compile Include="InstrumentInterfaces.cs" />
+    <Compile Include="Instruments.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="InstrumentDefinitions\Agilent6632B.xml" />
-    <Content Include="InstrumentDefinitions\AIM4170C.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="InstrumentDefinitions\BlackBerryRadio.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="InstrumentDefinitions\Dummy_Agilent6632B.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
@@ -79,10 +62,19 @@
       <Name>TsdLib.InstrumentGenerator</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="InstrumentDefinitions\Agilent6632B.xml" />
+    <Content Include="InstrumentDefinitions\AIM4170C.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="InstrumentDefinitions\BlackBerryRadio.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="InstrumentDefinitions\Dummy_Agilent6632B.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>$(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\TsdLib.InstrumentGenerator.exe Source $(ProjectPath) $(ProjectDir) CSharp $(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\TsdLib.Instrument.xsd"</PreBuildEvent>
+    <PreBuildEvent>$(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\TsdLib.InstrumentGenerator.exe Source $(ProjectPath) $(ProjectDir) $(ProjectName) CSharp $(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\TsdLib.Instrument.xsd"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

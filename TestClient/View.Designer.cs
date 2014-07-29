@@ -1,4 +1,6 @@
-﻿namespace TestClient
+﻿using TsdLib.View;
+
+namespace TestClient
 {
     partial class View
     {
@@ -28,9 +30,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // View
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "View";
+            this.ClientSize = new System.Drawing.Size(539, 576);
+            this.Name = "View";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         #endregion

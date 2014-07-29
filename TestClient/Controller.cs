@@ -1,20 +1,14 @@
-﻿using TsdLib.Configuration;
-using TsdLib.Controller;
+﻿using TsdLib.Controller;
 using TsdLib.TestSequence;
 
 namespace TestClient
 {
-    public class Controller : ControllerBase
+    class Controller : ControllerBase<StationConfig, ProductConfig, TestConfig>
     {
         public Controller(View view, TestSequenceBase testSequence)
             : base(view, testSequence)
         {
 
-        }
-
-        public override void EditStationConfig()
-        {
-            Config<TestClientStationConfig>.Manager.Edit();
         }
     }
 }

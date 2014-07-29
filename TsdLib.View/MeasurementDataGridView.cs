@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TsdLib.View
 {
-    class MeasurementDataGridView : DataGridView
+    public class MeasurementDataGridView : DataGridView
     {
         public void AddMeasurement(Measurement measurement)
         {

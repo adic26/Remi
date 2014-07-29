@@ -30,9 +30,9 @@ namespace TsdLib.TestSequence
             await Task.Run(() => Execute(token), token);
         }
 
-        //TODO: how to populate _instruments?? May just need to rely on Execute method to connect to all required instruments for now
+        
         private void ConnectToInstruments(CancellationToken token)
-        {
+        {//TODO: how to populate _instruments?? May just need to rely on Execute method to connect to all required instruments for now
             foreach (IInstrument instrument in _instruments)
             {
                 token.ThrowIfCancellationRequested();

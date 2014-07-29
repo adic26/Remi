@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using TsdLib.TestSequence;
+using TestClient.TestSequences;
 
 namespace TestClient
 {
@@ -10,8 +10,7 @@ namespace TestClient
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
 
-            //Define test sequence in TsdLib.TestSequences.TestSequenceDefinitions.DummyTestSequence.cs
-            var c = new Controller(new View(), new DummyTestSequence());
+            Controller c = new Controller(new View(), new DummyTestSequence());
             c.Launch();
 
             Console.WriteLine("Done");

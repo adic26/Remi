@@ -13,11 +13,14 @@ namespace TsdLib.Configuration
         {
             InitializeComponent();
             _configGroup = configGroup;
+            Load += (s, o) => Text = "New " + typeof (T).Name;
         }
 
         private void button_Ok_Click(object sender, EventArgs e)
         {
-            T newConfig = (T)Activator.CreateInstance(typeof(T), textBox_Name.Text, radioButton_StoreInRemi.Checked);
+            T newConfig = (T)Activator.CreateInstance(typeof(T));
+            newConfig.Name = textBox_Name.Text;
+            newConfig.RemiSetting = radioButton_StoreInRemi.Checked;
             _configGroup.Add(newConfig, radioButton_StoreInRemi.Checked);
         }
     }

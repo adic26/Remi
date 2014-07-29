@@ -36,11 +36,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
@@ -58,9 +53,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
-      <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
-      <Name>TsdLib.Common</Name>
+    <ProjectReference Include="..\TestClient.TestSequences\TestClient.TestSequences.csproj">
+      <Project>{C2E929E9-3A83-4F84-B932-EF77D4B13AA0}</Project>
+      <Name>TestClient.TestSequences</Name>
     </ProjectReference>
     <ProjectReference Include="..\TsdLib.Configuration\TsdLib.Configuration.csproj">
       <Project>{B8EB70D6-E5CB-46FF-9CB9-382AB1E6BD7D}</Project>
@@ -70,34 +65,19 @@
       <Project>{5ea97a7f-f898-4279-889e-910a4c38c7b1}</Project>
       <Name>TsdLib.Controller</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument.Telnet\TsdLib.Instrument.Telnet.csproj">
-      <Project>{fbcd8cc2-a747-4979-9507-ae356d466e5a}</Project>
-      <Name>TsdLib.Instrument.Telnet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj">
-      <Project>{a9ab58d9-08ea-43cc-ab6a-9e934bdd3c7b}</Project>
-      <Name>TsdLib.Instrument.Visa</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument.Base\TsdLib.Instrument.Base.csproj">
-      <Project>{4be9beea-3fa2-452d-9d2d-1b4f165670cd}</Project>
-      <Name>TsdLib.Instrument.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instruments\TsdLib.Instruments.csproj">
-      <Project>{33ae2e67-1ec5-4d0b-a09d-26482859c3f0}</Project>
-      <Name>TsdLib.Instruments</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TsdLib.TestSequence.Base\TsdLib.TestSequence.Base.csproj">
       <Project>{93baed86-052b-49fa-b7d4-eeb4bfc73bef}</Project>
       <Name>TsdLib.TestSequence.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.TestSequences\TsdLib.TestSequences.csproj">
-      <Project>{19b0feb9-2354-4cd6-b452-f924182ee828}</Project>
-      <Name>TsdLib.TestSequences</Name>
     </ProjectReference>
     <ProjectReference Include="..\TsdLib.View\TsdLib.View.csproj">
       <Project>{148b46ea-2c9a-41b7-9b64-89b189cdbc5c}</Project>
       <Name>TsdLib.View</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="View.resx">
+      <DependentUpon>View.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

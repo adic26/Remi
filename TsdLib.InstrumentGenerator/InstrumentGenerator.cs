@@ -46,6 +46,7 @@ namespace TsdLib.InstrumentGenerator
                     "   Source|Assembly|Both".PadRight(width) + "Generate a source code file (*.cs or *.vb) or an assembly (*.dll).",
                     "   <input path>".PadRight(width) + "XML source location. Can be an individual file or a folder containing multiple files.",
                     "   <output path>".PadRight(width) + "Location for the output file.",
+                    "   <client application name".PadRight(width) + "Name of the client application, used to generate the namespace root",
                     "   CSharp|VisualBasic".PadRight(width) + "Language to use.",
                     "   <schema filename>".PadRight(width) + "Name of the XML schema (*.xsd) used to validate the XML source files",
                     "",
@@ -61,6 +62,7 @@ namespace TsdLib.InstrumentGenerator
             OutputTypes outputType;
             IEnumerable<string> xmlFiles;
             string outputPath;
+            string clientNamespace;
             Language language;
             string schemaFile;
 
@@ -69,8 +71,9 @@ namespace TsdLib.InstrumentGenerator
                 outputType = (OutputTypes) Enum.Parse(typeof (OutputTypes), args[0]);
                 string inputPath = args[1];
                 outputPath = args[2];
-                language = (Language)Enum.Parse(typeof(Language), args[3]);
-                schemaFile = args[4];
+                clientNamespace = args[3];
+                language = (Language)Enum.Parse(typeof(Language), args[4]);
+                schemaFile = args[5];
 
                 IEnumerable<string> inputFiles;
 
@@ -116,7 +119,7 @@ namespace TsdLib.InstrumentGenerator
 
             try //Generate code and/or assembly
             {
-                Generate(outputType, xmlFiles, outputPath, language, schemaFile);
+                Generate(outputType, xmlFiles, outputPath, clientNamespace, language, schemaFile);
             }
             catch (TsdLibException ex)
             {
@@ -132,9 +135,9 @@ namespace TsdLib.InstrumentGenerator
             return 0;
         }
 
-        public static void Generate(OutputTypes outputType, IEnumerable<string> xmlFiles, string outputPath, Language language = Language.CSharp, string schemaFile = "TsdLib.Instrument.xsd")
+        public static void Generate(OutputTypes outputType, IEnumerable<string> xmlFiles, string outputPath, string clientNamespace, Language language = Language.CSharp, string schemaFile = "TsdLib.Instrument.xsd")
         {
-            CodeNamespace ns = generateCodeNamespace(xmlFiles.ToArray(), schemaFile);
+            CodeNamespace ns = generateCodeNamespace(clientNamespace, xmlFiles.ToArray(), schemaFile);
 
             if (outputType.HasFlag(OutputTypes.Source))
                 generateSource(ns, outputPath, language);
@@ -143,7 +146,7 @@ namespace TsdLib.InstrumentGenerator
                 generateAssembly(ns, outputPath, language);
         }
 
-        static CodeNamespace generateCodeNamespace(string[] xmlFiles, string schemaFile)
+        static CodeNamespace generateCodeNamespace(string clientNamespace, string[] xmlFiles, string schemaFile)
         {
             XmlSchemaSet schemas = new XmlSchemaSet();
             var s = schemas.Add(null, schemaFile);
@@ -163,8 +166,9 @@ namespace TsdLib.InstrumentGenerator
                     Trace.WriteLine("\t" + badFile);
             }
 
-            CodeNamespace ns = new CodeNamespace("TsdLib.Instrument");
+            CodeNamespace ns = new CodeNamespace(clientNamespace);
             ns.Imports.Add(new CodeNamespaceImport("System"));
+            ns.Imports.Add(new CodeNamespaceImport("TsdLib.Instrument"));
 
             foreach (XDocument doc in docs)
             {
@@ -177,7 +181,7 @@ namespace TsdLib.InstrumentGenerator
                 Debug.Assert(instrumentElement != null, "File: " + docName + " does not have a valid root element.");
 
                 string connectionType = (string)instrumentElement.Attribute("ConnectionType");
-                ns.Imports.Add(new CodeNamespaceImport(connectionType));
+                ns.Imports.Add(new CodeNamespaceImport("TsdLib.Instrument." + connectionType));
 
                 //Generate instrument class
                 CodeTypeDeclaration instrumentClass = new CodeTypeDeclaration((string)instrumentElement.Attribute("Name"));
