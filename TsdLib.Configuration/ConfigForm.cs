@@ -7,16 +7,26 @@ namespace TsdLib.Configuration
     sealed partial class ConfigForm<T> : Form
         where T : ConfigItem, new()
     {
-        public readonly IConfigGroup<T> ConfigGroup;
+        private readonly IConfigGroup<T> _configGroup;
         
-        public ConfigForm()
+        public ConfigForm(IConfigGroup<T> configGroup)
         {
             InitializeComponent();
-            Text = typeof (T).Name;
-            ConfigGroup = Config.Manager.GetConfigGroup<T>();
-            comboBox_SettingsGroup.DataSource = ConfigGroup;
-            if (ConfigGroup.Any())
-                propertyGrid_Settings.SelectedObject = ConfigGroup.ElementAt(0);
+            Text = typeof(T).Name;
+            _configGroup = configGroup;
+            comboBox_SettingsGroup.DataSource = _configGroup;
+            if (_configGroup.Any())
+                propertyGrid_Settings.SelectedObject = _configGroup.ElementAt(0);
+            Shown += ConfigForm_Shown;
+        }
+
+        void ConfigForm_Shown(object sender, EventArgs e)
+        {
+            if (!_configGroup.Any())
+            {
+                new ConfigFormCreate<T>(_configGroup).ShowDialog();
+                //comboBox_SettingsGroup.SelectedIndex = comboBox_SettingsGroup.Items.Count - 1;
+            }
         }
 
         private void closeForm(object sender, EventArgs e)
@@ -33,8 +43,8 @@ namespace TsdLib.Configuration
         
         private void button_CreateNew_Click(object sender, EventArgs e)
         {
-            T newConfig = (T) Activator.CreateInstance(typeof (T), textBox1.Text, checkBox_RemiSetting.Checked);
-            ConfigGroup.Add(newConfig, checkBox_RemiSetting.Checked);
+            new ConfigFormCreate<T>(_configGroup).ShowDialog();
+
             comboBox_SettingsGroup.SelectedIndex = comboBox_SettingsGroup.Items.Count - 1;
         }
     }
