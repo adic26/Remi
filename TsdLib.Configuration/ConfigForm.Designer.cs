@@ -30,12 +30,10 @@
         {
             this.propertyGrid_Settings = new System.Windows.Forms.PropertyGrid();
             this.button_OK = new System.Windows.Forms.Button();
-            this.button_Cancel = new System.Windows.Forms.Button();
             this.comboBox_SettingsGroup = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button_CreateNew = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.checkBox_RemiSetting = new System.Windows.Forms.CheckBox();
+            this.button_Cancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // propertyGrid_Settings
@@ -55,17 +53,6 @@
             this.button_OK.Text = "OK";
             this.button_OK.UseVisualStyleBackColor = true;
             this.button_OK.Click += new System.EventHandler(this.closeForm);
-            // 
-            // button_Cancel
-            // 
-            this.button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button_Cancel.Location = new System.Drawing.Point(339, 320);
-            this.button_Cancel.Name = "button_Cancel";
-            this.button_Cancel.Size = new System.Drawing.Size(124, 39);
-            this.button_Cancel.TabIndex = 2;
-            this.button_Cancel.Text = "Cancel";
-            this.button_Cancel.UseVisualStyleBackColor = true;
-            this.button_Cancel.Click += new System.EventHandler(this.closeForm);
             // 
             // comboBox_SettingsGroup
             // 
@@ -88,30 +75,24 @@
             // 
             // button_CreateNew
             // 
-            this.button_CreateNew.Location = new System.Drawing.Point(306, 64);
+            this.button_CreateNew.Location = new System.Drawing.Point(339, 40);
             this.button_CreateNew.Name = "button_CreateNew";
-            this.button_CreateNew.Size = new System.Drawing.Size(75, 23);
+            this.button_CreateNew.Size = new System.Drawing.Size(124, 21);
             this.button_CreateNew.TabIndex = 5;
             this.button_CreateNew.Text = "Create New";
             this.button_CreateNew.UseVisualStyleBackColor = true;
             this.button_CreateNew.Click += new System.EventHandler(this.button_CreateNew_Click);
             // 
-            // textBox1
+            // button_Cancel
             // 
-            this.textBox1.Location = new System.Drawing.Point(306, 38);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(157, 20);
-            this.textBox1.TabIndex = 6;
-            // 
-            // checkBox_RemiSetting
-            // 
-            this.checkBox_RemiSetting.AutoSize = true;
-            this.checkBox_RemiSetting.Location = new System.Drawing.Point(306, 15);
-            this.checkBox_RemiSetting.Name = "checkBox_RemiSetting";
-            this.checkBox_RemiSetting.Size = new System.Drawing.Size(86, 17);
-            this.checkBox_RemiSetting.TabIndex = 7;
-            this.checkBox_RemiSetting.Text = "Remi Setting";
-            this.checkBox_RemiSetting.UseVisualStyleBackColor = true;
+            this.button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.button_Cancel.Location = new System.Drawing.Point(339, 320);
+            this.button_Cancel.Name = "button_Cancel";
+            this.button_Cancel.Size = new System.Drawing.Size(124, 39);
+            this.button_Cancel.TabIndex = 2;
+            this.button_Cancel.Text = "Cancel";
+            this.button_Cancel.UseVisualStyleBackColor = true;
+            this.button_Cancel.Click += new System.EventHandler(this.closeForm);
             // 
             // ConfigForm
             // 
@@ -119,8 +100,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(475, 371);
             this.ControlBox = false;
-            this.Controls.Add(this.checkBox_RemiSetting);
-            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button_CreateNew);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.comboBox_SettingsGroup);
@@ -137,11 +116,9 @@
 
         private System.Windows.Forms.PropertyGrid propertyGrid_Settings;
         private System.Windows.Forms.Button button_OK;
-        private System.Windows.Forms.Button button_Cancel;
         private System.Windows.Forms.ComboBox comboBox_SettingsGroup;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button_CreateNew;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.CheckBox checkBox_RemiSetting;
+        private System.Windows.Forms.Button button_Cancel;
     }
 }

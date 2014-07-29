@@ -1,4 +1,5 @@
-﻿using TsdLib.Controller;
+﻿using TsdLib.Configuration;
+using TsdLib.Controller;
 using TsdLib.TestSequence;
 
 namespace TestClient
@@ -9,6 +10,11 @@ namespace TestClient
             : base(view, testSequence)
         {
 
+        }
+
+        public override void EditStationConfig()
+        {
+            Config<TestClientStationConfig>.Manager.Edit();
         }
     }
 }

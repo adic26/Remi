@@ -28,4 +28,35 @@ namespace TsdLib.Configuration
             return Name;
         }
     }
+
+    public class StationConfig : ConfigItem
+    {
+        public StationConfig() { }
+
+        public StationConfig(string stationName = "Default", bool remiSetting = true)
+            : base(stationName, remiSetting) { }
+
+        [Category("Instruments")]
+        public string InstrumentAddress { get; set; }
+    }
+
+    public class ProductConfig : ConfigItem
+    {
+        public ProductConfig() { }
+
+        public ProductConfig(string productName, bool remiSetting = true)
+            : base(productName, remiSetting) { }
+
+        [Category("RF")]
+        public string Bands { get; set; }
+    }
+
+    public class TestConfig : ConfigItem
+    {
+        public TestConfig() { }
+
+        [Category("Sequence")]
+        public TestConfig(string testName, bool remiSetting = true)
+            : base(testName, remiSetting) { }
+    }
 }

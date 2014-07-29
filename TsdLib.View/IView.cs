@@ -4,7 +4,10 @@ namespace TsdLib.View
 {
     public interface IView
     {
-        event EventHandler Configure;
+        event EventHandler EditStationConfig;
+        event EventHandler EditProductConfig;
+        event EventHandler EditTestConfig;
+
         event EventHandler ExecuteTestSequence;
         event EventHandler AbortTestSequence;
 

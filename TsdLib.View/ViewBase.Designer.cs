@@ -33,7 +33,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.button_ExecuteTestSequence = new System.Windows.Forms.Button();
             this.button_AbortTestSequence = new System.Windows.Forms.Button();
-            this.button_Settings = new System.Windows.Forms.Button();
+            this.button_StationConfig = new System.Windows.Forms.Button();
+            this.button_ProductConfig = new System.Windows.Forms.Button();
             this.measurementDataGridView1 = new TsdLib.View.MeasurementDataGridView();
             this.MeasurementName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MeasuredValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -41,6 +42,7 @@
             this.LowerLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UpperLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Result = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.button_TestConfig = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -91,15 +93,25 @@
             this.button_AbortTestSequence.UseVisualStyleBackColor = true;
             this.button_AbortTestSequence.Click += new System.EventHandler(this.button_AbortTestSequence_Click);
             // 
-            // button_Settings
+            // button_StationConfig
             // 
-            this.button_Settings.Location = new System.Drawing.Point(15, 12);
-            this.button_Settings.Name = "button_Settings";
-            this.button_Settings.Size = new System.Drawing.Size(75, 23);
-            this.button_Settings.TabIndex = 8;
-            this.button_Settings.Text = "Settings";
-            this.button_Settings.UseVisualStyleBackColor = true;
-            this.button_Settings.Click += new System.EventHandler(this.button_Settings_Click);
+            this.button_StationConfig.Location = new System.Drawing.Point(12, 12);
+            this.button_StationConfig.Name = "button_StationConfig";
+            this.button_StationConfig.Size = new System.Drawing.Size(125, 23);
+            this.button_StationConfig.TabIndex = 8;
+            this.button_StationConfig.Text = "Station Config";
+            this.button_StationConfig.UseVisualStyleBackColor = true;
+            this.button_StationConfig.Click += new System.EventHandler(this.button_StationConfig_Click);
+            // 
+            // button_ProductConfig
+            // 
+            this.button_ProductConfig.Location = new System.Drawing.Point(12, 41);
+            this.button_ProductConfig.Name = "button_ProductConfig";
+            this.button_ProductConfig.Size = new System.Drawing.Size(125, 23);
+            this.button_ProductConfig.TabIndex = 9;
+            this.button_ProductConfig.Text = "Product Config";
+            this.button_ProductConfig.UseVisualStyleBackColor = true;
+            this.button_ProductConfig.Click += new System.EventHandler(this.button_ProductConfig_Click);
             // 
             // measurementDataGridView1
             // 
@@ -163,13 +175,25 @@
             this.Result.ReadOnly = true;
             this.Result.Width = 62;
             // 
+            // button_TestConfig
+            // 
+            this.button_TestConfig.Location = new System.Drawing.Point(12, 70);
+            this.button_TestConfig.Name = "button_TestConfig";
+            this.button_TestConfig.Size = new System.Drawing.Size(125, 23);
+            this.button_TestConfig.TabIndex = 10;
+            this.button_TestConfig.Text = "Test Config";
+            this.button_TestConfig.UseVisualStyleBackColor = true;
+            this.button_TestConfig.Click += new System.EventHandler(this.button_TestConfig_Click);
+            // 
             // ViewBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(539, 576);
+            this.Controls.Add(this.button_TestConfig);
+            this.Controls.Add(this.button_ProductConfig);
             this.Controls.Add(this.measurementDataGridView1);
-            this.Controls.Add(this.button_Settings);
+            this.Controls.Add(this.button_StationConfig);
             this.Controls.Add(this.button_AbortTestSequence);
             this.Controls.Add(this.button_ExecuteTestSequence);
             this.Controls.Add(this.label2);
@@ -189,7 +213,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button_ExecuteTestSequence;
         private System.Windows.Forms.Button button_AbortTestSequence;
-        private System.Windows.Forms.Button button_Settings;
+        private System.Windows.Forms.Button button_StationConfig;
         private MeasurementDataGridView measurementDataGridView1;
         private System.Windows.Forms.DataGridViewTextBoxColumn MeasurementName;
         private System.Windows.Forms.DataGridViewTextBoxColumn MeasuredValue;
@@ -197,5 +221,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn LowerLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn UpperLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Result;
+        private System.Windows.Forms.Button button_ProductConfig;
+        private System.Windows.Forms.Button button_TestConfig;
     }
 }

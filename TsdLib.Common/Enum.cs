@@ -6,4 +6,10 @@
         ReadyToTest
     }
 
+    public enum ConfigType
+    {
+        StationConfig,
+        ProductConfig,
+        Test
+    }
 }

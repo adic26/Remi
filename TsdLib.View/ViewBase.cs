@@ -48,11 +48,26 @@ namespace TsdLib.View
             measurementDataGridView1.AddMeasurement(measurement);
         }
 
-        public event EventHandler Configure;
-        private void button_Settings_Click(object sender, EventArgs e)
+
+        public event EventHandler EditStationConfig;
+        private void button_StationConfig_Click(object sender, EventArgs e)
         {
-            if (Configure != null)
-                Configure(this, new EventArgs());
+            if (EditStationConfig != null)
+                EditStationConfig(this, new EventArgs());
+        }
+
+        public event EventHandler EditProductConfig;
+        private void button_ProductConfig_Click(object sender, EventArgs e)
+        {
+            if (EditProductConfig != null)
+                EditProductConfig(this, new EventArgs());
+        }
+
+        public event EventHandler EditTestConfig;
+        private void button_TestConfig_Click(object sender, EventArgs e)
+        {
+            if (EditTestConfig != null)
+                EditTestConfig(this, new EventArgs());
         }
 
         public event EventHandler ExecuteTestSequence;

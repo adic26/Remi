@@ -47,8 +47,8 @@ namespace TsdLib.Configuration
                         {
                             SerializedValue = valueFromRemi,
                             Deserialized = false,
+                            IsDirty = true,
                         };
-                        settingValue.IsDirty = true; //make sure the local settings are written
                         configFromRemi.Add(settingValue);
                     }
                     

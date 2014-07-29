@@ -12,7 +12,7 @@ namespace TsdLib.TestSequence
         protected override void Execute(CancellationToken token)
         {
             //config object holds all product and station config properties
-            IConfigGroup<ProductConfig> config = Config.Manager.GetConfigGroup<ProductConfig>();
+            IConfigGroup<ProductConfig> config = Config<ProductConfig>.Manager.ConfigGroup;
 
             Dummy_Aglient6632B powerSupply = Dummy_Aglient6632B.Connect();
             Measurements.AddMeasurement("Model Number", powerSupply.ModelNumber, "Identification", "n/a", "n/a");
