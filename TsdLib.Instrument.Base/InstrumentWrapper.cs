@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace TsdLib.Instrument
@@ -22,6 +23,12 @@ namespace TsdLib.Instrument
         public string FirmwareVersion { get { return string.Join(",", _instruments.Select(inst => inst.FirmwareVersion)).TrimEnd(','); } }
 
         public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
         {
             foreach (IInstrument instrument in _instruments)
                 instrument.Dispose();

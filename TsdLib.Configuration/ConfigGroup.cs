@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace TsdLib.Configuration
 {
-    class ConfigGroup<T> : ApplicationSettingsBase, IConfigGroup<T>, IListSource
+    sealed class ConfigGroup<T> : ApplicationSettingsBase, IConfigGroup<T>, IListSource
         where T : ConfigItem, new()
     {
         [UserScopedSetting]

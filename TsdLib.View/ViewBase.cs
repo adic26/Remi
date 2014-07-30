@@ -13,7 +13,6 @@ namespace TsdLib.View
             InitializeComponent();
             _textBoxTraceListener = new TextBoxTraceListener(textBox_Status);
             Trace.Listeners.Add(_textBoxTraceListener);
-            Disposed += (o, e) => Trace.Listeners.Remove(_textBoxTraceListener);
         }
         
         public void Launch()

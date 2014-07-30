@@ -1,4 +1,6 @@
-﻿namespace TsdLib.View
+﻿using System.Diagnostics;
+
+namespace TsdLib.View
 {
     partial class ViewBase
     {
@@ -16,6 +18,8 @@
             if (disposing && (components != null))
             {
                 components.Dispose();
+                Trace.Listeners.Remove(_textBoxTraceListener);
+                _textBoxTraceListener.Dispose();
             }
             base.Dispose(disposing);
         }

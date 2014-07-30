@@ -6,6 +6,7 @@ namespace TestClient
 {
     class TestClientProgram
     {
+        [STAThread]
         private static void Main()
         {
             Trace.Listeners.Add(new ConsoleTraceListener());

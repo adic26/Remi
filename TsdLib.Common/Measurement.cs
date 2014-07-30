@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace TsdLib
 {
@@ -126,6 +128,7 @@ namespace TsdLib
         }
     }
 
+    [Serializable]
     public class MeasurementParameterCollection : Dictionary<string, object>
     {
         public MeasurementParameterCollection(IEnumerable<MeasurementParameter> parameters)
@@ -133,6 +136,8 @@ namespace TsdLib
         {
             
         }
-    
+
+        protected MeasurementParameterCollection(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
     }
 }

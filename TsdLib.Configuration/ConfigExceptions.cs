@@ -2,6 +2,7 @@
 
 namespace TsdLib.Configuration
 {
+    [Serializable]
     public class ConfigException : TsdLibException
     {
         public ConfigException(string message)
