@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Text.RegularExpressions;
 using TestClient.TestSequences;
 
 namespace TestClient

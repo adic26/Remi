@@ -53,27 +53,6 @@ namespace TsdLib.Controller
 
         #region Config
 
-        public void Edit<T>()
-            where T : ConfigItem, new()
-        {
-            Config<T>.Manager.Edit();
-        }
-
-        public virtual void EditStationConfig()
-        {
-            Trace.WriteLine("Station config has not been defined for this system.");
-        }
-
-        public virtual void EditProductConfig()
-        {
-            Trace.WriteLine("Product config has not been defined for this system.");
-        }
-
-        public virtual void EditTestConfig()
-        {
-            Trace.WriteLine("Test config has not been defined for this system.");
-        }
-
         void _view_EditStationConfig(object sender, EventArgs e)
         {
             Config<TStationConfig>.Manager.Edit();
