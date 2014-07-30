@@ -10,10 +10,9 @@ namespace TsdLib.Configuration
         public static Config<T> Manager { get { return instance; } }
         private Config() { }
 
-        private IConfigGroup<T> _configGroup;
         internal IConfigGroup<T> ConfigGroup
         {
-            get { return _configGroup ?? (_configGroup = new ConfigGroup<T>()); }
+            get { return new ConfigGroup<T>(); } //deserialize persisted config object
         }
 
         internal T GetConfig(string name)
@@ -26,12 +25,11 @@ namespace TsdLib.Configuration
 
         public void Edit()
         {
-            ConfigForm<T> form = new ConfigForm<T>(ConfigGroup);
+            IConfigGroup<T> copy = ConfigGroup;
+            ConfigForm<T> form = new ConfigForm<T>(copy);
             form.ShowDialog();
             if (form.DialogResult == DialogResult.OK)
-                ConfigGroup.Save();
-            else
-                _configGroup = new ConfigGroup<T>();
+                copy.Save();
         }
     }
 }
