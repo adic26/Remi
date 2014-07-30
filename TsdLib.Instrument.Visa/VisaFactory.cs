@@ -53,7 +53,7 @@ namespace TsdLib.Instrument.Visa
                 if (!connection.IsConnected)
                     Debug.Fail("Passed a disconnected connection into VisaFactory.GetInstrumentIdentifier!");
 
-                connection.SendCommand(idAttribute.Command);
+                connection.SendCommand(idAttribute.Command, -1);
 
                 string response = idAttribute.TermChar == '\uD800' ? connection.GetResponse<string>() : connection.GetResponse<string>(terminationCharacter:idAttribute.TermChar);
                 

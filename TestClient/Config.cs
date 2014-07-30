@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.Configuration;
-using TsdLib.Configuration;
+﻿using TsdLib.Configuration;
 
 namespace TestClient
 {//TODO: fill in station-specific config properties

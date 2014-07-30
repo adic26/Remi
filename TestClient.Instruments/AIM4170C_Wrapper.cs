@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
-using TestClient.Instruments;
+using TsdLib.Instrument;
 
-namespace TsdLib.Instrument
+namespace TestClient.Instruments
 {
     public class AIM4170C_Wrapper
     {
@@ -42,12 +43,13 @@ namespace TsdLib.Instrument
                 double rawFreq = Convert.ToInt32(freqStr, 16);
 
                 double receivedFrequency = (rawFreq - 0.5) * 400d / 4294967296d;
+                Debug.Assert(Math.Abs(frequency - receivedFrequency) < 0.00001, "Invalid frequency measured by the AIM4170C instrument.");
 
                 Complex current = Dft(rawMeasurementData.Skip(4).Take(32).ToArray());
                 Complex voltage = Dft(rawMeasurementData.Skip(36).Take(32).ToArray());
 
                 Complex characteristicImpedance = new Complex(CharacteristicResistance, 0);
-                Complex impedance = (voltage / current) * CharacteristicResistance;
+                Complex impedance = (voltage / current) * characteristicImpedance;
 
 // ReSharper disable once EqualExpressionComparison - this is a way to check for NaN
                 if (impedance != impedance)
@@ -72,8 +74,10 @@ namespace TsdLib.Instrument
                 double rootOfUnity = 2 * Math.PI * i / waveform.Length;
                 double sample = waveform.ElementAt(i) * 256 + waveform.ElementAt(i + 1);
 
+// ReSharper disable PossibleLossOfFraction
                 double real = sample * Math.Cos(rootOfUnity) / (waveform.Length / 2);
                 double imaginary = sample * Math.Sin(rootOfUnity) / (waveform.Length / 2);
+// ReSharper restore PossibleLossOfFraction
 
                 result += new Complex(real, imaginary);
             }

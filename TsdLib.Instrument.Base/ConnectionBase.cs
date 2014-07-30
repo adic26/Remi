@@ -48,9 +48,9 @@ namespace TsdLib.Instrument
         /// Sends a command to the connected instrument.
         /// </summary>
         /// <param name="command">Raw command to send. Use {0}, {1}, etc. to insert members of the args array.</param>
-        /// <param name="delay">Time in milliseconds to delay before sending the command.</param>
+        /// <param name="delay">Time in milliseconds to delay before sending the command. Pass -1 to use the default delay for the connection.</param>
         /// <param name="args">Arguments to be inserted into the raw command string.</param>
-        public void SendCommand(string command, int delay = -1, params object[] args)
+        public void SendCommand(string command, int delay, params object[] args)
         {
             int localDelay = delay != -1 ? delay : DefaultDelay;
             if (localDelay > 0)

@@ -40,7 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConnectionBase.cs" />
-    <Compile Include="DummyConnection.cs" />
+    <Compile Include="Dummy\DummyConnection.cs" />
     <Compile Include="FactoryBase.cs" />
     <Compile Include="InstrumentBase.cs" />
     <Compile Include="InstrumentExceptions.cs" />

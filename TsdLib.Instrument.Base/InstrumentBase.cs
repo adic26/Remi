@@ -24,7 +24,7 @@ namespace TsdLib.Instrument
             InitCommandsAttribute initCommands = (InitCommandsAttribute)Attribute.GetCustomAttribute(GetType(), typeof(InitCommandsAttribute), true);
             if (initCommands != null)
                 foreach (string command in initCommands.Commands)
-                    Connection.SendCommand(command);
+                    Connection.SendCommand(command, -1);
 
             Description = GetType().Name + " via " + connection.Description;
         }
@@ -43,7 +43,7 @@ namespace TsdLib.Instrument
                 {
                     lock (this)
                     {
-                        Connection.SendCommand(ModelNumberMessage);
+                        Connection.SendCommand(ModelNumberMessage, -1);
                         _modelNumber = Connection.GetResponse<string>(ModelNumberRegEx, ModelNumberTermChar);
                     }
                 }
@@ -63,7 +63,7 @@ namespace TsdLib.Instrument
                 {
                     if (_serialNumber == null)
                     {
-                        Connection.SendCommand(SerialNumberMessage);
+                        Connection.SendCommand(SerialNumberMessage, -1);
                         _serialNumber = Connection.GetResponse<string>(SerialNumberRegEx, SerialNumberTermChar);
                     }
                 }
@@ -83,7 +83,7 @@ namespace TsdLib.Instrument
                 {
                     if (_firmwareVersion == null)
                     {
-                        Connection.SendCommand(FirmwareVersionMessage);
+                        Connection.SendCommand(FirmwareVersionMessage, -1);
                         _firmwareVersion = Connection.GetResponse<string>(FirmwareVersionRegEx, FirmwareVersionTermChar);
                     }
                     return _firmwareVersion;

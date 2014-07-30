@@ -1,4 +1,5 @@
-﻿using System;
+﻿// ReSharper disable BitwiseOperatorOnEnumWithoutFlags
+using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -170,6 +171,10 @@ namespace TsdLib.InstrumentGenerator
             ns.Imports.Add(new CodeNamespaceImport("System"));
             ns.Imports.Add(new CodeNamespaceImport("TsdLib.Instrument"));
 
+            //TODO: add ReSharper disable directives
+            // ReSharper disable FieldCanBeMadeReadOnly.Local
+            // ReSharper restore FieldCanBeMadeReadOnly.Local
+
             foreach (XDocument doc in docs)
             {
                 string docName = new Uri(doc.BaseUri).AbsolutePath;
@@ -223,6 +228,7 @@ namespace TsdLib.InstrumentGenerator
                 ctor.BaseConstructorArgs.Add(new CodeVariableReferenceExpression("connection"));
 
                 //Add factory field and methods
+                instrumentClass.Comments.Add(new CodeCommentStatement("ReSharper disable once FieldCanBeMadeReadOnly.Local"));
                 instrumentClass.Members.Add(new FactoryReference(connectionType));
                 instrumentClass.Members.Add(new ConnectMethod(instrumentClass.Name));
                 instrumentClass.Members.Add(new ConnectMethod(instrumentClass.Name, "address"));
@@ -517,6 +523,7 @@ namespace TsdLib.InstrumentGenerator
             string message = (string)methodElement.Attribute("Message");
             Parameters.Add(new CodePrimitiveExpression(message));
             string delay = (string) methodElement.Attribute("Delay");
+
             Parameters.Add(new CodePrimitiveExpression(delay != null ? int.Parse(delay) : -1));
 
             IEnumerable<CodeExpression> query = methodElement.Elements()
@@ -573,3 +580,4 @@ namespace TsdLib.InstrumentGenerator
 
 #endregion
 }
+// ReSharper restore BitwiseOperatorOnEnumWithoutFlags

@@ -7,6 +7,7 @@ namespace TestClient.Instruments
     using TsdLib.Instrument.Dummy;
     
     
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
     [IdQuery("6632B", "*IDN?")]
     [InitCommands("*RST;*CLS")]
     public class Aglient6632B : InstrumentBase<VisaConnection>, IPowerSupply
@@ -89,6 +90,7 @@ namespace TestClient.Instruments
         }
     }
     
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
     [IdQuery("4170C", "V", "@")]
     [InitCommands("D0")]
     [CommandDelay("500")]
@@ -214,6 +216,7 @@ namespace TestClient.Instruments
         }
     }
     
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
     [IdQuery("BlackBerry Device")]
     [CommandDelay("200")]
     public class BlackBerryRadio : InstrumentBase<TelnetConnection>, IBlackBerryRadio
@@ -316,6 +319,7 @@ namespace TestClient.Instruments
         }
     }
     
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
     [IdQuery("6632B", "*IDN?")]
     [InitCommands("*RST;*CLS")]
     public class Dummy_Aglient6632B : InstrumentBase<DummyConnection>, IPowerSupply
