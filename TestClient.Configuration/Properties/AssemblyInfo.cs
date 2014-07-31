@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TsdLib.Configuration")]
+[assembly: AssemblyTitle("TestClient.Configuration")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BlackBerry")]
-[assembly: AssemblyProduct("TsdLib.Configuration")]
+[assembly: AssemblyProduct("TestClient.Configuration")]
 [assembly: AssemblyCopyright("Copyright © BlackBerry 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("9e31c64e-8581-46ba-88ff-83afea4f4bb0")]
+[assembly: Guid("44a8875a-8be0-4a18-b947-84c6d4d381a4")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -31,4 +31,4 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.0.0")]//TODO: replace with 0.1.*
+[assembly: AssemblyVersion("1.0.0.0")]

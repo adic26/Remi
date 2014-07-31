@@ -11,7 +11,7 @@ namespace TsdLib.Controller
     public abstract class ControllerBase<TStationConfig, TProductConfig, TTestConfig>
         where TStationConfig : StationConfigCommon, new()
         where TProductConfig : ProductConfigCommon, new()
-        where TTestConfig : TestConfigCommon, new()
+        where TTestConfig : TestConfigCommon<TStationConfig, TProductConfig>, new()
     {
         #region Private Fields
 

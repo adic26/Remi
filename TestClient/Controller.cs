@@ -1,4 +1,5 @@
-﻿using TsdLib.Controller;
+﻿using TestClient.Configuration;
+using TsdLib.Controller;
 using TsdLib.TestSequence;
 
 namespace TestClient

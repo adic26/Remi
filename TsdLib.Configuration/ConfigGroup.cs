@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace TsdLib.Configuration
 {
-    sealed class ConfigGroup<T> : ApplicationSettingsBase, IConfigGroup<T>, IListSource
+    sealed class ConfigGroup<T> : ApplicationSettingsBase, IConfigGroup<T>
         where T : ConfigItem, new()
     {
         [UserScopedSetting]
@@ -38,9 +38,15 @@ namespace TsdLib.Configuration
 
             AllConfigItems = new BindingList<T>();
             foreach (T configItem in ConfigItems)
+            {
+                configItem.Container = this;
                 AllConfigItems.Add(configItem);
+            }
             foreach (T localConfigItem in LocalConfigItems)
+            {
+                localConfigItem.Container = this;
                 AllConfigItems.Add(localConfigItem);
+            }
 
             ConfigItems.ListChanged += ConfigItems_ListChanged;
             LocalConfigItems.ListChanged += ConfigItems_ListChanged;
@@ -96,10 +102,14 @@ namespace TsdLib.Configuration
         #endregion
     }
 
-    public interface IConfigGroup<T> : IEnumerable<T>
+    public interface IConfigGroup<out T> : IConfigGroup, IEnumerable<T>
+        where T : ConfigItem
     {
-        void Save();
+        
+    }
 
-        void Add(T config, bool useRemi = true);
+    public interface IConfigGroup : IListSource
+    {
+        void Reload();
     }
 }

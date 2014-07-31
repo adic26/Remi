@@ -38,6 +38,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TestClient.Configuration\TestClient.Configuration.csproj">
+      <Project>{CAC676CC-D73F-46DB-B105-74D0FF6D3C66}</Project>
+      <Name>TestClient.Configuration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TestClient.Instruments\TestClient.Instruments.csproj">
       <Project>{3B4E18DB-0495-4C9F-A283-5EADA3C4FB17}</Project>
       <Name>TestClient.Instruments</Name>
@@ -45,6 +49,10 @@
     <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
       <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
       <Name>TsdLib.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Configuration\TsdLib.Configuration.csproj">
+      <Project>{B8EB70D6-E5CB-46FF-9CB9-382AB1E6BD7D}</Project>
+      <Name>TsdLib.Configuration</Name>
     </ProjectReference>
     <ProjectReference Include="..\TsdLib.Instrument.Base\TsdLib.Instrument.Base.csproj">
       <Project>{4BE9BEEA-3FA2-452D-9D2D-1B4F165670CD}</Project>

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
 using TestClient.TestSequences;
 
 namespace TestClient
@@ -17,6 +15,8 @@ namespace TestClient
             c.Launch();
 
             Console.WriteLine("Done");
+
+            Console.ReadLine();
         }
     }
 }
