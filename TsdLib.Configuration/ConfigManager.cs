@@ -9,16 +9,21 @@ namespace TsdLib.Configuration
         private static readonly Config<T> instance = new Config<T>();
         public static Config<T> Manager { get { return instance; } }
 
-        private Config() { }
+        private ConfigGroup<T> _configGroup;
+
+        private Config()
+        {
+            _configGroup = new ConfigGroup<T>();
+        }
 
         public IConfigGroup<T> GetConfigGroup()
         {
-            return new ConfigGroup<T>();
+            return _configGroup;
         }
 
         public T GetConfig(string name)
         {
-            T configItem = GetConfigGroup()
+            T configItem = _configGroup
                 .FirstOrDefault(config => config.Name == name);
             if (configItem == null)
                 throw new ConfigException(typeof(T).Name + " named: " + name + " could not be found.");
@@ -27,11 +32,14 @@ namespace TsdLib.Configuration
 
         public void Edit()
         {
-            ConfigGroup<T> copy = new ConfigGroup<T>(); 
-            ConfigForm<T> form = new ConfigForm<T>(copy);
-            form.ShowDialog();
-            if (form.DialogResult == DialogResult.OK)
-                copy.Save();
-        }
+            using (ConfigForm<T> form = new ConfigForm<T>(_configGroup))
+            {
+                form.ShowDialog();
+                if (form.DialogResult == DialogResult.OK)
+                    _configGroup.Save();
+                else
+                    _configGroup = new ConfigGroup<T>(); //reload from persisted settings
+            }
+    }
     }
 }

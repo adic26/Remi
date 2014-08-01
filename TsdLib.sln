@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.StateMachine", "TsdL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Common", "TsdLib.Common\TsdLib.Common.csproj", "{84ACB4F7-C908-491A-96D9-9305A0B29295}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.InstrumentGenerator", "TsdLib.InstrumentGenerator\TsdLib.InstrumentGenerator.csproj", "{B12037D0-EDD5-41A2-A68D-D2170EAFFCB0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.CodeGenerator", "TsdLib.CodeGenerator\TsdLib.CodeGenerator.csproj", "{B12037D0-EDD5-41A2-A68D-D2170EAFFCB0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Instrument.Base", "TsdLib.Instrument.Base\TsdLib.Instrument.Base.csproj", "{4BE9BEEA-3FA2-452D-9D2D-1B4F165670CD}"
 EndProject
@@ -34,7 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestClient", "TestClient", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient.Instruments", "TestClient.Instruments\TestClient.Instruments.csproj", "{3B4E18DB-0495-4C9F-A283-5EADA3C4FB17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient.TestSequences", "TestClient.TestSequences\TestClient.TestSequences.csproj", "{C2E929E9-3A83-4F84-B932-EF77D4B13AA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient.TestSequence", "TestClient.TestSequence\TestClient.TestSequence.csproj", "{C2E929E9-3A83-4F84-B932-EF77D4B13AA0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient.Configuration", "TestClient.Configuration\TestClient.Configuration.csproj", "{CAC676CC-D73F-46DB-B105-74D0FF6D3C66}"
 EndProject

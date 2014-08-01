@@ -6,7 +6,7 @@ namespace TestClient
 {
     class Controller : ControllerBase<StationConfig, ProductConfig, TestConfig>
     {
-        public Controller(View view, TestSequenceBase testSequence)
+        public Controller(View view, TestSequenceBase<StationConfig, ProductConfig> testSequence)
             : base(view, testSequence)
         {
 

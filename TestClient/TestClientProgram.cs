@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using TestClient.TestSequences;
+using TestClient.Configuration;
+using TsdLib.Configuration;
 
 namespace TestClient
 {
@@ -11,12 +12,13 @@ namespace TestClient
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
 
-            Controller c = new Controller(new View(), new DummyTestSequence());
+            IConfigGroup<StationConfig> stationConfigGroup = Config<StationConfig>.Manager.GetConfigGroup();
+            IConfigGroup<ProductConfig> productConfigGroup = Config<ProductConfig>.Manager.GetConfigGroup();
+
+            Controller c = new Controller(new View(), new TestSequence.TestSequence());
             c.Launch();
 
             Console.WriteLine("Done");
-
-            Console.ReadLine();
         }
     }
 }

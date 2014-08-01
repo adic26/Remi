@@ -57,9 +57,9 @@
       <Project>{a9ab58d9-08ea-43cc-ab6a-9e934bdd3c7b}</Project>
       <Name>TsdLib.Instrument.Visa</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TsdLib.InstrumentGenerator\TsdLib.InstrumentGenerator.csproj">
+    <ProjectReference Include="..\TsdLib.CodeGenerator\TsdLib.CodeGenerator.csproj">
       <Project>{b12037d0-edd5-41a2-a68d-d2170eaffcb0}</Project>
-      <Name>TsdLib.InstrumentGenerator</Name>
+      <Name>TsdLib.CodeGenerator</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -74,7 +74,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>$(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\TsdLib.InstrumentGenerator.exe Source $(ProjectPath) $(ProjectDir) $(ProjectName) CSharp $(SolutionDir)TsdLib.InstrumentGenerator\bin\$(ConfigurationName)\TsdLib.Instrument.xsd"</PreBuildEvent>
+    <PreBuildEvent>$(SolutionDir)TsdLib.CodeGenerator\bin\$(ConfigurationName)\TsdLib.CodeGenerator.exe Instruments Source $(ProjectPath) $(ProjectDir) $(ProjectName) CSharp $(SolutionDir)TsdLib.CodeGenerator\bin\$(ConfigurationName)\TsdLib.Instrument.xsd"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

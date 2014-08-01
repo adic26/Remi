@@ -11,12 +11,12 @@ namespace TsdLib.Controller
     public abstract class ControllerBase<TStationConfig, TProductConfig, TTestConfig>
         where TStationConfig : StationConfigCommon, new()
         where TProductConfig : ProductConfigCommon, new()
-        where TTestConfig : TestConfigCommon<TStationConfig, TProductConfig>, new()
+        where TTestConfig : TestConfigCommon, new()
     {
         #region Private Fields
 
         private readonly IView _view;
-        private readonly TestSequenceBase _testSequence;
+        private readonly TestSequenceBase<TStationConfig, TProductConfig> _testSequence;
 
         private readonly LocalMeasurementWriter _localMeasurementWriter;
 
@@ -26,7 +26,7 @@ namespace TsdLib.Controller
 
         #region Constructor and Launch
 
-        protected ControllerBase(IView view, TestSequenceBase testSequence)
+        protected ControllerBase(IView view, TestSequenceBase<TStationConfig, TProductConfig> testSequence)
         {
             _view = view;
             _testSequence = testSequence;
@@ -77,7 +77,8 @@ namespace TsdLib.Controller
             try
             {
                 _tokenSource = new CancellationTokenSource();
-                await _testSequence.ExecuteAsync(_tokenSource.Token);
+                //TODO: pass in the names of StationConfig and ProductConfig to use
+                await _testSequence.ExecuteAsync(Config<TStationConfig>.Manager.GetConfig(""), Config<TProductConfig>.Manager.GetConfig(""), _tokenSource.Token);
             }
             catch (OperationCanceledException)
             {

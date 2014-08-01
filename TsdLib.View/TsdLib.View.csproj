@@ -65,6 +65,10 @@
       <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
       <Name>TsdLib.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Configuration\TsdLib.Configuration.csproj">
+      <Project>{b8eb70d6-e5cb-46ff-9cb9-382ab1e6bd7d}</Project>
+      <Name>TsdLib.Configuration</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

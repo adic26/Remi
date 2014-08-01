@@ -1,34 +1,32 @@
-﻿using System;
-using System.Diagnostics;
+﻿//Click here to view or modify
+using System;
 using System.Globalization;
-using System.Linq;
 using System.Threading;
 using TestClient.Configuration;
 using TestClient.Instruments;
 using TsdLib;
-using TsdLib.Configuration;
 using TsdLib.TestSequence;
 
-namespace TestClient.TestSequences
+namespace TestClient.TestSequence
 {
-    public class DummyTestSequence : TestSequenceBase
+    public class TestSequence : TestSequenceBase<StationConfig, ProductConfig>
     {
         //TODO: figure out how to pull the instrument.Connect calls out of the test sequence?
-        protected override void Execute(CancellationToken token)
+        protected override void Execute(StationConfig stationConfig, ProductConfig productConfig, CancellationToken token)
         {
             //basicStationConfig object holds all station config properties for the 'Basic' configuration
-            StationConfig basicStationConfig = Config<StationConfig>.Manager.GetConfig("Basic");
-            Trace.WriteLine(string.Format("{0} is located at {1}", basicStationConfig.Name, basicStationConfig.StationLocation));
+            //StationConfig basicStationConfig = Config<StationConfig>.Manager.GetConfig("Basic");
+            //Trace.WriteLine(string.Format("{0} is located at {1}", basicStationConfig.Name, basicStationConfig.StationLocation));
 
             //khanConfig object holds all product config properties for Khan
-            ProductConfig khanConfig = Config<ProductConfig>.Manager.GetConfig("Khan");
-            Trace.WriteLine(string.Format("{0} has {1} microphones", khanConfig.Name, khanConfig.NumberOfMicrophones));
+            //ProductConfig khanConfig = Config<ProductConfig>.Manager.GetConfig("Khan");
+            //Trace.WriteLine(string.Format("{0} has {1} microphones", khanConfig.Name, khanConfig.NumberOfMicrophones));
 
             //testConfigs is a collection that holds all TestConfig objects
-            IConfigGroup<TestConfig> testConfigs = Config<TestConfig>.Manager.GetConfigGroup();
+            //IConfigGroup<TestConfig> testConfigs = Config<TestConfig>.Manager.GetConfigGroup();
             //Perform test for each type of test config where TestSeverity is set to 'Low'
-            foreach (TestConfig config in testConfigs.Where(tc => tc.TestSeverity == "Low"))
-                config.Execute(basicStationConfig, khanConfig);
+            //foreach (TestConfig config in testConfigs.Where(tc => tc.TestSeverity == "Low"))
+            //    config.Execute(basicStationConfig, khanConfig);
 
 
             //This is what a typical test sequence might look like

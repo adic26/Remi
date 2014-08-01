@@ -56,9 +56,13 @@
       <Project>{CAC676CC-D73F-46DB-B105-74D0FF6D3C66}</Project>
       <Name>TestClient.Configuration</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TestClient.TestSequences\TestClient.TestSequences.csproj">
+    <ProjectReference Include="..\TestClient.TestSequence\TestClient.TestSequence.csproj">
       <Project>{C2E929E9-3A83-4F84-B932-EF77D4B13AA0}</Project>
-      <Name>TestClient.TestSequences</Name>
+      <Name>TestClient.TestSequence</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.CodeGenerator\TsdLib.CodeGenerator.csproj">
+      <Project>{b12037d0-edd5-41a2-a68d-d2170eaffcb0}</Project>
+      <Name>TsdLib.CodeGenerator</Name>
     </ProjectReference>
     <ProjectReference Include="..\TsdLib.Configuration\TsdLib.Configuration.csproj">
       <Project>{B8EB70D6-E5CB-46FF-9CB9-382AB1E6BD7D}</Project>

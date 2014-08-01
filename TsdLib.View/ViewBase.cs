@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using TsdLib.Configuration;
 
 namespace TsdLib.View
 {
-    public partial class ViewBase : Form, IView
+    public partial class ViewBase<TStationConfig, TProductConfig> : Form, IView
+        where TStationConfig : StationConfigCommon, new()
+        where TProductConfig : ProductConfigCommon, new()
     {
         private readonly TextBoxTraceListener _textBoxTraceListener;
 
@@ -13,12 +16,20 @@ namespace TsdLib.View
             InitializeComponent();
             _textBoxTraceListener = new TextBoxTraceListener(textBox_Status);
             Trace.Listeners.Add(_textBoxTraceListener);
+
+            comboBox_StationConfig.DataSource = Config<TStationConfig>.Manager.GetConfigGroup().GetList();
+            comboBox_ProductConfig.DataSource = Config<TProductConfig>.Manager.GetConfigGroup().GetList();
+
         }
         
         public void Launch()
         {
             Text = Application.ProductName + " v." + Application.ProductVersion;
+
+
+
             ShowDialog();
+
         }
 
         public virtual void SetState(State state)
@@ -38,7 +49,7 @@ namespace TsdLib.View
 
         public void AddMeasurement(Measurement measurement)
         {
-            measurementDataGridView1.AddMeasurement(measurement);
+            measurementDataGridView.AddMeasurement(measurement);
         }
 
 
@@ -63,11 +74,12 @@ namespace TsdLib.View
                 EditTestConfig(this, new EventArgs());
         }
 
-        public event EventHandler ExecuteTestSequence;
+        public event EventHandler<TestSequenceEventArgs> ExecuteTestSequence;
         private void button_ExecuteTestSequence_Click(object sender, EventArgs e)
         {
             if (ExecuteTestSequence != null)
-                ExecuteTestSequence(this, new EventArgs());
+                ExecuteTestSequence(this,
+                    new TestSequenceEventArgs(comboBox_StationConfig.SelectedText, comboBox_ProductConfig.SelectedText));
         }
 
         public event EventHandler AbortTestSequence;

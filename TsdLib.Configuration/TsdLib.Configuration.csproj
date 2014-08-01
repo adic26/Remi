@@ -52,6 +52,12 @@
     <Compile Include="ConfigManager.cs" />
     <Compile Include="ConfigItem.cs" />
     <Compile Include="ConfigGroup.cs" />
+    <Compile Include="MultiLineStringEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MultiLineStringEditor.Designer.cs">
+      <DependentUpon>MultiLineStringEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProductConfigCommon.cs" />
     <Compile Include="RemiConfigAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -71,6 +77,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConfigFormCreate.resx">
       <DependentUpon>ConfigFormCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MultiLineStringEditor.resx">
+      <DependentUpon>MultiLineStringEditor.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

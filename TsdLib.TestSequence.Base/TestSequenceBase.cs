@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using TsdLib.Configuration;
 using TsdLib.Instrument;
 
 namespace TsdLib.TestSequence
 {
-    public abstract class TestSequenceBase
+    public abstract class TestSequenceBase<TStationConfig, TProductConfig>
+        where TStationConfig : StationConfigCommon
+        where TProductConfig : ProductConfigCommon
     {
         private readonly IEnumerable<IInstrument> _instruments;
 
@@ -17,13 +20,14 @@ namespace TsdLib.TestSequence
             Measurements = new MeasurementCollection();
         }
 
-        //This is the method that station-specific test sequences will override to define their test steps
-        protected abstract void Execute(CancellationToken token);
+        //This is the method that station-specific test sequences willToverride to define their test steps
+        protected abstract void Execute(TStationConfig stationConfig, TProductConfig productConfig, CancellationToken token);
 
-        public async Task ExecuteAsync(CancellationToken token)
+        //Asynchronous wrapper to make sure test sequences don't run on the UI thread
+        public async Task ExecuteAsync(TStationConfig stationConfig, TProductConfig productConfig, CancellationToken token)
         {
             await Task.Run(() => ConnectToInstruments(token), token); //This method won't do anything until we figure out how to parse out the instruments before executing the test sequence
-            await Task.Run(() => Execute(token), token);
+            await Task.Run(() => Execute(stationConfig, productConfig, token), token);
         }
 
         

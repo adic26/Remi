@@ -60,7 +60,7 @@
             this.comboBox_SettingsGroup.FormattingEnabled = true;
             this.comboBox_SettingsGroup.Location = new System.Drawing.Point(15, 41);
             this.comboBox_SettingsGroup.Name = "comboBox_SettingsGroup";
-            this.comboBox_SettingsGroup.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_SettingsGroup.Size = new System.Drawing.Size(202, 21);
             this.comboBox_SettingsGroup.TabIndex = 3;
             this.comboBox_SettingsGroup.SelectedValueChanged += new System.EventHandler(this.comboBox_SettingsGroup_SelectedValueChanged);
             // 
@@ -75,9 +75,9 @@
             // 
             // button_CreateNew
             // 
-            this.button_CreateNew.Location = new System.Drawing.Point(339, 40);
+            this.button_CreateNew.Location = new System.Drawing.Point(339, 36);
             this.button_CreateNew.Name = "button_CreateNew";
-            this.button_CreateNew.Size = new System.Drawing.Size(124, 21);
+            this.button_CreateNew.Size = new System.Drawing.Size(124, 39);
             this.button_CreateNew.TabIndex = 5;
             this.button_CreateNew.Text = "Create New";
             this.button_CreateNew.UseVisualStyleBackColor = true;

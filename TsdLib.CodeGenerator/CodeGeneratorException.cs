@@ -3,14 +3,14 @@ using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace TsdLib.InstrumentGenerator
+namespace TsdLib.CodeGenerator
 {
     [Serializable]
-    public class InstrumentGeneratorException : TsdLibException
+    public class CodeGeneratorException : TsdLibException
     {
-        public InstrumentGeneratorException(string message) : base(message) { }
-        public InstrumentGeneratorException(string message, Exception inner) : base(message, inner) { }
-        protected InstrumentGeneratorException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+        public CodeGeneratorException(string message) : base(message) { }
+        public CodeGeneratorException(string message, Exception inner) : base(message, inner) { }
+        protected CodeGeneratorException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 
     [Serializable]

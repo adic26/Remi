@@ -30,7 +30,7 @@ namespace TestClient.Configuration
         }
     }
 
-    public class TestConfig : TestConfigCommon<StationConfig, ProductConfig>
+    public class TestConfig : TestConfigCommon
     {
         [Category("Severity")]
         public string TestSeverity { get; set; }

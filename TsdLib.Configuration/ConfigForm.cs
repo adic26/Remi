@@ -35,7 +35,8 @@ namespace TsdLib.Configuration
         
         private void button_CreateNew_Click(object sender, EventArgs e)
         {
-            new ConfigFormCreate<T>(_configGroup).ShowDialog();
+            using (ConfigFormCreate<T> form = new ConfigFormCreate<T>(_configGroup))
+                form.ShowDialog();
 
             comboBox_SettingsGroup.SelectedIndex = comboBox_SettingsGroup.Items.Count - 1;
         }

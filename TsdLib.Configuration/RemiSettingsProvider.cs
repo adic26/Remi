@@ -73,6 +73,12 @@ namespace TsdLib.Configuration
         {
             lock (locker)
             {
+// ReSharper disable once NotAccessedVariable - used for reading the PropertyValue to set the IsDirty flag
+                object dummy;
+                foreach (SettingsPropertyValue settingsPropertyValue in values)
+// ReSharper disable once RedundantAssignment
+                    dummy = settingsPropertyValue.PropertyValue;
+
                 base.SetPropertyValues(context, values);
                 try
                 {

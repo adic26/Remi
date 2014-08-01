@@ -51,10 +51,12 @@ namespace TestClient.Instruments
                 Complex characteristicImpedance = new Complex(CharacteristicResistance, 0);
                 Complex impedance = (voltage / current) * characteristicImpedance;
 
+#pragma warning disable 1718
 // ReSharper disable once EqualExpressionComparison - this is a way to check for NaN
                 if (impedance != impedance)
                     throw new InstrumentException("Invalid data received from AIM device. NaN (Not a Number) received.");
-
+#pragma warning restore 1718
+                
                 return impedance;
             }
             catch

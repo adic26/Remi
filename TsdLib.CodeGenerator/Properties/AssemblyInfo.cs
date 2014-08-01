@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TsdLib.InstrumentGenerator")]
+[assembly: AssemblyTitle("TsdLib.CodeGenerator")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BlackBerry")]
-[assembly: AssemblyProduct("TsdLib.InstrumentGenerator")]
+[assembly: AssemblyProduct("TsdLib.CodeGenerator")]
 [assembly: AssemblyCopyright("Copyright © BlackBerry 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -2,7 +2,7 @@
 
 namespace TsdLib.View
 {
-    partial class ViewBase
+    partial class ViewBase<TStationConfig, TProductConfig>
     {
         /// <summary>
         /// Required designer variable.
@@ -40,14 +40,18 @@ namespace TsdLib.View
             this.button_StationConfig = new System.Windows.Forms.Button();
             this.button_ProductConfig = new System.Windows.Forms.Button();
             this.button_TestConfig = new System.Windows.Forms.Button();
-            this.measurementDataGridView1 = new TsdLib.View.MeasurementDataGridView();
+            this.comboBox_StationConfig = new System.Windows.Forms.ComboBox();
+            this.comboBox_ProductConfig = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.measurementDataGridView = new TsdLib.View.MeasurementDataGridView();
             this.MeasurementName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MeasuredValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Units = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LowerLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UpperLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Result = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox_Status
@@ -99,53 +103,89 @@ namespace TsdLib.View
             // 
             // button_StationConfig
             // 
-            this.button_StationConfig.Location = new System.Drawing.Point(12, 12);
+            this.button_StationConfig.Location = new System.Drawing.Point(402, 12);
             this.button_StationConfig.Name = "button_StationConfig";
             this.button_StationConfig.Size = new System.Drawing.Size(125, 23);
             this.button_StationConfig.TabIndex = 8;
-            this.button_StationConfig.Text = "Station Config";
+            this.button_StationConfig.Text = "Edit Station Config";
             this.button_StationConfig.UseVisualStyleBackColor = true;
             this.button_StationConfig.Click += new System.EventHandler(this.button_StationConfig_Click);
             // 
             // button_ProductConfig
             // 
-            this.button_ProductConfig.Location = new System.Drawing.Point(12, 41);
+            this.button_ProductConfig.Location = new System.Drawing.Point(402, 41);
             this.button_ProductConfig.Name = "button_ProductConfig";
             this.button_ProductConfig.Size = new System.Drawing.Size(125, 23);
             this.button_ProductConfig.TabIndex = 9;
-            this.button_ProductConfig.Text = "Product Config";
+            this.button_ProductConfig.Text = "Edit Product Config";
             this.button_ProductConfig.UseVisualStyleBackColor = true;
             this.button_ProductConfig.Click += new System.EventHandler(this.button_ProductConfig_Click);
             // 
             // button_TestConfig
             // 
-            this.button_TestConfig.Location = new System.Drawing.Point(12, 70);
+            this.button_TestConfig.Location = new System.Drawing.Point(402, 70);
             this.button_TestConfig.Name = "button_TestConfig";
             this.button_TestConfig.Size = new System.Drawing.Size(125, 23);
             this.button_TestConfig.TabIndex = 10;
-            this.button_TestConfig.Text = "Test Config";
+            this.button_TestConfig.Text = "Edit Test Config";
             this.button_TestConfig.UseVisualStyleBackColor = true;
             this.button_TestConfig.Click += new System.EventHandler(this.button_TestConfig_Click);
             // 
-            // measurementDataGridView1
+            // comboBox_StationConfig
             // 
-            this.measurementDataGridView1.AllowUserToAddRows = false;
-            this.measurementDataGridView1.AllowUserToDeleteRows = false;
-            this.measurementDataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.measurementDataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.measurementDataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.comboBox_StationConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_StationConfig.FormattingEnabled = true;
+            this.comboBox_StationConfig.Location = new System.Drawing.Point(15, 31);
+            this.comboBox_StationConfig.Name = "comboBox_StationConfig";
+            this.comboBox_StationConfig.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_StationConfig.TabIndex = 11;
+            // 
+            // comboBox_ProductConfig
+            // 
+            this.comboBox_ProductConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_ProductConfig.FormattingEnabled = true;
+            this.comboBox_ProductConfig.Location = new System.Drawing.Point(15, 83);
+            this.comboBox_ProductConfig.Name = "comboBox_ProductConfig";
+            this.comboBox_ProductConfig.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_ProductConfig.TabIndex = 12;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 15);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(73, 13);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "Station Config";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(15, 67);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(77, 13);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "Product Config";
+            // 
+            // measurementDataGridView
+            // 
+            this.measurementDataGridView.AllowUserToAddRows = false;
+            this.measurementDataGridView.AllowUserToDeleteRows = false;
+            this.measurementDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.measurementDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.measurementDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.MeasurementName,
             this.MeasuredValue,
             this.Units,
             this.LowerLimit,
             this.UpperLimit,
             this.Result});
-            this.measurementDataGridView1.Location = new System.Drawing.Point(12, 143);
-            this.measurementDataGridView1.Name = "measurementDataGridView1";
-            this.measurementDataGridView1.ReadOnly = true;
-            this.measurementDataGridView1.RowHeadersVisible = false;
-            this.measurementDataGridView1.Size = new System.Drawing.Size(515, 136);
-            this.measurementDataGridView1.TabIndex = 6;
+            this.measurementDataGridView.Location = new System.Drawing.Point(12, 143);
+            this.measurementDataGridView.Name = "measurementDataGridView";
+            this.measurementDataGridView.ReadOnly = true;
+            this.measurementDataGridView.RowHeadersVisible = false;
+            this.measurementDataGridView.Size = new System.Drawing.Size(515, 136);
+            this.measurementDataGridView.TabIndex = 6;
             // 
             // MeasurementName
             // 
@@ -194,9 +234,13 @@ namespace TsdLib.View
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(539, 576);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.comboBox_ProductConfig);
+            this.Controls.Add(this.comboBox_StationConfig);
             this.Controls.Add(this.button_TestConfig);
             this.Controls.Add(this.button_ProductConfig);
-            this.Controls.Add(this.measurementDataGridView1);
+            this.Controls.Add(this.measurementDataGridView);
             this.Controls.Add(this.button_StationConfig);
             this.Controls.Add(this.button_AbortTestSequence);
             this.Controls.Add(this.button_ExecuteTestSequence);
@@ -204,7 +248,8 @@ namespace TsdLib.View
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox_Status);
             this.Name = "ViewBase";
-            ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView1)).EndInit();
+            this.Text = "TsdLib Generic Test System";
+            ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -224,8 +269,12 @@ namespace TsdLib.View
         protected System.Windows.Forms.Button button_ExecuteTestSequence;
         protected System.Windows.Forms.Button button_AbortTestSequence;
         protected System.Windows.Forms.Button button_StationConfig;
-        protected MeasurementDataGridView measurementDataGridView1;
+        protected MeasurementDataGridView measurementDataGridView;
         protected System.Windows.Forms.Button button_ProductConfig;
         protected System.Windows.Forms.Button button_TestConfig;
+        private System.Windows.Forms.ComboBox comboBox_StationConfig;
+        private System.Windows.Forms.ComboBox comboBox_ProductConfig;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
     }
 }
