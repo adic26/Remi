@@ -32,11 +32,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -45,13 +40,9 @@
     <Compile Include="TelnetFactory.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
-      <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
-      <Name>TsdLib.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument.Base\TsdLib.Instrument.Base.csproj">
-      <Project>{4be9beea-3fa2-452d-9d2d-1b4f165670cd}</Project>
-      <Name>TsdLib.Instrument.Base</Name>
+    <ProjectReference Include="..\TsdLib\TsdLib.csproj">
+      <Project>{da39d49a-e06e-4cd9-b2a2-326057bdc41d}</Project>
+      <Name>TsdLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

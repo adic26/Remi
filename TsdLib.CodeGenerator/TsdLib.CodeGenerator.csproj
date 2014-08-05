@@ -36,9 +36,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -54,9 +51,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
-      <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
-      <Name>TsdLib.Common</Name>
+    <ProjectReference Include="..\TsdLib\TsdLib.csproj">
+      <Project>{da39d49a-e06e-4cd9-b2a2-326057bdc41d}</Project>
+      <Name>TsdLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

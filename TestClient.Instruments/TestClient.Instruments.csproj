@@ -41,14 +41,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TsdLib.Common\TsdLib.Common.csproj">
-      <Project>{84acb4f7-c908-491a-96d9-9305a0b29295}</Project>
-      <Name>TsdLib.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument.Base\TsdLib.Instrument.Base.csproj">
-      <Project>{4be9beea-3fa2-452d-9d2d-1b4f165670cd}</Project>
-      <Name>TsdLib.Instrument.Base</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TsdLib.Instrument.Telnet\TsdLib.Instrument.Telnet.csproj">
       <Project>{fbcd8cc2-a747-4979-9507-ae356d466e5a}</Project>
       <Name>TsdLib.Instrument.Telnet</Name>
@@ -57,20 +49,20 @@
       <Project>{a9ab58d9-08ea-43cc-ab6a-9e934bdd3c7b}</Project>
       <Name>TsdLib.Instrument.Visa</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TsdLib.CodeGenerator\TsdLib.CodeGenerator.csproj">
-      <Project>{b12037d0-edd5-41a2-a68d-d2170eaffcb0}</Project>
-      <Name>TsdLib.CodeGenerator</Name>
+    <ProjectReference Include="..\TsdLib\TsdLib.csproj">
+      <Project>{DA39D49A-E06E-4CD9-B2A2-326057BDC41D}</Project>
+      <Name>TsdLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="InstrumentDefinitions\Agilent6632B.xml" />
-    <Content Include="InstrumentDefinitions\AIM4170C.xml">
+    <Content Include="Agilent6632B.xml" />
+    <Content Include="AIM4170C.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="InstrumentDefinitions\BlackBerryRadio.xml">
+    <Content Include="BlackBerryRadio.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="InstrumentDefinitions\Dummy_Agilent6632B.xml" />
+    <Content Include="Dummy_Agilent6632B.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

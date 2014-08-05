@@ -1,4 +1,5 @@
-﻿using System;
+﻿// ReSharper disable BitwiseOperatorOnEnumWithoutFlags
+using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -8,7 +9,6 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using Microsoft.Build.Evaluation;
-// ReSharper disable BitwiseOperatorOnEnumWithoutFlags
 
 namespace TsdLib.CodeGenerator
 {

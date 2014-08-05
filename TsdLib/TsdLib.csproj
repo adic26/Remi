@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DA39D49A-E06E-4CD9-B2A2-326057BDC41D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TsdLib</RootNamespace>
+    <AssemblyName>TsdLib</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="States.cs" />
+    <Compile Include="IRemiControl.cs" />
+    <Compile Include="Measurement.cs" />
+    <Compile Include="SpecialFolders.cs" />
+    <Compile Include="TsdLibException.cs" />
+    <Compile Include="Configuration\ConfigExceptions.cs" />
+    <Compile Include="Configuration\ConfigForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\ConfigForm.Designer.cs">
+      <DependentUpon>ConfigForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\ConfigFormCreate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\ConfigFormCreate.Designer.cs">
+      <DependentUpon>ConfigFormCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\ConfigGroup.cs" />
+    <Compile Include="Configuration\ConfigItem.cs" />
+    <Compile Include="Configuration\ConfigManager.cs" />
+    <Compile Include="Configuration\MultiLineStringEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\MultiLineStringEditor.Designer.cs">
+      <DependentUpon>MultiLineStringEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\ProductConfigCommon.cs" />
+    <Compile Include="Configuration\RemiControlTest.cs" />
+    <Compile Include="Configuration\RemiSettingsProvider.cs" />
+    <Compile Include="Configuration\StationConfigCommon.cs" />
+    <Compile Include="Configuration\TestConfigCommon.cs" />
+    <Compile Include="Controller\ControllerBase.cs" />
+    <Compile Include="Controller\LocalMeasurementWriter.cs" />
+    <Compile Include="Instrument\ConnectionBase.cs" />
+    <Compile Include="Instrument\Dummy\DummyConnection.cs" />
+    <Compile Include="Instrument\Dummy\DummyFactory.cs" />
+    <Compile Include="Instrument\FactoryBase.cs" />
+    <Compile Include="Instrument\InstrumentBase.cs" />
+    <Compile Include="Instrument\InstrumentExceptions.cs" />
+    <Compile Include="Instrument\InstrumentWrapper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestSequence\TestSequenceBase.cs" />
+    <Compile Include="View\IView.cs" />
+    <Compile Include="View\MeasurementDataGridView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="View\TextBoxTraceListener.cs" />
+    <Compile Include="View\ViewBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\ViewBase.Designer.cs">
+      <DependentUpon>ViewBase.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Configuration\ConfigForm.resx">
+      <DependentUpon>ConfigForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\ConfigFormCreate.resx">
+      <DependentUpon>ConfigFormCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\MultiLineStringEditor.resx">
+      <DependentUpon>MultiLineStringEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\ViewBase.resx">
+      <DependentUpon>ViewBase.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

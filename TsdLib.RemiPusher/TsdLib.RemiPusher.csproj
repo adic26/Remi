@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7FAF514E-EFC9-40FB-B367-4E2F844547BC}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{E80B4973-45E1-4EBC-B667-8D7453408745}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestClient</RootNamespace>
-    <AssemblyName>TestClient</AssemblyName>
+    <RootNamespace>TsdLib.RemiPusher</RootNamespace>
+    <AssemblyName>TsdLib.RemiPusher</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,30 +31,18 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RemiPusher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestClientProgram.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TestClient.Common\TestClient.Common.csproj">
-      <Project>{c49c6555-46c2-4313-8b10-8d2632a1ff66}</Project>
-      <Name>TestClient.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TestClient.TestSequences\TestClient.TestSequences.csproj">
-      <Project>{c2e929e9-3a83-4f84-b932-ef77d4b13aa0}</Project>
-      <Name>TestClient.TestSequences</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TsdLib\TsdLib.csproj">
       <Project>{da39d49a-e06e-4cd9-b2a2-326057bdc41d}</Project>
       <Name>TsdLib</Name>

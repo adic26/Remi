@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
-using TestClient.Configuration;
+using System.Windows.Forms;
+using TestClient.TestSequences;
 using TsdLib.Configuration;
 
 namespace TestClient
@@ -8,15 +8,23 @@ namespace TestClient
     class TestClientProgram
     {
         [STAThread]
-        private static void Main()
+        private static void Main(string[] args)
         {
-            Trace.Listeners.Add(new ConsoleTraceListener());
+            bool devMode = args.Length > 0 && args[0] == "-d";
 
-            IConfigGroup<StationConfig> stationConfigGroup = Config<StationConfig>.Manager.GetConfigGroup();
-            IConfigGroup<ProductConfig> productConfigGroup = Config<ProductConfig>.Manager.GetConfigGroup();
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
 
-            Controller c = new Controller(new View(), new TestSequence.TestSequence());
-            c.Launch();
+            View view = new View
+            {
+                StationConfigList = Config<StationConfig>.GetConfigGroup().GetList(),
+                ProductConfigList = Config<ProductConfig>.GetConfigGroup().GetList()
+            };
+
+// ReSharper disable once UnusedVariable - constructor hooks up view events
+            Controller c = new Controller(view, new TestSequence(), devMode);
+
+            Application.Run(view);
 
             Console.WriteLine("Done");
         }
