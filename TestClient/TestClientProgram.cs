@@ -11,7 +11,7 @@ namespace TestClient
         private static void Main(string[] args)
         {
             bool devMode = args.Length > 0 && args[0] == "-d";
-
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
