@@ -97,10 +97,10 @@ namespace TsdLib.Configuration
         #endregion
     }
 
-    public interface IConfigGroup<out T> : IListSource, IEnumerable<T>
+    public interface IConfigGroup<T> : IListSource, IEnumerable<T>
         where T : ConfigItem
     {
-        [Obsolete("Should encapsulate the save method")]
         void Save();
+        void Add(T configItem, bool useRemi = true);
     }
 }
