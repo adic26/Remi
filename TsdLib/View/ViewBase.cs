@@ -11,6 +11,7 @@ namespace TsdLib.View
 
         public IList StationConfigList { set { comboBox_StationConfig.DataSource = value; } }
         public IList ProductConfigList { set { comboBox_ProductConfig.DataSource = value; } }
+        public IList TestConfigList { set { comboBox_TestConfig.DataSource = value; } }
 
         protected ViewBase()
         {

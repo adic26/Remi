@@ -1,5 +1,6 @@
 ﻿using TsdLib.Controller;
 using TsdLib.TestSequence;
+using TestClient.Configuration;
 
 namespace TestClient
 {

@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TsdLib_Developers_Guide.html = TsdLib_Developers_Guide.html
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient.Common", "TestClient.Common\TestClient.Common.csproj", "{C49C6555-46C2-4313-8B10-8D2632A1FF66}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestClient", "TestClient", "{2B4BC237-7C38-4086-99EB-51ED689EE88D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient.Instruments", "TestClient.Instruments\TestClient.Instruments.csproj", "{3B4E18DB-0495-4C9F-A283-5EADA3C4FB17}"
@@ -28,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib", "TsdLib\TsdLib.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient", "TestClient\TestClient.csproj", "{7FAF514E-EFC9-40FB-B367-4E2F844547BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.RemiPusher", "TsdLib.RemiPusher\TsdLib.RemiPusher.csproj", "{E80B4973-45E1-4EBC-B667-8D7453408745}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient.Configuration", "TestClient.Configuration\TestClient.Configuration.csproj", "{91B6BE49-ECF8-4B3B-90FD-9F0745C616BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,10 +50,6 @@ Global
 		{FBCD8CC2-A747-4979-9507-AE356D466E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBCD8CC2-A747-4979-9507-AE356D466E5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBCD8CC2-A747-4979-9507-AE356D466E5A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C49C6555-46C2-4313-8B10-8D2632A1FF66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C49C6555-46C2-4313-8B10-8D2632A1FF66}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C49C6555-46C2-4313-8B10-8D2632A1FF66}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C49C6555-46C2-4313-8B10-8D2632A1FF66}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3B4E18DB-0495-4C9F-A283-5EADA3C4FB17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3B4E18DB-0495-4C9F-A283-5EADA3C4FB17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B4E18DB-0495-4C9F-A283-5EADA3C4FB17}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -72,18 +66,18 @@ Global
 		{7FAF514E-EFC9-40FB-B367-4E2F844547BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FAF514E-EFC9-40FB-B367-4E2F844547BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FAF514E-EFC9-40FB-B367-4E2F844547BC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E80B4973-45E1-4EBC-B667-8D7453408745}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E80B4973-45E1-4EBC-B667-8D7453408745}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E80B4973-45E1-4EBC-B667-8D7453408745}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E80B4973-45E1-4EBC-B667-8D7453408745}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91B6BE49-ECF8-4B3B-90FD-9F0745C616BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91B6BE49-ECF8-4B3B-90FD-9F0745C616BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91B6BE49-ECF8-4B3B-90FD-9F0745C616BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91B6BE49-ECF8-4B3B-90FD-9F0745C616BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{C49C6555-46C2-4313-8B10-8D2632A1FF66} = {2B4BC237-7C38-4086-99EB-51ED689EE88D}
 		{3B4E18DB-0495-4C9F-A283-5EADA3C4FB17} = {2B4BC237-7C38-4086-99EB-51ED689EE88D}
 		{C2E929E9-3A83-4F84-B932-EF77D4B13AA0} = {2B4BC237-7C38-4086-99EB-51ED689EE88D}
 		{7FAF514E-EFC9-40FB-B367-4E2F844547BC} = {2B4BC237-7C38-4086-99EB-51ED689EE88D}
+		{91B6BE49-ECF8-4B3B-90FD-9F0745C616BC} = {2B4BC237-7C38-4086-99EB-51ED689EE88D}
 	EndGlobalSection
 EndGlobal

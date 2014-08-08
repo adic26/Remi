@@ -14,27 +14,27 @@ namespace TsdLib.Configuration
             _settingsBasePath = settingsBasePath;
         }
 
-        public void WriteConfigStringToRemi(string data, string applicationName, string applicationVersion, string configType, string fileName)
+        public void WriteConfigStringToRemi(string data, string applicationName, string applicationVersion, string fileName)
         {
             Match match = Regex.Match(applicationVersion, AppVersionFilter);
             string appVersion = match.Success ? match.Value : applicationVersion;
-            string directoryName = Path.Combine(_settingsBasePath, applicationName, appVersion, configType);
+            string directoryName = Path.Combine(_settingsBasePath, applicationName, appVersion);
             if (!Directory.Exists(directoryName))
                 Directory.CreateDirectory(directoryName);
 
             File.WriteAllText(Path.Combine(directoryName, fileName), data);
         }
 
-        public string ReadConfigStringFromRemi(string applicationName, string applicationVersion, string configType)
+        public string ReadConfigStringFromRemi(string applicationName, string applicationVersion, string fileName)
         {
             Match match = Regex.Match(applicationVersion, AppVersionFilter);
             string appVersion = match.Success ? match.Value : applicationVersion;
-            string fileName = Path.Combine(_settingsBasePath, applicationName, appVersion, configType, "config.xml");
+            string filePath = Path.Combine(_settingsBasePath, applicationName, appVersion, fileName);
 
-            if (!File.Exists(fileName))
-                throw new ConfigDoesNotExistInRemiException(applicationName, applicationVersion, configType);
+            if (!File.Exists(filePath))
+                throw new ConfigDoesNotExistInRemiException(applicationName, applicationVersion, fileName);
 
-            string data = File.ReadAllText(fileName);
+            string data = File.ReadAllText(filePath);
 
             return data;
         }

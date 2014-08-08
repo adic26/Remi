@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using System.Threading;
+using TestClient.Configuration;
 using TestClient.Instruments;
 using TsdLib;
 using TsdLib.TestSequence;

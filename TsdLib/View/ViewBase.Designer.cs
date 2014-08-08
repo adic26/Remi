@@ -50,6 +50,8 @@ namespace TsdLib.View
             this.LowerLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UpperLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Result = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.comboBox_TestConfig = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -228,11 +230,31 @@ namespace TsdLib.View
             this.Result.ReadOnly = true;
             this.Result.Width = 62;
             // 
+            // comboBox_TestConfig
+            // 
+            this.comboBox_TestConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_TestConfig.FormattingEnabled = true;
+            this.comboBox_TestConfig.Location = new System.Drawing.Point(203, 83);
+            this.comboBox_TestConfig.Name = "comboBox_TestConfig";
+            this.comboBox_TestConfig.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_TestConfig.TabIndex = 15;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(200, 67);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(61, 13);
+            this.label5.TabIndex = 16;
+            this.label5.Text = "Test Config";
+            // 
             // ViewBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(539, 576);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.comboBox_TestConfig);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.comboBox_ProductConfig);
@@ -275,5 +297,7 @@ namespace TsdLib.View
         private System.Windows.Forms.ComboBox comboBox_ProductConfig;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox comboBox_TestConfig;
+        private System.Windows.Forms.Label label5;
     }
 }

@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using TsdLib.Configuration;
 
-namespace TestClient
+namespace TestClient.Configuration
 {
     public class ProductConfig : ProductConfigCommon
     {

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Drawing.Design;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -24,7 +26,7 @@ namespace TsdLib.Configuration
             _assemblyCount = _assemblies.Count;
         }
 
-        [Editor("System.Windows.Forms.Design.StringCollectionEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
+        [Editor("System.Windows.Forms.Design.StringCollectionEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
         [ReadOnly(true)]
         [Category("Description")]
         public StringCollection Assemblies
@@ -41,4 +43,28 @@ namespace TsdLib.Configuration
         public string StationDescription { get; set; }
     }
 
+    public class ProductConfigCommon : ConfigItem
+    {
+        [Category("RF")]
+        public WlanChipset WlanChipset { get; set; }
+    }
+
+    public enum WlanChipset
+    {
+        Broadcomm,
+        TexasInstruments
+    }
+
+    public class TestConfigCommon : ConfigItem
+    {
+        private string selectedFile = "TestSequence.cs";
+
+        [Editor(typeof(MultiLineStringEditor), typeof(UITypeEditor))]
+        [Category("Test Sequence")]
+        public string TestSequenceSource
+        {
+            get { return File.ReadAllText(selectedFile); }
+            set { File.WriteAllText(selectedFile, value); }
+        }
+    }
 }

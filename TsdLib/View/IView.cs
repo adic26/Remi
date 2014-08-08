@@ -17,6 +17,7 @@ namespace TsdLib.View
 
         IList StationConfigList { set; }
         IList ProductConfigList { set; }
+        IList TestConfigList { set; }
     }
 
     public class TestSequenceEventArgs : EventArgs

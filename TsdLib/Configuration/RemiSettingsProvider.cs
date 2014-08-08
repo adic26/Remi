@@ -22,9 +22,9 @@ namespace TsdLib.Configuration
             get { return "Extends the LocalSettingsProvider by pushing/pulling local config values to/from the Remi database."; }
         }
 
+        //TODO: initialize _remiControl to the live version
         public override void Initialize(string name, NameValueCollection values)
         {
-            //TODO: initialize _remiControl to the live version
             _remiControl = new RemiControlTest(@"C:\temp\RemiSettingsTest");
         }
 
@@ -41,7 +41,7 @@ namespace TsdLib.Configuration
                         string configType = settingProperty.PropertyType.GetGenericArguments()[0].Name;
                         Debug.WriteLine("Pulling " + configType + " from Remi.");
                         string valueFromRemi = _remiControl.ReadConfigStringFromRemi(Application.ProductName,
-                            Application.ProductVersion, configType);
+                            Application.ProductVersion, configType + ".xml");
 
                         SettingsPropertyValue settingValue = new SettingsPropertyValue(settingProperty)
                         {
@@ -87,9 +87,9 @@ namespace TsdLib.Configuration
                         string configType = settingValue.Property.PropertyType.GetGenericArguments()[0].Name;
 
                         Debug.WriteLine("Pushing " + configType + " to Remi.");
-
+                        
                         _remiControl.WriteConfigStringToRemi((string) settingValue.SerializedValue,
-                            Application.ProductName, Application.ProductVersion, configType, "config.xml");
+                            Application.ProductName, Application.ProductVersion, configType + ".xml");
                     }
                 }
                 catch (Exception ex)

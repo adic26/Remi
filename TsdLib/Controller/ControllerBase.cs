@@ -36,8 +36,6 @@ namespace TsdLib.Controller
 
             _localMeasurementWriter = new LocalMeasurementWriter();
 
-            Trace.Listeners.Add(new ConsoleTraceListener());
-
             //subscribe to view events
             _view.EditStationConfig += _view_EditStationConfig;
             _view.EditProductConfig += _view_EditProductConfig;

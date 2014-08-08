@@ -4,7 +4,7 @@ using System.Windows.Forms;
 namespace TsdLib.Configuration
 {
     public static class Config<T>
-    where T : ConfigItem, new()
+        where T : ConfigItem, new()
     {
         private static ConfigGroup<T> _configGroup = new ConfigGroup<T>();
 

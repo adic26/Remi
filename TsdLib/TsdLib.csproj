@@ -37,6 +37,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\ConfigCommon.cs" />
     <Compile Include="States.cs" />
     <Compile Include="IRemiControl.cs" />
     <Compile Include="Measurement.cs" />
@@ -64,11 +65,8 @@
     <Compile Include="Configuration\MultiLineStringEditor.Designer.cs">
       <DependentUpon>MultiLineStringEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Configuration\ProductConfigCommon.cs" />
     <Compile Include="Configuration\RemiControlTest.cs" />
     <Compile Include="Configuration\RemiSettingsProvider.cs" />
-    <Compile Include="Configuration\StationConfigCommon.cs" />
-    <Compile Include="Configuration\TestConfigCommon.cs" />
     <Compile Include="Controller\ControllerBase.cs" />
     <Compile Include="Controller\LocalMeasurementWriter.cs" />
     <Compile Include="Instrument\ConnectionBase.cs" />

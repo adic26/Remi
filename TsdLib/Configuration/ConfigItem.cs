@@ -4,8 +4,6 @@ namespace TsdLib.Configuration
 {
     public class ConfigItem
     {
-        internal IConfigGroup Container;
-
         [ReadOnly(true)]
         [Category("Description")]
         public string Name { get; set; }

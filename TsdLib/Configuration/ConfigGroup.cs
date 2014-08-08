@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -38,15 +39,9 @@ namespace TsdLib.Configuration
 
             AllConfigItems = new BindingList<T>();
             foreach (T configItem in ConfigItems)
-            {
-                configItem.Container = this;
                 AllConfigItems.Add(configItem);
-            }
             foreach (T localConfigItem in LocalConfigItems)
-            {
-                localConfigItem.Container = this;
                 AllConfigItems.Add(localConfigItem);
-            }
 
             ConfigItems.ListChanged += ConfigItems_ListChanged;
             LocalConfigItems.ListChanged += ConfigItems_ListChanged;
@@ -102,14 +97,10 @@ namespace TsdLib.Configuration
         #endregion
     }
 
-    public interface IConfigGroup<out T> : IConfigGroup, IEnumerable<T>
+    public interface IConfigGroup<out T> : IListSource, IEnumerable<T>
         where T : ConfigItem
     {
-        
-    }
-
-    public interface IConfigGroup : IListSource
-    {
-        void Reload();
+        [Obsolete("Should encapsulate the save method")]
+        void Save();
     }
 }
