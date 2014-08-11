@@ -7,7 +7,6 @@ namespace TsdLib.View
     {
         event EventHandler EditStationConfig;
         event EventHandler EditProductConfig;
-        event EventHandler EditTestConfig;
 
         event EventHandler<TestSequenceEventArgs> ExecuteTestSequence;
         event EventHandler AbortTestSequence;
@@ -17,7 +16,6 @@ namespace TsdLib.View
 
         IList StationConfigList { set; }
         IList ProductConfigList { set; }
-        IList TestConfigList { set; }
     }
 
     public class TestSequenceEventArgs : EventArgs

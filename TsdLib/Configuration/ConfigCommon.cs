@@ -55,7 +55,7 @@ namespace TsdLib.Configuration
         TexasInstruments
     }
 
-    public class TestConfigCommon : ConfigItem
+    public class TestConfig : ConfigItem
     {
         private string selectedFile = "TestSequence.cs";
 

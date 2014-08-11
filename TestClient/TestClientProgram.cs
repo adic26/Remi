@@ -49,8 +49,7 @@ namespace TestClient
             View view = new View
             {
                 StationConfigList = Config<StationConfig>.GetConfigGroup().GetList(),
-                ProductConfigList = Config<ProductConfig>.GetConfigGroup().GetList(),
-                TestConfigList = Config<TestConfig>.GetConfigGroup().GetList()
+                ProductConfigList = Config<ProductConfig>.GetConfigGroup().GetList()
             };
 
 // ReSharper disable once UnusedVariable - constructor hooks up view events

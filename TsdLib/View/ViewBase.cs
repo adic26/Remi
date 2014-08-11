@@ -11,7 +11,6 @@ namespace TsdLib.View
 
         public IList StationConfigList { set { comboBox_StationConfig.DataSource = value; } }
         public IList ProductConfigList { set { comboBox_ProductConfig.DataSource = value; } }
-        public IList TestConfigList { set { comboBox_TestConfig.DataSource = value; } }
 
         protected ViewBase()
         {
@@ -66,13 +65,6 @@ namespace TsdLib.View
         {
             if (EditProductConfig != null)
                 EditProductConfig(this, new EventArgs());
-        }
-
-        public event EventHandler EditTestConfig;
-        private void button_TestConfig_Click(object sender, EventArgs e)
-        {
-            if (EditTestConfig != null)
-                EditTestConfig(this, new EventArgs());
         }
 
         public event EventHandler<TestSequenceEventArgs> ExecuteTestSequence;

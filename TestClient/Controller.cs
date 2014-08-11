@@ -4,7 +4,7 @@ using TestClient.Configuration;
 
 namespace TestClient
 {
-    public class Controller : ControllerBase<StationConfig, ProductConfig, TestConfig>
+    public class Controller : ControllerBase<StationConfig, ProductConfig>
     {
         public Controller(View view, TestSequenceBase<StationConfig, ProductConfig> testSequence, bool devMode)
             : base(view, testSequence, devMode)

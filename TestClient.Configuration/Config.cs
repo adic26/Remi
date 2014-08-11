@@ -61,11 +61,5 @@ namespace TestClient.Configuration
                 TemperatureStepSize = 20;
         }
     }
-
-    public class TestConfig : TestConfigCommon
-    {
-        [Category("Severity")]
-        public string TestSeverity { get; set; }
-    }
 }
 // ReSharper restore CompareOfFloatsByEqualityOperator

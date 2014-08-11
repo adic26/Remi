@@ -8,10 +8,9 @@ using TsdLib.View;
 
 namespace TsdLib.Controller
 {
-    public abstract class ControllerBase<TStationConfig, TProductConfig, TTestConfig>
+    public abstract class ControllerBase<TStationConfig, TProductConfig>
         where TStationConfig : StationConfigCommon, new()
         where TProductConfig : ProductConfigCommon, new()
-        where TTestConfig : TestConfigCommon, new()
     {
         #region Private Fields
 
@@ -39,7 +38,6 @@ namespace TsdLib.Controller
             //subscribe to view events
             _view.EditStationConfig += _view_EditStationConfig;
             _view.EditProductConfig += _view_EditProductConfig;
-            _view.EditTestConfig += _view_EditTestConfig;
             _view.ExecuteTestSequence += _view_ExecuteTestSequence;
             _view.AbortTestSequence += _view_AbortTestSequence;
 
@@ -59,11 +57,6 @@ namespace TsdLib.Controller
         void _view_EditProductConfig(object sender, EventArgs e)
         {
             Config<TProductConfig>.Edit(_devMode);
-        }
-
-        void _view_EditTestConfig(object sender, EventArgs e)
-        {
-            Config<TTestConfig>.Edit(_devMode);
         }
 
         #endregion
