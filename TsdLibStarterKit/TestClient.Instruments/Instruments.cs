@@ -1,4 +1,4 @@
-namespace TestClient.Instruments
+namespace $safeprojectname$
 {
     using System;
     using TsdLib.Instrument;

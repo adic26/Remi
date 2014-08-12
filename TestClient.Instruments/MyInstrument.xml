@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--TODO: Define an instrument here by following the TsdLib.Instruments.xsd schema. Additional instruments can be defined by adding *.xml files of the same format to this project-->
+<Instrument xmlns="TsdLib.Instrument.xsd" Name="MyInstrument" ConnectionType="Dummy">
+  <IdQuery Response="MyInstrument, Model 12345"/>
+  <ModelNumber Message="*IDN?"/>
+  <SerialNumber Message="*IDN?"/>
+  <FirmwareVersion Message="*IDN?"/>
+</Instrument>

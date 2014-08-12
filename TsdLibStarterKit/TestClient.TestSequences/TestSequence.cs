@@ -1,9 +1,9 @@
 ﻿
 using System;
-using TestClient.Configuration;
+using $rootnamespace$.Configuration;
 using TsdLib.TestSequence;
 
-namespace TestClient.TestSequences
+namespace $safeprojectname$
 {
     public class TestSequence : TestSequenceBase<StationConfig, ProductConfig>
     {

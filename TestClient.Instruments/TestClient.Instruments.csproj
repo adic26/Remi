@@ -32,37 +32,19 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AIM4170C_Wrapper.cs" />
-    <Compile Include="InstrumentInterfaces.cs" />
     <Compile Include="Instruments.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TsdLib.Instrument.Telnet\TsdLib.Instrument.Telnet.csproj">
-      <Project>{fbcd8cc2-a747-4979-9507-ae356d466e5a}</Project>
-      <Name>TsdLib.Instrument.Telnet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj">
-      <Project>{a9ab58d9-08ea-43cc-ab6a-9e934bdd3c7b}</Project>
-      <Name>TsdLib.Instrument.Visa</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TsdLib\TsdLib.csproj">
       <Project>{DA39D49A-E06E-4CD9-B2A2-326057BDC41D}</Project>
       <Name>TsdLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Agilent6632B.xml" />
-    <Content Include="AIM4170C.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="BlackBerryRadio.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Dummy_Agilent6632B.xml" />
+    <Content Include="MyInstrument.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

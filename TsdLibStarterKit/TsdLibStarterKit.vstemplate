@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="ProjectGroup" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>TsdLibStarterKit</Name>
+    <Description>Starter kit for developing applications based on the TsdLib Framework.</Description>
+    <Icon>TsdLibStarterKit.ico</Icon>
+    <ProjectType>CSharp</ProjectType>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <SortOrder>10</SortOrder>
+    <TemplateID>6a39e301-d3ee-400f-b6f0-351cdf963ac5</TemplateID>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>TsdApp</DefaultName>
+    <ProvideDefaultName>false</ProvideDefaultName>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectCollection>
+      <ProjectTemplateLink ProjectName="$safeprojectname$">
+        TestClient\TestClient.vstemplate
+      </ProjectTemplateLink>
+      <ProjectTemplateLink ProjectName="$safeprojectname$.Configuration">
+        TestClient.Configuration\TestClient.Configuration.vstemplate
+      </ProjectTemplateLink>
+      <ProjectTemplateLink ProjectName="$safeprojectname$.Instruments">
+        TestClient.Instruments\TestClient.Instruments.vstemplate
+      </ProjectTemplateLink>
+      <ProjectTemplateLink ProjectName="$safeprojectname$.TestSequences">
+        TestClient.TestSequences\TestClient.TestSequences.vstemplate
+      </ProjectTemplateLink>
+    </ProjectCollection>
+  </TemplateContent>
+  <WizardExtension>
+    <Assembly>TsdLibStarterKitWizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f7caacecd6b1cf72</Assembly>
+    <FullClassName>TsdLibStarterKitWizard.Wizard</FullClassName>
+  </WizardExtension>
+</VSTemplate>

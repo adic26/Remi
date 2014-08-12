@@ -1,6 +1,6 @@
 ﻿using TsdLib.View;
 
-namespace TestClient
+namespace $safeprojectname$
 {
     public partial class View : ViewBase
     {

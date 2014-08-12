@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="TsdLibStarterKit.BlackBerry.69d7b1ff-89bd-42a4-bdbb-95a78d9dcce4" Version="0.1" Language="en-US" Publisher="BlackBerry" />
+    <DisplayName>TsdLibStarterKit</DisplayName>
+    <Description xml:space="preserve">Template for developing applications based on the TsdLib Framework.</Description>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="11.0" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="4.5" />
+  </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="TsdLibStarterKit" d:TargetPath="|TsdLibStarterKit;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="TsdLibStarterKitWizard" Path="|TsdLibStarterKitWizard|" AssemblyName="|TsdLibStarterKitWizard;AssemblyName|" />
+  </Assets>
+</PackageManifest>

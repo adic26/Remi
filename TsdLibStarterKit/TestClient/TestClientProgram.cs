@@ -4,13 +4,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using TestClient.TestSequences;
+using $rootnamespace$.TestSequences;
 using TsdLib.Configuration;
-using TestClient.Configuration;
+using $rootnamespace$.Configuration;
 
-namespace TestClient
+namespace $safeprojectname$
 {
-    class TestClientProgram
+    class $safeprojectname$Program
     {
         /// <summary>
         /// The main entry point for the application.
