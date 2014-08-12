@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TemplateWizard;
 using EnvDTE;
@@ -32,6 +34,9 @@ namespace TsdLibStarterKitWizard
                     form.ShowDialog();
                     rootNamespace = form.RootNamespace;
                 }
+
+
+
                 MessageBox.Show("Adding " + rootNamespace + " to replacementsDictionary as $rootnamespace$");
                 replacementsDictionary.Add("$rootnamespace$", rootNamespace);
 

@@ -1,4 +1,5 @@
-﻿using TsdLib.Controller;
+﻿using System;
+using TsdLib.Controller;
 using TsdLib.TestSequence;
 using $rootnamespace$.Configuration;
 
@@ -9,7 +10,8 @@ namespace $safeprojectname$
         public Controller(View view, TestSequenceBase<StationConfig, ProductConfig> testSequence, bool devMode)
             : base(view, testSequence, devMode)
         {
-
+            Console.WriteLine("$rootnamespace$");
+            Console.WriteLine("$safeprojectname$");
         }
     }
 }
