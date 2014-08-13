@@ -10,8 +10,7 @@ namespace $safeprojectname$
         public Controller(View view, TestSequenceBase<StationConfig, ProductConfig> testSequence, bool devMode)
             : base(view, testSequence, devMode)
         {
-            Console.WriteLine("$rootnamespace$");
-            Console.WriteLine("$safeprojectname$");
+
         }
     }
 }

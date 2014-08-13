@@ -22,4 +22,8 @@
       <ProjectItem ReplaceParameters="true" TargetFileName="StationConfig.cs">StationConfig.cs</ProjectItem>
     </Project>
   </TemplateContent>
+  <WizardExtension>
+    <Assembly>TsdLibStarterKitWizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Assembly>
+    <FullClassName>TsdLibStarterKitWizard.ChildWizard</FullClassName>
+  </WizardExtension>
 </VSTemplate>

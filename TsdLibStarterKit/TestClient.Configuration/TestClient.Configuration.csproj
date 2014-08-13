@@ -33,7 +33,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="TsdLib">
-      <HintPath>\\fsg52ykf\ReliabilityTSD\DLL\TsdLib\Release\TsdLib.dll</HintPath>
+      <HintPath>..\Dependencies\TsdLib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

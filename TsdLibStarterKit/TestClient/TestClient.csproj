@@ -40,7 +40,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="TsdLib">
-      <HintPath>\\fsg52ykf\ReliabilityTSD\DLL\TsdLib\Release\TsdLib.dll</HintPath>
+      <HintPath>..\Dependencies\TsdLib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
