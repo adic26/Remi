@@ -1,4 +1,5 @@
-﻿using TsdLib.View;
+﻿using System.ComponentModel.Design;
+using TsdLib.View;
 
 namespace $safeprojectname$
 {
@@ -6,5 +7,10 @@ namespace $safeprojectname$
     {
         //TODO: Design any UI logic specific to this system.
         //TODO: Use the View.cs[Design] to customize the look and feel of the UI
+
+        public View()
+        {
+            InitializeComponent();
+        }
     }
 }

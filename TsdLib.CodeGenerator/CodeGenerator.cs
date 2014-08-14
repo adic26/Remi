@@ -64,10 +64,15 @@ namespace TsdLib.CodeGenerator
                     ));
 
                 Console.ReadLine();
-                return 1;
+                return -1;
             }
 
             Trace.Listeners.Add(new ConsoleTraceListener());
+
+
+            Trace.WriteLine("GENERATING CODE");
+
+
 
             CodeType codeType;
             OutputFormat outputFormat;
@@ -122,7 +127,7 @@ namespace TsdLib.CodeGenerator
             {
                 //command-line argument error
                 Trace.WriteLine(ex);
-                return 2; 
+                return -2; 
             }
 
             try //Generate code and/or assembly
@@ -140,12 +145,12 @@ namespace TsdLib.CodeGenerator
             catch (TsdLibException ex)
             {
                 Trace.WriteLine(ex);
-                return 3;
+                return -3;
             }
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
-                return -1;
+                return -4;
             }
 
             return 0;
