@@ -44,6 +44,10 @@
       <Project>{91b6be49-ecf8-4b3b-90fd-9f0745c616bc}</Project>
       <Name>TestClient.Configuration</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TestClient.Instruments\TestClient.Instruments.csproj">
+      <Project>{3b4e18db-0495-4c9f-a283-5eada3c4fb17}</Project>
+      <Name>TestClient.Instruments</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TsdLib\TsdLib.csproj">
       <Project>{DA39D49A-E06E-4CD9-B2A2-326057BDC41D}</Project>
       <Name>TsdLib</Name>
