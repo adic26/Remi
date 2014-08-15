@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TsdLibStarterKitWizard
 {
+    //TODO: add TsdLib.Instrument.* protocol selection
     public partial class UserInputForm : Form
     {
         public string RootNamespace { get; private set; }
