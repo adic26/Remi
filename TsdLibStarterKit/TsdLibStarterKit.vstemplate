@@ -29,8 +29,7 @@
     </ProjectCollection>
   </TemplateContent>
   <WizardExtension>
-    <!--<Assembly>TsdLibStarterKitWizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f7caacecd6b1cf72</Assembly>-->
     <Assembly>TsdLibStarterKitWizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Assembly>
-    <FullClassName>TsdLibStarterKitWizard.RootWizard</FullClassName>
+    <FullClassName>TsdLibStarterKitWizard.SolutionWizard</FullClassName>
   </WizardExtension>
 </VSTemplate>

@@ -69,11 +69,6 @@ namespace TsdLib.CodeGenerator
 
             Trace.Listeners.Add(new ConsoleTraceListener());
 
-
-            Trace.WriteLine("GENERATING CODE");
-
-
-
             CodeType codeType;
             OutputFormat outputFormat;
             string[] inputFiles;
