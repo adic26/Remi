@@ -39,9 +39,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="TsdLib">
-      <HintPath>..\Dependencies\TsdLib.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller.cs" />
@@ -66,10 +63,6 @@
       <Project>{c2e929e9-3a83-4f84-b932-ef77d4b13aa0}</Project>
       <Name>$safeprojectname$.TestSequences</Name>
     </ProjectReference>
-    <!--<ProjectReference Include="..\TsdLib\TsdLib.csproj">
-      <Project>{da39d49a-e06e-4cd9-b2a2-326057bdc41d}</Project>
-      <Name>TsdLib</Name>
-    </ProjectReference>-->
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="View.resx">

@@ -32,26 +32,19 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="TsdLib">
-      <HintPath>..\Dependencies\TsdLib.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Instruments.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <!--<ItemGroup>
-    <ProjectReference Include="..\TsdLib\TsdLib.csproj">
-      <Project>{DA39D49A-E06E-4CD9-B2A2-326057BDC41D}</Project>
-      <Name>TsdLib</Name>
-    </ProjectReference>
-  </ItemGroup>-->
   <ItemGroup>
-    <Content Include="MyInstrument.xml" />
+    <Content Include="MyInstrument.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>$(SolutionDir)$(SolutionName)\Dependencies\TsdLib.CodeGenerator.exe Instruments Source $(ProjectPath) $(ProjectDir) $(ProjectName) CSharp $(SolutionDir)$(SolutionName)\Dependencies\TsdLib.Instrument.xsd"</PreBuildEvent>
+    <PreBuildEvent>$contentsourcefolder$\TsdLib.CodeGenerator.exe Instruments Source $(ProjectPath) $(ProjectDir) $(ProjectName) CSharp $contentsourcefolder$\TsdLib.Instrument.xsd"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
