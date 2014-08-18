@@ -1,4 +1,4 @@
-<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:w="TsdLib.ProjectWizardData.xsd" Type="Project">
+<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
   <TemplateData>
     <Name>TestClient.Instruments</Name>
     <Description>Instruments library</Description>
@@ -26,10 +26,4 @@
     <Assembly>TsdLibStarterKitWizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Assembly>
     <FullClassName>TsdLibStarterKitWizard.ProjectWizard</FullClassName>
   </WizardExtension>
-  <WizardData>
-    <w:Data>
-      <w:Reference Include="TsdLib.dll" />
-      <w:Reference Include="TsdLib.CodeGenerator.exe" />
-    </w:Data>
-  </WizardData>
 </VSTemplate>

@@ -12,24 +12,17 @@ namespace VersionSync
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
             //TODO: add project path parameter
-            if (args.Length != 3)
+            if (args.Length < 2)
             {
                 Trace.WriteLine("Wrong number of arguments. Please pass the paths to the following: " + Environment.NewLine +
-                    "TsdLib.dll" + Environment.NewLine +
                     "source.extension.vsixmanifest file " + Environment.NewLine +
-                    "atom.xml file.");
+                    "atom.xml file." + Environment.NewLine +
+                    "Optional: Assembly to base the versions on. If omitted, version from manifest designer will be used.");
                 return -1;
             }
 
-            string tsdLibDll = args[0];
-            string manifestPath = args[1];
-            string atomPath = args[2];
-
-            string version = Assembly.ReflectionOnlyLoadFrom(tsdLibDll)
-                .GetName()
-                .Version.ToString();
-
-            Trace.WriteLine("TsdLib version = " + version);
+            string manifestPath = args[0];
+            string atomPath = args[1];
 
             XDocument manifestDocument = XDocument.Load(manifestPath);
 
@@ -40,10 +33,21 @@ namespace VersionSync
             if (manifestIdElement == null)
                 throw new ArgumentException(manifestPath + " is not a valid VSIX manifest.");
 
-            manifestIdElement.Attribute("Version").Value = version;
-            manifestDocument.Save(manifestPath);
+            string version;
+            if (args.Length > 2)
+            {
+                version = FileVersionInfo.GetVersionInfo(args[2]).FileVersion;
 
-            Trace.WriteLine("Updated VSIX manifest file version to " + version);
+                manifestIdElement.Attribute("Version").Value = FileVersionInfo.GetVersionInfo(args[2]).FileVersion;
+                manifestDocument.Save(manifestPath);
+
+                Trace.WriteLine("Updated VSIX manifest file version to " + version);
+            }
+            else
+            {
+                version = manifestIdElement.Attribute("Version").Value;
+                Trace.WriteLine("Using manifest version of " + version);
+            }
 
             XDocument atomDocument = XDocument.Load(atomPath);
             XElement atomVsixElement = atomDocument

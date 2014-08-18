@@ -32,9 +32,4 @@
     <Assembly>TsdLibStarterKitWizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Assembly>
     <FullClassName>TsdLibStarterKitWizard.SolutionWizard</FullClassName>
   </WizardExtension>
-  <WizardData>
-    <w:Data>
-      
-    </w:Data>
-  </WizardData>
 </VSTemplate>

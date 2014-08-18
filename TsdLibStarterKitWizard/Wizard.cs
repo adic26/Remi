@@ -4,32 +4,29 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml.Linq;
 using Microsoft.VisualStudio.TemplateWizard;
 using EnvDTE;
-using VSLangProj;
 
 namespace TsdLibStarterKitWizard
 {
     public class SolutionWizard : IWizard
     {
         public static Dictionary<string, string> GlobalDictionary = new Dictionary<string, string>();
-        public static string DependencyFolder;
 
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
         {
             try
             {
                 GlobalDictionary["$rootnamespace$"] = replacementsDictionary["$safeprojectname$"];
-                DependencyFolder = Path.Combine(
+                string dependencyFolder = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                     "TsdLib",
                     "Dependencies");
 
-                GlobalDictionary["$dependencyfolder$"] = DependencyFolder;
+                GlobalDictionary["$dependencyfolder$"] = dependencyFolder;
 
-                if (!Directory.Exists(DependencyFolder))
-                    Directory.CreateDirectory(DependencyFolder);
+                if (!Directory.Exists(dependencyFolder))
+                    Directory.CreateDirectory(dependencyFolder);
 
                 //get the folder where the Visual Studio Extensions are installed
                 string extensionFolder = Path.Combine(
@@ -47,32 +44,25 @@ namespace TsdLibStarterKitWizard
                     .GetFiles()
                     ;
 
+                string currentDependencyFolder = Path.Combine(dependencyFolder, "Current");
+                if (!Directory.Exists(currentDependencyFolder))
+                    Directory.CreateDirectory(currentDependencyFolder);
+                foreach (FileInfo file in contentFiles)
+                    file.CopyTo(Path.Combine(currentDependencyFolder, file.Name), true);
 
+                string version = FileVersionInfo.GetVersionInfo
+                    (
+                        contentFiles
+                        .First(f => f.Name == "TsdLib.dll")
+                        .FullName
+                    ).FileVersion;
 
-                if (replacementsDictionary.ContainsKey("$wizarddata$"))
-                {
-                    XElement wizardElement = XElement.Parse(replacementsDictionary["$wizarddata$"]);
+                string versionedDependencyFolder = Path.Combine(dependencyFolder, version);
+                if (!Directory.Exists(versionedDependencyFolder))
+                    Directory.CreateDirectory(versionedDependencyFolder);
 
-                    XElement s = wizardElement.Elements().FirstOrDefault(e => e.Name.LocalName == "Version");
-                    if (s != null)
-                    {
-                        
-                    }
-
-                    string currentDependencyFolder = Path.Combine(DependencyFolder, "Current");
-                    if (!Directory.Exists(currentDependencyFolder))
-                        Directory.CreateDirectory(currentDependencyFolder);
-
-                    string versionedDependencyFolder = Path.Combine(DependencyFolder, "Some_Version");
-                    if (!Directory.Exists(versionedDependencyFolder))
-                        Directory.CreateDirectory(versionedDependencyFolder);
-
-                    foreach (FileInfo file in contentFiles)
-                    {
-                        file.CopyTo(Path.Combine(currentDependencyFolder, file.Name), true);
-                        file.CopyTo(Path.Combine(versionedDependencyFolder, file.Name), true);
-                    }
-                }
+                foreach (FileInfo file in contentFiles)
+                    file.CopyTo(Path.Combine(versionedDependencyFolder, file.Name), true);
             }
             catch (Exception ex)
             {
@@ -102,17 +92,12 @@ namespace TsdLibStarterKitWizard
 
     public class ProjectWizard : IWizard
     {
-        //private string _wizardData;
-
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
         {
             try
             {
                 replacementsDictionary.Add("$rootnamespace$", SolutionWizard.GlobalDictionary["$rootnamespace$"]);
                 replacementsDictionary.Add("$dependencyfolder$", SolutionWizard.GlobalDictionary["$dependencyfolder$"]);
-
-                //if (replacementsDictionary.ContainsKey("$wizarddata$"))
-                //    _wizardData = replacementsDictionary["$wizarddata$"];
             }
             catch (Exception ex)
             {
@@ -121,40 +106,9 @@ namespace TsdLibStarterKitWizard
             }
         }
 
-        public void ProjectFinishedGenerating(Project project)
-        {
-            //try
-            //{
-            //    if (!string.IsNullOrEmpty(_wizardData))
-            //    {
-            //        VSProject vsProj = project.Object as VSProject;
-            //        Debug.Assert(vsProj != null, "Could not cast EnvDTE.Project.Object to VSLangProj.VSProject");
-
-            //        XElement wizardDataElement = XElement.Parse(_wizardData);
-
-            //        foreach ( XElement referenceElement in wizardDataElement.Elements().Where(e => e.Name.LocalName == "Reference"))
-            //        {
-            //            string fileName = (string) referenceElement.Attribute("Include");
-            //            if (fileName != null)
-            //                vsProj.References.Add(Path.Combine(SolutionWizard.DependencyFolder, fileName));
-            //        }
-
-            //        foreach (XElement contentElement in wizardDataElement.Elements().Where(e => e.Name.LocalName == "Content"))
-            //        {
-            //            string fileName = (string) contentElement.Attribute("Include");
-            //            if (fileName != null)
-            //                project.ProjectItems.AddFromFileCopy(Path.Combine(SolutionWizard.DependencyFolder, fileName));
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.ToString());
-            //    throw;
-            //}
-        }
-
         #region Not Implemented
+
+        public void ProjectFinishedGenerating(Project project) { }
         
         public void RunFinished() {}
 

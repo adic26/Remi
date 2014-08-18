@@ -84,13 +84,7 @@
   <ItemGroup>
     <None Include="ProjectTemplate.csproj" />
     <Content Include="TestClient\App.config" />
-    <None Include="SolutionWizardData.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="TsdLibStarterKit.ico" />
-    <None Include="ProjectWizardData.xsd">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <VSTemplate Include="TsdLibStarterKit.vstemplate">
