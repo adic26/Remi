@@ -15,59 +15,43 @@ namespace TsdLibStarterKitWizard
 
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
         {
-            try
+            GlobalDictionary["$rootnamespace$"] = replacementsDictionary["$safeprojectname$"];
+
+            //get the folder where the Visual Studio Extensions are installed
+            string extensionFolder = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "Microsoft",
+                "VisualStudio",
+                "11.0",
+                "Extensions");
+
+            FileInfo[] contentFiles = new DirectoryInfo(extensionFolder)
+                .GetDirectories() //one folder per extension
+                .OrderBy(d => d.CreationTime).Last() //get the newest directory (most recently installed extension)
+                .GetDirectories("Dependencies")
+                .First() //get the embedded folder where the VSIX installer placed the references and content files
+                .GetFiles();
+
+            string tsdLibVersion = FileVersionInfo.GetVersionInfo
+                (
+                    contentFiles
+                    .First(f => f.Name == "TsdLib.dll")
+                    .FullName
+                ).FileVersion;
+
+            string dependencyFolder = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                "TsdLib",
+                "Dependencies",
+                tsdLibVersion);
+
+            GlobalDictionary["$dependencyfolder$"] = dependencyFolder;
+
+            if (!Directory.Exists(dependencyFolder))
             {
-                GlobalDictionary["$rootnamespace$"] = replacementsDictionary["$safeprojectname$"];
-                string dependencyFolder = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                    "TsdLib",
-                    "Dependencies");
-
-                GlobalDictionary["$dependencyfolder$"] = dependencyFolder;
-
-                if (!Directory.Exists(dependencyFolder))
-                    Directory.CreateDirectory(dependencyFolder);
-
-                //get the folder where the Visual Studio Extensions are installed
-                string extensionFolder = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "Microsoft",
-                    "VisualStudio",
-                    "11.0",
-                    "Extensions");
-
-                FileInfo[] contentFiles = new DirectoryInfo(extensionFolder)
-                    .GetDirectories() //one folder per extension
-                    .OrderBy(d => d.CreationTime).Last() //get the newest directory (most recently installed extension)
-                    .GetDirectories("Dependencies")
-                    .First() //get the embedded folder where the VSIX installer placed the references and content files
-                    .GetFiles()
-                    ;
-
-                string currentDependencyFolder = Path.Combine(dependencyFolder, "Current");
-                if (!Directory.Exists(currentDependencyFolder))
-                    Directory.CreateDirectory(currentDependencyFolder);
+                Directory.CreateDirectory(dependencyFolder);
                 foreach (FileInfo file in contentFiles)
-                    file.CopyTo(Path.Combine(currentDependencyFolder, file.Name), true);
-
-                string version = FileVersionInfo.GetVersionInfo
-                    (
-                        contentFiles
-                        .First(f => f.Name == "TsdLib.dll")
-                        .FullName
-                    ).FileVersion;
-
-                string versionedDependencyFolder = Path.Combine(dependencyFolder, version);
-                if (!Directory.Exists(versionedDependencyFolder))
-                    Directory.CreateDirectory(versionedDependencyFolder);
-
-                foreach (FileInfo file in contentFiles)
-                    file.CopyTo(Path.Combine(versionedDependencyFolder, file.Name), true);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-                throw;
+                    file.CopyTo(Path.Combine(dependencyFolder, file.Name), true);
             }
         }
 
@@ -94,16 +78,8 @@ namespace TsdLibStarterKitWizard
     {
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
         {
-            try
-            {
-                replacementsDictionary.Add("$rootnamespace$", SolutionWizard.GlobalDictionary["$rootnamespace$"]);
-                replacementsDictionary.Add("$dependencyfolder$", SolutionWizard.GlobalDictionary["$dependencyfolder$"]);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-                throw;
-            }
+            replacementsDictionary.Add("$rootnamespace$", SolutionWizard.GlobalDictionary["$rootnamespace$"]);
+            replacementsDictionary.Add("$dependencyfolder$", SolutionWizard.GlobalDictionary["$dependencyfolder$"]);
         }
 
         #region Not Implemented

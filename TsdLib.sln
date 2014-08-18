@@ -34,6 +34,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Template", "Template", "{7D3E0D66-0881-4ED3-AF14-85E3810AF580}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLibStarterKitInstaller", "TsdLibStarterKitInstaller\TsdLibStarterKitInstaller.csproj", "{5F31919B-E28A-4E22-A785-3E29ED0247A7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F2A44688-E60E-47BB-AB58-21C4F06C9ABB} = {F2A44688-E60E-47BB-AB58-21C4F06C9ABB}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLibStarterKit", "TsdLibStarterKit\TsdLibStarterKit.csproj", "{DF931437-1E35-4BE9-A37B-A90B7125CD01}"
 EndProject
