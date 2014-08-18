@@ -1,4 +1,4 @@
-<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:w="TsdLib.WizardData.xsd" Type="Project">
+<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:w="TsdLib.ProjectWizardData.xsd" Type="Project">
   <TemplateData>
     <Name>TestClient</Name>
     <Description>Executable</Description>
@@ -31,8 +31,8 @@
     <FullClassName>TsdLibStarterKitWizard.ProjectWizard</FullClassName>
   </WizardExtension>
   <WizardData>
-    <w:ItemGroup>
+    <w:Data>
       <w:Reference Include="TsdLib.dll"/>
-    </w:ItemGroup>
+    </w:Data>
   </WizardData>
 </VSTemplate>

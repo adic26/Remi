@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<VSTemplate Version="3.0.0" Type="ProjectGroup" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+<VSTemplate Version="3.0.0" Type="ProjectGroup" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010" xmlns:w="TsdLib.ProjectWizardData.xsd" >
   <TemplateData>
     <Name>TsdLibStarterKit</Name>
     <Description>Starter kit for developing applications based on the TsdLib Framework.</Description>
@@ -32,4 +32,9 @@
     <Assembly>TsdLibStarterKitWizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Assembly>
     <FullClassName>TsdLibStarterKitWizard.SolutionWizard</FullClassName>
   </WizardExtension>
+  <WizardData>
+    <w:Data>
+      
+    </w:Data>
+  </WizardData>
 </VSTemplate>

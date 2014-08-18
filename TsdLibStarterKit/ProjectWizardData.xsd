@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="WizardData"
-    targetNamespace="TsdLib.WizardData.xsd"
+<xs:schema id="ProjectWizardData"
+    targetNamespace="TsdLib.ProjectWizardData.xsd"
     elementFormDefault="qualified"
-    xmlns="TsdLib.WizardData.xsd"
+    xmlns="TsdLib.ProjectWizardData.xsd"
     xmlns:xs="http://www.w3.org/2001/XMLSchema">
-
-  <xs:element name="ItemGroup">
+  
+  <xs:element name="Data">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="Reference" type="RefereceElement" minOccurs="0" maxOccurs="unbounded" />
@@ -13,7 +13,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-
+  
   <xs:complexType name="RefereceElement">
     <xs:attribute name="Include" use="required"/>
   </xs:complexType>

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="SolutionWizardData"
+    targetNamespace="TsdLib.SolutionWizardData.xsd"
+    elementFormDefault="qualified"
+    xmlns="TsdLib.SolutionWizardData.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="Data">
+    
+  </xs:element>
+  
+</xs:schema>
