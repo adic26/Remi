@@ -40,7 +40,7 @@ namespace TsdLib.Configuration
                     {
                         string configType = settingProperty.PropertyType.GetGenericArguments()[0].Name;
                         Debug.WriteLine("Pulling " + configType + " from Remi.");
-                        string valueFromRemi = _remiControl.ReadConfigStringFromRemi(Application.ProductName,
+                        string valueFromRemi = _remiControl.ReadStringFromRemi(Application.ProductName,
                             Application.ProductVersion, configType + ".xml");
 
                         SettingsPropertyValue settingValue = new SettingsPropertyValue(settingProperty)
@@ -88,7 +88,7 @@ namespace TsdLib.Configuration
 
                         Debug.WriteLine("Pushing " + configType + " to Remi.");
                         
-                        _remiControl.WriteConfigStringToRemi((string) settingValue.SerializedValue,
+                        _remiControl.WriteStringToRemi((string) settingValue.SerializedValue,
                             Application.ProductName, Application.ProductVersion, configType + ".xml");
                     }
                 }

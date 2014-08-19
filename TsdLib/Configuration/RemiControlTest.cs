@@ -14,7 +14,7 @@ namespace TsdLib.Configuration
             _settingsBasePath = settingsBasePath;
         }
 
-        public void WriteConfigStringToRemi(string data, string applicationName, string applicationVersion, string fileName)
+        public void WriteStringToRemi(string data, string applicationName, string applicationVersion, string fileName)
         {
             Match match = Regex.Match(applicationVersion, AppVersionFilter);
             string appVersion = match.Success ? match.Value : applicationVersion;
@@ -25,7 +25,7 @@ namespace TsdLib.Configuration
             File.WriteAllText(Path.Combine(directoryName, fileName), data);
         }
 
-        public string ReadConfigStringFromRemi(string applicationName, string applicationVersion, string fileName)
+        public string ReadStringFromRemi(string applicationName, string applicationVersion, string fileName)
         {
             Match match = Regex.Match(applicationVersion, AppVersionFilter);
             string appVersion = match.Success ? match.Value : applicationVersion;

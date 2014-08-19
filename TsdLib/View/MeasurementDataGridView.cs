@@ -4,8 +4,15 @@ using System.Windows.Forms;
 
 namespace TsdLib.View
 {
+    /// <summary>
+    /// Adds functionality to use a standard DataGridView control to display TsdLib.Measurement objects.
+    /// </summary>
     public class MeasurementDataGridView : DataGridView
     {
+        /// <summary>
+        /// Add a measurement to the DataGridView.
+        /// </summary>
+        /// <param name="measurement">Measurement to add.</param>
         public void AddMeasurement(Measurement measurement)
         {
             string[] measurementObjects = measurement.ToString(",").Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);

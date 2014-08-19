@@ -4,8 +4,14 @@ using System.IO;
 
 namespace TsdLib
 {
+    /// <summary>
+    /// Defines special folders used by the TsdLib Framework.
+    /// </summary>
     public static class SpecialFolders
     {
+        /// <summary>
+        /// Gets the folder where Test Sequence logs are stored.
+        /// </summary>
         public static string Logs
         {
             get
@@ -17,6 +23,9 @@ namespace TsdLib
             }
         }
 
+        /// <summary>
+        /// Gets the folder where Test Sequence measurements are stored.
+        /// </summary>
         public static string Measurements
         {
             get
