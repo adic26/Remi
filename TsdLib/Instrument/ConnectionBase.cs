@@ -8,14 +8,31 @@ using System.Threading;
 
 namespace TsdLib.Instrument
 {
+    /// <summary>
+    /// Contains base functionality to communicate with instruments.
+    /// </summary>
     public abstract class ConnectionBase : IDisposable
     {
         private readonly object _locker;
+        /// <summary>
+        /// Gets or sets the default delay (in ms) to wait before sending each command.
+        /// </summary>
         public int DefaultDelay { get; set; }
 
+        /// <summary>
+        /// Unique address of the instrument.
+        /// </summary>
         public string Address { get; private set;}
+        /// <summary>
+        /// Description of the connection.
+        /// </summary>
         public string Description { get; private set; }
 
+        /// <summary>
+        /// Initialize a new Connection object.
+        /// </summary>
+        /// <param name="address">Unique address of the instrument.</param>
+        /// <param name="defaultDelay">Default delay (in ms) to wait before sending each command.</param>
         protected ConnectionBase(string address, int defaultDelay = 0)
         {
             _locker = new object();
@@ -24,18 +41,46 @@ namespace TsdLib.Instrument
             Description = GetType().Name + " on " + Address;
         }
 
+        /// <summary>
+        /// Write a string to the instrument.
+        /// </summary>
+        /// <param name="message">String to write.</param>
         protected abstract void Write(string message);
+
+        /// <summary>
+        /// Read a string from the instrument.
+        /// </summary>
+        /// <returns>A string from the instrument.</returns>
         protected abstract string ReadString();
+        /// <summary>
+        /// Read one byte from the connection.
+        /// </summary>
+        /// <returns>One byte.</returns>
         protected abstract byte ReadByte();
+        /// <summary>
+        /// Checks if there is an error with the current connection or from the last command/response.
+        /// </summary>
+        /// <returns>True in case of error; False otherwise.</returns>
         protected abstract bool CheckForError();
-        
+
+        /// <summary>
+        /// Returns true if the instrument is connected and ready to communicate.
+        /// </summary>
         public abstract bool IsConnected { get; }
+
+        /// <summary>
+        /// Close the connection and dispose of any other resources being used.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Close the connection and dispose of any other resources being used.
+        /// </summary>
+        /// <param name="disposing">True to dispose of unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -109,6 +154,13 @@ namespace TsdLib.Instrument
             }
         }
 
+        /// <summary>
+        /// Read an array of bytes from the instrument.
+        /// </summary>
+        /// <param name="byteCount">Number of bytes to read.</param>
+        /// <param name="terminationCharacter">OPTIONAL: Termination character that instrument uses to signal the end of the transmission.</param>
+        /// <param name="delay">Delay (in ms) to wait before reading the bytes.</param>
+        /// <returns>A byte array from the instrument.</returns>
         public byte[] GetByteResponse(int byteCount = int.MaxValue, char terminationCharacter = '\uD800', int delay = -1)
         {
             int localDelay = delay != -1 ? delay : DefaultDelay;

@@ -6,13 +6,27 @@ using NationalInstruments.VisaNS;
 
 namespace TsdLib.Instrument.Visa
 {
+    /// <summary>
+    /// Contains functionality to discover and connect to Visa-based instruments.
+    /// </summary>
     public class VisaFactory : FactoryBase<VisaConnection>
     {
+        /// <summary>
+        /// Search the system for Visa-based instrument.
+        /// </summary>
+        /// <returns>A sequence of instrument addresses.</returns>
         protected override IEnumerable<string> SearchForInstruments()
         {
             return ResourceManager.GetLocalManager().FindResources("?*INSTR");
         }
 
+        /// <summary>
+        /// Connects to the Visa-based instrument at the specified address.
+        /// </summary>
+        /// <param name="address">Visa resource name for the instrument (ie. GPIB0::6::INSTR).</param>
+        /// <param name="defaultDelay">Default delay to wait between commands.</param>
+        /// <param name="attributes">Zero or more ConnectionSettingAttributes with a name matching a member of NationalInstruments.VisaNS.AttributeType.</param>
+        /// <returns>A VisaConnection object that can be used to communicate with the instrument.</returns>
         protected override VisaConnection CreateConnection(string address, int defaultDelay, params ConnectionSettingAttribute[] attributes)
         {
             try
@@ -46,6 +60,12 @@ namespace TsdLib.Instrument.Visa
             }
         }
 
+        /// <summary>
+        /// Send a request to identify the instrument via the specified VisaConnection.
+        /// </summary>
+        /// <param name="connection">VisaConnection object representing the connection to the instrument.</param>
+        /// <param name="idAttribute">IdQueryAttribute object representing the command (ie. *IDN?) to send to the instrument and a termination character (if required) to signal the end of the instrument response.</param>
+        /// <returns>The response from the instrument.</returns>
         protected override string GetInstrumentIdentifier(VisaConnection connection, IdQueryAttribute idAttribute)
         {
             try

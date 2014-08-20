@@ -6,41 +6,72 @@ using System.Threading;
 
 namespace TsdLib.Instrument.Telnet
 {
+    /// <summary>
+    /// Contains functionality to communicate with a Telnet-based instrument.
+    /// </summary>
     public class TelnetConnection : ConnectionBase
     {
         private readonly TcpClient _tcpSocket;
 
+        /// <summary>
+        /// Initialize a new Connection object.
+        /// </summary>
+        /// <param name="tcpClient">A System.Net.Sockets.TcpClient object to provide the transport layer for the Telnet connection.</param>
+        /// <param name="defaultDelay">Default delay (in ms) to wait before sending each command.</param>
         internal TelnetConnection(TcpClient tcpClient, int defaultDelay = 200)
             : base(((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString(), defaultDelay)
         {
             _tcpSocket = tcpClient;
         }
 
+        /// <summary>
+        /// Checks if there is an error with the current connection or from the last command/response.
+        /// </summary>
+        /// <returns>True in case of error; False otherwise.</returns>
         protected override bool CheckForError()
         {
             return !IsConnected;
         }
 
+        /// <summary>
+        /// Returns true if the Telnet-based instrument is connected and ready to communicate.
+        /// </summary>
         public override bool IsConnected
         {
             get { return _tcpSocket != null && _tcpSocket.Connected; }
         }
 
+        /// <summary>
+        /// Read one byte from the Telnet-based instrument.
+        /// </summary>
+        /// <returns>One byte.</returns>
         protected override byte ReadByte()
         {
             throw new NotImplementedException();
         }
         
+        /// <summary>
+        /// Read a string from the Telnet-based instrument.
+        /// </summary>
+        /// <returns>A string from the instrument.</returns>
         protected override string ReadString()
         {
             return Read(DefaultDelay);
         }
 
+        /// <summary>
+        /// Write a string to the Telnet-based instrument.
+        /// </summary>
+        /// <param name="message">String to write.</param>
         protected override void Write(string message)
         {
             WriteLine(message);
         }
 
+        /// <summary>
+        /// Close the Telnet connection and optionally dispose of any resources.
+        /// </summary>
+        /// <param name="disposing">True to dispose of unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             _tcpSocket.Close();
