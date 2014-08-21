@@ -15,6 +15,7 @@ namespace TsdLib.Configuration
         /// <summary>
         /// Gets the group of configuration instances.
         /// </summary>
+        /// <returns>A configuration group containing all instances of the specified configuration type.</returns>
         public static IConfigGroup<T> GetConfigGroup()
         {
             return _configGroup;

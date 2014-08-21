@@ -9,6 +9,7 @@ namespace TsdLib.Instrument
     /// <summary>
     /// Contains base functionality to discover and connect to instruments.
     /// </summary>
+    /// <typeparam name="TConnection">Type of connection that the factory discovers and connects to.</typeparam>
     public abstract class FactoryBase<TConnection>
         where TConnection : ConnectionBase
     {

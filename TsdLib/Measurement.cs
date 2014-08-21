@@ -250,7 +250,7 @@ namespace TsdLib
         /// </summary>
         /// <param name="rowSeparator">Delimiter string to insert between each field of the Measurement object.</param>
         /// <param name="columnSeparator">Delimiter string to insert between each Measurement object.</param>
-        /// <returns></returns>
+        /// <returns>A string representation of the MeasurementCollection formatted with row and column delimiters.</returns>
         public string ToString(string rowSeparator, string columnSeparator)
         {
             return string.Join(rowSeparator, this.Select(meas => meas.ToString(columnSeparator)));
