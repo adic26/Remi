@@ -7,6 +7,9 @@ namespace TsdLib.View
 {
     delegate void AppendTextDelegate(string text);
 
+    /// <summary>
+    /// Subscribe a text box to monitor the Trace and Debug output messages.
+    /// </summary>
     public class TextBoxTraceListener : TraceListener
     {
         readonly TextBoxBase _textBox;
@@ -14,6 +17,10 @@ namespace TsdLib.View
 
         private readonly StringBuilder _buffer;
 
+        /// <summary>
+        /// Initializes a new instance of the TextBoxTraceListener by subscribing a text box to monitor the Trace and Debug output messages.
+        /// </summary>
+        /// <param name="textBox">Text box to subscribe to trace messages.</param>
         public TextBoxTraceListener(TextBoxBase textBox)
         {
             _textBox = textBox;
@@ -30,6 +37,10 @@ namespace TsdLib.View
             _buffer.Clear();
         }
 
+        /// <summary>
+        /// Write a message to the text box.
+        /// </summary>
+        /// <param name="message">Message to write.</param>
         public override void Write(string message)
         {
             if (_textBox.IsDisposed)
@@ -47,6 +58,10 @@ namespace TsdLib.View
                 _textBoxAppend(message);
         }
 
+        /// <summary>
+        /// Write a message to the text box, terminated with a NewLine character.
+        /// </summary>
+        /// <param name="message">Message to write.</param>
         public override void WriteLine(string message)
         {
             Write(message + Environment.NewLine);

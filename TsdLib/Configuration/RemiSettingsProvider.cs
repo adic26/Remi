@@ -6,28 +6,48 @@ using System.Windows.Forms;
 
 namespace TsdLib.Configuration
 {
+    /// <summary>
+    /// Extends System.Configuration.LocalFileSettingsProvider to persist application settings to Remi
+    /// </summary>
     public class RemiSettingsProvider : LocalFileSettingsProvider
     {
         static readonly object locker = new object();
 
         private IRemiControl _remiControl;
 
+        /// <summary>
+        /// Gets the name of the settings provider.
+        /// </summary>
         public override string Name
         {
             get { return "RemiSettingsProvider"; }
         }
 
+        /// <summary>
+        /// Gets a description of the settings provider.
+        /// </summary>
         public override string Description
         {
             get { return "Extends the LocalSettingsProvider by pushing/pulling local config values to/from the Remi database."; }
         }
 
         //TODO: initialize _remiControl to the live version
+        /// <summary>
+        /// Initialize the settings provider.
+        /// </summary>
+        /// <param name="name">The name of the settings provider.</param>
+        /// <param name="values">The values for initialization.</param>
         public override void Initialize(string name, NameValueCollection values)
         {
             _remiControl = new RemiControlTest(@"C:\temp\RemiSettingsTest");
         }
 
+        /// <summary>
+        /// Returns the collection of settings property values for the specified application instance and settings property group.
+        /// </summary>
+        /// <param name="context">A SettingsContext describing the current application use.</param>
+        /// <param name="properties">A SettingsPropertyCollection containing the settings property group whose values are to be retrieved.</param>
+        /// <returns>A SettingsPropertyValueCollection containing the values for the specified settings property group.</returns>
         public override SettingsPropertyValueCollection GetPropertyValues(SettingsContext context, SettingsPropertyCollection properties)
         {
             lock (locker)
@@ -40,7 +60,7 @@ namespace TsdLib.Configuration
                     {
                         string configType = settingProperty.PropertyType.GetGenericArguments()[0].Name;
                         Debug.WriteLine("Pulling " + configType + " from Remi.");
-                        string valueFromRemi = _remiControl.ReadConfigStringFromRemi(Application.ProductName,
+                        string valueFromRemi = _remiControl.ReadStringFromRemi(Application.ProductName,
                             Application.ProductVersion, configType + ".xml");
 
                         SettingsPropertyValue settingValue = new SettingsPropertyValue(settingProperty)
@@ -69,6 +89,11 @@ namespace TsdLib.Configuration
             }
         }
 
+        /// <summary>
+        /// Sets the values of the specified group of property settings.
+        /// </summary>
+        /// <param name="context">A SettingsContext describing the current application usage.</param>
+        /// <param name="values">A SettingsPropertyValueCollection representing the group of property settings to set.</param>
         public override void SetPropertyValues(SettingsContext context, SettingsPropertyValueCollection values)
         {
             lock (locker)
@@ -88,7 +113,7 @@ namespace TsdLib.Configuration
 
                         Debug.WriteLine("Pushing " + configType + " to Remi.");
                         
-                        _remiControl.WriteConfigStringToRemi((string) settingValue.SerializedValue,
+                        _remiControl.WriteStringToRemi((string) settingValue.SerializedValue,
                             Application.ProductName, Application.ProductVersion, configType + ".xml");
                     }
                 }

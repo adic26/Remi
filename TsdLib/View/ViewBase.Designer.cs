@@ -32,16 +32,16 @@ namespace TsdLib.View
         private void InitializeComponent()
         {
             this.textBox_Status = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.label_Status = new System.Windows.Forms.Label();
+            this.label_Measurements = new System.Windows.Forms.Label();
             this.button_ExecuteTestSequence = new System.Windows.Forms.Button();
             this.button_AbortTestSequence = new System.Windows.Forms.Button();
             this.button_StationConfig = new System.Windows.Forms.Button();
             this.button_ProductConfig = new System.Windows.Forms.Button();
             this.comboBox_StationConfig = new System.Windows.Forms.ComboBox();
             this.comboBox_ProductConfig = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.label_StationConfig = new System.Windows.Forms.Label();
+            this.label_ProductConfig = new System.Windows.Forms.Label();
             this.measurementDataGridView = new TsdLib.View.MeasurementDataGridView();
             this.MeasurementName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MeasuredValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -61,23 +61,23 @@ namespace TsdLib.View
             this.textBox_Status.Size = new System.Drawing.Size(515, 127);
             this.textBox_Status.TabIndex = 0;
             // 
-            // label1
+            // label_Status
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 421);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(37, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Status";
+            this.label_Status.AutoSize = true;
+            this.label_Status.Location = new System.Drawing.Point(12, 421);
+            this.label_Status.Name = "label_Status";
+            this.label_Status.Size = new System.Drawing.Size(37, 13);
+            this.label_Status.TabIndex = 1;
+            this.label_Status.Text = "Status";
             // 
-            // label2
+            // label_Measurements
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 127);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(76, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Measurements";
+            this.label_Measurements.AutoSize = true;
+            this.label_Measurements.Location = new System.Drawing.Point(12, 127);
+            this.label_Measurements.Name = "label_Measurements";
+            this.label_Measurements.Size = new System.Drawing.Size(76, 13);
+            this.label_Measurements.TabIndex = 3;
+            this.label_Measurements.Text = "Measurements";
             // 
             // button_ExecuteTestSequence
             // 
@@ -137,23 +137,23 @@ namespace TsdLib.View
             this.comboBox_ProductConfig.Size = new System.Drawing.Size(121, 21);
             this.comboBox_ProductConfig.TabIndex = 12;
             // 
-            // label3
+            // label_StationConfig
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 15);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(73, 13);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Station Config";
+            this.label_StationConfig.AutoSize = true;
+            this.label_StationConfig.Location = new System.Drawing.Point(12, 15);
+            this.label_StationConfig.Name = "label_StationConfig";
+            this.label_StationConfig.Size = new System.Drawing.Size(73, 13);
+            this.label_StationConfig.TabIndex = 13;
+            this.label_StationConfig.Text = "Station Config";
             // 
-            // label4
+            // label_ProductConfig
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(15, 67);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(77, 13);
-            this.label4.TabIndex = 14;
-            this.label4.Text = "Product Config";
+            this.label_ProductConfig.AutoSize = true;
+            this.label_ProductConfig.Location = new System.Drawing.Point(15, 67);
+            this.label_ProductConfig.Name = "label_ProductConfig";
+            this.label_ProductConfig.Size = new System.Drawing.Size(77, 13);
+            this.label_ProductConfig.TabIndex = 14;
+            this.label_ProductConfig.Text = "Product Config";
             // 
             // measurementDataGridView
             // 
@@ -222,8 +222,8 @@ namespace TsdLib.View
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(539, 576);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label_ProductConfig);
+            this.Controls.Add(this.label_StationConfig);
             this.Controls.Add(this.comboBox_ProductConfig);
             this.Controls.Add(this.comboBox_StationConfig);
             this.Controls.Add(this.button_ProductConfig);
@@ -231,8 +231,8 @@ namespace TsdLib.View
             this.Controls.Add(this.button_StationConfig);
             this.Controls.Add(this.button_AbortTestSequence);
             this.Controls.Add(this.button_ExecuteTestSequence);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.label_Measurements);
+            this.Controls.Add(this.label_Status);
             this.Controls.Add(this.textBox_Status);
             this.Name = "ViewBase";
             this.Text = "TsdLib Generic Test System";
@@ -250,17 +250,47 @@ namespace TsdLib.View
         private System.Windows.Forms.DataGridViewTextBoxColumn LowerLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn UpperLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Result;
+        /// <summary>
+        /// Textbox to show status updates posted by the Controller or Test Sequence.
+        /// </summary>
         protected System.Windows.Forms.TextBox textBox_Status;
-        protected System.Windows.Forms.Label label1;
-        protected System.Windows.Forms.Label label2;
+        /// <summary>
+        /// Status label.
+        /// </summary>
+        protected System.Windows.Forms.Label label_Status;
+        /// <summary>
+        /// Measurements label.
+        /// </summary>
+        protected System.Windows.Forms.Label label_Measurements;
+        /// <summary>
+        /// Request to execute the Test Sequence.
+        /// </summary>
         protected System.Windows.Forms.Button button_ExecuteTestSequence;
+        /// <summary>
+        /// Request to abort the Test Sequence currently in progress.
+        /// </summary>
         protected System.Windows.Forms.Button button_AbortTestSequence;
+        /// <summary>
+        /// Request to modify the Station Config.
+        /// </summary>
         protected System.Windows.Forms.Button button_StationConfig;
+        /// <summary>
+        /// Displays measurements as they are generated by the Test Sequence.
+        /// </summary>
         protected MeasurementDataGridView measurementDataGridView;
+        /// <summary>
+        /// Request to modify the Product Config.
+        /// </summary>
         protected System.Windows.Forms.Button button_ProductConfig;
         private System.Windows.Forms.ComboBox comboBox_StationConfig;
         private System.Windows.Forms.ComboBox comboBox_ProductConfig;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
+        /// <summary>
+        /// Station Config label.
+        /// </summary>
+        protected System.Windows.Forms.Label label_StationConfig;
+        /// <summary>
+        /// Product Config label.
+        /// </summary>
+        protected System.Windows.Forms.Label label_ProductConfig;
     }
 }

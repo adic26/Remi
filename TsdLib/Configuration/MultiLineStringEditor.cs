@@ -7,13 +7,23 @@ using System.Windows.Forms.Design;
 
 namespace TsdLib.Configuration
 {
+    /// <summary>
+    /// UI that can be used to edit a multi-line string at design time or from a PropertyGrid.
+    /// </summary>
     public partial class MultiLineStringEditorForm : Form
     {
+        /// <summary>
+        /// Gets the edited value.
+        /// </summary>
         public string Value
         {
             get { return textBox.Text; }
         }
 
+        /// <summary>
+        /// Initialize a new MultiLineStringEditorForm to edit the specified string.
+        /// </summary>
+        /// <param name="value">String to edit.</param>
         public MultiLineStringEditorForm(string value)
         {
             InitializeComponent();

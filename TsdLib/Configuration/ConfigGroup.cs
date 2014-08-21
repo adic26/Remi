@@ -96,10 +96,22 @@ namespace TsdLib.Configuration
         #endregion
     }
 
+    /// <summary>
+    /// A group of configuration instances.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IConfigGroup<T> : IListSource, IEnumerable<T>
         where T : ConfigItem
     {
+        /// <summary>
+        /// Save the configuration group.
+        /// </summary>
         void Save();
+        /// <summary>
+        /// Add a new instance to the configuration group.
+        /// </summary>
+        /// <param name="configItem">A new configuration instance.</param>
+        /// <param name="useRemi">True to store configuration locally and on Remi. False to store locally only.</param>
         void Add(T configItem, bool useRemi = true);
     }
 }

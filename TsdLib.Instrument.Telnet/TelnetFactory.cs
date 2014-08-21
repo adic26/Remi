@@ -5,8 +5,15 @@ using System.Net.Sockets;
 
 namespace TsdLib.Instrument.Telnet
 {
+    /// <summary>
+    /// Contains functionality to discover and connect to Telnet-based instruments.
+    /// </summary>
     public class TelnetFactory : FactoryBase<TelnetConnection>
     {
+        /// <summary>
+        /// Search the system for Telnet-based instrument.
+        /// </summary>
+        /// <returns>A sequence of instrument addresses.</returns>
         protected override IEnumerable<string> SearchForInstruments()
         {
             var result = NetworkInterface.GetAllNetworkInterfaces()
@@ -21,6 +28,13 @@ namespace TsdLib.Instrument.Telnet
             return result;
         }
 
+        /// <summary>
+        /// Connects to the Telnet-based instrument at the specified address.
+        /// </summary>
+        /// <param name="address">IP address for the instrument.</param>
+        /// <param name="defaultDelay">Default delay to wait between commands.</param>
+        /// <param name="attributes">Zero or more ConnectionSettingAttributes. Not required for TelnetConnection.</param>
+        /// <returns>A VisaConnection object that can be used to communicate with the instrument.</returns>
         protected override TelnetConnection CreateConnection(string address, int defaultDelay, params ConnectionSettingAttribute[] attributes)
         {
             try
@@ -54,6 +68,12 @@ namespace TsdLib.Instrument.Telnet
             
         }
 
+        /// <summary>
+        /// Send a request to identify the instrument via the specified TelnetConnection.
+        /// </summary>
+        /// <param name="connection">TelnetConnection object representing the connection to the instrument.</param>
+        /// <param name="idAttribute">Not required for TelnetConnection.</param>
+        /// <returns>The DHCP server description (ie. BlackBerry Device #..)</returns>
         protected override string GetInstrumentIdentifier(TelnetConnection connection, IdQueryAttribute idAttribute)
         {
             string identifier =
