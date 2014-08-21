@@ -19,7 +19,7 @@ namespace TsdLib.Instrument
         protected abstract IEnumerable<string> SearchForInstruments();
 
         /// <summary>
-        /// Connects to the instrument at the specified address.
+        /// Creates a connection using the specified address.
         /// </summary>
         /// <param name="address">Address of the instrument.</param>
         /// <param name="defaultDelay">Default delay to wait between commands.</param>

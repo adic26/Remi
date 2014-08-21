@@ -8,6 +8,11 @@ using TsdLib.View;
 
 namespace TsdLib.Controller
 {
+    /// <summary>
+    /// Contains base functionality for the system controller.
+    /// </summary>
+    /// <typeparam name="TStationConfig">System-specific type of station config.</typeparam>
+    /// <typeparam name="TProductConfig">System-specific type of product config.</typeparam>
     public abstract class ControllerBase<TStationConfig, TProductConfig>
         where TStationConfig : StationConfigCommon, new()
         where TProductConfig : ProductConfigCommon, new()
@@ -26,9 +31,14 @@ namespace TsdLib.Controller
 
         #region Constructor and Launch
 
+        /// <summary>
+        /// Initialize a new system controller.
+        /// </summary>
+        /// <param name="view">User interface to connect to the system controller.</param>
+        /// <param name="testSequence">Test sequence object containing the step-by-step test sequence operation logic.</param>
+        /// <param name="devMode">True to enable Developer Mode - config can be modified but results are stored in the Analysis category.</param>
         protected ControllerBase(IView view, TestSequenceBase<TStationConfig, TProductConfig> testSequence, bool devMode)
         {
-
             _view = view;
             _testSequence = testSequence;
             _devMode = devMode;

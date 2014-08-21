@@ -24,7 +24,7 @@ namespace TsdLib.Instrument
         /// </summary>
         public string Address { get; private set;}
         /// <summary>
-        /// Description of the connection.
+        /// Gets a description of the connection.
         /// </summary>
         public string Description { get; private set; }
 

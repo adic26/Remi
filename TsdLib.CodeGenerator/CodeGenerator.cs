@@ -12,27 +12,60 @@ using Microsoft.Build.Evaluation;
 
 namespace TsdLib.CodeGenerator
 {
+    /// <summary>
+    /// Describes the types of input that are supported.
+    /// </summary>
     public enum CodeType
     {
+        /// <summary>
+        /// An *.xml instrument definition file.
+        /// </summary>
         Instruments,
+        /// <summary>
+        /// A *.cs or *.vb test sequence class file.
+        /// </summary>
         TestSequence
     }
 
+    /// <summary>
+    /// Describes the types of output that can be generated.
+    /// </summary>
     [Flags]
     public enum OutputFormat
     {
+        /// <summary>
+        /// Source code.
+        /// </summary>
         Source = 1,
+        /// <summary>
+        /// Compiled assembly.
+        /// </summary>
         Assembly = 2,
+        /// <summary>
+        /// Source code and a compiled assembly.
+        /// </summary>
         Both = Source | Assembly
     }
 
+    /// <summary>
+    /// Describes the programming languages that are supported for code input or output.
+    /// </summary>
     public enum Language
     {
+        /// <summary>
+        /// C# language.
+        /// </summary>
         CSharp,
+        /// <summary>
+        /// Visual Basic language.
+        /// </summary>
         VisualBasic
     }
     
-    public class CodeGenerator
+    /// <summary>
+    /// Contains functionality to dynamically generate .NET source code and/or assemblies.
+    /// </summary>
+    public static class CodeGenerator
     {
         /// <summary>
         /// Dynamically generates code file (*.cs or *.vb) or class library (*.dll) files.
@@ -151,6 +184,15 @@ namespace TsdLib.CodeGenerator
             return 0;
         }
 
+        /// <summary>
+        /// Generate source code and/or assembly from one or more instrument xml definitions.
+        /// </summary>
+        /// <param name="outputFormat">Generate source code, assembly or both.</param>
+        /// <param name="xmlInputFiles">A sequence of *.xml instrument definition files.</param>
+        /// <param name="outputPath">Absolute directory path to store the output file. If the directory does not exist, it will be created.</param>
+        /// <param name="clientNamespace">Namespace to apply to the generated code.</param>
+        /// <param name="language">Generate C# or Visual Basic code.</param>
+        /// <param name="schemaFile">XML schema (*.xsd) file used to validate the XML input files.</param>
         public static void GenerateInstruments(OutputFormat outputFormat, IEnumerable<string> xmlInputFiles, string outputPath, string clientNamespace, Language language = Language.CSharp, string schemaFile = "TsdLib.Instrument.xsd")
         {
             CodeNamespace ns = generateInstrumentCodeNamespace(clientNamespace, xmlInputFiles.ToArray(), schemaFile);
@@ -169,6 +211,14 @@ namespace TsdLib.CodeGenerator
             }
         }
 
+        /// <summary>
+        /// Generate source code and/or assembly from a test sequence source code file.
+        /// </summary>
+        /// <param name="outputFormat">Generate source code, assembly or both.</param>
+        /// <param name="inputFile">A *.cs or *.vb source code file containing the test sequence class.</param>
+        /// <param name="outputPath">Absolute directory path to store the output file. If the directory does not exist, it will be created.</param>
+        /// <param name="clientNamespace">Namespace to apply to the generated code.</param>
+        /// <param name="language">Generate C# or Visual Basic code.</param>
         public static void GenerateTestSequence(OutputFormat outputFormat, string inputFile, string outputPath, string clientNamespace, Language language = Language.CSharp)
         {
             CodeNamespace ns = generateTestSequenceCodeNamespace(clientNamespace, File.ReadAllLines(inputFile));
@@ -317,17 +367,16 @@ namespace TsdLib.CodeGenerator
 
         static void generateSource(CodeNamespace codeNamespace, string outputPath, string fileName, Language language = Language.CSharp)
         {
-            try
-            {
-                CodeDomProvider provider = CodeDomProvider.CreateProvider(language.ToString());
-                string fullFileName = Path.Combine(outputPath, fileName + "." + provider.FileExtension);
-                using (StreamWriter writer = new StreamWriter(fullFileName, false))
-                    provider.GenerateCodeFromNamespace(codeNamespace, writer, new CodeGeneratorOptions { BracingStyle = "C" });
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-                throw new CodeGeneratorException("Error generating source code. The directory " + outputPath + " could not be found.", ex);
-            }
+
+            CodeDomProvider provider = CodeDomProvider.CreateProvider(language.ToString());
+            string outputDirectoryName = Path.GetDirectoryName(outputPath);
+            if (outputDirectoryName == null)
+                throw new CodeGeneratorException("Invalid output path specified: " + outputPath);
+            if (Directory.Exists(outputDirectoryName))
+                Directory.CreateDirectory(outputDirectoryName);
+            string fullFileName = Path.Combine(outputDirectoryName, fileName + "." + provider.FileExtension);
+            using (StreamWriter writer = new StreamWriter(fullFileName, false))
+                provider.GenerateCodeFromNamespace(codeNamespace, writer, new CodeGeneratorOptions { BracingStyle = "C" });
         }
 
         static void generateAssembly(CodeNamespace codeNamespace, string outputPath, string fileName, Language language = Language.CSharp, params string[] referencedAssemblies)
@@ -348,7 +397,7 @@ namespace TsdLib.CodeGenerator
             CompilerResults cr = provider.CompileAssemblyFromDom(cp, ccu);
 
             if (cr.Errors.HasErrors)
-                throw new CompilerException("Error compiling.", cr.Errors);
+                throw new CompilerException(cr.Errors);
         }
     }
 

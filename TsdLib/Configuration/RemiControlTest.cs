@@ -4,17 +4,31 @@ using System.Text.RegularExpressions;
 
 namespace TsdLib.Configuration
 {
+    /// <summary>
+    /// A simulated RemiControl implementation that persists Remi settings to the local disk.
+    /// </summary>
     public class RemiControlTest : IRemiControl
     {
         private const string AppVersionFilter = @"\d+\.\d+";
         private readonly string _settingsBasePath;
 
+        /// <summary>
+        /// Initialize a new RemiControlTest instance specifying a location on the local disk to persist settings.
+        /// </summary>
+        /// <param name="settingsBasePath">Absolute path on the local file system to use for persisting settings.</param>
         public RemiControlTest(string settingsBasePath)
         {
             _settingsBasePath = settingsBasePath;
         }
 
-        public void WriteStringToRemi(string data, string applicationName, string applicationVersion, string fileName)
+        /// <summary>
+        /// Write a string of data to Remi.
+        /// </summary>
+        /// <param name="data">The raw data to write.</param>
+        /// <param name="applicationName">Name of the currently executing application. Used to determine where to store the data.</param>
+        /// <param name="applicationVersion">Version of the currently executing application. Used to determine where to store the data.</param>
+        /// <param name="dataCategory">Category or type of the data being written. Used to determine where to store the data.</param>
+        public void WriteStringToRemi(string data, string applicationName, string applicationVersion, string dataCategory)
         {
             Match match = Regex.Match(applicationVersion, AppVersionFilter);
             string appVersion = match.Success ? match.Value : applicationVersion;
@@ -22,17 +36,24 @@ namespace TsdLib.Configuration
             if (!Directory.Exists(directoryName))
                 Directory.CreateDirectory(directoryName);
 
-            File.WriteAllText(Path.Combine(directoryName, fileName), data);
+            File.WriteAllText(Path.Combine(directoryName, dataCategory), data);
         }
 
-        public string ReadStringFromRemi(string applicationName, string applicationVersion, string fileName)
+        /// <summary>
+        /// Read a string of data from Remi.
+        /// </summary>
+        /// <param name="applicationName">Name of the currently executing application. Used to determine where to retrieve the data from.</param>
+        /// <param name="applicationVersion">Version of the currently executing application. Used to determine where to retrieve the data from.</param>
+        /// <param name="dataCategory">Category or type of the data to be read. Used to determine where to store the data.</param>
+        /// <returns>The data from the specified location.</returns>
+        public string ReadStringFromRemi(string applicationName, string applicationVersion, string dataCategory)
         {
             Match match = Regex.Match(applicationVersion, AppVersionFilter);
             string appVersion = match.Success ? match.Value : applicationVersion;
-            string filePath = Path.Combine(_settingsBasePath, applicationName, appVersion, fileName);
+            string filePath = Path.Combine(_settingsBasePath, applicationName, appVersion, dataCategory);
 
             if (!File.Exists(filePath))
-                throw new ConfigDoesNotExistInRemiException(applicationName, applicationVersion, fileName);
+                throw new ConfigDoesNotExistInRemiException(applicationName, applicationVersion, dataCategory);
 
             string data = File.ReadAllText(filePath);
 
