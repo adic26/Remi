@@ -42,8 +42,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller.cs" />
+    <Compile Include="ProductConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StationConfig.cs" />
     <Compile Include="TestClientProgram.cs" />
+    <Compile Include="TestConfig.cs" />
+    <Compile Include="TestSequence.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="View.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -55,14 +61,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TestClient.Configuration\TestClient.Configuration.csproj">
-      <Project>{91b6be49-ecf8-4b3b-90fd-9f0745c616bc}</Project>
-      <Name>TestClient.Configuration</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TestClient.TestSequences\TestClient.TestSequences.csproj">
-      <Project>{c2e929e9-3a83-4f84-b932-ef77d4b13aa0}</Project>
-      <Name>TestClient.TestSequences</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TsdLib\TsdLib.csproj">
       <Project>{da39d49a-e06e-4cd9-b2a2-326057bdc41d}</Project>
       <Name>TsdLib</Name>
@@ -75,7 +73,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rem $(TargetPath) -t $(TargetDir)TestSequence.cs</PostBuildEvent>
+    <PostBuildEvent>$(TargetPath) -t $(TargetDir)TestSequence.cs</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

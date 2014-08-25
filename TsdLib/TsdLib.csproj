@@ -31,14 +31,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Build" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\ConfigCommon.cs" />
+    <Compile Include="CodeGenerator\CodeGenerator.cs" />
+    <Compile Include="CodeGenerator\CodeGeneratorException.cs" />
+    <Compile Include="Proxies\EventProxy.cs" />
     <Compile Include="States.cs" />
     <Compile Include="IRemiControl.cs" />
     <Compile Include="Measurement.cs" />
@@ -58,7 +64,7 @@
       <DependentUpon>ConfigFormCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Configuration\ConfigGroup.cs" />
-    <Compile Include="Configuration\ConfigItem.cs" />
+    <Compile Include="Configuration\ConfigItems.cs" />
     <Compile Include="Configuration\ConfigManager.cs" />
     <Compile Include="Configuration\MultiLineStringEditor.cs">
       <SubType>Form</SubType>

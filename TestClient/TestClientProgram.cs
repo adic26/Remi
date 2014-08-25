@@ -4,9 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using TestClient.TestSequences;
+//using TestClient.TestSequences;
 using TsdLib.Configuration;
-using TestClient.Configuration;
 
 namespace TestClient
 {
@@ -30,18 +29,18 @@ namespace TestClient
                 Trace.WriteLine("Filename = " + fileName);
                 string contents = File.ReadAllText(fileName);
 
-                IConfigGroup<TestConfig> cfgGroup = Config<TestConfig>.GetConfigGroup();
+                IConfigGroup<SequenceConfig> cfgGroup = Config<SequenceConfig>.GetConfigGroup();
 
-                Trace.WriteLine(string.Format("Detected {0} TestConfig objects", cfgGroup.Count()));
+                Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects", cfgGroup.Count()));
 
                 if (!cfgGroup.Any())
                 {
                     Trace.WriteLine("Creating default TestConfig object.");
-                    cfgGroup.Add(new TestConfig { Name = "Default" });
+                    cfgGroup.Add(new SequenceConfig { Name = "Default" });
                 }
 
-                foreach (TestConfig testConfig in cfgGroup)
-                    testConfig.TestSequenceSource = contents;
+                foreach (SequenceConfig testConfig in cfgGroup)
+                    testConfig.TestSequenceSourceCode = contents;
 
                 cfgGroup.Save();
 
@@ -53,16 +52,13 @@ namespace TestClient
 
             bool devMode = args.Length > 0 && args[0] == "-d";
 
-            View view = new View
-            {
-                StationConfigList = Config<StationConfig>.GetConfigGroup().GetList(),
-                ProductConfigList = Config<ProductConfig>.GetConfigGroup().GetList()
-            };
+            Controller c = new Controller(devMode);
+            
+            if (c.View is Form)
+                Application.Run(c.View as Form);
 
-// ReSharper disable once UnusedVariable - constructor hooks up view events
-            Controller c = new Controller(view, new TestSequence(), devMode);
-
-            Application.Run(view);
+            //TODO: figure out how to launch non-form view
+            
 
             Console.WriteLine("Done");
         }

@@ -1,8 +1,11 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using TsdLib.Configuration;
+using TsdLib.Proxies;
 using TsdLib.TestSequence;
 using TsdLib.View;
 
@@ -11,16 +14,18 @@ namespace TsdLib.Controller
     /// <summary>
     /// Contains base functionality for the system controller.
     /// </summary>
+    /// <typeparam name="TView">System-specific type of user interface.</typeparam>
     /// <typeparam name="TStationConfig">System-specific type of station config.</typeparam>
     /// <typeparam name="TProductConfig">System-specific type of product config.</typeparam>
-    public abstract class ControllerBase<TStationConfig, TProductConfig>
+    /// <typeparam name="TTestConfig">System-specific type of test config.</typeparam>
+    public abstract class ControllerBase<TView, TStationConfig, TProductConfig, TTestConfig>
+        where TView : IView, new()
         where TStationConfig : StationConfigCommon, new()
         where TProductConfig : ProductConfigCommon, new()
+        where TTestConfig : TestConfigCommon, new()
     {
         #region Private Fields
 
-        private readonly IView _view;
-        private readonly TestSequenceBase<TStationConfig, TProductConfig> _testSequence;
         private readonly bool _devMode;
 
         private readonly LocalMeasurementWriter _localMeasurementWriter;
@@ -29,30 +34,46 @@ namespace TsdLib.Controller
 
         #endregion
 
-        #region Constructor and Launch
+        #region Public Properties
+
+        /// <summary>
+        /// Gets a reference to the user interface.
+        /// </summary>
+        public IView View { get; private set; }
+
+        #endregion
+
+        #region Constructor
 
         /// <summary>
         /// Initialize a new system controller.
         /// </summary>
-        /// <param name="view">User interface to connect to the system controller.</param>
-        /// <param name="testSequence">Test sequence object containing the step-by-step test sequence operation logic.</param>
         /// <param name="devMode">True to enable Developer Mode - config can be modified but results are stored in the Analysis category.</param>
-        protected ControllerBase(IView view, TestSequenceBase<TStationConfig, TProductConfig> testSequence, bool devMode)
+        protected ControllerBase(bool devMode)
         {
-            _view = view;
-            _testSequence = testSequence;
+
             _devMode = devMode;
 
             _localMeasurementWriter = new LocalMeasurementWriter();
 
-            //subscribe to view events
-            _view.EditStationConfig += _view_EditStationConfig;
-            _view.EditProductConfig += _view_EditProductConfig;
-            _view.ExecuteTestSequence += _view_ExecuteTestSequence;
-            _view.AbortTestSequence += _view_AbortTestSequence;
+            //TODO: if _devMode, do not pull from Remi
 
-            //subscribe to test sequence events
-            _testSequence.Measurements.ListChanged += Measurements_ListChanged;
+            //set up view
+            View = new TView
+            {
+                StationConfigList = Config<TStationConfig>.GetConfigGroup().GetList(),
+                ProductConfigList = Config<TProductConfig>.GetConfigGroup().GetList(),
+                TestConfigList = Config<TTestConfig>.GetConfigGroup().GetList(),
+                SequenceConfigList = Config<SequenceConfig>.GetConfigGroup().GetList()
+            };
+
+            //subscribe to view events
+            View.EditStationConfig += _view_EditStationConfig;
+            View.EditProductConfig += _view_EditProductConfig;
+            View.EditTestConfig += _view_EditTestConfig;
+            View.EditSequenceConfig += View_EditSequenceConfig;
+            View.ExecuteTestSequence += _view_ExecuteTestSequence;
+            View.AbortTestSequence += _view_AbortTestSequence;
         }
 
         #endregion
@@ -69,45 +90,101 @@ namespace TsdLib.Controller
             Config<TProductConfig>.Edit(_devMode);
         }
 
+        void _view_EditTestConfig(object sender, EventArgs e)
+        {
+            Config<TTestConfig>.Edit(_devMode);
+        }
+
+        void View_EditSequenceConfig(object sender, EventArgs e)
+        {
+            Config<SequenceConfig>.Edit(_devMode);
+        }
+
         #endregion
 
         #region View event handlers
 
         async void _view_ExecuteTestSequence(object sender, TestSequenceEventArgs e)
         {
+            string sequenceAssembly = null;
+            AppDomain sequenceDomain = null;
+
             try
             {
-                _tokenSource = new CancellationTokenSource();
-                _view.SetState(State.TestInProgress);
-                await _testSequence.ExecuteAsync(e.StationConfig as TStationConfig, e.ProductConfig as TProductConfig, _tokenSource.Token);
-                _view.SetState(State.ReadyToTest);
-            }
-            catch (OperationCanceledException)
-            {
-                _tokenSource.Dispose();
-                Trace.WriteLine("Test sequence cancelled.");
-                _view.SetState(State.ReadyToTest);
+                View.SetState(State.TestInProgress);
+
+                TStationConfig stationConfig = (TStationConfig) e.StationConfig;
+                TProductConfig productConfig = (TProductConfig) e.ProductConfig;
+                TTestConfig testConfig = (TTestConfig) e.TestConfig;
+                SequenceConfig sequenceConfig = (SequenceConfig) e.SequenceConfig;
+
+                await Task.Run(() =>
+                {
+                    _tokenSource = new CancellationTokenSource();
+
+                    sequenceAssembly = CodeGenerator.CodeGenerator.GenerateTestSequenceFromFile(
+                        sequenceConfig.LocalFile,
+                        "System.dll",
+                        "TsdLib.dll",
+                        Application.ProductName + ".exe");
+
+                    sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
+
+                    TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence =
+                        (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)
+                            sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, "TestClient.TestSequence");
+
+                    sequence.AddTraceListener(View.Listener);
+
+                    EventProxy<MeasurementEventArgs> measurementEventProxy = new EventProxy<MeasurementEventArgs>();
+                    sequence.MeasurementEventProxy = measurementEventProxy;
+
+                    measurementEventProxy.Event += measurementEventHandler;
+
+                    _tokenSource.Token.Register(sequence.Abort);
+
+                    sequence.ExecuteSequence(stationConfig, productConfig, testConfig);
+                });
+
+                View.SetState(State.ReadyToTest);
+
             }
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
             }
+            finally
+            {
+                if (sequenceDomain != null)
+                    AppDomain.Unload(sequenceDomain);
+
+                if (sequenceAssembly != null)
+                {
+                    if (File.Exists(sequenceAssembly))
+                        File.Delete(sequenceAssembly);
+
+                    string sequencePdb = Path.ChangeExtension(sequenceAssembly, "pdb");
+                    if (File.Exists(sequencePdb))
+                        File.Delete(sequencePdb);
+
+                    string sequenceTmp = Path.ChangeExtension(sequenceAssembly, null);
+                    if (File.Exists(sequenceTmp))
+                        File.Delete(sequenceTmp);
+                }
+            }
         }
+
+        void measurementEventHandler(object sender, MeasurementEventArgs e)
+        {
+            Measurement measurement = e.Measurement;
+            View.AddMeasurement(measurement);
+            _localMeasurementWriter.Write(measurement);
+        }
+
 
         void _view_AbortTestSequence(object sender, EventArgs e)
         {
             _tokenSource.Cancel();
-        }
-
-        void Measurements_ListChanged(object sender, ListChangedEventArgs e)
-        {
-            IBindingList list = sender as IBindingList;
-            if (list != null)
-            {
-                Measurement measurement = (Measurement)list[e.NewIndex];
-                _view.AddMeasurement(measurement);
-                _localMeasurementWriter.Write(measurement);
-            }
         }
 
         #endregion

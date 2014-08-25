@@ -10,7 +10,7 @@ using System.Xml.Linq;
 using System.Xml.Schema;
 using Microsoft.Build.Evaluation;
 
-namespace TsdLib.CodeGenerator
+namespace TsdLib.CodeGeneratorApplication
 {
     /// <summary>
     /// Describes the types of input that are supported.
@@ -65,7 +65,7 @@ namespace TsdLib.CodeGenerator
     /// <summary>
     /// Contains functionality to dynamically generate .NET source code and/or assemblies.
     /// </summary>
-    public static class CodeGenerator
+    public static class CodeGeneratorApplication
     {
         /// <summary>
         /// Dynamically generates code file (*.cs or *.vb) or class library (*.dll) files.
@@ -81,7 +81,7 @@ namespace TsdLib.CodeGenerator
                     "                 TsdLib Dynamic Instrument Assembly Generator",
                     "Dynamically generates code file (*.cs or *.vb) or class library (*.dll) files",
                     "",
-                    "Usage: TsdLib.CodeGenerator.exe <Source|Assembly|Both> <input path> <output path> <CSharp|VisualBasic> <schema filename>",
+                    "Usage: TsdLib.CodeGeneratorApplication.exe <Source|Assembly|Both> <input path> <output path> <CSharp|VisualBasic> <schema filename>",
                     "",
                     "   Instruments|TestSequence".PadRight(width) + "Type of code to generate. Instrument classes from *.xml files or TestSequence class from a *.cs or *.vb file.",
                     "   Source|Assembly|Both".PadRight(width) + "Generate a source code file (*.cs or *.vb) or an assembly (*.dll).",

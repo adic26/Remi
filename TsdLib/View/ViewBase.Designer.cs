@@ -18,8 +18,8 @@ namespace TsdLib.View
             if (disposing && (components != null))
                 components.Dispose();
 
-            Trace.Listeners.Remove(_textBoxTraceListener);
-            _textBoxTraceListener.Dispose();
+            Trace.Listeners.Remove(Listener);
+            Listener.Dispose();
             base.Dispose(disposing);
         }
 
@@ -49,6 +49,12 @@ namespace TsdLib.View
             this.LowerLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UpperLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Result = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.button_TestConfig = new System.Windows.Forms.Button();
+            this.label_TestConfig = new System.Windows.Forms.Label();
+            this.comboBox_TestConfig = new System.Windows.Forms.ComboBox();
+            this.button_SequenceConfig = new System.Windows.Forms.Button();
+            this.comboBox_SequenceConfig = new System.Windows.Forms.ComboBox();
+            this.label_SequenceConfig = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -73,7 +79,7 @@ namespace TsdLib.View
             // label_Measurements
             // 
             this.label_Measurements.AutoSize = true;
-            this.label_Measurements.Location = new System.Drawing.Point(12, 127);
+            this.label_Measurements.Location = new System.Drawing.Point(12, 166);
             this.label_Measurements.Name = "label_Measurements";
             this.label_Measurements.Size = new System.Drawing.Size(76, 13);
             this.label_Measurements.TabIndex = 3;
@@ -132,7 +138,7 @@ namespace TsdLib.View
             // 
             this.comboBox_ProductConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_ProductConfig.FormattingEnabled = true;
-            this.comboBox_ProductConfig.Location = new System.Drawing.Point(15, 83);
+            this.comboBox_ProductConfig.Location = new System.Drawing.Point(15, 70);
             this.comboBox_ProductConfig.Name = "comboBox_ProductConfig";
             this.comboBox_ProductConfig.Size = new System.Drawing.Size(121, 21);
             this.comboBox_ProductConfig.TabIndex = 12;
@@ -149,7 +155,7 @@ namespace TsdLib.View
             // label_ProductConfig
             // 
             this.label_ProductConfig.AutoSize = true;
-            this.label_ProductConfig.Location = new System.Drawing.Point(15, 67);
+            this.label_ProductConfig.Location = new System.Drawing.Point(12, 54);
             this.label_ProductConfig.Name = "label_ProductConfig";
             this.label_ProductConfig.Size = new System.Drawing.Size(77, 13);
             this.label_ProductConfig.TabIndex = 14;
@@ -168,7 +174,7 @@ namespace TsdLib.View
             this.LowerLimit,
             this.UpperLimit,
             this.Result});
-            this.measurementDataGridView.Location = new System.Drawing.Point(12, 143);
+            this.measurementDataGridView.Location = new System.Drawing.Point(12, 182);
             this.measurementDataGridView.Name = "measurementDataGridView";
             this.measurementDataGridView.ReadOnly = true;
             this.measurementDataGridView.RowHeadersVisible = false;
@@ -217,11 +223,73 @@ namespace TsdLib.View
             this.Result.ReadOnly = true;
             this.Result.Width = 62;
             // 
+            // button_TestConfig
+            // 
+            this.button_TestConfig.Location = new System.Drawing.Point(402, 70);
+            this.button_TestConfig.Name = "button_TestConfig";
+            this.button_TestConfig.Size = new System.Drawing.Size(125, 23);
+            this.button_TestConfig.TabIndex = 15;
+            this.button_TestConfig.Text = "Edit Test Config";
+            this.button_TestConfig.UseVisualStyleBackColor = true;
+            this.button_TestConfig.Click += new System.EventHandler(this.button_TestConfig_Click);
+            // 
+            // label_TestConfig
+            // 
+            this.label_TestConfig.AutoSize = true;
+            this.label_TestConfig.Location = new System.Drawing.Point(12, 95);
+            this.label_TestConfig.Name = "label_TestConfig";
+            this.label_TestConfig.Size = new System.Drawing.Size(61, 13);
+            this.label_TestConfig.TabIndex = 16;
+            this.label_TestConfig.Text = "Test Config";
+            // 
+            // comboBox_TestConfig
+            // 
+            this.comboBox_TestConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_TestConfig.FormattingEnabled = true;
+            this.comboBox_TestConfig.Location = new System.Drawing.Point(15, 111);
+            this.comboBox_TestConfig.Name = "comboBox_TestConfig";
+            this.comboBox_TestConfig.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_TestConfig.TabIndex = 17;
+            // 
+            // button_SequenceConfig
+            // 
+            this.button_SequenceConfig.Location = new System.Drawing.Point(402, 99);
+            this.button_SequenceConfig.Name = "button_SequenceConfig";
+            this.button_SequenceConfig.Size = new System.Drawing.Size(125, 23);
+            this.button_SequenceConfig.TabIndex = 18;
+            this.button_SequenceConfig.Text = "Edit Sequence Config";
+            this.button_SequenceConfig.UseVisualStyleBackColor = true;
+            this.button_SequenceConfig.Click += new System.EventHandler(this.button_SequenceConfig_Click);
+            // 
+            // comboBox_SequenceConfig
+            // 
+            this.comboBox_SequenceConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_SequenceConfig.FormattingEnabled = true;
+            this.comboBox_SequenceConfig.Location = new System.Drawing.Point(217, 132);
+            this.comboBox_SequenceConfig.Name = "comboBox_SequenceConfig";
+            this.comboBox_SequenceConfig.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_SequenceConfig.TabIndex = 19;
+            // 
+            // label_SequenceConfig
+            // 
+            this.label_SequenceConfig.AutoSize = true;
+            this.label_SequenceConfig.Location = new System.Drawing.Point(214, 116);
+            this.label_SequenceConfig.Name = "label_SequenceConfig";
+            this.label_SequenceConfig.Size = new System.Drawing.Size(89, 13);
+            this.label_SequenceConfig.TabIndex = 20;
+            this.label_SequenceConfig.Text = "Sequence Config";
+            // 
             // ViewBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(539, 576);
+            this.Controls.Add(this.label_SequenceConfig);
+            this.Controls.Add(this.comboBox_SequenceConfig);
+            this.Controls.Add(this.button_SequenceConfig);
+            this.Controls.Add(this.comboBox_TestConfig);
+            this.Controls.Add(this.label_TestConfig);
+            this.Controls.Add(this.button_TestConfig);
             this.Controls.Add(this.label_ProductConfig);
             this.Controls.Add(this.label_StationConfig);
             this.Controls.Add(this.comboBox_ProductConfig);
@@ -292,5 +360,23 @@ namespace TsdLib.View
         /// Product Config label.
         /// </summary>
         protected System.Windows.Forms.Label label_ProductConfig;
+        /// <summary>
+        /// Request to modify the Test Config.
+        /// </summary>
+        protected System.Windows.Forms.Button button_TestConfig;
+        /// <summary>
+        /// Test Config label.
+        /// </summary>
+        protected System.Windows.Forms.Label label_TestConfig;
+        private System.Windows.Forms.ComboBox comboBox_TestConfig;
+        /// <summary>
+        /// Request to modify the Sequence Config.
+        /// </summary>
+        protected System.Windows.Forms.Button button_SequenceConfig;
+        private System.Windows.Forms.ComboBox comboBox_SequenceConfig;
+        /// <summary>
+        /// Sequence Config label.
+        /// </summary>
+        protected System.Windows.Forms.Label label_SequenceConfig;
     }
 }

@@ -5,15 +5,13 @@ using System.Windows.Forms;
 
 namespace TsdLib.View
 {
-    delegate void AppendTextDelegate(string text);
-
     /// <summary>
     /// Subscribe a text box to monitor the Trace and Debug output messages.
     /// </summary>
     public class TextBoxTraceListener : TraceListener
     {
         readonly TextBoxBase _textBox;
-        readonly AppendTextDelegate _textBoxAppend;
+        readonly Action<string> _textBoxAppend;
 
         private readonly StringBuilder _buffer;
 

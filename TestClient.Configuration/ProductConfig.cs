@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using TsdLib.Configuration;
 
 namespace TestClient.Configuration
 {
+    [Serializable]
     public class ProductConfig : ProductConfigCommon
     {
         //TODO: Create a product configuration structure using public properties with get and set accessors.
