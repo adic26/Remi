@@ -11,7 +11,12 @@ namespace TsdLib.View
     /// </summary>
     public partial class ViewBase : Form, IView
     {
-        private readonly TextBoxTraceListener _textBoxTraceListener;
+        /// <summary>
+        /// Gets the TraceListener used for writing trace and debug information to the status text box.
+        /// </summary>
+        public TraceListener Listener { get; private set; }
+
+        #region Config Data Bindings
 
         /// <summary>
         /// Sets the list of available Station Config instances.
@@ -21,6 +26,16 @@ namespace TsdLib.View
         /// Sets the list of available Product Config instances.
         /// </summary>
         public IList ProductConfigList { set { comboBox_ProductConfig.DataSource = value; } }
+        /// <summary>
+        /// Sets the list of available Test Config instances.
+        /// </summary>
+        public IList TestConfigList { set { comboBox_TestConfig.DataSource = value; } }
+        /// <summary>
+        /// Sets the list of available Sequence Config instances.
+        /// </summary>
+        public IList SequenceConfigList { set { comboBox_SequenceConfig.DataSource = value; } }
+
+        #endregion
 
         /// <summary>
         /// Initializes a new instance of the base UI form.
@@ -31,8 +46,8 @@ namespace TsdLib.View
 
             Text = Application.ProductName + " v." + Application.ProductVersion;
 
-            _textBoxTraceListener = new TextBoxTraceListener(textBox_Status);
-            Trace.Listeners.Add(_textBoxTraceListener);
+            Listener = new TextBoxTraceListener(textBox_Status);
+            Trace.Listeners.Add(Listener);
 
             Load += (sender, args) => SetState(State.ReadyToTest);
         }
@@ -45,6 +60,8 @@ namespace TsdLib.View
             get { return base.Text; }
             set { base.Text = value; }
         }
+
+        #region Display Methods
 
         /// <summary>
         /// Set the appearance and behaviour of IU controls, based on the current status of the system.
@@ -75,6 +92,8 @@ namespace TsdLib.View
             measurementDataGridView.AddMeasurement(measurement);
         }
 
+        #endregion
+
         #region UI Event Handlers
 
         /// <summary>
@@ -98,6 +117,25 @@ namespace TsdLib.View
         }
 
         /// <summary>
+        /// Event fired when requesting to modify the Test Config.
+        /// </summary>
+        public event EventHandler EditTestConfig;
+        private void button_TestConfig_Click(object sender, EventArgs e)
+        {
+            if (EditTestConfig != null)
+                EditTestConfig(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// Event fired when requesting to modify the Sequence Config.
+        /// </summary>
+        public event EventHandler EditSequenceConfig;
+        private void button_SequenceConfig_Click(object sender, EventArgs e)
+        {
+            if (EditSequenceConfig != null)
+                EditSequenceConfig(this, new EventArgs());
+        }
+        /// <summary>
         /// Event fired when requesting to execute the Test Sequence.
         /// </summary>
         public event EventHandler<TestSequenceEventArgs> ExecuteTestSequence;
@@ -105,7 +143,7 @@ namespace TsdLib.View
         {
             if (ExecuteTestSequence != null)
                 ExecuteTestSequence(this,
-                    new TestSequenceEventArgs(comboBox_StationConfig.SelectedItem, comboBox_ProductConfig.SelectedItem));
+                    new TestSequenceEventArgs(comboBox_StationConfig.SelectedItem, comboBox_ProductConfig.SelectedItem, comboBox_TestConfig.SelectedItem, comboBox_SequenceConfig.SelectedItem));
         }
 
         /// <summary>

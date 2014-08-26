@@ -4,9 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using TestClient.TestSequences;
+//using TestClient.TestSequences;
 using TsdLib.Configuration;
-using TestClient.Configuration;
 
 namespace TestClient
 {
@@ -30,18 +29,62 @@ namespace TestClient
                 Trace.WriteLine("Filename = " + fileName);
                 string contents = File.ReadAllText(fileName);
 
-                IConfigGroup<TestConfig> cfgGroup = Config<TestConfig>.GetConfigGroup();
+                IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetConfigGroup();
 
-                Trace.WriteLine(string.Format("Detected {0} TestConfig objects", cfgGroup.Count()));
+                Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects", cfgGroup.Count()));
 
                 if (!cfgGroup.Any())
                 {
                     Trace.WriteLine("Creating default TestConfig object.");
-                    cfgGroup.Add(new TestConfig { Name = "Default" });
+                    cfgGroup.Add(new SequenceConfig { Name = "Default" });
                 }
 
-                foreach (TestConfig testConfig in cfgGroup)
-                    testConfig.TestSequenceSource = contents;
+                foreach (SequenceConfig testConfig in cfgGroup)
+                    testConfig.TestSequenceSourceCode = contents;
+
+                cfgGroup.Save();
+
+                return;
+            }
+
+            if (args.Contains("-t2"))
+            {
+                Trace.WriteLine("Pushing TestConfig to Remi");
+
+                List<string> argsList = args.ToList();
+
+                string sourceFolder = argsList[argsList.IndexOf("-t2") + 1];
+                Trace.WriteLine("Source folder Name = " + sourceFolder);
+
+                string destinationFolder = argsList[argsList.IndexOf("-t2") + 2];
+                Trace.WriteLine("Destination folder Name = " + destinationFolder);
+
+                if (!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+
+                IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetConfigGroup();
+
+
+                Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects", cfgGroup.Count()));
+
+                foreach (string sourceFilePath in Directory.EnumerateFiles(sourceFolder))
+                {
+                    string sourceFileName = Path.GetFileName(sourceFilePath);
+                    if (sourceFileName == null)
+                        throw new ArgumentException(sourceFilePath + " is not a valid file path.");
+
+                    string destinationFilePath = Path.Combine(destinationFolder, sourceFileName);
+
+                    File.Copy(sourceFilePath, destinationFilePath, true);
+                    Trace.WriteLine("Full file name = " + sourceFilePath);
+                    Trace.WriteLine("Adding " + sourceFileName);
+                    cfgGroup.Add(new SequenceConfig
+                    {
+                        LocalFile = destinationFilePath,
+                        RemiSetting = true,
+                        Name = "TestName"
+                    });
+                }
 
                 cfgGroup.Save();
 
@@ -53,16 +96,13 @@ namespace TestClient
 
             bool devMode = args.Length > 0 && args[0] == "-d";
 
-            View view = new View
-            {
-                StationConfigList = Config<StationConfig>.GetConfigGroup().GetList(),
-                ProductConfigList = Config<ProductConfig>.GetConfigGroup().GetList()
-            };
+            Controller c = new Controller(devMode);
+            
+            if (c.View is Form)
+                Application.Run(c.View as Form);
 
-// ReSharper disable once UnusedVariable - constructor hooks up view events
-            Controller c = new Controller(view, new TestSequence(), devMode);
-
-            Application.Run(view);
+            //TODO: figure out how to launch non-form view
+            
 
             Console.WriteLine("Done");
         }

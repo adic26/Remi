@@ -7,7 +7,7 @@ namespace TsdLib.Configuration
     /// Static class to manage configuration items.
     /// </summary>
     /// <typeparam name="T">Type of configuration item.</typeparam>
-    public static class Config<T>
+    public static class ConfigManager<T>
         where T : ConfigItem, new()
     {
         private static ConfigGroup<T> _configGroup = new ConfigGroup<T>();

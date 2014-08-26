@@ -33,6 +33,7 @@ namespace TsdLib
     /// <summary>
     /// A weakly-typed Measurement object to serve as a base for generic-typed measurements. Allows adding different types of measurements to the same collection.
     /// </summary>
+    [Serializable]
     public abstract class Measurement
     {
         /// <summary>
@@ -131,6 +132,7 @@ namespace TsdLib
     /// Represents a measurement acquired durign a test sequence.
     /// </summary>
     /// <typeparam name="T">Data type of the measured value, which will also apply to the lower and upper limits.</typeparam>
+    [Serializable]
     public class Measurement<T> : Measurement
         where T : IComparable<T>
     {
@@ -202,6 +204,7 @@ namespace TsdLib
     /// <summary>
     /// Represents a collection of Measurement objects.
     /// </summary>
+    [Serializable]
     public class MeasurementCollection : BindingList<Measurement>
     {
         /// <summary>
@@ -260,6 +263,7 @@ namespace TsdLib
     /// <summary>
     /// A test condition or other information used to describe test conditions.
     /// </summary>
+    [Serializable]
     public class MeasurementParameter
     {
         /// <summary>
@@ -306,5 +310,26 @@ namespace TsdLib
         /// <param name="context">A StreamingContext structure containing the source and destination of the serialized stream associated with the MeasurementParameterCollection.</param>
         protected MeasurementParameterCollection(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
+    }
+
+    /// <summary>
+    /// Provides measurement data to pass to a measurement captured event.
+    /// </summary>
+    [Serializable]
+    public class MeasurementEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Gets the Measurement object that generated the event.
+        /// </summary>
+        public Measurement Measurement { get; private set; }
+
+        /// <summary>
+        /// Initialize a new instance of the MeasurementEventArgs class.
+        /// </summary>
+        /// <param name="measurement">Measurement to pass to the event handlers.</param>
+        public MeasurementEventArgs(Measurement measurement)
+        {
+            Measurement = measurement;
+        }
     }
 }

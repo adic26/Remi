@@ -7,8 +7,8 @@
     <ProjectGuid>{B12037D0-EDD5-41A2-A68D-D2170EAFFCB0}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TsdLib.CodeGenerator</RootNamespace>
-    <AssemblyName>TsdLib.CodeGenerator</AssemblyName>
+    <RootNamespace>TsdLib.CodeGeneratorApplication</RootNamespace>
+    <AssemblyName>TsdLib.CodeGeneratorApplication</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\TsdLib.CodeGenerator.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\TsdLib.CodeGeneratorApplication.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -40,7 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeGenerator.cs" />
+    <Compile Include="CodeGeneratorApplication.cs" />
     <Compile Include="CodeGeneratorException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
