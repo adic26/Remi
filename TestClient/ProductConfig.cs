@@ -19,7 +19,7 @@ namespace TestClient
         public ProductConfig()
         {
             if (WcdmaBands == default(List<int>))
-                WcdmaBands = new List<int>();
+                WcdmaBands = new List<int>{1, 2, 5};
         }
     }
 }

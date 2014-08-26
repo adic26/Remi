@@ -72,8 +72,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rem xcopy $(ProjectDir)Sequences $(TargetDir)Sequences /y /i
-$(TargetPath) -t2 $(ProjectDir)Sequences $(TargetDir)Sequences
+    <PostBuildEvent>$(TargetPath) -seq $(ProjectDir)Sequences $(TargetDir)Sequences true
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

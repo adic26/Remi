@@ -105,7 +105,7 @@ namespace TsdLib.Configuration
     [Serializable]
     public class TestConfigCommon : ConfigItem
     {
-
+        
     }
 
     //TODO: don't edit Sequence config in a property grid - just launch the multi-line string editor
@@ -121,7 +121,7 @@ namespace TsdLib.Configuration
         /// </summary>
         public override string Name
         {
-            get { return Path.GetFileName(LocalFile); }
+            get { return Path.GetFileNameWithoutExtension(LocalFile); }
         }
 
         private string _localFile;

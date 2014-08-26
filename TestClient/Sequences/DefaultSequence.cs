@@ -21,8 +21,6 @@ namespace TestClient.Sequences
                 Measurements.AddMeasurement("name", i, "volts", 5, 10);
                 Thread.Sleep(1000);
             }
-
-            //Debugger.Break();
         }
     }
 }
