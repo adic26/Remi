@@ -132,7 +132,7 @@ namespace TsdLib.Controller
 
                     TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence =
                         (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)
-                            sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, "TestClient.TestSequence");
+                            sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, sequenceConfig.Namespace + "." + sequenceConfig.ClassName );
 
                     sequence.AddTraceListener(View.Listener);
 

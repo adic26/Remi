@@ -2,10 +2,12 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Design;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using TsdLib.TestSequence;
 
 namespace TsdLib.Configuration
 {
@@ -122,28 +124,62 @@ namespace TsdLib.Configuration
         public override string Name
         {
             get { return Path.GetFileNameWithoutExtension(LocalFile); }
+            set { LocalFile = Path.Combine(Directory.GetCurrentDirectory(), value + ".cs"); }
         }
 
-        private string _localFile;
         /// <summary>
         /// Gets the absolute path to the source code file.
         /// </summary>
-        public string LocalFile
+        public string LocalFile { get; set; }
+
+        private string _namespace;
+
+        /// <summary>
+        /// Gets the namespace defined in the test sequence source code.
+        /// </summary>
+        public string Namespace
         {
             get
             {
-                if (_localFile == null)
-                {
-                    Trace.WriteLine("SEQUENCE_CONFIG: _localFile is null, initializing to: " + Path.Combine(Directory.GetCurrentDirectory(), "NewSequence.cs"));
-                    _localFile = Path.Combine(Directory.GetCurrentDirectory(), "NewSequence.cs");
-                }
+                if (_namespace != null)
+                    return _namespace;
 
-                return _localFile;// ?? (_localFile = Path.Combine(Directory.GetCurrentDirectory(), "NewSequence.cs"));
+                string namespaceDeclarationLine = TestSequenceSourceCode
+                    .Split('\r', '\n')
+                    .FirstOrDefault(line => line.StartsWith("namespace"));
+
+                if (namespaceDeclarationLine == null)
+                    throw new TestSequenceException(LocalFile);
+
+                _namespace = namespaceDeclarationLine.Split(' ')[1];
+                return _namespace;
             }
-            set
+        }
+
+        /// <summary>
+        /// Gets the class name defined in the test sequence source code.
+        /// </summary>
+        private string _className;
+
+        /// <summary>
+        /// Gets the name of the class defined in the test sequence source code.
+        /// </summary>
+        public string ClassName
+        {
+            get
             {
-                _localFile = value;
-                //Name = Path.GetFileName(_localFile);
+                if (_className != null)
+                    return _className;
+
+                string classDeclarationLine = TestSequenceSourceCode
+                    .Split('\r', '\n')
+                    .FirstOrDefault(line => line.StartsWith("public class"));
+
+                if (classDeclarationLine == null)
+                    throw new TestSequenceException(LocalFile);
+
+                _className = classDeclarationLine.Split(' ')[1];
+                return _className;
             }
         }
 
@@ -154,7 +190,12 @@ namespace TsdLib.Configuration
         [Category("Test Sequence")]
         public string TestSequenceSourceCode
         {
-            get { return File.ReadAllText(LocalFile); }
+            get
+            {
+                if (!File.Exists(LocalFile))
+                    File.WriteAllText(LocalFile, "//Add test sequence here by subclassing TsdLib.TestSequence.TestSequenceBase");
+                return File.ReadAllText(LocalFile);
+            }
             set { File.WriteAllText(LocalFile, value); }
         }
     }

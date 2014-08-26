@@ -53,8 +53,7 @@ namespace TestClient
                     cfgGroup.Add(new SequenceConfig
                     {
                         LocalFile = destinationFilePath,
-                        RemiSetting = remiSetting,
-                        Name = "TestName"
+                        RemiSetting = remiSetting
                     });
                 }
 

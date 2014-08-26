@@ -49,6 +49,7 @@
     <Compile Include="IRemiControl.cs" />
     <Compile Include="Measurement.cs" />
     <Compile Include="SpecialFolders.cs" />
+    <Compile Include="TestSequence\TestSequenceException.cs" />
     <Compile Include="TsdLibException.cs" />
     <Compile Include="Configuration\ConfigExceptions.cs" />
     <Compile Include="Configuration\ConfigForm.cs">
