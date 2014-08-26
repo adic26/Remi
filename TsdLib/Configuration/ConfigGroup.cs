@@ -41,30 +41,23 @@ namespace TsdLib.Configuration
                 AllConfigItems.Add(configItem);
             foreach (T localConfigItem in LocalConfigItems)
                 AllConfigItems.Add(localConfigItem);
-
-            ConfigItems.ListChanged += ConfigItems_ListChanged;
-            LocalConfigItems.ListChanged += ConfigItems_ListChanged;
-        }
-
-        void ConfigItems_ListChanged(object sender, ListChangedEventArgs e)
-        {
-            BindingList<T> configItems = sender as BindingList<T>;
-            if (configItems != null && e.ListChangedType == ListChangedType.ItemAdded)
-                AllConfigItems.Add(configItems[e.NewIndex]);
         }
 
         public void Add(T config, bool useRemi = true)
         {
-            if (AllConfigItems.Any(cfg => cfg.Name == config.Name))
+            BindingList<T> list = useRemi ? ConfigItems : LocalConfigItems;
+
+            T existing = list.FirstOrDefault(cfg => cfg.Name == config.Name);
+
+            if (existing != null)
             {
-                Trace.WriteLine("Config already contains and item named " + config.Name);
-                return;
+                Trace.WriteLine(string.Format("Config already contains and item named {0}. Replacing.", config.Name));
+                list.Remove(existing);
+                AllConfigItems.Remove(existing);
             }
 
-            if (useRemi)
-                ConfigItems.Add(config);
-            else
-                LocalConfigItems.Add(config);
+            list.Add(config);
+            AllConfigItems.Add(config);
         }
 
         #region IEnumerable implementation

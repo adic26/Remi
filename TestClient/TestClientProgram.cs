@@ -29,7 +29,7 @@ namespace TestClient
                 Trace.WriteLine("Filename = " + fileName);
                 string contents = File.ReadAllText(fileName);
 
-                IConfigGroup<SequenceConfig> cfgGroup = Config<SequenceConfig>.GetConfigGroup();
+                IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetConfigGroup();
 
                 Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects", cfgGroup.Count()));
 
@@ -41,6 +41,50 @@ namespace TestClient
 
                 foreach (SequenceConfig testConfig in cfgGroup)
                     testConfig.TestSequenceSourceCode = contents;
+
+                cfgGroup.Save();
+
+                return;
+            }
+
+            if (args.Contains("-t2"))
+            {
+                Trace.WriteLine("Pushing TestConfig to Remi");
+
+                List<string> argsList = args.ToList();
+
+                string sourceFolder = argsList[argsList.IndexOf("-t2") + 1];
+                Trace.WriteLine("Source folder Name = " + sourceFolder);
+
+                string destinationFolder = argsList[argsList.IndexOf("-t2") + 2];
+                Trace.WriteLine("Destination folder Name = " + destinationFolder);
+
+                if (!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+
+                IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetConfigGroup();
+
+
+                Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects", cfgGroup.Count()));
+
+                foreach (string sourceFilePath in Directory.EnumerateFiles(sourceFolder))
+                {
+                    string sourceFileName = Path.GetFileName(sourceFilePath);
+                    if (sourceFileName == null)
+                        throw new ArgumentException(sourceFilePath + " is not a valid file path.");
+
+                    string destinationFilePath = Path.Combine(destinationFolder, sourceFileName);
+
+                    File.Copy(sourceFilePath, destinationFilePath, true);
+                    Trace.WriteLine("Full file name = " + sourceFilePath);
+                    Trace.WriteLine("Adding " + sourceFileName);
+                    cfgGroup.Add(new SequenceConfig
+                    {
+                        LocalFile = destinationFilePath,
+                        RemiSetting = true,
+                        Name = "TestName"
+                    });
+                }
 
                 cfgGroup.Save();
 

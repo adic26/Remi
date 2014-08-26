@@ -47,9 +47,7 @@
     <Compile Include="StationConfig.cs" />
     <Compile Include="TestClientProgram.cs" />
     <Compile Include="TestConfig.cs" />
-    <Compile Include="TestSequence.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
+    <Compile Include="Sequences\DefaultSequence.cs" />
     <Compile Include="View.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -71,9 +69,12 @@
       <DependentUpon>View.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(TargetPath) -t $(TargetDir)TestSequence.cs</PostBuildEvent>
+    <PostBuildEvent>rem xcopy $(ProjectDir)Sequences $(TargetDir)Sequences /y /i
+$(TargetPath) -t2 $(ProjectDir)Sequences $(TargetDir)Sequences
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

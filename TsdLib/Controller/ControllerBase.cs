@@ -61,10 +61,10 @@ namespace TsdLib.Controller
             //set up view
             View = new TView
             {
-                StationConfigList = Config<TStationConfig>.GetConfigGroup().GetList(),
-                ProductConfigList = Config<TProductConfig>.GetConfigGroup().GetList(),
-                TestConfigList = Config<TTestConfig>.GetConfigGroup().GetList(),
-                SequenceConfigList = Config<SequenceConfig>.GetConfigGroup().GetList()
+                StationConfigList = ConfigManager<TStationConfig>.GetConfigGroup().GetList(),
+                ProductConfigList = ConfigManager<TProductConfig>.GetConfigGroup().GetList(),
+                TestConfigList = ConfigManager<TTestConfig>.GetConfigGroup().GetList(),
+                SequenceConfigList = ConfigManager<SequenceConfig>.GetConfigGroup().GetList()
             };
 
             //subscribe to view events
@@ -82,22 +82,22 @@ namespace TsdLib.Controller
 
         void _view_EditStationConfig(object sender, EventArgs e)
         {
-            Config<TStationConfig>.Edit(_devMode);
+            ConfigManager<TStationConfig>.Edit(_devMode);
         }
 
         void _view_EditProductConfig(object sender, EventArgs e)
         {
-            Config<TProductConfig>.Edit(_devMode);
+            ConfigManager<TProductConfig>.Edit(_devMode);
         }
 
         void _view_EditTestConfig(object sender, EventArgs e)
         {
-            Config<TTestConfig>.Edit(_devMode);
+            ConfigManager<TTestConfig>.Edit(_devMode);
         }
 
         void View_EditSequenceConfig(object sender, EventArgs e)
         {
-            Config<SequenceConfig>.Edit(_devMode);
+            ConfigManager<SequenceConfig>.Edit(_devMode);
         }
 
         #endregion

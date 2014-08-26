@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing.Design;
 using System.IO;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace TsdLib.Configuration
         /// </summary>
         [ReadOnly(true)]
         [Category("Description")]
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         /// <summary>
         /// True to store configuration locally and on Remi. False to store locally only.
@@ -115,13 +116,35 @@ namespace TsdLib.Configuration
     [Serializable]
     public class SequenceConfig : ConfigItem
     {
-        private string _localFile = Path.Combine(Directory.GetCurrentDirectory(), "TestSequence.cs");
+        /// <summary>
+        /// Gets the file name containing the test sequence source code.
+        /// </summary>
+        public override string Name
+        {
+            get { return Path.GetFileName(LocalFile); }
+        }
+
+        private string _localFile;
         /// <summary>
         /// Gets the absolute path to the source code file.
         /// </summary>
         public string LocalFile
         {
-            get { return _localFile ?? (_localFile = Path.Combine(Directory.GetCurrentDirectory(), "TestSequence.cs")); }
+            get
+            {
+                if (_localFile == null)
+                {
+                    Trace.WriteLine("SEQUENCE_CONFIG: _localFile is null, initializing to: " + Path.Combine(Directory.GetCurrentDirectory(), "NewSequence.cs"));
+                    _localFile = Path.Combine(Directory.GetCurrentDirectory(), "NewSequence.cs");
+                }
+
+                return _localFile;// ?? (_localFile = Path.Combine(Directory.GetCurrentDirectory(), "NewSequence.cs"));
+            }
+            set
+            {
+                _localFile = value;
+                //Name = Path.GetFileName(_localFile);
+            }
         }
 
         /// <summary>
