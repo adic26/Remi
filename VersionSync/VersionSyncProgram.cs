@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace VersionSync
@@ -23,6 +24,8 @@ namespace VersionSync
             string manifestPath = args[0];
             string atomPath = args[1];
 
+            #region manifest
+
             XDocument manifestDocument = XDocument.Load(manifestPath);
 
             XElement manifestIdElement = manifestDocument
@@ -37,7 +40,7 @@ namespace VersionSync
             if (args.Contains("-i"))
             {
                 List<int> v = version.Split('.').Select(s => Convert.ToInt32(s)).ToList();
-                v[v.IndexOf(v.Last())] = v.Last() + 1;
+                v[v.LastIndexOf(v.Last())] = v.Last() + 1;
                 version = string.Join(".", v);
                 manifestIdElement.Attribute("Version").Value = version;
                 manifestDocument.Save(manifestPath);
@@ -45,6 +48,10 @@ namespace VersionSync
             }
             else
                 Trace.WriteLine("Using manifest version of " + version);
+
+            #endregion
+
+            #region atom
 
             XDocument atomDocument = XDocument.Load(atomPath);
             XElement atomVsixElement = atomDocument
@@ -62,9 +69,23 @@ namespace VersionSync
                 throw new ArgumentException(atomPath + " does not contain a Vsix->Version element.");
 
             atomVersionElement.Value = version;
+
+
+            var atomUpdatedElements = atomDocument
+                .Descendants()
+                .Where((e => e.Name.LocalName == "updated"));
+
+            string currentTime = XmlConvert.ToString(DateTime.UtcNow, XmlDateTimeSerializationMode.Utc);
+
+            foreach (XElement atomUpdatedElement in atomUpdatedElements)
+                atomUpdatedElement.Value = currentTime;
+
             atomDocument.Save(atomPath, SaveOptions.None);
 
             Trace.WriteLine("Updated atom file version to " + version);
+            Trace.WriteLine("Updated atom file timestamp to " + currentTime);
+
+            #endregion
 
             return 0;
         }

@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using TsdLib.Configuration;
 
-namespace TestClient
+namespace TestClient.Configuration
 {
     [Serializable]
     public class StationConfig : StationConfigCommon

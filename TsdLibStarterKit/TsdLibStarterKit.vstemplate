@@ -17,14 +17,8 @@
       <ProjectTemplateLink ProjectName="$safeprojectname$">
         TestClient\TestClient.vstemplate
       </ProjectTemplateLink>
-      <ProjectTemplateLink ProjectName="$safeprojectname$.Configuration">
-        TestClient.Configuration\TestClient.Configuration.vstemplate
-      </ProjectTemplateLink>
       <ProjectTemplateLink ProjectName="$safeprojectname$.Instruments">
         TestClient.Instruments\TestClient.Instruments.vstemplate
-      </ProjectTemplateLink>
-      <ProjectTemplateLink ProjectName="$safeprojectname$.TestSequences">
-        TestClient.TestSequences\TestClient.TestSequences.vstemplate
       </ProjectTemplateLink>
     </ProjectCollection>
   </TemplateContent>
@@ -32,4 +26,10 @@
     <Assembly>TsdLibStarterKitWizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Assembly>
     <FullClassName>TsdLibStarterKitWizard.SolutionWizard</FullClassName>
   </WizardExtension>
+  <WizardData>
+    <Data>
+      <!--<File Path="C:\Users\jmckee\Source\Repos\TsdLib\TsdLib\bin\Debug\TsdLib.XML"/>-->
+      <File Path="\\fsg52ykf\ReliabilityTSD\TsdLib\TsdLib.xml" />
+    </Data>
+  </WizardData>
 </VSTemplate>

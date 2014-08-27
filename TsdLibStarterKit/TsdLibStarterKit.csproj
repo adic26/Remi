@@ -51,27 +51,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="TestClient.Configuration\TestClient.Configuration.csproj" />
-    <Content Include="TestClient.Configuration\TestClient.Configuration.vstemplate" />
-    <Content Include="TestClient.Configuration\__TemplateIcon.ico" />
+    <Content Include="TestClient\Configuration\TestConfig.cs" />
+    <Content Include="TestClient\Sequences\DefaultSequence.cs" />
     <Content Include="TestClient.Instruments\MyInstrument.xml" />
     <Content Include="TestClient.Instruments\TestClient.Instruments.csproj" />
     <Content Include="TestClient.Instruments\TestClient.Instruments.vstemplate" />
     <Content Include="TestClient.Instruments\__TemplateIcon.ico" />
-    <Content Include="TestClient.TestSequences\TestClient.TestSequences.csproj" />
-    <Content Include="TestClient.TestSequences\TestClient.TestSequences.vstemplate" />
-    <Content Include="TestClient.TestSequences\__TemplateIcon.ico" />
     <Content Include="TestClient\Controller.cs" />
     <Content Include="TestClient\Properties\AssemblyInfo.cs" />
     <Content Include="TestClient\TestClientProgram.cs" />
     <Content Include="TestClient\View.cs" />
-    <Content Include="TestClient.Configuration\ProductConfig.cs" />
-    <Content Include="TestClient.Configuration\Properties\AssemblyInfo.cs" />
-    <Content Include="TestClient.Configuration\StationConfig.cs" />
+    <Content Include="TestClient\Configuration\ProductConfig.cs" />
+    <Content Include="TestClient\Configuration\StationConfig.cs" />
     <Content Include="TestClient.Instruments\Instruments.cs" />
     <Content Include="TestClient.Instruments\Properties\AssemblyInfo.cs" />
-    <Content Include="TestClient.TestSequences\Properties\AssemblyInfo.cs" />
-    <Content Include="TestClient.TestSequences\TestSequence.cs" />
     <Content Include="TestClient\View.Designer.cs">
       <DependentUpon>View.cs</DependentUpon>
     </Content>

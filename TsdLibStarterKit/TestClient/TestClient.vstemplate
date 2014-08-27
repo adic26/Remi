@@ -20,6 +20,14 @@
       <Folder Name="Properties" TargetFolderName="Properties">
         <ProjectItem ReplaceParameters="true" TargetFileName="AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
       </Folder>
+      <Folder Name="Configuration" TargetFolderName="Configuration">
+        <ProjectItem ReplaceParameters="true" TargetFileName="ProductConfig.cs">ProductConfig.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="StationConfig.cs">StationConfig.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="TestConfig.cs">TestConfig.cs</ProjectItem>
+      </Folder>
+      <Folder Name="Sequences" TargetFolderName="Sequences">
+        <ProjectItem ReplaceParameters="true" TargetFileName="DefaultSequence.cs">DefaultSequence.cs</ProjectItem>
+      </Folder>
       <ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$Program.cs">TestClientProgram.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="View.cs">View.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="View.Designer.cs">View.Designer.cs</ProjectItem>

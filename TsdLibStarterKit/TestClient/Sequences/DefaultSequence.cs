@@ -2,10 +2,10 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
-using TestClient.Configuration;
 using TsdLib.TestSequence;
+using $safeprojectname$.Configuration;
 
-namespace TestClient.Sequences
+namespace $safeprojectname$.Sequences
 {
     public class DefaultSequence : TestSequenceBase<StationConfig, ProductConfig, TestConfig>
     {

@@ -146,12 +146,12 @@ namespace TsdLib.Configuration
 
                 string namespaceDeclarationLine = TestSequenceSourceCode
                     .Split('\r', '\n')
-                    .FirstOrDefault(line => line.StartsWith("namespace"));
+                    .FirstOrDefault(line => line.Trim().StartsWith("namespace"));
 
                 if (namespaceDeclarationLine == null)
                     throw new TestSequenceException(LocalFile);
 
-                _namespace = namespaceDeclarationLine.Split(' ')[1];
+                _namespace = namespaceDeclarationLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1];
                 return _namespace;
             }
         }
@@ -173,12 +173,12 @@ namespace TsdLib.Configuration
 
                 string classDeclarationLine = TestSequenceSourceCode
                     .Split('\r', '\n')
-                    .FirstOrDefault(line => line.StartsWith("public class"));
+                    .FirstOrDefault(line => line.Trim().StartsWith("public class"));
 
                 if (classDeclarationLine == null)
                     throw new TestSequenceException(LocalFile);
 
-                _className = classDeclarationLine.Split(' ')[1];
+                _className = classDeclarationLine.Split(new []{' '}, StringSplitOptions.RemoveEmptyEntries)[2];
                 return _className;
             }
         }

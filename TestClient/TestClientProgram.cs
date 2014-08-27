@@ -36,7 +36,6 @@ namespace TestClient
 
                 IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetConfigGroup();
 
-
                 Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects", cfgGroup.Count()));
 
                 foreach (string sourceFilePath in Directory.EnumerateFiles(sourceFolder))

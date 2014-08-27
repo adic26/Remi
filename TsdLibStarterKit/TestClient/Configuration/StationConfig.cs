@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using TsdLib.Configuration;
 
-namespace $safeprojectname$
+namespace $safeprojectname$.Configuration
 {
     public class StationConfig : StationConfigCommon
     {

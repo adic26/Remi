@@ -5,12 +5,9 @@ using $rootnamespace$.Configuration;
 
 namespace $safeprojectname$
 {
-    public class Controller : ControllerBase<StationConfig, ProductConfig>
+    public class Controller : ControllerBase<View, StationConfig, ProductConfig, TestConfig>
     {
-        public Controller(View view, TestSequenceBase<StationConfig, ProductConfig> testSequence, bool devMode)
-            : base(view, testSequence, devMode)
-        {
-
-        }
+        public Controller(bool devMode)
+            : base(devMode) { }
     }
 }

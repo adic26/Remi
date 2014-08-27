@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using Microsoft.VisualStudio.TemplateWizard;
 using EnvDTE;
+
 
 namespace TsdLibStarterKitWizard
 {
@@ -16,15 +18,19 @@ namespace TsdLibStarterKitWizard
         {
             GlobalDictionary["$rootnamespace$"] = replacementsDictionary["$safeprojectname$"];
 
-            //get the folder where the Visual Studio Extensions are installed
-            string extensionFolder = Path.Combine(
+            DTE dte = automationObject as DTE;
+            Debug.Assert(dte != null, "SolutionWizard.RunStarted error. Could not obtain automation object.");
+
+            string extensionsFolder = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Microsoft",
-                "VisualStudio",
-                "11.0",
+                dte.RegistryRoot.TrimStart(@"Software\".ToCharArray()),
                 "Extensions");
 
-            FileInfo[] contentFiles = new DirectoryInfo(extensionFolder)
+            string namedDirectory = Path.Combine(extensionsFolder, "BlackBerry", "TsdLibStarterKit");
+            if (Directory.Exists(namedDirectory))
+                extensionsFolder = namedDirectory;
+
+            FileInfo[] contentFiles = new DirectoryInfo(extensionsFolder)
                 .GetDirectories() //one folder per extension
                 .OrderBy(d => d.CreationTime).Last() //get the newest directory (most recently installed extension)
                 .GetDirectories("Dependencies")
@@ -37,7 +43,7 @@ namespace TsdLibStarterKitWizard
                     .First(f => f.Name == "TsdLib.dll")
                     .FullName
                 ).FileVersion;
-
+            
             string dependencyFolder = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 "TsdLib",
@@ -47,11 +53,26 @@ namespace TsdLibStarterKitWizard
             GlobalDictionary["$dependencyfolder$"] = dependencyFolder;
 
             if (!Directory.Exists(dependencyFolder))
-            {
                 Directory.CreateDirectory(dependencyFolder);
-                foreach (FileInfo file in contentFiles)
-                    file.CopyTo(Path.Combine(dependencyFolder, file.Name), true);
+            foreach (FileInfo contentFile in contentFiles)
+                contentFile.CopyTo(Path.Combine(dependencyFolder, contentFile.Name), true);
+
+
+            if (replacementsDictionary.ContainsKey("$wizarddata$"))
+            {
+                XElement dataElement = XElement.Parse(replacementsDictionary["$wizarddata$"]);
+                IEnumerable<FileInfo> additionalFiles = dataElement
+                    .Elements()
+                    .Where(e => e.Name.LocalName == "File")
+                    .Select(e => (string)e.Attribute("Path"))
+                    .Select(s => new FileInfo(s));
+
+                foreach (FileInfo additionalFile in additionalFiles)
+                    additionalFile.CopyTo(Path.Combine(dependencyFolder, additionalFile.Name), true);
             }
+
+
+            
         }
 
         #region Not implemented

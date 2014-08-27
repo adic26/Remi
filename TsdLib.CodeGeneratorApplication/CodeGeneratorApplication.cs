@@ -9,6 +9,14 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using Microsoft.Build.Evaluation;
+//TODO: Remove instrument generator (integrated into TsdLib.Controller)
+
+/*
+ * TestSequence source - no (integrated into TsdLib.Controller)
+ * TestSequence assembly - no (integrated into TsdLib.Controller)
+ * Instruments source - yes (need for pre-build event to transform from xml to source code)
+ * Instruments assembly - no (yes for now, until we integrate assembly generation into TsdLib.Controller)
+ * */
 
 namespace TsdLib.CodeGeneratorApplication
 {

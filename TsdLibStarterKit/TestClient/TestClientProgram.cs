@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using $rootnamespace$.TestSequences;
+using $rootnamespace$.Sequences;
 using TsdLib.Configuration;
 using $rootnamespace$.Configuration;
 
@@ -20,28 +20,43 @@ namespace $safeprojectname$
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
 
-            if (args.Contains("-t"))
+            if (args.Contains("-seq"))
             {
                 Trace.WriteLine("Pushing TestConfig to Remi");
 
                 List<string> argsList = args.ToList();
 
-                string fileName = argsList[argsList.IndexOf("-t") + 1];
-                Trace.WriteLine("Filename = " + fileName);
-                string contents = File.ReadAllText(fileName);
+                string sourceFolder = argsList[argsList.IndexOf("-seq") + 1];
 
-                IConfigGroup<TestConfig> cfgGroup = Config<TestConfig>.GetConfigGroup();
+                string destinationFolder = argsList[argsList.IndexOf("-seq") + 2];
 
-                Trace.WriteLine(string.Format("Detected {0} TestConfig objects", cfgGroup.Count()));
+                bool remiSetting = bool.Parse(argsList[argsList.IndexOf("-seq") + 3]);
 
-                if (!cfgGroup.Any())
+                if (!Directory.Exists(destinationFolder))
+                    Directory.CreateDirectory(destinationFolder);
+
+                IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetConfigGroup();
+
+
+                Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects", cfgGroup.Count()));
+
+                foreach (string sourceFilePath in Directory.EnumerateFiles(sourceFolder))
                 {
-                    Trace.WriteLine("Creating default TestConfig object.");
-                    cfgGroup.Add(new TestConfig { Name = "Default" });
-                }
+                    string sourceFileName = Path.GetFileName(sourceFilePath);
+                    if (sourceFileName == null)
+                        throw new ArgumentException(sourceFilePath + " is not a valid file path.");
 
-                foreach (TestConfig testConfig in cfgGroup)
-                    testConfig.TestSequenceSource = contents;
+                    string destinationFilePath = Path.Combine(destinationFolder, sourceFileName);
+
+                    File.Copy(sourceFilePath, destinationFilePath, true);
+                    Trace.WriteLine("Full file name = " + sourceFilePath);
+                    Trace.WriteLine("Adding " + sourceFileName);
+                    cfgGroup.Add(new SequenceConfig
+                    {
+                        LocalFile = destinationFilePath,
+                        RemiSetting = remiSetting
+                    });
+                }
 
                 cfgGroup.Save();
 
@@ -53,16 +68,11 @@ namespace $safeprojectname$
 
             bool devMode = args.Length > 0 && args[0] == "-d";
 
-            View view = new View
-            {
-                StationConfigList = Config<StationConfig>.GetConfigGroup().GetList(),
-                ProductConfigList = Config<ProductConfig>.GetConfigGroup().GetList()
-            };
+            Controller c = new Controller(devMode);
+            
+            if (c.View is Form)
+                Application.Run(c.View as Form);
 
-// ReSharper disable once UnusedVariable - constructor hooks up view events
-            Controller c = new Controller(view, new TestSequence(), devMode);
-
-            Application.Run(view);
 
             Console.WriteLine("Done");
         }
