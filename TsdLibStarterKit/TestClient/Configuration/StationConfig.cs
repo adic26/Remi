@@ -1,8 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using TsdLib.Configuration;
 
 namespace $safeprojectname$.Configuration
 {
+    [Serializable]
     public class StationConfig : StationConfigCommon
     {
         //TODO: Create a station configuration structure using public properties with get and set accessors.

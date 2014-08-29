@@ -4,9 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using $rootnamespace$.Sequences;
 using TsdLib.Configuration;
-using $rootnamespace$.Configuration;
 
 namespace $safeprojectname$
 {
@@ -36,7 +34,6 @@ namespace $safeprojectname$
                     Directory.CreateDirectory(destinationFolder);
 
                 IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetConfigGroup();
-
 
                 Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects", cfgGroup.Count()));
 

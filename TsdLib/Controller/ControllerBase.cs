@@ -121,6 +121,7 @@ namespace TsdLib.Controller
                     sequenceAssembly = CodeGenerator.CodeGenerator.GenerateTestSequenceFromFile(
                         sequenceConfig.LocalFile,
                         "System.dll",
+                        "System.Xml.dll",
                         "TsdLib.dll",
                         Application.ProductName + ".exe");
 

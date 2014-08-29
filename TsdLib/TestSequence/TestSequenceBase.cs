@@ -1,7 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Threading;
+using System.Xml.Serialization;
 using TsdLib.Configuration;
 using TsdLib.Instrument;
 using TsdLib.Measurements;
@@ -80,8 +83,40 @@ namespace TsdLib.TestSequence
             try
             {
                 Trace.WriteLine("Executing test sequence...");
+                DateTime starTime = DateTime.Now;
                 Execute(stationConfig, productConfig, testConfig);
+                var failedMeasurements = Measurements.Select(m => m.Result.HasFlag(MeasurementResult.Fail));
+
+                string finalResult = failedMeasurements.Any() ? "Fail" : "Pass";
+
+                Measurements.AddHeader( new MeasurementCollectionHeader(
+                    "_JobNumber",
+                    "_UnitNumber",
+                    "_TestType",
+                    "_TestStage",
+                    "_BSN",
+                    finalResult,
+                    starTime,
+                    DateTime.Now,
+                    "_AdditionalInfo"
+                    ));
+
+                XmlSerializer xs = new XmlSerializer(typeof(MeasurementCollection));
+                string measurementFile = Path.Combine(SpecialFolders.Measurements, "Results.xml");
+                using (Stream s = File.Create(measurementFile))
+                    xs.Serialize(s, Measurements);
+
+                string resultsFolder = @"C:\TestResults";
+                if (!Directory.Exists(resultsFolder))
+                    Directory.CreateDirectory(resultsFolder);
+                string resultsFile = "Results_" + DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".xml";
+                string resultsPath = Path.Combine(resultsFolder, resultsFile);
+                using (Stream s2 = File.Create(resultsPath))
+                    xs.Serialize(s2, Measurements);
+
                 Trace.WriteLine("Test sequence completed.");
+
+                Process.Start(resultsPath);
             }
             catch (OperationCanceledException)
             {

@@ -1,6 +1,4 @@
-﻿using System;
-using TsdLib.Controller;
-using TsdLib.TestSequence;
+﻿using TsdLib.Controller;
 using $rootnamespace$.Configuration;
 
 namespace $safeprojectname$
