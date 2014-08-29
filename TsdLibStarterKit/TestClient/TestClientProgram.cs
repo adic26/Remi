@@ -21,42 +21,8 @@ namespace $safeprojectname$
             if (args.Contains("-seq"))
             {
                 Trace.WriteLine("Pushing TestConfig to Remi");
-
                 List<string> argsList = args.ToList();
-
-                string sourceFolder = argsList[argsList.IndexOf("-seq") + 1];
-
-                string destinationFolder = argsList[argsList.IndexOf("-seq") + 2];
-
-                bool remiSetting = bool.Parse(argsList[argsList.IndexOf("-seq") + 3]);
-
-                if (!Directory.Exists(destinationFolder))
-                    Directory.CreateDirectory(destinationFolder);
-
-                IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetConfigGroup();
-
-                Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects", cfgGroup.Count()));
-
-                foreach (string sourceFilePath in Directory.EnumerateFiles(sourceFolder))
-                {
-                    string sourceFileName = Path.GetFileName(sourceFilePath);
-                    if (sourceFileName == null)
-                        throw new ArgumentException(sourceFilePath + " is not a valid file path.");
-
-                    string destinationFilePath = Path.Combine(destinationFolder, sourceFileName);
-
-                    File.Copy(sourceFilePath, destinationFilePath, true);
-                    Trace.WriteLine("Full file name = " + sourceFilePath);
-                    Trace.WriteLine("Adding " + sourceFileName);
-                    cfgGroup.Add(new SequenceConfig
-                    {
-                        LocalFile = destinationFilePath,
-                        RemiSetting = remiSetting
-                    });
-                }
-
-                cfgGroup.Save();
-
+                UpdateTestConfig(argsList[argsList.IndexOf("-seq") + 1], argsList[argsList.IndexOf("-seq") + 2], bool.Parse(argsList[argsList.IndexOf("-seq") + 3]));
                 return;
             }
 
@@ -70,8 +36,38 @@ namespace $safeprojectname$
             if (c.View is Form)
                 Application.Run(c.View as Form);
 
+            //TODO: figure out how to launch non-form view
 
             Console.WriteLine("Done");
+        }
+
+        private static void UpdateTestConfig(string sourceFolder, string destinationFolder, bool remiSetting)
+        {
+            if (!Directory.Exists(destinationFolder))
+                Directory.CreateDirectory(destinationFolder);
+
+            IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetConfigGroup();
+
+            Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects", cfgGroup.Count()));
+
+            foreach (string sourceFilePath in Directory.EnumerateFiles(sourceFolder))
+            {
+                string sourceFileName = Path.GetFileName(sourceFilePath);
+                if (sourceFileName == null)
+                    throw new ArgumentException(sourceFilePath + " is not a valid file path.");
+
+                string destinationFilePath = Path.Combine(destinationFolder, sourceFileName);
+
+                File.Copy(sourceFilePath, destinationFilePath, true);
+                Trace.WriteLine("Full file name = " + sourceFilePath);
+                Trace.WriteLine("Adding " + sourceFileName);
+                cfgGroup.Add(new SequenceConfig
+                {
+                    LocalFile = destinationFilePath,
+                    RemiSetting = remiSetting
+                });
+            }
+            cfgGroup.Save();
         }
     }
 }
