@@ -8,6 +8,7 @@ using TsdLib.Configuration;
 using TsdLib.Proxies;
 using TsdLib.TestSequence;
 using TsdLib.View;
+using TsdLib.Measurements;
 
 namespace TsdLib.Controller
 {
@@ -27,8 +28,6 @@ namespace TsdLib.Controller
         #region Private Fields
 
         private readonly bool _devMode;
-
-        private readonly LocalMeasurementWriter _localMeasurementWriter;
 
         private CancellationTokenSource _tokenSource;
 
@@ -51,12 +50,9 @@ namespace TsdLib.Controller
         /// <param name="devMode">True to enable Developer Mode - config can be modified but results are stored in the Analysis category.</param>
         protected ControllerBase(bool devMode)
         {
-
             _devMode = devMode;
 
-            _localMeasurementWriter = new LocalMeasurementWriter();
-
-            //TODO: if _devMode, do not pull from Remi
+            //TODO: if _devMode, do not pull from Remi??
 
             //set up view
             View = new TView
@@ -178,7 +174,6 @@ namespace TsdLib.Controller
         {
             Measurement measurement = e.Measurement;
             View.AddMeasurement(measurement);
-            _localMeasurementWriter.Write(measurement);
         }
 
 

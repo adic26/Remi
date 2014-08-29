@@ -14,6 +14,5 @@
   <Assets>
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="TsdLibStarterKit" d:TargetPath="|TsdLibStarterKit;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
     <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="TsdLibStarterKitWizard" Path="|TsdLibStarterKitWizard|" AssemblyName="|TsdLibStarterKitWizard;AssemblyName|" />
-    <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="TsdLib" d:VsixSubPath="Dependencies" Path="|TsdLib|" AssemblyName="|TsdLib;AssemblyName|" />
   </Assets>
 </PackageManifest>

@@ -37,14 +37,17 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeGenerator\CodeGenerator.cs" />
     <Compile Include="CodeGenerator\CodeGeneratorException.cs" />
+    <Compile Include="Measurements\MeasurementExceptions.cs" />
     <Compile Include="Proxies\EventProxy.cs" />
     <Compile Include="States.cs" />
     <Compile Include="IRemiControl.cs" />
-    <Compile Include="Measurement.cs" />
+    <Compile Include="Measurements\Measurement.cs" />
     <Compile Include="SpecialFolders.cs" />
     <Compile Include="TestSequence\TestSequenceException.cs" />
     <Compile Include="TsdLibException.cs" />
@@ -73,7 +76,6 @@
     <Compile Include="Configuration\RemiControlTest.cs" />
     <Compile Include="Configuration\RemiSettingsProvider.cs" />
     <Compile Include="Controller\ControllerBase.cs" />
-    <Compile Include="Controller\LocalMeasurementWriter.cs" />
     <Compile Include="Instrument\ConnectionBase.cs" />
     <Compile Include="Instrument\Dummy\DummyConnection.cs" />
     <Compile Include="Instrument\Dummy\DummyFactory.cs" />
@@ -95,7 +97,12 @@
       <DependentUpon>ViewBase.cs</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Measurements\ResultFile.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Configuration\ConfigForm.resx">
       <DependentUpon>ConfigForm.cs</DependentUpon>

@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="ResultFile"
+    targetNamespace="urn:xmlns:TsdLib.ResultsFile.xsd"
+    elementFormDefault="qualified"
+    xmlns="urn:xmlns:TsdLib.ResultsFile.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <!-- The Overall Document Structure-->
+  <xs:element name ="TestResults">
+    <!-- The root element-->
+
+    <xs:complexType>
+      <xs:all>
+        <xs:element ref="Header"/>
+        <xs:element ref="Measurements"/>
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- The Header Definition -->
+  <xs:element name="Header" >
+    <xs:complexType>
+      <xs:all>
+        <!-- The Header Elements (configured to appear once and only once) -->
+        <xs:element name ="TestName" nillable="false" minOccurs="1" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name ="JobNumber" nillable="false" minOccurs="1" maxOccurs="1" >
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+              <xs:pattern value="([a-zA-Z]){3}[-](\d{2})[-](\d{4})" />
+              <xs:pattern value="QRA-XX-TEST" />
+              <xs:pattern value="([a-zA-Z]){3}[-]XX-TEST" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name ="UnitNumber" type="xs:positiveInteger" nillable="false" minOccurs="1" maxOccurs="1" >
+        </xs:element>
+        <xs:element name ="TestType" nillable="false" minOccurs="1" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name ="TestStage" nillable="false" minOccurs="1" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name ="StationName" nillable="false" minOccurs="1" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name ="BSN" nillable="false" minOccurs="1" maxOccurs="1" >
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+              <xs:pattern value="[1-9]{1}(\d{9})" />
+              <xs:pattern value="([a-zA-Z]){3}[-](\d{2})[-](\d{4})[-](\d{3})" />
+              <xs:pattern value="QRA-XX-TEST-(\d{3})" />
+              <xs:pattern value="([a-zA-Z]){3}[-]XX-TEST-(\d{3})" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name ="FinalResult" nillable="false" minOccurs="1" maxOccurs="1" >
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+              <xs:pattern value="((P|p)(A|a)(S|s)(S|s))" />
+              <xs:pattern value="((F|f)(A|a)(I|i)(L|l))" />
+              <xs:pattern value="((U|u)(N|n)(D|d)(E|e)(F|f)(I|i)(N|n)(E|e)(D|d))" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name ="Duration" nillable="false" minOccurs="1" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name ="AdditionalInfo" type="xs:string" nillable="true" minOccurs="1" maxOccurs="1" />
+        <xs:element name ="DateCompleted" nillable="false" minOccurs="1" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+              <xs:pattern value="(\d{4})(([-]\d{2}){5})" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name="FunctionalType" type="xs:string" nillable="true" minOccurs="0" maxOccurs="1" />
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Measurements">
+    <xs:complexType>
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="Measurement"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Measurement">
+    <xs:complexType>
+      <xs:all>
+        <!-- The Measurement Elements (all must appear only once) -->
+        <xs:element name ="MeasurementName" nillable="false" minOccurs="1" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name ="LowerLimit" nillable="false">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name ="UpperLimit" nillable="false">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name ="MeasuredValue" nillable="false" minOccurs="1" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name ="PassFail" nillable="false" minOccurs="1" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+              <xs:pattern value="((P|p)(A|a)(S|s)(S|s))" />
+              <xs:pattern value="((F|f)(A|a)(I|i)(L|l))" />
+              <xs:pattern value="((U|u)(N|n)(D|d)(E|e)(F|f)(I|i)(N|n)(E|e)(D|d))" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name ="Units" nillable="false">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:minLength value="1" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <xs:element name ="FileName" type="xs:string" nillable="true" minOccurs="0" />
+        <xs:element name ="Comments" type="xs:string" nillable="true" minOccurs="0" />
+        <xs:element name ="Description" type="xs:string" nillable="true" minOccurs="0" />
+        <xs:element name="Parameters" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+              <!--The Param Measurement Element-->
+              <xs:element name="Parameter" nillable="false">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute name ="ParameterName" type="xs:string" use="required"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

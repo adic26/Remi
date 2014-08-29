@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using TsdLib.Configuration;
 using TsdLib.Instrument;
+using TsdLib.Measurements;
 using TsdLib.Proxies;
 
 namespace TsdLib.TestSequence

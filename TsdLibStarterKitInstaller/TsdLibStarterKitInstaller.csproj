@@ -54,7 +54,7 @@
       <Project>{B12037D0-EDD5-41A2-A68D-D2170EAFFCB0}</Project>
       <Name>TsdLib.CodeGeneratorApplication</Name>
       <VSIXSubPath>Dependencies</VSIXSubPath>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bDebugSymbolsProjectOutputGroup</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bDebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
       <Private>True</Private>
     </ProjectReference>
@@ -75,7 +75,7 @@
       <Project>{DA39D49A-E06E-4CD9-B2A2-326057BDC41D}</Project>
       <Name>TsdLib</Name>
       <VSIXSubPath>Dependencies</VSIXSubPath>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bDebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
   </ItemGroup>

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+using TsdLib.Measurements;
 
 namespace TsdLib.View
 {
     /// <summary>
-    /// Adds functionality to use a standard DataGridView control to display TsdLib.Measurement objects.
+    /// Adds functionality to use a standard DataGridView control to display TsdLib.Measurements objects.
     /// </summary>
     public class MeasurementDataGridView : DataGridView
     {
