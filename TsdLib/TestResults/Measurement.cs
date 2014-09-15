@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
@@ -9,29 +8,6 @@ using System.Xml.Serialization;
 
 namespace TsdLib.TestResults
 {
-    /// <summary>
-    /// Describes possible measurement outcomes.
-    /// </summary>
-    [Flags]
-    public enum MeasurementResult
-    {
-        /// <summary>
-        /// The measurement is within the specified range.
-        /// </summary>
-        Pass = 0,
-        /// <summary>
-        /// The measurement is below the specified range.
-        /// </summary>
-        Fail_Low = 1,
-        /// <summary>
-        /// The measurement is above the specified range.
-        /// </summary>
-        Fail_High = 2,
-        /// <summary>
-        /// The measurement is outside the specified range.
-        /// </summary>
-        Fail = Fail_Low | Fail_High
-    }
 
     /// <summary>
     /// A weakly-typed Measurement object to serve as a base for generic-typed measurements. Allows adding different types of measurements to the same collection.
@@ -141,6 +117,11 @@ namespace TsdLib.TestResults
 
         #region ISerializable
 
+        /// <summary>
+        /// Serialize the Measurement object into a binary stream.
+        /// </summary>
+        /// <param name="info">Stores all the data needed to serialize the object.</param>
+        /// <param name="context">Describes the source and destination of a given serialized stream, and provides an additional caller-defined context.</param>
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("Name", Name);
@@ -153,6 +134,11 @@ namespace TsdLib.TestResults
             info.AddValue("Result", Result);
         }
 
+        /// <summary>
+        /// Deserialize a binary stream into a Measurement object.
+        /// </summary>
+        /// <param name="info">Stores all the data needed to deserialize the object.</param>
+        /// <param name="context">Describes the source and destination of a given serialized stream, and provides an additional caller-defined context.</param>
         protected Measurement(SerializationInfo info, StreamingContext context)
         {
             Name = info.GetString("Name");
@@ -169,8 +155,16 @@ namespace TsdLib.TestResults
 
         #region IXmlSerializable
 
+        /// <summary>
+        /// Not used. Required for IXmlSerializable.
+        /// </summary>
+        /// <returns>null</returns>
         public XmlSchema GetSchema() { return null; }
 
+        /// <summary>
+        /// Serialize the Measurement object into its XML representation.
+        /// </summary>
+        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter"/> stream to which the object is serialized.</param>
         public void WriteXml(XmlWriter writer)
         {
             new XElement(_ns + "MeasurementName", Name).WriteTo(writer);
@@ -187,6 +181,10 @@ namespace TsdLib.TestResults
                 parametersElement.WriteTo(writer);
         }
 
+        /// <summary>
+        /// Deserialize and XML representation into a Measurement object.
+        /// </summary>
+        /// <param name="reader">The <see cref="T:System.Xml.XmlReader"/> stream from which the object is deserialized.</param>
         public void ReadXml(XmlReader reader)
         {
             XElement measurementElement = XElement.Load(reader);
@@ -210,111 +208,5 @@ namespace TsdLib.TestResults
         }
 
         #endregion
-    }
-
-    /// <summary>
-    /// A test condition or other information used to describe test conditions.
-    /// </summary>
-    [Serializable]
-    public class MeasurementParameter
-    {
-        /// <summary>
-        /// Name of the parameter.
-        /// </summary>
-        public readonly string Name;
-        /// <summary>
-        /// Value of the parameter.
-        /// </summary>
-        public readonly object Value;
-
-        /// <summary>
-        /// Initialize a new MeasurementParameter object with the specified name and value.
-        /// </summary>
-        /// <param name="name">Name of the parameter.</param>
-        /// <param name="val">Value of the parameter.</param>
-        public MeasurementParameter(string name, object val)
-        {
-            Name = name;
-            Value = val;
-        }
-
-        /// <summary>
-        /// Returns a string representation of the MeasurementParameter.
-        /// </summary>
-        /// <returns>A string containing the name and value, separated by an equals sign.</returns>
-        public override string ToString()
-        {
-            return string.Concat(Name, "=", Value);
-        }
-    }
-
-    /// <summary>
-    /// Represents a collection of MeasurementParameter objects.
-    /// </summary>
-    [Serializable]
-    public class MeasurementParameterCollection : List<MeasurementParameter>
-    {
-        /// <summary>
-        /// Initialize a new MeasurementParameterCollection using a sequence of existing MeasurementParameter objects.
-        /// </summary>
-        /// <param name="parameters">A sequence of existing MeasurementParameter objects.</param>
-        public MeasurementParameterCollection(IEnumerable<MeasurementParameter> parameters)
-            : base(parameters) { }
-
-        /// <summary>
-        /// Gets the value of a MeasurementParameter by name.
-        /// </summary>
-        /// <param name="name">Name of the MeasurementParameter.</param>
-        /// <returns>Value of the MeasurementParameter with the specified name.</returns>
-        public object this [string name]
-        {
-            get
-            {
-                MeasurementParameter mp = this.FirstOrDefault(p => p.Name == name);
-                if (mp == null)
-                    throw new MeasurementParameterException(name);
-                return mp.Value;
-            }
-        }
-
-        /// <summary>
-        /// Returns a string representation of the MeasurementParameters in the collection, with MeasurementParameters separated by a comma.
-        /// </summary>
-        /// <returns>A string representation of the MeasurementParameters in the collection.</returns>
-        public override string ToString()
-        {
-            return ToString(",");
-        }
-
-        /// <summary>
-        /// Returns a string representation of the MeasurementParameters in the collection, separated by the specified delimiter.
-        /// </summary>
-        /// <param name="separator">Delimiter string to insert between each MeasurementParameter object.</param>
-        /// <returns>A string representation of the MeasurementParameters in the collection.</returns>
-        public string ToString(string separator)
-        {
-            return string.Join(separator, this.Select(p => p.ToString()));
-        }
-    }
-
-    /// <summary>
-    /// Provides measurement data to pass to a measurement captured event.
-    /// </summary>
-    [Serializable]
-    public class MeasurementEventArgs : EventArgs
-    {
-        /// <summary>
-        /// Gets the Measurement object that generated the event.
-        /// </summary>
-        public Measurement Measurement { get; private set; }
-
-        /// <summary>
-        /// Initialize a new instance of the MeasurementEventArgs class.
-        /// </summary>
-        /// <param name="measurement">Measurement to pass to the event handlers.</param>
-        public MeasurementEventArgs(Measurement measurement)
-        {
-            Measurement = measurement;
-        }
     }
 }

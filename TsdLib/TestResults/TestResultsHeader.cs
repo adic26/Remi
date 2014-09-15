@@ -10,6 +10,9 @@ using System.Xml.Serialization;
 
 namespace TsdLib.TestResults
 {
+    /// <summary>
+    /// Contains test results metadata.
+    /// </summary>
     [Serializable]
     [XmlRoot(ElementName = "Header", Namespace = "TsdLib.ResultsFile.xsd")]
     public class TestResultsHeader : ISerializable, IXmlSerializable
@@ -69,6 +72,18 @@ namespace TsdLib.TestResults
         // ReSharper disable once UnusedMember.Local - Default constructor required for serialization.
         private TestResultsHeader() { }
 
+        /// <summary>
+        /// Initialize a new TestResultsHeader to hold test result metadata.
+        /// </summary>
+        /// <param name="jobNumber">The job/request number.</param>
+        /// <param name="unitNumber">Unit number for the DUT.</param>
+        /// <param name="testType">Type of test (drop, tumble, etc).</param>
+        /// <param name="testStage">Test stage (baseline, post stress, etc).</param>
+        /// <param name="bsn">BSN (board serial number) of the DUT</param>
+        /// <param name="finalResult">Overall test pass/fail result.</param>
+        /// <param name="dateStarted">DateTime that the test was started.</param>
+        /// <param name="dateCompleted">DateTime that the test was completed.</param>
+        /// <param name="additionalInfo">Any additional information that does not fit into the previous categories.</param>
         public TestResultsHeader(string jobNumber, string unitNumber, string testType,
             string testStage, string bsn, string finalResult, DateTime dateStarted,
             DateTime dateCompleted, string additionalInfo)
@@ -88,6 +103,11 @@ namespace TsdLib.TestResults
 
         #region ISerializable
 
+        /// <summary>
+        /// Serialize the TestResultsHeader object into a binary stream.
+        /// </summary>
+        /// <param name="info">Stores all the data needed to serialize the object.</param>
+        /// <param name="context">Describes the source and destination of a given serialized stream, and provides an additional caller-defined context.</param>
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("TestName", TestName);
@@ -103,6 +123,11 @@ namespace TsdLib.TestResults
             info.AddValue("AdditionalInfo", AdditionalInfo);
         }
 
+        /// <summary>
+        /// Deserialize a binary stream into a TestResults object.
+        /// </summary>
+        /// <param name="info">Stores all the data needed to deserialize the object.</param>
+        /// <param name="context">Describes the source and destination of a given serialized stream, and provides an additional caller-defined context.</param>
         protected TestResultsHeader(SerializationInfo info, StreamingContext context)
         {
             TestName = info.GetString("TestName");
@@ -122,8 +147,16 @@ namespace TsdLib.TestResults
 
         #region IXmlSerializable
 
+        /// <summary>
+        /// Not used. Required for IXmlSerializable.
+        /// </summary>
+        /// <returns>null</returns>
         public XmlSchema GetSchema() { return null; }
 
+        /// <summary>
+        /// Serialize the TestResultsHeader object into its XML representation.
+        /// </summary>
+        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter"/> stream to which the object is serialized.</param>
         public void WriteXml(XmlWriter writer)
         {
             new XElement(_ns + "TestName", TestName).WriteTo(writer);
@@ -139,6 +172,10 @@ namespace TsdLib.TestResults
             new XElement(_ns + "DateCompleted", DateCompleted.ToString("yyyy-MM-dd-hh-mm-ss")).WriteTo(writer);
         }
 
+        /// <summary>
+        /// Deserialize an XML representation into a TestResultsHeader object.
+        /// </summary>
+        /// <param name="reader">The <see cref="T:System.Xml.XmlReader"/> stream from which the object is deserialized.</param>
         public void ReadXml(XmlReader reader)
         {
             XElement headerElement = XElement.Load(reader);

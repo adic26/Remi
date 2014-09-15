@@ -43,6 +43,9 @@
   <ItemGroup>
     <Compile Include="CodeGenerator\CodeGenerator.cs" />
     <Compile Include="CodeGenerator\CodeGeneratorException.cs" />
+    <Compile Include="TestResults\MeasurementEventArgs.cs" />
+    <Compile Include="TestResults\MeasurementParameter.cs" />
+    <Compile Include="TestResults\MeasurmentResult.cs" />
     <Compile Include="TestResults\TestResultsExceptions.cs" />
     <Compile Include="TestResults\TestResults.cs" />
     <Compile Include="TestResults\TestResultsHeader.cs" />
