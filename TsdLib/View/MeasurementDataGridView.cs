@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using TsdLib.Measurements;
+using TsdLib.TestResults;
 
 namespace TsdLib.View
 {

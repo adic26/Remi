@@ -8,7 +8,7 @@ using TsdLib.Configuration;
 using TsdLib.Proxies;
 using TsdLib.TestSequence;
 using TsdLib.View;
-using TsdLib.Measurements;
+using TsdLib.TestResults;
 
 namespace TsdLib.Controller
 {

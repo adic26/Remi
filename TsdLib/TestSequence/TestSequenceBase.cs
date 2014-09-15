@@ -7,7 +7,7 @@ using System.Threading;
 using System.Xml.Serialization;
 using TsdLib.Configuration;
 using TsdLib.Instrument;
-using TsdLib.Measurements;
+using TsdLib.TestResults;
 using TsdLib.Proxies;
 
 namespace TsdLib.TestSequence
@@ -33,7 +33,7 @@ namespace TsdLib.TestSequence
         /// <summary>
         /// Gets the collection of Measurement objects captured during the course of the Test Sequence execution.
         /// </summary>
-        public MeasurementCollection Measurements { get; protected set; }
+        public TestResultCollection Measurements { get; protected set; }
 
         /// <summary>
         /// Gets or sets an EventProxy object that can be used to send events across AppDomain boundaries.
@@ -46,7 +46,7 @@ namespace TsdLib.TestSequence
         protected TestSequenceBase()
         {
             _cts = new CancellationTokenSource();
-            Measurements = new MeasurementCollection();
+            Measurements = new TestResultCollection();
             Measurements.ListChanged += (sender, e) =>
             {
                 IBindingList list = sender as IBindingList;
@@ -82,26 +82,29 @@ namespace TsdLib.TestSequence
         {
             try
             {
+                //Pre-test
                 Trace.WriteLine("Executing test sequence...");
                 DateTime starTime = DateTime.Now;
+
+                //Execute test
                 Execute(stationConfig, productConfig, testConfig);
-                var failedMeasurements = Measurements.Select(m => m.Result.HasFlag(MeasurementResult.Fail));
 
-                string finalResult = failedMeasurements.Any() ? "Fail" : "Pass";
+                //Post-test
+                bool overallPass = Measurements.Any() && Measurements.All(m => m.Result == MeasurementResult.Pass);
 
-                Measurements.AddHeader( new MeasurementCollectionHeader(
+                Measurements.AddHeader( new TestResultsHeader(
                     "_JobNumber",
                     "_UnitNumber",
                     "_TestType",
                     "_TestStage",
                     "_BSN",
-                    finalResult,
+                    overallPass ? "Fail" : "Pass",
                     starTime,
                     DateTime.Now,
                     "_AdditionalInfo"
                     ));
 
-                XmlSerializer xs = new XmlSerializer(typeof(MeasurementCollection));
+                XmlSerializer xs = new XmlSerializer(typeof(TestResultCollection));
                 string measurementFile = Path.Combine(SpecialFolders.Measurements, "Results.xml");
                 using (Stream s = File.Create(measurementFile))
                     xs.Serialize(s, Measurements);

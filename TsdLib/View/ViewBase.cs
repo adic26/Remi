@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Diagnostics;
 using System.Windows.Forms;
-using TsdLib.Measurements;
+using TsdLib.TestResults;
 
 namespace TsdLib.View
 {

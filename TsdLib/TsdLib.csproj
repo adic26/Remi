@@ -43,11 +43,13 @@
   <ItemGroup>
     <Compile Include="CodeGenerator\CodeGenerator.cs" />
     <Compile Include="CodeGenerator\CodeGeneratorException.cs" />
-    <Compile Include="Measurements\MeasurementExceptions.cs" />
+    <Compile Include="TestResults\TestResultsExceptions.cs" />
+    <Compile Include="TestResults\TestResults.cs" />
+    <Compile Include="TestResults\TestResultsHeader.cs" />
     <Compile Include="Proxies\EventProxy.cs" />
     <Compile Include="States.cs" />
     <Compile Include="IRemiControl.cs" />
-    <Compile Include="Measurements\Measurement.cs" />
+    <Compile Include="TestResults\Measurement.cs" />
     <Compile Include="SpecialFolders.cs" />
     <Compile Include="TestSequence\TestSequenceException.cs" />
     <Compile Include="TsdLibException.cs" />
@@ -98,7 +100,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Measurements\ResultFile.xsd">
+    <None Include="TestResults\ResultFile.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

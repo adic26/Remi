@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Diagnostics;
-using TsdLib.Measurements;
+using TsdLib.TestResults;
 
 namespace TsdLib.View
 {
