@@ -109,7 +109,7 @@ namespace TsdLib.Instrument
                 Debug.WriteLine("Sending command to " + Description + ": " + fullCommand);
                 Write(fullCommand);
                 if (CheckForError())
-                    throw new CommandException("Error sending command to " + Description + ": " + fullCommand);
+                    throw new CommandException(this, fullCommand);
             }
         }
 
@@ -135,7 +135,7 @@ namespace TsdLib.Instrument
                     Encoding.ASCII.GetString(GetByteResponse(terminationCharacter:terminationCharacter, delay:0));
 
                 if (CheckForError())
-                    throw new CommandException("Error receiving data from: " + Description);
+                    throw new CommandException(this);
 
                 Debug.WriteLine("Received response from: " + Description + ": " + response);
 
@@ -176,7 +176,7 @@ namespace TsdLib.Instrument
                 byte[] response = resp.ToArray();
 
                 if (CheckForError())
-                    throw new CommandException("Error receiving data from: " + Description);
+                    throw new CommandException(this);
 
                 Debug.WriteLine("Received response from " + Description + ": " + Encoding.ASCII.GetString(response));
 

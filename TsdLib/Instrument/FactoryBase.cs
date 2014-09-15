@@ -87,7 +87,7 @@ namespace TsdLib.Instrument
             }
 
             if (connections.Count == 0)
-                throw new InstrumentFactoryException("Could not connect to any " + typeof(TInstrument).Name + " instruments via " + typeof(TConnection).Name);
+                throw new ConnectException<TInstrument, TConnection>();
 
             TInstrument inst = (TInstrument)Activator.CreateInstance(
                 typeof(TInstrument),
