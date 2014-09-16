@@ -45,8 +45,10 @@ namespace TsdLib.Configuration
             Debug.Assert(svc != null, "Error initializing IWindowsFormsEditorService");
             Debug.Assert(str != null, "Must pass a string.");
             using (MultiLineStringEditorForm form = new MultiLineStringEditorForm(str))
+            {
                 if (svc.ShowDialog(form) == DialogResult.OK)
                     str = form.Value; // update object
+            }
             return str;
         }
     }

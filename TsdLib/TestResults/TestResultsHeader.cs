@@ -17,7 +17,7 @@ namespace TsdLib.TestResults
     [XmlRoot(ElementName = "Header", Namespace = "TsdLib.ResultsFile.xsd")]
     public class TestResultsHeader : ISerializable, IXmlSerializable
     {
-        private XNamespace _ns = "TsdLib.ResultsFile.xsd";
+        private readonly XNamespace _ns = "TsdLib.ResultsFile.xsd";
 
         /// <summary>
         /// Gets the name of the test.
@@ -46,6 +46,7 @@ namespace TsdLib.TestResults
         /// <summary>
         /// Gets the BSN on the current DUT.
         /// </summary>
+// ReSharper disable once InconsistentNaming
         public string BSN { get; private set; }
         /// <summary>
         /// Gets the overall test result.

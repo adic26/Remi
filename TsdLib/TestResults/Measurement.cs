@@ -16,7 +16,7 @@ namespace TsdLib.TestResults
     [XmlRoot(ElementName = "Measurement", Namespace = "TsdLib.ResultsFile.xsd")]
     public class Measurement : ISerializable, IXmlSerializable
     {
-        private XNamespace _ns = "TsdLib.ResultsFile.xsd";
+        private readonly XNamespace _ns = "TsdLib.ResultsFile.xsd";
 
         /// <summary>
         /// Name to describe the measurement.

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.CodeDom.Compiler;
-using System.Runtime.Serialization;
 using System.Text;
 
 namespace TsdLib.CodeGenerator

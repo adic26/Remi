@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using TsdLib.Configuration;
 using TsdLib.Proxies;
 using TsdLib.TestSequence;

@@ -271,7 +271,6 @@ namespace TsdLib.CodeGeneratorApplication
 
                 XElement instrumentElement = doc.Root;
                 Debug.Assert(instrumentElement != null, "File: " + docName + " does not have a valid root element.");
-
                 string connectionType = (string)instrumentElement.Attribute("ConnectionType");
                 ns.Imports.Add(new CodeNamespaceImport("TsdLib.Instrument." + connectionType));
 

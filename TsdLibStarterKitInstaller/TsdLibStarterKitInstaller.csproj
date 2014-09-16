@@ -90,7 +90,7 @@
     <PostBuildEvent>rem copy /y $(TargetDir) \\fsg52ykf\ReliabilityTSD\TsdLib</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>$(SolutionDir)VersionSync\$(OutDir)VersionSync.exe $(ProjectDir)source.extension.vsixmanifest $(ProjectDir)atom.xml -i</PreBuildEvent>
+    <PreBuildEvent>rem $(SolutionDir)VersionSync\$(OutDir)VersionSync.exe $(ProjectDir)source.extension.vsixmanifest $(ProjectDir)atom.xml -i</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

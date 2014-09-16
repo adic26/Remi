@@ -119,7 +119,7 @@ namespace TsdLib.TestSequence
                 using (Stream s = File.Create(measurementFile))
                     xs.Serialize(s, TestResults);
 
-                string resultsFolder = @"C:\TestResults";
+                const string resultsFolder = @"C:\TestResults";
                 if (!Directory.Exists(resultsFolder))
                     Directory.CreateDirectory(resultsFolder);
                 string resultsFile = "Results_" + DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".xml";

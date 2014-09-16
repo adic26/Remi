@@ -39,6 +39,11 @@ namespace TsdLib
             LogException(this);
         }
 
+        public override sealed string ToString()
+        {
+            return base.ToString();
+        }
+
         /// <summary>
         /// Deserialization constructor used by the .NET Framework to initialize an instance of the TsdLibException class from serialized data.
         /// </summary>

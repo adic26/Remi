@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
@@ -102,8 +101,6 @@ namespace TsdLib.TestResults
 
         #region ISerializable
 
-        IFormatter formatter = new BinaryFormatter();
-
         /// <summary>
         /// Serialize the TestResultCollection object into a binary stream.
         /// </summary>
@@ -131,9 +128,9 @@ namespace TsdLib.TestResults
 
         #region IXmlSerializable
 
-        private XNamespace _ns = "TsdLib.ResultsFile.xsd";
-        private XmlSerializer _headerSerializer = new XmlSerializer(typeof(TestResultsHeader));
-        private XmlSerializer _measurementSerializer = new XmlSerializer(typeof(Measurement));
+        private readonly XNamespace _ns = "TsdLib.ResultsFile.xsd";
+        private readonly XmlSerializer _headerSerializer = new XmlSerializer(typeof(TestResultsHeader));
+        private readonly XmlSerializer _measurementSerializer = new XmlSerializer(typeof(Measurement));
 
         /// <summary>
         /// Not used. Required for IXmlSerializable.
@@ -147,8 +144,6 @@ namespace TsdLib.TestResults
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter"/> stream to which the object is serialized.</param>
         public void WriteXml(XmlWriter writer)
         {
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces(new[] { new XmlQualifiedName("urn", "TsdLib.ResultsFile.xsd") });
-
             _headerSerializer.Serialize(writer, CollectionHeader);
 
             writer.WriteStartElement("Measurements", _ns.NamespaceName);
@@ -170,9 +165,15 @@ namespace TsdLib.TestResults
 
             XElement headerElement = testResultsElement.Element(_ns + "Header");
 
+            if (headerElement == null)
+                throw new SerializationException(testResultsElement, _ns.NamespaceName + "Header");
+
             CollectionHeader = (TestResultsHeader)_headerSerializer.Deserialize(headerElement.CreateReader());
 
             XElement measurementsElement = testResultsElement.Element(_ns + "Measurements");
+
+            if (measurementsElement == null)
+                throw new SerializationException(testResultsElement, _ns.NamespaceName + "Measurements");
 
             foreach (XElement measurementElement in measurementsElement.Elements(_ns + "Measurement"))
                 Items.Add((Measurement)_measurementSerializer.Deserialize(measurementElement.CreateReader()));
