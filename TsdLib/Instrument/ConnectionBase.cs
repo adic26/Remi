@@ -128,29 +128,38 @@ namespace TsdLib.Instrument
                 Debug.WriteLine("Waiting " + localDelay + "ms before receiving string response");
             Thread.Sleep(localDelay);
 
+            string parsedResponse = "";
+
             lock (_locker)
             {
-                string response = terminationCharacter == '\uD800' ?
-                    ReadString() :
-                    Encoding.ASCII.GetString(GetByteResponse(terminationCharacter:terminationCharacter, delay:0));
+                try
+                {
+                    string response = terminationCharacter == '\uD800' ?
+                        ReadString() :
+                        Encoding.ASCII.GetString(GetByteResponse(terminationCharacter: terminationCharacter, delay: 0));
 
-                if (CheckForError())
-                    throw new CommandException(this);
+                    if (CheckForError())
+                        throw new ResponseException(this);
 
-                Debug.WriteLine("Received response from: " + Description + ": " + response);
+                    Debug.WriteLine("Received response from: " + Description + ": " + response);
 
-                Match match = Regex.Match(response, regex, RegexOptions.Singleline);
-                string parsedResponse = match.Success ? match.Value : response;
+                    Match match = Regex.Match(response, regex, RegexOptions.Singleline);
+                    parsedResponse = match.Success ? match.Value : response;
 
-                if (parsedResponse != response)
-                    Debug.WriteLine("RegEx pattern: " + regex + "  Parsed response: " + parsedResponse);
+                    if (parsedResponse != response)
+                        Debug.WriteLine("RegEx pattern: " + regex + "  Parsed response: " + parsedResponse);
 
-                T retval = (T)Convert.ChangeType(parsedResponse, typeof(T));
+                    T retval = (T)Convert.ChangeType(parsedResponse, typeof(T));
 
-                if (typeof(T) != typeof(string))
-                    Debug.WriteLine("Returning as: " + typeof(T).Name);
+                    if (typeof(T) != typeof(string))
+                        Debug.WriteLine("Returning as: " + typeof(T).Name);
 
-                return retval;
+                    return retval;
+                }
+                catch (FormatException ex)
+                {
+                    throw new ResponseException(this, parsedResponse, ex);
+                }
             }
         }
 
@@ -176,7 +185,7 @@ namespace TsdLib.Instrument
                 byte[] response = resp.ToArray();
 
                 if (CheckForError())
-                    throw new CommandException(this);
+                    throw new ResponseException(this);
 
                 Debug.WriteLine("Received response from " + Description + ": " + Encoding.ASCII.GetString(response));
 

@@ -2,6 +2,8 @@
 using System.CodeDom.Compiler;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace TsdLib.CodeGenerator
 {
@@ -85,6 +87,12 @@ namespace TsdLib.CodeGenerator
 #endif
             
             cp.ReferencedAssemblies.AddRange(referencedAssemblies);
+
+            MatchCollection matches =
+                Regex.Matches(File.ReadAllText(sourceCodeFilePath), "(?<=assembly: AssemblyReference\\(\").*(?=\"\\))");
+
+            if (matches.Count > 0)
+                cp.ReferencedAssemblies.AddRange(matches.Cast<Match>().Select(m => m.Value).ToArray());
 
             CompilerResults cr = provider.CompileAssemblyFromFile(cp, sourceCodeFilePath);
 

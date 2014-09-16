@@ -118,12 +118,7 @@ namespace TsdLib.Controller
                 {
                     _tokenSource = new CancellationTokenSource();
 
-                    sequenceAssembly = CodeGenerator.CodeGenerator.GenerateTestSequenceFromFile(
-                        sequenceConfig.LocalFile,
-                        "System.dll",
-                        "System.Xml.dll",
-                        "TsdLib.dll",
-                        Application.ProductName + ".exe");
+                    sequenceAssembly = CodeGenerator.CodeGenerator.GenerateTestSequenceFromFile(sequenceConfig.LocalFile);
 
                     sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
 

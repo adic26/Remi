@@ -7,12 +7,12 @@ namespace TestClient.Instruments
     
     // ReSharper disable once FieldCanBeMadeReadOnly.Local
     [IdQuery("MyInstrument, Model 12345")]
-    public class MyInstrument : InstrumentBase<DummyConnection>
+    public class DummyPowerSupply : InstrumentBase<DummyConnection>
     {
         
         static DummyFactory _factory = new DummyFactory();
         
-        internal MyInstrument(DummyConnection connection) : 
+        internal DummyPowerSupply(DummyConnection connection) : 
                 base(connection)
         {
         }
@@ -49,14 +49,25 @@ namespace TestClient.Instruments
             }
         }
         
-        public static MyInstrument Connect()
+        public static DummyPowerSupply Connect()
         {
-            return _factory.GetInstrument<MyInstrument>();
+            return _factory.GetInstrument<DummyPowerSupply>();
         }
         
-        public static MyInstrument Connect(string address)
+        public static DummyPowerSupply Connect(string address)
         {
-            return _factory.GetInstrument<MyInstrument>(address);
+            return _factory.GetInstrument<DummyPowerSupply>(address);
+        }
+        
+        public void SetVoltage(Double voltage)
+        {
+            Connection.SendCommand("SET:VOLT {0}", -1, voltage);
+        }
+        
+        public Double GetCurrent()
+        {
+            Connection.SendCommand("GET:CURRENT?", -1);
+            return Connection.GetResponse<Double>();
         }
     }
 }

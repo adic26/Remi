@@ -28,21 +28,14 @@ namespace TsdLib
         }
 
         /// <summary>
-        /// Initializes a new instance of the TsdLibException class with a message.
-        /// </summary>
-        /// <param name="message">Message describing the exception.</param>
-        protected TsdLibException(string message)
-            : this(message, null) { }
-
-        /// <summary>
         /// Initializes a new instance of the TsdLibException class with a message and inner exception.
         /// </summary>
         /// <param name="message">Message describing the exception.</param>
-        /// <param name="inner">Another exception that has caused the specified exception.</param>
-        protected TsdLibException(string message, Exception inner)
+        /// <param name="inner">OPTIONAL: Another exception that has caused the specified exception.</param>
+        protected TsdLibException(string message, Exception inner = null)
             : base(message, inner)
         {
-            Trace.WriteLine(this);
+            Trace.WriteLine(ToString());
             LogException(this);
         }
 
@@ -52,17 +45,7 @@ namespace TsdLib
         /// <param name="info">The SerialzationInfo that holds the serialized object data about the exception being thrown.</param>
         /// <param name="context">The StreamingContext that contains the contextual information about the source or destination.</param>
         protected TsdLibException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            Trace.WriteLine(this);
-        }
-
-#if !DEBUG
-        public override string ToString()
-        {
-            return GetType().Name + ":" + Message;
-        }
-#endif
+            : base(info, context) { }
 
         /// <summary>
         /// Sets the Runtime.Serialization.SerializationInfo with information about the exception.

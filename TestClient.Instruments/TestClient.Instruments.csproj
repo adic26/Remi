@@ -48,7 +48,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>rem $(SolutionDir)TsdLib.CodeGeneratorApplication\bin\$(ConfigurationName)\TsdLib.CodeGeneratorApplication.exe Instruments Source $(ProjectPath) $(ProjectDir) $(ProjectName) CSharp $(SolutionDir)TsdLib.CodeGeneratorApplication\bin\$(ConfigurationName)\TsdLib.Instrument.xsd"</PreBuildEvent>
+    <PreBuildEvent>$(SolutionDir)TsdLib.CodeGeneratorApplication\bin\$(ConfigurationName)\TsdLib.CodeGeneratorApplication.exe Instruments Source $(ProjectPath) $(ProjectDir) $(ProjectName) CSharp $(SolutionDir)TsdLib.CodeGeneratorApplication\bin\$(ConfigurationName)\TsdLib.Instrument.xsd"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

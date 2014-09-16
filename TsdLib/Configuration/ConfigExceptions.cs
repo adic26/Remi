@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace TsdLib.Configuration
 {
@@ -13,7 +14,16 @@ namespace TsdLib.Configuration
         /// </summary>
         /// <param name="type">Type of configuration object.</param>
         /// <param name="name">Name of configuration instance.</param>
-        public ConfigException(Type type, string name)
-            : base("An instance of " + type.Name + " named " + name + "could not be found") { }
+        /// <param name="inner">OPTIONAL: The Exception that caused the CompilerException.</param>
+        public ConfigException(Type type, string name, Exception inner = null)
+            : base("An instance of " + type.Name + " named " + name + "could not be found", inner) { }
+
+        ///// <summary>
+        ///// Deserialization constructor used by the .NET Framework to initialize an instance of the ConfigException class from serialized data.
+        ///// </summary>
+        ///// <param name="info">The SerialzationInfo that holds the serialized object data about the exception being thrown.</param>
+        ///// <param name="context">The StreamingContext that contains the contextual information about the source or destination.</param>
+        //protected ConfigException(SerializationInfo info, StreamingContext context)
+        //    : base(info, context) { }
     }
 }

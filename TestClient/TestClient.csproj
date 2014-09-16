@@ -60,6 +60,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TestClient.Instruments\TestClient.Instruments.csproj">
+      <Project>{3B4E18DB-0495-4C9F-A283-5EADA3C4FB17}</Project>
+      <Name>TestClient.Instruments</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TsdLib\TsdLib.csproj">
       <Project>{da39d49a-e06e-4cd9-b2a2-326057bdc41d}</Project>
       <Name>TsdLib</Name>

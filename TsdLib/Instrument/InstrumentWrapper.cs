@@ -31,6 +31,10 @@ namespace TsdLib.Instrument
         }
 
         /// <summary>
+        /// Gets the descriptions(s) of the contained instrument(s), including connection information.
+        /// </summary>
+        public string Description { get { return string.Join(",",  _instruments.Select(inst => inst.Description)).TrimEnd(','); } }
+        /// <summary>
         /// Gets the model number(s) of the contained instrument(s).
         /// </summary>
         public string ModelNumber { get { return string.Join(",", _instruments.Select(inst => inst.ModelNumber)).TrimEnd(','); } }

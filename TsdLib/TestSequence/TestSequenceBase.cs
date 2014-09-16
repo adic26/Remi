@@ -6,9 +6,9 @@ using System.Linq;
 using System.Threading;
 using System.Xml.Serialization;
 using TsdLib.Configuration;
+using TsdLib.Proxies;
 using TsdLib.Instrument;
 using TsdLib.TestResults;
-using TsdLib.Proxies;
 
 namespace TsdLib.TestSequence
 {
@@ -18,7 +18,7 @@ namespace TsdLib.TestSequence
     /// <typeparam name="TStationConfig">Type of Station Config used in the derived class.</typeparam>
     /// <typeparam name="TProductConfig">Type of Product Config used in the derived class.</typeparam>
     /// <typeparam name="TTestConfig">Type of Test Config used in the derived class.</typeparam>
-    public abstract class TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject//, ISequence<TStationConfig, TProductConfig, TTestConfig>
+    public abstract class TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject
         where TStationConfig : StationConfigCommon
         where TProductConfig : ProductConfigCommon
         where TTestConfig : TestConfigCommon
@@ -31,9 +31,9 @@ namespace TsdLib.TestSequence
         protected CancellationToken Token { get { return _cts.Token; } }
 
         /// <summary>
-        /// Gets the collection of Measurement objects captured during the course of the Test Sequence execution.
+        /// Gets test metadata and the collection of Measurement objects captured during the Test Sequence execution.
         /// </summary>
-        public TestResultCollection Measurements { get; protected set; }
+        public TestResultCollection TestResults { get; protected set; }
 
         /// <summary>
         /// Gets or sets an EventProxy object that can be used to send events across AppDomain boundaries.
@@ -46,13 +46,23 @@ namespace TsdLib.TestSequence
         protected TestSequenceBase()
         {
             _cts = new CancellationTokenSource();
-            Measurements = new TestResultCollection();
-            Measurements.ListChanged += (sender, e) =>
+            TestResults = new TestResultCollection();
+            TestResults.ListChanged += (sender, e) =>
             {
                 IBindingList list = sender as IBindingList;
                 if (list != null && MeasurementEventProxy != null)
                     MeasurementEventProxy.FireEvent(new MeasurementEventArgs((Measurement)list[e.NewIndex]));
             };
+
+            FactoryEvents.Connected += FactoryEvents_Connected;
+        }
+
+        void FactoryEvents_Connected(object sender, ConnectedEventArgs e)
+        {
+            TestResults.AddMeasurement("Description", e.Instrument.Description, "n/a", "n/a", "n/a");
+            TestResults.AddMeasurement("Model Number", e.Instrument.ModelNumber, "n/a", "n/a", "n/a");
+            TestResults.AddMeasurement("Serial Number", e.Instrument.SerialNumber, "n/a", "n/a", "n/a");
+            TestResults.AddMeasurement("Firmware Version", e.Instrument.FirmwareVersion, "n/a", "n/a", "n/a");
         }
 
         /// <summary>
@@ -90,9 +100,9 @@ namespace TsdLib.TestSequence
                 Execute(stationConfig, productConfig, testConfig);
 
                 //Post-test
-                bool overallPass = Measurements.Any() && Measurements.All(m => m.Result == MeasurementResult.Pass);
+                bool overallPass = TestResults.Any() && TestResults.All(m => m.Result == MeasurementResult.Pass);
 
-                Measurements.AddHeader( new TestResultsHeader(
+                TestResults.AddHeader( new TestResultsHeader(
                     "_JobNumber",
                     "_UnitNumber",
                     "_TestType",
@@ -107,7 +117,7 @@ namespace TsdLib.TestSequence
                 XmlSerializer xs = new XmlSerializer(typeof(TestResultCollection));
                 string measurementFile = Path.Combine(SpecialFolders.Measurements, "Results.xml");
                 using (Stream s = File.Create(measurementFile))
-                    xs.Serialize(s, Measurements);
+                    xs.Serialize(s, TestResults);
 
                 string resultsFolder = @"C:\TestResults";
                 if (!Directory.Exists(resultsFolder))
@@ -115,7 +125,7 @@ namespace TsdLib.TestSequence
                 string resultsFile = "Results_" + DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".xml";
                 string resultsPath = Path.Combine(resultsFolder, resultsFile);
                 using (Stream s2 = File.Create(resultsPath))
-                    xs.Serialize(s2, Measurements);
+                    xs.Serialize(s2, TestResults);
 
                 Trace.WriteLine("Test sequence completed.");
 
@@ -127,7 +137,7 @@ namespace TsdLib.TestSequence
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex);
+                Trace.WriteLine(ex.ToString());
             }
         }
 
@@ -155,17 +165,9 @@ namespace TsdLib.TestSequence
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
-                _cts.Dispose();
-        }
-
-        private void ConnectToInstruments(params IInstrument[] instruments)
-        {
-            foreach (IInstrument instrument in instruments)
             {
-                Token.ThrowIfCancellationRequested();
-                Measurements.AddMeasurement("Model Number", instrument.ModelNumber, "Identification", "n/a", "n/a");
-                Measurements.AddMeasurement("Serial Number", instrument.SerialNumber, "Identification", "n/a", "n/a");
-                Measurements.AddMeasurement("Firmware Version", instrument.FirmwareVersion, "Identification", "n/a", "n/a");
+                _cts.Dispose();
+                FactoryEvents.Connected -= FactoryEvents_Connected;
             }
         }
     }

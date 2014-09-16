@@ -1,9 +1,14 @@
 
-using System;
-using System.Diagnostics;
 using System.Threading;
 using TestClient.Configuration;
+using TestClient.Instruments;
 using TsdLib.TestSequence;
+
+[assembly: AssemblyReference("System.dll")]
+[assembly: AssemblyReference("System.Xml.dll")]
+[assembly: AssemblyReference("TsdLib.dll")]
+[assembly: AssemblyReference("TestClient.exe")]
+[assembly: AssemblyReference("TestClient.Instruments.dll")]
 
 namespace TestClient.Sequences
 {
@@ -16,10 +21,13 @@ namespace TestClient.Sequences
             //Use the System.Diagnostics.Debugger.Break() method to insert breakpoints.
             //Debugger.Break();
 
-            for (int i = 10; i >= 0; i--)
+            for (int v = 10; v >= 0; v--)
             {
                 Token.ThrowIfCancellationRequested();
-                Measurements.AddMeasurement("name", i, "volts", 5, 10);
+                DummyPowerSupply ps = DummyPowerSupply.Connect();
+                ps.SetVoltage(v);
+                
+                TestResults.AddMeasurement("Current", ps.GetCurrent(), "Amps", 5, 10);
                 Thread.Sleep(1000);
             }
         }
