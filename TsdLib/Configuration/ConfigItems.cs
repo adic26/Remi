@@ -133,52 +133,45 @@ namespace TsdLib.Configuration
         private string _namespace;
 
         /// <summary>
-        /// Gets the namespace defined in the test sequence source code.
+        /// Gets the namespace declared in the test sequence source code.
         /// </summary>
-        public string Namespace
+        /// <returns>The namespace declaration.</returns>
+        public string GetNamespace()
         {
-            get
-            {
-                if (_namespace != null)
-                    return _namespace;
-
-                string namespaceDeclarationLine = TestSequenceSourceCode
-                    .Split('\r', '\n')
-                    .FirstOrDefault(line => line.Trim().StartsWith("namespace"));
-
-                if (namespaceDeclarationLine == null)
-                    throw new TestSequenceException(LocalFile);
-
-                _namespace = namespaceDeclarationLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1];
+            if (_namespace != null)
                 return _namespace;
-            }
+
+            string namespaceDeclarationLine = TestSequenceSourceCode
+                .Split('\r', '\n')
+                .FirstOrDefault(line => line.Trim().StartsWith("namespace"));
+
+            if (namespaceDeclarationLine == null)
+                throw new TestSequenceException(LocalFile);
+
+            _namespace = namespaceDeclarationLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1];
+            return _namespace;
         }
 
-        /// <summary>
-        /// Gets the class name defined in the test sequence source code.
-        /// </summary>
         private string _className;
 
         /// <summary>
-        /// Gets the name of the class defined in the test sequence source code.
+        /// Gets the name of the class declared in the test sequence source code.
         /// </summary>
-        public string ClassName
+        /// <returns>The class name.</returns>
+        public string GetClassName()
         {
-            get
-            {
-                if (_className != null)
-                    return _className;
-
-                string classDeclarationLine = TestSequenceSourceCode
-                    .Split('\r', '\n')
-                    .FirstOrDefault(line => line.Trim().StartsWith("public class"));
-
-                if (classDeclarationLine == null)
-                    throw new TestSequenceException(LocalFile);
-
-                _className = classDeclarationLine.Split(new []{' '}, StringSplitOptions.RemoveEmptyEntries)[2];
+            if (_className != null)
                 return _className;
-            }
+
+            string classDeclarationLine = TestSequenceSourceCode
+                .Split('\r', '\n')
+                .FirstOrDefault(line => line.Trim().StartsWith("public class"));
+
+            if (classDeclarationLine == null)
+                throw new TestSequenceException(LocalFile);
+
+            _className = classDeclarationLine.Split(new []{' '}, StringSplitOptions.RemoveEmptyEntries)[2];
+            return _className;
         }
 
         /// <summary>

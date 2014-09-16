@@ -18,7 +18,7 @@ namespace TsdLib.TestSequence
     /// <typeparam name="TStationConfig">Type of Station Config used in the derived class.</typeparam>
     /// <typeparam name="TProductConfig">Type of Product Config used in the derived class.</typeparam>
     /// <typeparam name="TTestConfig">Type of Test Config used in the derived class.</typeparam>
-    public abstract class TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject
+    public abstract class TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject, IDisposable
         where TStationConfig : StationConfigCommon
         where TProductConfig : ProductConfigCommon
         where TTestConfig : TestConfigCommon

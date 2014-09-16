@@ -39,6 +39,10 @@ namespace TsdLib
             LogException(this);
         }
 
+        /// <summary>
+        /// Gets a string representation of the exception.
+        /// </summary>
+        /// <returns>A string containing the type of exception, message and stack trace.</returns>
         public override sealed string ToString()
         {
             return base.ToString();

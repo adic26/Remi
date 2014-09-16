@@ -6,6 +6,7 @@ namespace TsdLib.TestResults
     /// <summary>
     /// Exception caused by attempting to access a MeasurementParameter that does not exist in the MeasurementParameterCollection.
     /// </summary>
+    [Serializable]
     public class MeasurementParameterException : TsdLibException
     {
         /// <summary>
@@ -28,6 +29,7 @@ namespace TsdLib.TestResults
     /// <summary>
     /// Exception caused by an error serializing or deserializing test results, measurements or headers.
     /// </summary>
+    [Serializable]
     public class SerializationException : TsdLibException
     {
         /// <summary>
