@@ -64,7 +64,7 @@ namespace TsdLib.View
             this.textBox_Status.Multiline = true;
             this.textBox_Status.Name = "textBox_Status";
             this.textBox_Status.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox_Status.Size = new System.Drawing.Size(515, 127);
+            this.textBox_Status.Size = new System.Drawing.Size(804, 127);
             this.textBox_Status.TabIndex = 0;
             // 
             // label_Status
@@ -79,7 +79,7 @@ namespace TsdLib.View
             // label_Measurements
             // 
             this.label_Measurements.AutoSize = true;
-            this.label_Measurements.Location = new System.Drawing.Point(12, 166);
+            this.label_Measurements.Location = new System.Drawing.Point(12, 189);
             this.label_Measurements.Name = "label_Measurements";
             this.label_Measurements.Size = new System.Drawing.Size(76, 13);
             this.label_Measurements.TabIndex = 3;
@@ -87,7 +87,7 @@ namespace TsdLib.View
             // 
             // button_ExecuteTestSequence
             // 
-            this.button_ExecuteTestSequence.Location = new System.Drawing.Point(12, 340);
+            this.button_ExecuteTestSequence.Location = new System.Drawing.Point(636, 31);
             this.button_ExecuteTestSequence.Name = "button_ExecuteTestSequence";
             this.button_ExecuteTestSequence.Size = new System.Drawing.Size(180, 47);
             this.button_ExecuteTestSequence.TabIndex = 5;
@@ -97,7 +97,7 @@ namespace TsdLib.View
             // 
             // button_AbortTestSequence
             // 
-            this.button_AbortTestSequence.Location = new System.Drawing.Point(348, 340);
+            this.button_AbortTestSequence.Location = new System.Drawing.Point(637, 127);
             this.button_AbortTestSequence.Name = "button_AbortTestSequence";
             this.button_AbortTestSequence.Size = new System.Drawing.Size(179, 47);
             this.button_AbortTestSequence.TabIndex = 7;
@@ -107,7 +107,7 @@ namespace TsdLib.View
             // 
             // button_StationConfig
             // 
-            this.button_StationConfig.Location = new System.Drawing.Point(402, 12);
+            this.button_StationConfig.Location = new System.Drawing.Point(195, 31);
             this.button_StationConfig.Name = "button_StationConfig";
             this.button_StationConfig.Size = new System.Drawing.Size(125, 23);
             this.button_StationConfig.TabIndex = 8;
@@ -117,7 +117,7 @@ namespace TsdLib.View
             // 
             // button_ProductConfig
             // 
-            this.button_ProductConfig.Location = new System.Drawing.Point(402, 41);
+            this.button_ProductConfig.Location = new System.Drawing.Point(195, 70);
             this.button_ProductConfig.Name = "button_ProductConfig";
             this.button_ProductConfig.Size = new System.Drawing.Size(125, 23);
             this.button_ProductConfig.TabIndex = 9;
@@ -131,7 +131,7 @@ namespace TsdLib.View
             this.comboBox_StationConfig.FormattingEnabled = true;
             this.comboBox_StationConfig.Location = new System.Drawing.Point(15, 31);
             this.comboBox_StationConfig.Name = "comboBox_StationConfig";
-            this.comboBox_StationConfig.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_StationConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_StationConfig.TabIndex = 11;
             // 
             // comboBox_ProductConfig
@@ -140,7 +140,7 @@ namespace TsdLib.View
             this.comboBox_ProductConfig.FormattingEnabled = true;
             this.comboBox_ProductConfig.Location = new System.Drawing.Point(15, 70);
             this.comboBox_ProductConfig.Name = "comboBox_ProductConfig";
-            this.comboBox_ProductConfig.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_ProductConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_ProductConfig.TabIndex = 12;
             // 
             // label_StationConfig
@@ -174,11 +174,11 @@ namespace TsdLib.View
             this.LowerLimit,
             this.UpperLimit,
             this.Result});
-            this.measurementDataGridView.Location = new System.Drawing.Point(12, 182);
+            this.measurementDataGridView.Location = new System.Drawing.Point(12, 205);
             this.measurementDataGridView.Name = "measurementDataGridView";
             this.measurementDataGridView.ReadOnly = true;
             this.measurementDataGridView.RowHeadersVisible = false;
-            this.measurementDataGridView.Size = new System.Drawing.Size(515, 136);
+            this.measurementDataGridView.Size = new System.Drawing.Size(804, 197);
             this.measurementDataGridView.TabIndex = 6;
             // 
             // MeasurementName
@@ -225,7 +225,7 @@ namespace TsdLib.View
             // 
             // button_TestConfig
             // 
-            this.button_TestConfig.Location = new System.Drawing.Point(402, 70);
+            this.button_TestConfig.Location = new System.Drawing.Point(195, 111);
             this.button_TestConfig.Name = "button_TestConfig";
             this.button_TestConfig.Size = new System.Drawing.Size(125, 23);
             this.button_TestConfig.TabIndex = 15;
@@ -248,12 +248,12 @@ namespace TsdLib.View
             this.comboBox_TestConfig.FormattingEnabled = true;
             this.comboBox_TestConfig.Location = new System.Drawing.Point(15, 111);
             this.comboBox_TestConfig.Name = "comboBox_TestConfig";
-            this.comboBox_TestConfig.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_TestConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_TestConfig.TabIndex = 17;
             // 
             // button_SequenceConfig
             // 
-            this.button_SequenceConfig.Location = new System.Drawing.Point(402, 99);
+            this.button_SequenceConfig.Location = new System.Drawing.Point(195, 151);
             this.button_SequenceConfig.Name = "button_SequenceConfig";
             this.button_SequenceConfig.Size = new System.Drawing.Size(125, 23);
             this.button_SequenceConfig.TabIndex = 18;
@@ -265,15 +265,15 @@ namespace TsdLib.View
             // 
             this.comboBox_SequenceConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_SequenceConfig.FormattingEnabled = true;
-            this.comboBox_SequenceConfig.Location = new System.Drawing.Point(217, 132);
+            this.comboBox_SequenceConfig.Location = new System.Drawing.Point(15, 151);
             this.comboBox_SequenceConfig.Name = "comboBox_SequenceConfig";
-            this.comboBox_SequenceConfig.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_SequenceConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_SequenceConfig.TabIndex = 19;
             // 
             // label_SequenceConfig
             // 
             this.label_SequenceConfig.AutoSize = true;
-            this.label_SequenceConfig.Location = new System.Drawing.Point(214, 116);
+            this.label_SequenceConfig.Location = new System.Drawing.Point(12, 135);
             this.label_SequenceConfig.Name = "label_SequenceConfig";
             this.label_SequenceConfig.Size = new System.Drawing.Size(89, 13);
             this.label_SequenceConfig.TabIndex = 20;
@@ -283,7 +283,7 @@ namespace TsdLib.View
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(539, 576);
+            this.ClientSize = new System.Drawing.Size(833, 576);
             this.Controls.Add(this.label_SequenceConfig);
             this.Controls.Add(this.comboBox_SequenceConfig);
             this.Controls.Add(this.button_SequenceConfig);

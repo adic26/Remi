@@ -1,4 +1,6 @@
 
+using System;
+using System.Globalization;
 using System.Threading;
 using TestClient.Configuration;
 using TestClient.Instruments;
@@ -21,13 +23,15 @@ namespace TestClient.Sequences
             //Use the System.Diagnostics.Debugger.Break() method to insert breakpoints.
             //Debugger.Break();
 
+            Random random = new Random();
+            DummyPowerSupply ps = DummyPowerSupply.Connect();
+
             for (int v = 10; v >= 0; v--)
             {
                 Token.ThrowIfCancellationRequested();
-                DummyPowerSupply ps = DummyPowerSupply.Connect();
                 ps.SetVoltage(v);
-                
-                TestResults.AddMeasurement("Current", ps.GetCurrent(), "Amps", 5, 10);
+                ps.DummyConnection.StringToRead = random.NextDouble().ToString(CultureInfo.InvariantCulture);
+                TestResults.AddMeasurement("Current", ps.GetCurrent(), "Amps", 0.1, 0.8);
                 Thread.Sleep(1000);
             }
         }
