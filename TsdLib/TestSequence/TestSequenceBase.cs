@@ -108,7 +108,7 @@ namespace TsdLib.TestSequence
                     "_TestType",
                     "_TestStage",
                     "_BSN",
-                    overallPass ? "Fail" : "Pass",
+                    overallPass ? "Pass" : "Fail",
                     starTime,
                     DateTime.Now,
                     "_AdditionalInfo"
