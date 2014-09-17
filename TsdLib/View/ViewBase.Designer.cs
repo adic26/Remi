@@ -42,6 +42,12 @@ namespace TsdLib.View
             this.comboBox_ProductConfig = new System.Windows.Forms.ComboBox();
             this.label_StationConfig = new System.Windows.Forms.Label();
             this.label_ProductConfig = new System.Windows.Forms.Label();
+            this.button_TestConfig = new System.Windows.Forms.Button();
+            this.label_TestConfig = new System.Windows.Forms.Label();
+            this.comboBox_TestConfig = new System.Windows.Forms.ComboBox();
+            this.button_SequenceConfig = new System.Windows.Forms.Button();
+            this.comboBox_SequenceConfig = new System.Windows.Forms.ComboBox();
+            this.label_SequenceConfig = new System.Windows.Forms.Label();
             this.measurementDataGridView = new TsdLib.View.MeasurementDataGridView();
             this.MeasurementName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MeasuredValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -49,12 +55,6 @@ namespace TsdLib.View
             this.LowerLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UpperLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Result = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.button_TestConfig = new System.Windows.Forms.Button();
-            this.label_TestConfig = new System.Windows.Forms.Label();
-            this.comboBox_TestConfig = new System.Windows.Forms.ComboBox();
-            this.button_SequenceConfig = new System.Windows.Forms.Button();
-            this.comboBox_SequenceConfig = new System.Windows.Forms.ComboBox();
-            this.label_SequenceConfig = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -161,68 +161,6 @@ namespace TsdLib.View
             this.label_ProductConfig.TabIndex = 14;
             this.label_ProductConfig.Text = "Product Config";
             // 
-            // measurementDataGridView
-            // 
-            this.measurementDataGridView.AllowUserToAddRows = false;
-            this.measurementDataGridView.AllowUserToDeleteRows = false;
-            this.measurementDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.measurementDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.measurementDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.MeasurementName,
-            this.MeasuredValue,
-            this.Units,
-            this.LowerLimit,
-            this.UpperLimit,
-            this.Result});
-            this.measurementDataGridView.Location = new System.Drawing.Point(12, 205);
-            this.measurementDataGridView.Name = "measurementDataGridView";
-            this.measurementDataGridView.ReadOnly = true;
-            this.measurementDataGridView.RowHeadersVisible = false;
-            this.measurementDataGridView.Size = new System.Drawing.Size(804, 197);
-            this.measurementDataGridView.TabIndex = 6;
-            // 
-            // MeasurementName
-            // 
-            this.MeasurementName.HeaderText = "MeasurementName";
-            this.MeasurementName.Name = "MeasurementName";
-            this.MeasurementName.ReadOnly = true;
-            this.MeasurementName.Width = 124;
-            // 
-            // MeasuredValue
-            // 
-            this.MeasuredValue.HeaderText = "MeasuredValue";
-            this.MeasuredValue.Name = "MeasuredValue";
-            this.MeasuredValue.ReadOnly = true;
-            this.MeasuredValue.Width = 106;
-            // 
-            // Units
-            // 
-            this.Units.HeaderText = "Units";
-            this.Units.Name = "Units";
-            this.Units.ReadOnly = true;
-            this.Units.Width = 56;
-            // 
-            // LowerLimit
-            // 
-            this.LowerLimit.HeaderText = "LowerLimit";
-            this.LowerLimit.Name = "LowerLimit";
-            this.LowerLimit.ReadOnly = true;
-            this.LowerLimit.Width = 82;
-            // 
-            // UpperLimit
-            // 
-            this.UpperLimit.HeaderText = "UpperLimit";
-            this.UpperLimit.Name = "UpperLimit";
-            this.UpperLimit.ReadOnly = true;
-            this.UpperLimit.Width = 82;
-            // 
-            // Result
-            // 
-            this.Result.HeaderText = "Result";
-            this.Result.Name = "Result";
-            this.Result.ReadOnly = true;
-            this.Result.Width = 62;
-            // 
             // button_TestConfig
             // 
             this.button_TestConfig.Location = new System.Drawing.Point(195, 111);
@@ -279,6 +217,74 @@ namespace TsdLib.View
             this.label_SequenceConfig.TabIndex = 20;
             this.label_SequenceConfig.Text = "Sequence Config";
             // 
+            // measurementDataGridView
+            // 
+            this.measurementDataGridView.AllowUserToAddRows = false;
+            this.measurementDataGridView.AllowUserToDeleteRows = false;
+            this.measurementDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.measurementDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.measurementDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.MeasurementName,
+            this.MeasuredValue,
+            this.Units,
+            this.LowerLimit,
+            this.UpperLimit,
+            this.Result});
+            this.measurementDataGridView.Location = new System.Drawing.Point(12, 205);
+            this.measurementDataGridView.Name = "measurementDataGridView";
+            this.measurementDataGridView.ReadOnly = true;
+            this.measurementDataGridView.RowHeadersVisible = false;
+            this.measurementDataGridView.Size = new System.Drawing.Size(804, 197);
+            this.measurementDataGridView.TabIndex = 6;
+            // 
+            // MeasurementName
+            // 
+            this.MeasurementName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.MeasurementName.FillWeight = 200F;
+            this.MeasurementName.HeaderText = "MeasurementName";
+            this.MeasurementName.Name = "MeasurementName";
+            this.MeasurementName.ReadOnly = true;
+            // 
+            // MeasuredValue
+            // 
+            this.MeasuredValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.MeasuredValue.FillWeight = 300F;
+            this.MeasuredValue.HeaderText = "MeasuredValue";
+            this.MeasuredValue.Name = "MeasuredValue";
+            this.MeasuredValue.ReadOnly = true;
+            // 
+            // Units
+            // 
+            this.Units.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Units.FillWeight = 150F;
+            this.Units.HeaderText = "Units";
+            this.Units.Name = "Units";
+            this.Units.ReadOnly = true;
+            // 
+            // LowerLimit
+            // 
+            this.LowerLimit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.LowerLimit.FillWeight = 200F;
+            this.LowerLimit.HeaderText = "LowerLimit";
+            this.LowerLimit.Name = "LowerLimit";
+            this.LowerLimit.ReadOnly = true;
+            // 
+            // UpperLimit
+            // 
+            this.UpperLimit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.UpperLimit.FillWeight = 200F;
+            this.UpperLimit.HeaderText = "UpperLimit";
+            this.UpperLimit.Name = "UpperLimit";
+            this.UpperLimit.ReadOnly = true;
+            // 
+            // Result
+            // 
+            this.Result.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Result.FillWeight = 150F;
+            this.Result.HeaderText = "Result";
+            this.Result.Name = "Result";
+            this.Result.ReadOnly = true;
+            // 
             // ViewBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -313,12 +319,6 @@ namespace TsdLib.View
 
         #endregion
 
-        private System.Windows.Forms.DataGridViewTextBoxColumn MeasurementName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn MeasuredValue;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Units;
-        private System.Windows.Forms.DataGridViewTextBoxColumn LowerLimit;
-        private System.Windows.Forms.DataGridViewTextBoxColumn UpperLimit;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Result;
         /// <summary>
         /// Textbox to show status updates posted by the Controller or Test Sequence.
         /// </summary>
@@ -379,5 +379,11 @@ namespace TsdLib.View
         /// Sequence Config label.
         /// </summary>
         protected System.Windows.Forms.Label label_SequenceConfig;
+        private System.Windows.Forms.DataGridViewTextBoxColumn MeasurementName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn MeasuredValue;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Units;
+        private System.Windows.Forms.DataGridViewTextBoxColumn LowerLimit;
+        private System.Windows.Forms.DataGridViewTextBoxColumn UpperLimit;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Result;
     }
 }

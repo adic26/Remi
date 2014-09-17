@@ -31,10 +31,25 @@ namespace TsdLib.Configuration
         public ConfigGroup()
         {
             Synchronized(this);
+
             if (ConfigItems == null)
                 ConfigItems = new BindingList<T>();
+
             if (LocalConfigItems == null)
                 LocalConfigItems = new BindingList<T>();
+
+            //Add a local default config if these is no config available
+            if (ConfigItems.Count == 0 && LocalConfigItems.Count == 0)
+            {
+                T newConfig = new T
+                {
+                    Name = "Default" + typeof(T).Name,
+                    RemiSetting = false,
+                };
+
+                LocalConfigItems.Add(newConfig);
+                Save();
+            }
 
             AllConfigItems = new BindingList<T>();
             foreach (T configItem in ConfigItems)

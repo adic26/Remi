@@ -128,10 +128,41 @@ namespace TsdLib.Configuration
         /// <summary>
         /// Gets the absolute path to the source code file.
         /// </summary>
-        public string LocalFile { get; set; }
+        internal string LocalFile { get; set; }
+
+
+        /// <summary>
+        /// The source code containing the step-by-step instructions.
+        /// </summary>
+        [Editor(typeof(MultiLineStringEditor), typeof(UITypeEditor))]
+        [Category("Test Sequence")]
+        public string TestSequenceSourceCode
+        {
+            get
+            {
+                if (!File.Exists(LocalFile))
+                    File.WriteAllText(LocalFile, "//Add test sequence here by subclassing TsdLib.TestSequence.TestSequenceBase");
+                return File.ReadAllText(LocalFile);
+            }
+            set { File.WriteAllText(LocalFile, value); }
+        }
+
+        /// <summary>
+        /// Default constructor required for serialization.
+        /// </summary>
+        public SequenceConfig() { }
+
+        /// <summary>
+        /// Initialize a new SequenceConfig with the specified test sequence source code file.
+        /// </summary>
+        /// <param name="localFile">Path to the source code file containing the test sequence execute method.</param>
+        public SequenceConfig(string localFile)
+            : this()
+        {
+            LocalFile = localFile;
+        }
 
         private string _namespace;
-
         /// <summary>
         /// Gets the namespace declared in the test sequence source code.
         /// </summary>
@@ -153,7 +184,6 @@ namespace TsdLib.Configuration
         }
 
         private string _className;
-
         /// <summary>
         /// Gets the name of the class declared in the test sequence source code.
         /// </summary>
@@ -170,24 +200,8 @@ namespace TsdLib.Configuration
             if (classDeclarationLine == null)
                 throw new TestSequenceException(LocalFile);
 
-            _className = classDeclarationLine.Split(new []{' '}, StringSplitOptions.RemoveEmptyEntries)[2];
+            _className = classDeclarationLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[2];
             return _className;
-        }
-
-        /// <summary>
-        /// The source code containing the step-by-step instructions.
-        /// </summary>
-        [Editor(typeof(MultiLineStringEditor), typeof(UITypeEditor))]
-        [Category("Test Sequence")]
-        public string TestSequenceSourceCode
-        {
-            get
-            {
-                if (!File.Exists(LocalFile))
-                    File.WriteAllText(LocalFile, "//Add test sequence here by subclassing TsdLib.TestSequence.TestSequenceBase");
-                return File.ReadAllText(LocalFile);
-            }
-            set { File.WriteAllText(LocalFile, value); }
         }
     }
 }

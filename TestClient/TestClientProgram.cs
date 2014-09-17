@@ -61,11 +61,7 @@ namespace TestClient
                 File.Copy(sourceFilePath, destinationFilePath, true);
                 Trace.WriteLine("Full file name = " + sourceFilePath);
                 Trace.WriteLine("Adding " + sourceFileName);
-                cfgGroup.Add(new SequenceConfig
-                {
-                    LocalFile = destinationFilePath,
-                    RemiSetting = remiSetting
-                });
+                cfgGroup.Add(new SequenceConfig(destinationFilePath) { RemiSetting = remiSetting });
             }
             cfgGroup.Save();
         }
