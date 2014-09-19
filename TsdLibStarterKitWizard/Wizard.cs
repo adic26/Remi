@@ -23,59 +23,61 @@ namespace TsdLibStarterKitWizard
                 DTE dte = automationObject as DTE;
                 Debug.Assert(dte != null, "Wizard.RunStarted error. Could not obtain automation object.");
 
-                string extensionsFolder = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    dte.RegistryRoot.TrimStart(@"Software\".ToCharArray()),
-                    "Extensions");
+                MessageBox.Show(Directory.GetCurrentDirectory(), "Debug - currrent directory");
 
-                string namedDirectory = Path.Combine(extensionsFolder, "BlackBerry", "TsdLibStarterKit");
-                if (Directory.Exists(namedDirectory))
-                    extensionsFolder = namedDirectory;
+                //string extensionsFolder = Path.Combine(
+                //    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                //    dte.RegistryRoot.TrimStart(@"Software\".ToCharArray()),
+                //    "Extensions");
 
-                FileInfo[] contentFiles = new DirectoryInfo(extensionsFolder)
-                    .GetDirectories() //one folder per extension
-                    .OrderBy(d => d.CreationTime).Last() //get the newest directory (most recently installed extension)
-                    .GetDirectories("Dependencies")
-                    .First() //get the embedded folder where the VSIX installer placed the references and content files
-                    .GetFiles();
+                //string namedDirectory = Path.Combine(extensionsFolder, "BlackBerry", "TsdLibStarterKit");
+                //if (Directory.Exists(namedDirectory))
+                //    extensionsFolder = namedDirectory;
 
-                string tsdLibVersion = FileVersionInfo.GetVersionInfo
-                    (
-                        contentFiles
-                        .First(f => f.Name == "TsdLib.dll")
-                        .FullName
-                    ).FileVersion;
+                //FileInfo[] contentFiles = new DirectoryInfo(extensionsFolder)
+                //    .GetDirectories() //one folder per extension
+                //    .OrderBy(d => d.CreationTime).Last() //get the newest directory (most recently installed extension)
+                //    .GetDirectories("Dependencies")
+                //    .First() //get the embedded folder where the VSIX installer placed the references and content files
+                //    .GetFiles();
+
+                //string tsdLibVersion = FileVersionInfo.GetVersionInfo
+                //    (
+                //        contentFiles
+                //        .First(f => f.Name == "TsdLib.dll")
+                //        .FullName
+                //    ).FileVersion;
             
-                string dependencyFolder = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                    "TsdLib",
-                    "Dependencies",
-                    tsdLibVersion);
+                //string dependencyFolder = Path.Combine(
+                //    Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                //    "TsdLib",
+                //    "Dependencies",
+                //    tsdLibVersion);
 
-                GlobalDictionary["$dependencyfolder$"] = dependencyFolder;
+                //GlobalDictionary["$dependencyfolder$"] = dependencyFolder;
 
-                if (!Directory.Exists(dependencyFolder))
-                    Directory.CreateDirectory(dependencyFolder);
-                foreach (FileInfo contentFile in contentFiles)
-                    contentFile.CopyTo(Path.Combine(dependencyFolder, contentFile.Name), true);
+                //if (!Directory.Exists(dependencyFolder))
+                //    Directory.CreateDirectory(dependencyFolder);
+                //foreach (FileInfo contentFile in contentFiles)
+                //    contentFile.CopyTo(Path.Combine(dependencyFolder, contentFile.Name), true);
 
 
-                if (replacementsDictionary.ContainsKey("$wizarddata$"))
-                {
-                    XElement dataElement = XElement.Parse(replacementsDictionary["$wizarddata$"]);
-                    IEnumerable<FileInfo> additionalFiles = dataElement
-                        .Elements()
-                        .Where(e => e.Name.LocalName == "File")
-                        .Select(e => (string)e.Attribute("Path"))
-                        .Select(s => new FileInfo(s));
+                //if (replacementsDictionary.ContainsKey("$wizarddata$"))
+                //{
+                //    XElement dataElement = XElement.Parse(replacementsDictionary["$wizarddata$"]);
+                //    IEnumerable<FileInfo> additionalFiles = dataElement
+                //        .Elements()
+                //        .Where(e => e.Name.LocalName == "File")
+                //        .Select(e => (string)e.Attribute("Path"))
+                //        .Select(s => new FileInfo(s));
 
-                    foreach (FileInfo additionalFile in additionalFiles)
-                        additionalFile.CopyTo(Path.Combine(dependencyFolder, additionalFile.Name), true);
-                }
+                //    foreach (FileInfo additionalFile in additionalFiles)
+                //        additionalFile.CopyTo(Path.Combine(dependencyFolder, additionalFile.Name), true);
+                //}
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), ex.GetType().Name);
+                MessageBox.Show(ex.ToString(), "Wizard Exception: " + ex.GetType().Name);
                 throw;
             }
         }

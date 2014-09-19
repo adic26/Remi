@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="TsdLibStarterKitInstaller.BlackBerry.4777abe4-e85b-45bf-9c25-b914caeb31d6" Version="1.0" Language="en-US" Publisher="BlackBerry" />
-    <DisplayName>TsdLibStarterKitInstaller</DisplayName>
+    <Identity Id="e94fdc79-ac93-43d3-8333-b2c8ddf8e252" Version="1.0" Language="en-US" Publisher="BlackBerry" />
+    <DisplayName>TsdLibStarterKit2</DisplayName>
     <Description>Empty VSIX Project.</Description>
   </Metadata>
   <Installation>
@@ -11,7 +11,4 @@
   <Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="4.5" />
   </Dependencies>
-  <Assets>
-    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="TsdLibStarterKit" d:TargetPath="|TsdLibStarterKit;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
-  </Assets>
 </PackageManifest>

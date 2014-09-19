@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>TsdLibStarterKit2</Name>
+    <Description>TsdLibStarterKit2</Description>
+    <Icon>TsdLibStarterKit2.ico</Icon>
+    <ProjectType>CSharp</ProjectType>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <SortOrder>1000</SortOrder>
+    <TemplateID>9297abf3-d270-4fc1-8a6f-f90d79ad3c2f</TemplateID>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>TsdLibStarterKit2</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+  </TemplateData>
+  <TemplateContent>
+    <Project TargetFileName="$safeprojectname$.csproj" File="TestClient\TestClient.csproj" ReplaceParameters="true">
+      <ProjectItem ReplaceParameters="true" TargetFileName="App.config">TestClient\App.config</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="Controller.cs">TestClient\Controller.cs</ProjectItem>
+      <Folder Name="TestClient\Properties" TargetFolderName="Properties">
+        <ProjectItem ReplaceParameters="true" TargetFileName="AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
+      </Folder>
+      <Folder Name="TestClient\Configuration" TargetFolderName="Configuration">
+        <ProjectItem ReplaceParameters="true" TargetFileName="ProductConfig.cs">ProductConfig.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="StationConfig.cs">StationConfig.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="TestConfig.cs">TestConfig.cs</ProjectItem>
+      </Folder>
+      <Folder Name="TestClient\Sequences" TargetFolderName="Sequences">
+        <ProjectItem ReplaceParameters="true" TargetFileName="DefaultSequence.cs">DefaultSequence.cs</ProjectItem>
+      </Folder>
+      <ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$Program.cs">TestClient\TestClientProgram.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="View.cs">TestClient\View.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="View.Designer.cs">TestClient\View.Designer.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="View.resx">TestClient\View.resx</ProjectItem>
+    </Project>
+  </TemplateContent>
+</VSTemplate>

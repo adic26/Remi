@@ -10,11 +10,11 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <ProjectGuid>{923CAB77-E583-406A-93B0-987D3AE10F74}</ProjectGuid>
+    <ProjectGuid>dd9be51d-c3ac-4808-aafa-cfd5ddb5144b</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TsdLibStarterKit</RootNamespace>
-    <AssemblyName>TsdLibStarterKit</AssemblyName>
+    <RootNamespace>ProjectTemplate1</RootNamespace>
+    <AssemblyName>ProjectTemplate1</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
@@ -56,32 +56,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <VSTemplate Include="TsdLibStarterKit.vstemplate" />
-    <Content Include="View.Designer.cs">
-      <DependentUpon>View.cs</DependentUpon>
-    </Content>
-    <Content Include="View.cs" />
-    <Content Include="TestClientProgram.cs" />
-    <Content Include="Sequences\DefaultSequence.cs" />
-    <Content Include="Instruments\Instruments.cs" />
-    <Content Include="Controller.cs" />
-    <Content Include="Configuration\TestConfig.cs" />
-    <Content Include="Configuration\StationConfig.cs" />
-    <Content Include="Configuration\ProductConfig.cs" />
-    <Content Include="Instruments\DummyPowerSupply.xml" />
-    <Content Include="TestClient.csproj">
-      <SubType>Designer</SubType>
-    </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AssemblyInfo.cs" />
-    <Content Include="App.config" />
-    <None Include="TsdLibStarterKit.ico" />
+    <None Include="AssemblyInfo.cs" />
+    <None Include="Class1.cs" />
+    <None Include="ProjectTemplate.csproj" />
+    <None Include="ProjectTemplate1.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="View.resx">
-      <DependentUpon>View.cs</DependentUpon>
-    </Content>
+    <VSTemplate Include="ProjectTemplate1.vstemplate" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

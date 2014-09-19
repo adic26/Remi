@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TsdLibStarterKitInstaller")]
+[assembly: AssemblyTitle("ProjectTemplate1")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TsdLibStarterKitInstaller")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCompany("BlackBerry")]
+[assembly: AssemblyProduct("ProjectTemplate1")]
+[assembly: AssemblyCopyright("Copyright © BlackBerry 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -18,6 +18,9 @@ using System.Runtime.InteropServices;
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
+
+// The following GUID is for the ID of the typelib if this project is exposed to COM
+[assembly: Guid("dd9be51d-c3ac-4808-aafa-cfd5ddb5144b")]
 
 // Version information for an assembly consists of the following four values:
 //
