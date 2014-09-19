@@ -31,4 +31,8 @@
       <ProjectItem ReplaceParameters="true" TargetFileName="View.resx">View.resx</ProjectItem>
     </Project>
   </TemplateContent>
+  <WizardExtension>
+    <Assembly>TsdLibStarterKitInstaller, Version=1.0.0.0, Culture=Neutral, PublicKeyToken=null</Assembly>
+    <FullClassName>TsdLibStarterKitInstaller.Wizard</FullClassName>
+  </WizardExtension>
 </VSTemplate>

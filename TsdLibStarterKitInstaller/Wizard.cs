@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
-using System.Xml.Linq;
 using Microsoft.VisualStudio.TemplateWizard;
 using EnvDTE;
 
-namespace TsdLibStarterKitWizard
+namespace TsdLibStarterKitInstaller
 {
     public class Wizard : IWizard
     {
@@ -23,7 +21,7 @@ namespace TsdLibStarterKitWizard
                 DTE dte = automationObject as DTE;
                 Debug.Assert(dte != null, "Wizard.RunStarted error. Could not obtain automation object.");
 
-                MessageBox.Show(Directory.GetCurrentDirectory(), "Debug - currrent directory");
+                MessageBox.Show(Directory.GetCurrentDirectory(), "NEW WIZARD");
 
                 //string extensionsFolder = Path.Combine(
                 //    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
