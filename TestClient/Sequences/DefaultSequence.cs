@@ -10,7 +10,6 @@ using TsdLib.TestSequence;
 [assembly: AssemblyReference("System.Xml.dll")]
 [assembly: AssemblyReference("TsdLib.dll")]
 [assembly: AssemblyReference("TestClient.exe")]
-[assembly: AssemblyReference("TestClient.Instruments.dll")]
 
 namespace TestClient.Sequences
 {

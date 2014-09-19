@@ -11,10 +11,10 @@ namespace TsdLib
     [Serializable]
     public abstract class TsdLibException : Exception
     {
-        static void LogException(TsdLibException ex)
+        static void LogException(TsdLibException ex, string additional = "")
         {
             using (StreamWriter stream = new StreamWriter(ex.LogFile, false))
-                stream.WriteLine(ex);
+                stream.WriteLine(ex + additional);
         }
 
         private string _logFile;
@@ -23,8 +23,7 @@ namespace TsdLib
         /// </summary>
         public string LogFile
         {
-            get { return _logFile ?? Path.Combine(SpecialFolders.Logs, DateTime.Now.ToString("MMM_dd_yyyy_HH-mm-ss") + ".txt"); }
-            set { _logFile = value; }
+            get { return _logFile ?? (_logFile = Path.Combine(SpecialFolders.Logs, DateTime.Now.ToString("MMM_dd_yyyy_HH-mm-ss") + ".txt")); }
         }
 
         /// <summary>
@@ -35,8 +34,19 @@ namespace TsdLib
         protected TsdLibException(string message, Exception inner = null)
             : base(message, inner)
         {
-            Trace.WriteLine(ToString());
-            LogException(this);
+            string stackTrace = new StackTrace(2, true).ToString();
+            string stackFrame = stackTrace.Split('\n')[0];
+
+            Trace.WriteLine(this + stackFrame);
+            LogException(this, stackTrace);
+        }
+
+        /// <summary>
+        /// Gets a link to the database help content for this exception.
+        /// </summary>
+        public override string HelpLink
+        {
+            get { return "http://www.google.com/search?q=" + GetType().Name; }
         }
 
         /// <summary>

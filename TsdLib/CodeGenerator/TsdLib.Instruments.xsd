@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="Instrument"
-    targetNamespace="TsdLib.Instrument.xsd"
+    targetNamespace="TsdLib.Instruments.xsd"
     elementFormDefault="qualified"
-    xmlns="TsdLib.Instrument.xsd"
+    xmlns="TsdLib.Instruments.xsd"
     xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
   <xs:simpleType name="ConnectionTypes">
@@ -37,51 +37,60 @@
   
   <xs:annotation>
     <xs:appinfo>TsdLib Instrument Schema</xs:appinfo>
-    <xs:documentation xml:lang="en">Schema for defining 1st-order element XML definitions in the TsdLib Framework.</xs:documentation>
+    <xs:documentation xml:lang="en">Schema for defining 1st-order instrument XML definitions in the TsdLib Framework.</xs:documentation>
   </xs:annotation>
-  
-  <xs:element name="Instrument">
+
+  <xs:element name="Instruments">
     <xs:annotation>
-      <xs:documentation>Defines a method parameter</xs:documentation>
+      <xs:documentation>Contains one or more Instrument definitions.</xs:documentation>
     </xs:annotation>
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="IdQuery" type="IdQueryElement" minOccurs="1" maxOccurs="1" />
-        <xs:element name="ConnectionSetting" type="ConnectionSettingElement" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element name="ModelNumber" type="InfoElement" minOccurs="1" maxOccurs="1" />
-        <xs:element name="SerialNumber" type="InfoElement" minOccurs="1" maxOccurs="1" />
-        <xs:element name="FirmwareVersion" type="InfoElement" minOccurs="1" maxOccurs="1" />
-        <xs:element name="Command" type="CommandElement" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element name="Query" type="QueryElement" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element name="ByteQuery" type="ByteQueryElement" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="Instrument" type="InstrumentElement" minOccurs="1" maxOccurs="unbounded" />
       </xs:sequence>
-      <xs:attribute name="Name" use="required">
-        <xs:annotation>
-          <xs:documentation>Name of the instrument. Will be used to name the CLR class generated.</xs:documentation>
-        </xs:annotation>
-      </xs:attribute>
-      <xs:attribute name="ConnectionType" type="ConnectionTypes" use="required">
-        <xs:annotation>
-          <xs:documentation>Type of the connection protocol. Must be a CLR type derived from TsdLib.Instrument.ConnectionBase.</xs:documentation>
-        </xs:annotation>
-      </xs:attribute>
-      <xs:attribute name="Interfaces">
-        <xs:annotation>
-          <xs:documentation>Optional: Interfaces that the generated class will implement. Multiple interfaces can be defined using a comma-separated list. Interfaces must be defined in the TsdLib.Instrument namespace.</xs:documentation>
-        </xs:annotation>
-      </xs:attribute>
-      <xs:attribute name="InitCommands">
-        <xs:annotation>
-          <xs:documentation>Optional: Semicolon-separated list of raw string command to send to the instrument on initialization.</xs:documentation>
-        </xs:annotation>
-      </xs:attribute>
-      <xs:attribute name="CommandDelay" type="xs:unsignedInt">
-        <xs:annotation>
-          <xs:documentation>Optional: A delay (in milliseconds) to wait before sending each command.</xs:documentation>
-        </xs:annotation>
-      </xs:attribute>
     </xs:complexType>
   </xs:element>
+
+  <xs:complexType name="InstrumentElement">
+    <xs:annotation>
+      <xs:documentation>Defines an instrument by specifying connection and command details.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="IdQuery" type="IdQueryElement" minOccurs="1" maxOccurs="1" />
+      <xs:element name="ConnectionSetting" type="ConnectionSettingElement" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="ModelNumber" type="InfoElement" minOccurs="1" maxOccurs="1" />
+      <xs:element name="SerialNumber" type="InfoElement" minOccurs="1" maxOccurs="1" />
+      <xs:element name="FirmwareVersion" type="InfoElement" minOccurs="1" maxOccurs="1" />
+      <xs:element name="Command" type="CommandElement" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Query" type="QueryElement" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="ByteQuery" type="ByteQueryElement" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Name" use="required">
+      <xs:annotation>
+        <xs:documentation>Name of the instrument. Will be used to name the CLR class generated.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="ConnectionType" type="ConnectionTypes" use="required">
+      <xs:annotation>
+        <xs:documentation>Type of the connection protocol. Must be a CLR type derived from TsdLib.Instrument.ConnectionBase.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="Interfaces">
+      <xs:annotation>
+        <xs:documentation>Optional: Interfaces that the generated class will implement. Multiple interfaces can be defined using a comma-separated list. Interfaces must be defined in the TsdLib.Instrument namespace.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="InitCommands">
+      <xs:annotation>
+        <xs:documentation>Optional: Semicolon-separated list of raw string command to send to the instrument on initialization.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="CommandDelay" type="xs:unsignedInt">
+      <xs:annotation>
+        <xs:documentation>Optional: A delay (in milliseconds) to wait before sending each command.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
 
   <xs:complexType name="ConnectionSettingElement">
     <xs:annotation>

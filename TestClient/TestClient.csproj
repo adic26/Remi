@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Controller.cs" />
     <Compile Include="Configuration\ProductConfig.cs" />
+    <Compile Include="Instruments\Instruments.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\StationConfig.cs" />
     <Compile Include="TestClientProgram.cs" />
@@ -60,10 +61,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TestClient.Instruments\TestClient.Instruments.csproj">
-      <Project>{3B4E18DB-0495-4C9F-A283-5EADA3C4FB17}</Project>
-      <Name>TestClient.Instruments</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TsdLib\TsdLib.csproj">
       <Project>{da39d49a-e06e-4cd9-b2a2-326057bdc41d}</Project>
       <Name>TsdLib</Name>
@@ -74,11 +71,16 @@
       <DependentUpon>View.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Instruments\DummyPowerSupply.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>$(TargetPath) -seq $(ProjectDir)Sequences $(TargetDir)Sequences true
 </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>$(SolutionDir)TsdLib.CodeGeneratorApp\bin\$(ConfigurationName)\TsdLib.CodeGeneratorApp.exe $(ProjectName) $(ProjectDir)Instruments $(SolutionDir)TsdLib\bin\$(ConfigurationName)\CodeGenerator\TsdLib.Instruments.xsd $(ProjectDir)Instruments Instruments CSharp</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

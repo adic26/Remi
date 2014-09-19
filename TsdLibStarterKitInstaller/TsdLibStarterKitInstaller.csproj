@@ -50,14 +50,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TsdLib.CodeGeneratorApplication\TsdLib.CodeGeneratorApplication.csproj">
-      <Project>{B12037D0-EDD5-41A2-A68D-D2170EAFFCB0}</Project>
-      <Name>TsdLib.CodeGeneratorApplication</Name>
-      <VSIXSubPath>Dependencies</VSIXSubPath>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bDebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\TsdLibStarterKitWizard\TsdLibStarterKitWizard.csproj">
       <Project>{A550D36E-2DAC-4768-9F2A-1CAE145C1CB2}</Project>
       <Name>TsdLibStarterKitWizard</Name>

@@ -41,8 +41,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeGenerator\CodeGenerator.cs" />
+    <Compile Include="CodeGenerator\Generator.cs" />
     <Compile Include="CodeGenerator\CodeGeneratorException.cs" />
+    <Compile Include="CodeGenerator\Enums.cs" />
     <Compile Include="Instrument\InstrumentAttributes.cs" />
     <Compile Include="TestResults\MeasurementEventArgs.cs" />
     <Compile Include="TestResults\MeasurementParameter.cs" />
@@ -105,6 +106,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="CodeGenerator\TsdLib.Instruments.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestResults\ResultFile.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

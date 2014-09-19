@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3B4E18DB-0495-4C9F-A283-5EADA3C4FB17}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{14C1FCCF-BAD1-4143-8FA3-303500C5B16A}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>$safeprojectname$</RootNamespace>
-    <AssemblyName>$safeprojectname$</AssemblyName>
+    <RootNamespace>TsdLib.CodeGeneratorApp</RootNamespace>
+    <AssemblyName>TsdLib.CodeGeneratorApp</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,26 +34,26 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="TsdLib">
-      <HintPath>$dependencyfolder$\TsdLib.dll</HintPath>
-    </Reference>
-    <Reference Include="TsdLib.CodeGeneratorApplication">
-      <HintPath>$dependencyfolder$\TsdLib.CodeGeneratorApplication.exe</HintPath>
-    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Instruments.cs" />
+    <Compile Include="CodeGeneratorAppProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="MyInstrument.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TsdLib\TsdLib.csproj">
+      <Project>{da39d49a-e06e-4cd9-b2a2-326057bdc41d}</Project>
+      <Name>TsdLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>$dependencyfolder$\TsdLib.CodeGeneratorApplication.exe Instruments Source $(ProjectPath) $(ProjectDir) $(ProjectName) CSharp $dependencyfolder$\TsdLib.Instrument.xsd"</PreBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -8,10 +8,9 @@ using System.Xml.Linq;
 using Microsoft.VisualStudio.TemplateWizard;
 using EnvDTE;
 
-
 namespace TsdLibStarterKitWizard
 {
-    public class SolutionWizard : IWizard
+    public class Wizard : IWizard
     {
         public static Dictionary<string, string> GlobalDictionary = new Dictionary<string, string>();
 
@@ -22,7 +21,7 @@ namespace TsdLibStarterKitWizard
                 GlobalDictionary["$rootnamespace$"] = replacementsDictionary["$safeprojectname$"];
 
                 DTE dte = automationObject as DTE;
-                Debug.Assert(dte != null, "SolutionWizard.RunStarted error. Could not obtain automation object.");
+                Debug.Assert(dte != null, "Wizard.RunStarted error. Could not obtain automation object.");
 
                 string extensionsFolder = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -86,41 +85,6 @@ namespace TsdLibStarterKitWizard
         public void RunFinished() { }
 
         public void ProjectFinishedGenerating(Project project) { }
-
-        #endregion
-
-        #region Not valid for Projects
-
-        public void BeforeOpeningFile(ProjectItem projectItem) { }
-
-        public void ProjectItemFinishedGenerating(ProjectItem projectItem) { }
-
-        public bool ShouldAddProjectItem(string filePath) { return true; }
-
-        #endregion
-    }
-
-    public class ProjectWizard : IWizard
-    {
-        public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
-        {
-            try
-            {
-                replacementsDictionary.Add("$rootnamespace$", SolutionWizard.GlobalDictionary["$rootnamespace$"]);
-                replacementsDictionary.Add("$dependencyfolder$", SolutionWizard.GlobalDictionary["$dependencyfolder$"]);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString(), ex.GetType().Name);
-                throw;
-            }
-        }
-
-        #region Not Implemented
-
-        public void ProjectFinishedGenerating(Project project) { }
-        
-        public void RunFinished() {}
 
         #endregion
 

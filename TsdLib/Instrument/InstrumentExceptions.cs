@@ -5,8 +5,12 @@ namespace TsdLib.Instrument
     /// <summary>
     /// Exception due to an error finding or connecting to instruments of a specified type on a specified connection type.
     /// </summary>
+    /// <typeparam name="TInstrument">Type of instrument.</typeparam>
+    /// <typeparam name="TConnection">Type of connection.</typeparam>
     [Serializable]
     public class ConnectException<TInstrument, TConnection> : TsdLibException
+        where TConnection : ConnectionBase
+        where TInstrument : InstrumentBase<TConnection>
     {
         /// <summary>
         /// Initialize a new InstrumentFinderException.

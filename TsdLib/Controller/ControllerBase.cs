@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using TsdLib.CodeGenerator;
 using TsdLib.Configuration;
 using TsdLib.Proxies;
 using TsdLib.TestSequence;
@@ -10,7 +12,7 @@ using TsdLib.View;
 using TsdLib.TestResults;
 
 namespace TsdLib.Controller
-{
+{//TODO: add string properties for application name and version - add to constructor
     /// <summary>
     /// Contains base functionality for the system controller.
     /// </summary>
@@ -27,7 +29,6 @@ namespace TsdLib.Controller
         #region Private Fields
 
         private readonly bool _devMode;
-
         private CancellationTokenSource _tokenSource;
 
         #endregion
@@ -38,6 +39,10 @@ namespace TsdLib.Controller
         /// Gets a reference to the user interface.
         /// </summary>
         public IView View { get; private set; }
+        /// <summary>
+        /// Gets the name of the client application. Also used as the client's namespace.
+        /// </summary>
+        public string ApplicationName { get; private set; }
 
         #endregion
 
@@ -47,9 +52,11 @@ namespace TsdLib.Controller
         /// Initialize a new system controller.
         /// </summary>
         /// <param name="devMode">True to enable Developer Mode - config can be modified but results are stored in the Analysis category.</param>
-        protected ControllerBase(bool devMode)
+        /// <param name="applicationName">Name of the client application.</param>
+        protected ControllerBase(bool devMode, string applicationName)
         {
             _devMode = devMode;
+            ApplicationName = applicationName;
 
             //TODO: if _devMode, do not pull from Remi??
 
@@ -117,7 +124,12 @@ namespace TsdLib.Controller
                 {
                     _tokenSource = new CancellationTokenSource();
 
-                    sequenceAssembly = CodeGenerator.CodeGenerator.GenerateTestSequenceFromFile(sequenceConfig.LocalFile);
+                    sequenceAssembly = Generator.GenerateDynamicAssembly(
+                        ApplicationName,
+                        new[] { @"C:\Users\jmckee\Source\Repos\TsdLib\TestClient\Instruments\DummyPowerSupply.xml" },
+                        @"CodeGenerator\TsdLib.Instruments.xsd",
+                        sequenceConfig.LocalFile,
+                        Language.CSharp);
 
                     sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
 
@@ -137,12 +149,12 @@ namespace TsdLib.Controller
                     sequence.ExecuteSequence(stationConfig, productConfig, testConfig);
                 });
 
-                View.SetState(State.ReadyToTest);
-
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex);
+                var result = MessageBox.Show("Error details:" + Environment.NewLine + ex.Message + Environment.NewLine + "Would you like to view help for this error?", ex.GetType().Name, MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                    Process.Start(ex.HelpLink);
             }
             finally
             {
@@ -162,6 +174,7 @@ namespace TsdLib.Controller
                     if (File.Exists(sequenceTmp))
                         File.Delete(sequenceTmp);
                 }
+                View.SetState(State.ReadyToTest);
             }
         }
 
@@ -170,7 +183,6 @@ namespace TsdLib.Controller
             Measurement measurement = e.Measurement;
             View.AddMeasurement(measurement);
         }
-
 
         void _view_AbortTestSequence(object sender, EventArgs e)
         {
