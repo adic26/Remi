@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.TemplateWizard;
 using EnvDTE;
 
-namespace TsdLibStarterKitInstaller
+namespace TsdLibStarterKitWizard
 {
     public class Wizard : IWizard
     {
         public static Dictionary<string, string> GlobalDictionary = new Dictionary<string, string>();
-        private DTE _dte;
 
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
         {
@@ -20,15 +18,8 @@ namespace TsdLibStarterKitInstaller
             {
                 GlobalDictionary["$rootnamespace$"] = replacementsDictionary["$safeprojectname$"];
 
-                _dte = automationObject as DTE;
-                Debug.Assert(_dte != null, "Wizard.RunStarted error. Could not obtain automation object.");
-
-                string fileName = "";
-                string destination = "";
-                string projectName = "";
-
-                
-
+                DTE dte = automationObject as DTE;
+                Debug.Assert(dte != null, "Wizard.RunStarted error. Could not obtain automation object.");
 
                 MessageBox.Show(Directory.GetCurrentDirectory(), "NEW WIZARD");
 
@@ -93,10 +84,7 @@ namespace TsdLibStarterKitInstaller
 
         public void RunFinished() { }
 
-        public void ProjectFinishedGenerating(Project project)
-        {
-            
-        }
+        public void ProjectFinishedGenerating(Project project) { }
 
         #endregion
 
