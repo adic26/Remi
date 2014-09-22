@@ -108,6 +108,7 @@
   <ItemGroup>
     <None Include="CodeGenerator\TsdLib.Instruments.xsd">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TestResults\ResultFile.xsd">
       <SubType>Designer</SubType>

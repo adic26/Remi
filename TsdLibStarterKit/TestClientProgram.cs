@@ -20,7 +20,7 @@ namespace $safeprojectname$
 
             if (args.Contains("-seq"))
             {
-                Trace.WriteLine("Pushing TestConfig to Remi");
+                Trace.WriteLine("Updating Remi Sequence Config");
                 List<string> argsList = args.ToList();
                 UpdateTestConfig(argsList[argsList.IndexOf("-seq") + 1], argsList[argsList.IndexOf("-seq") + 2], bool.Parse(argsList[argsList.IndexOf("-seq") + 3]));
                 return;
@@ -36,8 +36,6 @@ namespace $safeprojectname$
             if (c.View is Form)
                 Application.Run(c.View as Form);
 
-            //TODO: figure out how to launch non-form view
-
             Console.WriteLine("Done");
         }
 
@@ -48,7 +46,7 @@ namespace $safeprojectname$
 
             IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetConfigGroup();
 
-            Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects", cfgGroup.Count()));
+            Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects in Remi", cfgGroup.Count()));
 
             foreach (string sourceFilePath in Directory.EnumerateFiles(sourceFolder))
             {
@@ -59,13 +57,7 @@ namespace $safeprojectname$
                 string destinationFilePath = Path.Combine(destinationFolder, sourceFileName);
 
                 File.Copy(sourceFilePath, destinationFilePath, true);
-                Trace.WriteLine("Full file name = " + sourceFilePath);
-                Trace.WriteLine("Adding " + sourceFileName);
-                cfgGroup.Add(new SequenceConfig
-                {
-                    LocalFile = destinationFilePath,
-                    RemiSetting = remiSetting
-                });
+                cfgGroup.Add(new SequenceConfig(destinationFilePath) { RemiSetting = remiSetting });
             }
             cfgGroup.Save();
         }

@@ -20,7 +20,7 @@ namespace TestClient
 
             if (args.Contains("-seq"))
             {
-                Trace.WriteLine("Pushing TestConfig to Remi");
+                Trace.WriteLine("Updating Remi Sequence Config");
                 List<string> argsList = args.ToList();
                 UpdateTestConfig(argsList[argsList.IndexOf("-seq") + 1], argsList[argsList.IndexOf("-seq") + 2], bool.Parse(argsList[argsList.IndexOf("-seq") + 3]));
                 return;
@@ -48,7 +48,7 @@ namespace TestClient
 
             IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetConfigGroup();
 
-            Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects", cfgGroup.Count()));
+            Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects in Remi", cfgGroup.Count()));
 
             foreach (string sourceFilePath in Directory.EnumerateFiles(sourceFolder))
             {
@@ -59,8 +59,6 @@ namespace TestClient
                 string destinationFilePath = Path.Combine(destinationFolder, sourceFileName);
 
                 File.Copy(sourceFilePath, destinationFilePath, true);
-                Trace.WriteLine("Full file name = " + sourceFilePath);
-                Trace.WriteLine("Adding " + sourceFileName);
                 cfgGroup.Add(new SequenceConfig(destinationFilePath) { RemiSetting = remiSetting });
             }
             cfgGroup.Save();

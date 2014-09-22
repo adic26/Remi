@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using Microsoft.VisualStudio.TemplateWizard;
 using EnvDTE;
 
@@ -11,26 +11,34 @@ namespace TsdLibStarterKitInstaller
 {
     public class Wizard : IWizard
     {
-        public static Dictionary<string, string> GlobalDictionary = new Dictionary<string, string>();
-        private DTE _dte;
-
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
         {
             try
             {
-                GlobalDictionary["$rootnamespace$"] = replacementsDictionary["$safeprojectname$"];
+                //TODO: read version from atom
+                string sourceBasePath = replacementsDictionary["$wizarddata$"];
 
-                _dte = automationObject as DTE;
-                Debug.Assert(_dte != null, "Wizard.RunStarted error. Could not obtain automation object.");
-
-                string fileName = "";
-                string destination = "";
-                string projectName = "";
-
+                XDocument manifestDoc = XDocument.Load(Path.Combine(sourceBasePath, "extension.vsixmanifest"));
                 
+                XNamespace ns = "http://schemas.microsoft.com/developer/vsx-schema/2011";
 
+                string version = manifestDoc.Root.Element(ns + "Metadata").Element(ns + "Identity").Attribute("Version").Value;
 
-                MessageBox.Show(Directory.GetCurrentDirectory(), "NEW WIZARD");
+                string sourcePath = Path.Combine(sourceBasePath, version);
+
+                string destinationPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "TsdLib", "Assemblies", version);
+                if (!Directory.Exists(destinationPath))
+                    Directory.CreateDirectory(destinationPath);
+
+                replacementsDictionary["$assemblyfolder$"] = destinationPath;
+
+                foreach (string file in Directory.GetFiles(sourcePath))
+                    if (file != null)
+                    {
+                        string destinationFile = Path.Combine(destinationPath, Path.GetFileName(file));
+                        if (!File.Exists(destinationFile))
+                            File.Copy(file, destinationFile);
+                    }
 
                 //string extensionsFolder = Path.Combine(
                 //    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -54,7 +62,7 @@ namespace TsdLibStarterKitInstaller
                 //        .First(f => f.Name == "TsdLib.dll")
                 //        .FullName
                 //    ).FileVersion;
-            
+
                 //string dependencyFolder = Path.Combine(
                 //    Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 //    "TsdLib",
@@ -95,7 +103,23 @@ namespace TsdLibStarterKitInstaller
 
         public void ProjectFinishedGenerating(Project project)
         {
-            
+            //var vsproject = project.Object as VSLangProj.VSProject;
+
+            //foreach (VSLangProj.Reference reference in vsproject.References)
+            //{
+            //    if (reference.SourceProject == null)
+            //    {
+            //        // This is an assembly reference
+            //        var fullName = GetFullName(reference);
+            //        var assemblyName = new AssemblyName(fullName);
+            //        //yield return assemblyName;
+            //    }
+            //    //else
+            //    //{
+            //    //    // This is a project reference
+            //    //}
+            //}
+
         }
 
         #endregion
@@ -110,4 +134,5 @@ namespace TsdLibStarterKitInstaller
 
         #endregion
     }
+ 
 }

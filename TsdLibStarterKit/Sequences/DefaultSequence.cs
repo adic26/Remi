@@ -1,4 +1,6 @@
 
+using System;
+using System.Globalization;
 using System.Threading;
 using $safeprojectname$.Configuration;
 using $safeprojectname$.Instruments;

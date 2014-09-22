@@ -25,6 +25,10 @@
       <Folder Name="Sequences" TargetFolderName="Sequences">
         <ProjectItem ReplaceParameters="true" TargetFileName="DefaultSequence.cs">DefaultSequence.cs</ProjectItem>
       </Folder>
+      <Folder Name="Instruments" TargetFolderName="Instruments">
+        <ProjectItem ReplaceParameters="true" TargetFileName="DummyPowerSupply.xml">DummyPowerSupply.xml</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="Instruments.cs">Instruments.cs</ProjectItem>
+      </Folder>
       <ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$Program.cs">TestClientProgram.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="View.cs">View.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="View.Designer.cs">View.Designer.cs</ProjectItem>
@@ -35,4 +39,5 @@
     <Assembly>TsdLibStarterKitInstaller, Version=1.0.0.0, Culture=Neutral, PublicKeyToken=null</Assembly>
     <FullClassName>TsdLibStarterKitInstaller.Wizard</FullClassName>
   </WizardExtension>
+  <WizardData>\\fsg52ykf\ReliabilityTSD\TsdLib</WizardData>
 </VSTemplate>

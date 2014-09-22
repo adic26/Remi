@@ -42,7 +42,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="TsdLib">
-      <HintPath>$dependencyfolder$\TsdLib.dll</HintPath> <!--TODO: install into GAC in Wizard and use string name here-->
+      <HintPath>$assemblyfolder$\TsdLib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +51,7 @@
     <Compile Include="Configuration\StationConfig.cs" />
     <Compile Include="Configuration\TestConfig.cs" />
     <Compile Include="Sequences\DefaultSequence.cs" />
+    <Compile Include="Instruments\Instruments.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="$safeprojectname$Program.cs" />
     <Compile Include="View.cs">
@@ -68,9 +69,12 @@
       <DependentUpon>View.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Instruments\DummyPowerSupply.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>$(SolutionDir)TsdLib.CodeGeneratorApp\bin\$(ConfigurationName)\TsdLib.CodeGeneratorApp.exe $(ProjectName) $(ProjectDir)Instruments $(SolutionDir)TsdLib\bin\$(ConfigurationName)\CodeGenerator\TsdLib.Instruments.xsd $(ProjectDir)Instruments Instruments CSharp</PreBuildEvent>
+    <PreBuildEvent>$assemblyfolder$\TsdLib.CodeGeneratorApp.exe $(ProjectName) $(ProjectDir)Instruments $assemblyfolder$\TsdLib.Instruments.xsd $(ProjectDir)Instruments Instruments CSharp</PreBuildEvent>
     <PostBuildEvent>$(TargetPath) -seq $(ProjectDir)Sequences $(TargetDir)Sequences true</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

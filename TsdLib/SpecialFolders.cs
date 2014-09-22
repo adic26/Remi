@@ -9,6 +9,17 @@ namespace TsdLib
     /// </summary>
     public static class SpecialFolders
     {
+        public static string Assemblies
+        {
+            get
+            {
+                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "TsdLib", "Assemblies");
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+                return path;
+            }
+        }
+
         /// <summary>
         /// Gets the folder where Test Sequence logs are stored.
         /// </summary>

@@ -1,5 +1,5 @@
 ﻿using TsdLib.Controller;
-using $rootnamespace$.Configuration;
+using $safeprojectname$.Configuration;
 
 namespace $safeprojectname$
 {
