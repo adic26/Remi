@@ -9,6 +9,9 @@ namespace TsdLib
     /// </summary>
     public static class SpecialFolders
     {
+        /// <summary>
+        /// Gets the folder where API assemblies are stored.
+        /// </summary>
         public static string Assemblies
         {
             get

@@ -2,7 +2,6 @@
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 namespace TsdLib.Configuration
 {
@@ -40,6 +39,7 @@ namespace TsdLib.Configuration
         public override void Initialize(string name, NameValueCollection values)
         {
             _remiControl = new RemiControlTest(@"C:\temp\RemiSettingsTest");
+            
         }
 
         /// <summary>
@@ -60,8 +60,7 @@ namespace TsdLib.Configuration
                     {
                         string configType = settingProperty.PropertyType.GetGenericArguments()[0].Name;
                         Debug.WriteLine("Pulling " + configType + " from Remi.");
-                        string valueFromRemi = _remiControl.ReadStringFromRemi(Application.ProductName,
-                            Application.ProductVersion, configType + ".xml");
+                        string valueFromRemi = _remiControl.ReadStringFromRemi((string)context["ApplicationName"], (string)context["ApplicationVersion"], configType + ".xml");
 
                         SettingsPropertyValue settingValue = new SettingsPropertyValue(settingProperty)
                         {
@@ -81,7 +80,8 @@ namespace TsdLib.Configuration
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine("Could not pull config from REMI. Using local settings.");
+                    Trace.WriteLine(ex.GetType().Name + ": Could not pull config from REMI. Using local settings.");
+                    Trace.WriteLine("STACK TRACE: " + ex.StackTrace);
                     Trace.WriteLine(ex.Message);
                 }
 
@@ -113,8 +113,7 @@ namespace TsdLib.Configuration
 
                         Debug.WriteLine("Pushing " + configType + " to Remi.");
                         
-                        _remiControl.WriteStringToRemi((string) settingValue.SerializedValue,
-                            Application.ProductName, Application.ProductVersion, configType + ".xml");
+                        _remiControl.WriteStringToRemi((string) settingValue.SerializedValue, (string)context["ApplicationName"], (string)context["ApplicationVersion"], configType + ".xml");
                     }
                 }
                 catch (Exception ex)

@@ -1,4 +1,4 @@
-﻿namespace TsdLibStarterKitWizard
+﻿namespace TsdLibStarterKitInstaller
 {
     partial class UserInputForm
     {

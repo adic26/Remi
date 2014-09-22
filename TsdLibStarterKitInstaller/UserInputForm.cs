@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace TsdLibStarterKitWizard
+namespace TsdLibStarterKitInstaller
 {
     //TODO: add TsdLib.Instrument.* protocol selection
     public partial class UserInputForm : Form

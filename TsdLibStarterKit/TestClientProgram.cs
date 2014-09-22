@@ -44,7 +44,7 @@ namespace $safeprojectname$
             if (!Directory.Exists(destinationFolder))
                 Directory.CreateDirectory(destinationFolder);
 
-            IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetConfigGroup();
+            IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetInstance("TestClient", Application.ProductVersion).GetConfigGroup();
 
             Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects in Remi", cfgGroup.Count()));
 

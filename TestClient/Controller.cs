@@ -1,4 +1,5 @@
-﻿using TestClient.Configuration;
+﻿using System.Windows.Forms;
+using TestClient.Configuration;
 using TsdLib.Controller;
 
 namespace TestClient
@@ -6,6 +7,6 @@ namespace TestClient
     public class Controller : ControllerBase<View, StationConfig, ProductConfig, TestConfig>
     {
         public Controller(bool devMode)
-            : base(devMode, "TestClient") { }
+            : base(devMode, "TestClient", Application.ProductVersion) { }
     }
 }

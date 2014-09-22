@@ -31,6 +31,11 @@ namespace TsdLib.Controller
         private readonly bool _devMode;
         private CancellationTokenSource _tokenSource;
 
+        private readonly ConfigManager<TStationConfig> _stationConfigManager;
+        private readonly ConfigManager<TProductConfig> _productConfigManager;
+        private readonly ConfigManager<TTestConfig> _testConfigManager;
+        private readonly ConfigManager<SequenceConfig> _sequenceConfigManager;
+
         #endregion
 
         #region Public Properties
@@ -43,30 +48,43 @@ namespace TsdLib.Controller
         /// Gets the name of the client application. Also used as the client's namespace.
         /// </summary>
         public string ApplicationName { get; private set; }
+        /// <summary>
+        /// Gets the client application version.
+        /// </summary>
+        public string ApplicationVersion { get; private set; }
 
         #endregion
 
         #region Constructor
+
+
 
         /// <summary>
         /// Initialize a new system controller.
         /// </summary>
         /// <param name="devMode">True to enable Developer Mode - config can be modified but results are stored in the Analysis category.</param>
         /// <param name="applicationName">Name of the client application.</param>
-        protected ControllerBase(bool devMode, string applicationName)
+        /// <param name="applicationVersion">Version of the client application.</param>
+        protected ControllerBase(bool devMode, string applicationName, string applicationVersion)
         {
             _devMode = devMode;
             ApplicationName = applicationName;
+            ApplicationVersion = applicationVersion;
 
             //TODO: if _devMode, do not pull from Remi??
+
+            _stationConfigManager = ConfigManager<TStationConfig>.GetInstance(applicationName, applicationVersion);
+            _productConfigManager = ConfigManager<TProductConfig>.GetInstance(applicationName, applicationVersion);
+            _testConfigManager = ConfigManager<TTestConfig>.GetInstance(applicationName, applicationVersion);
+            _sequenceConfigManager = ConfigManager<SequenceConfig>.GetInstance(applicationName, applicationVersion);
 
             //set up view
             View = new TView
             {
-                StationConfigList = ConfigManager<TStationConfig>.GetConfigGroup().GetList(),
-                ProductConfigList = ConfigManager<TProductConfig>.GetConfigGroup().GetList(),
-                TestConfigList = ConfigManager<TTestConfig>.GetConfigGroup().GetList(),
-                SequenceConfigList = ConfigManager<SequenceConfig>.GetConfigGroup().GetList()
+                StationConfigList = _stationConfigManager.GetConfigGroup().GetList(),
+                ProductConfigList = _productConfigManager.GetConfigGroup().GetList(),
+                TestConfigList = _testConfigManager.GetConfigGroup().GetList(),
+                SequenceConfigList = _sequenceConfigManager.GetConfigGroup().GetList()
             };
 
             //subscribe to view events
@@ -84,22 +102,22 @@ namespace TsdLib.Controller
 
         void _view_EditStationConfig(object sender, EventArgs e)
         {
-            ConfigManager<TStationConfig>.Edit(_devMode);
+            _stationConfigManager.Edit(_devMode);
         }
 
         void _view_EditProductConfig(object sender, EventArgs e)
         {
-            ConfigManager<TProductConfig>.Edit(_devMode);
+            _productConfigManager.Edit(_devMode);
         }
 
         void _view_EditTestConfig(object sender, EventArgs e)
         {
-            ConfigManager<TTestConfig>.Edit(_devMode);
+            _testConfigManager.Edit(_devMode);
         }
 
         void View_EditSequenceConfig(object sender, EventArgs e)
         {
-            ConfigManager<SequenceConfig>.Edit(_devMode);
+            _sequenceConfigManager.Edit(_devMode);
         }
 
         #endregion
