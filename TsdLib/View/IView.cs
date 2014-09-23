@@ -53,6 +53,11 @@ namespace TsdLib.View
         void AddMeasurement(Measurement measurement);
 
         /// <summary>
+        /// Gets or sets the text displayed in the title section of the UI.
+        /// </summary>
+        string Text { get; set; }
+
+        /// <summary>
         /// Sets the list of available Station Config instances.
         /// </summary>
         IList StationConfigList { set; }

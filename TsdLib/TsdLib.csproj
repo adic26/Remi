@@ -51,14 +51,14 @@
     <Compile Include="TestResults\TestResultsExceptions.cs" />
     <Compile Include="TestResults\TestResults.cs" />
     <Compile Include="TestResults\TestResultsHeader.cs" />
-    <Compile Include="Proxies\EventProxy.cs" />
-    <Compile Include="States.cs" />
-    <Compile Include="IRemiControl.cs" />
+    <Compile Include="Common\EventProxy.cs" />
+    <Compile Include="Common\States.cs" />
+    <Compile Include="Common\IRemiControl.cs" />
     <Compile Include="TestResults\Measurement.cs" />
-    <Compile Include="SpecialFolders.cs" />
+    <Compile Include="Common\SpecialFolders.cs" />
     <Compile Include="TestSequence\AssemblyReferenceAttribute.cs" />
     <Compile Include="TestSequence\TestSequenceException.cs" />
-    <Compile Include="TsdLibException.cs" />
+    <Compile Include="Common\TsdLibException.cs" />
     <Compile Include="Configuration\ConfigExceptions.cs" />
     <Compile Include="Configuration\ConfigForm.cs">
       <SubType>Form</SubType>
@@ -129,6 +129,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

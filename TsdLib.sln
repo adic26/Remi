@@ -42,6 +42,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deploy", "Deploy\Deploy.csp
 		{14C1FCCF-BAD1-4143-8FA3-303500C5B16A} = {14C1FCCF-BAD1-4143-8FA3-303500C5B16A}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.ConfigManager", "TsdLib.ConfigManager\TsdLib.ConfigManager.csproj", "{A3B07997-F603-4BE4-B32F-2DCA36629BD3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{149205BA-C73A-47D4-B050-4E8ED1ABE92D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{149205BA-C73A-47D4-B050-4E8ED1ABE92D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{149205BA-C73A-47D4-B050-4E8ED1ABE92D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3B07997-F603-4BE4-B32F-2DCA36629BD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3B07997-F603-4BE4-B32F-2DCA36629BD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3B07997-F603-4BE4-B32F-2DCA36629BD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3B07997-F603-4BE4-B32F-2DCA36629BD3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

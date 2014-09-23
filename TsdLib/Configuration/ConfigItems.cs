@@ -81,11 +81,6 @@ namespace TsdLib.Configuration
                 return _assemblies;
             }
         }
-
-        /// <summary>
-        /// Gets or sets a description of the test station.
-        /// </summary>
-        public string StationDescription { get; set; }
     }
 
     /// <summary>
@@ -105,7 +100,7 @@ namespace TsdLib.Configuration
     [Serializable]
     public class TestConfigCommon : ConfigItem
     {
-        
+
     }
 
     //TODO: don't edit Sequence config in a property grid - just launch the multi-line string editor
@@ -157,7 +152,6 @@ namespace TsdLib.Configuration
         /// </summary>
         /// <param name="localFile">Path to the source code file containing the test sequence execute method.</param>
         public SequenceConfig(string localFile)
-            : this()
         {
             LocalFile = localFile;
         }

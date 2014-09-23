@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -14,15 +15,18 @@ namespace TsdLibStarterKitInstaller
         {
             try
             {
-                //TODO: read version from atom
                 string sourceBasePath = replacementsDictionary["$wizarddata$"];
 
                 XDocument manifestDoc = XDocument.Load(Path.Combine(sourceBasePath, "extension.vsixmanifest"));
-                
                 XNamespace ns = "http://schemas.microsoft.com/developer/vsx-schema/2011";
-
-                string version = manifestDoc.Root.Element(ns + "Metadata").Element(ns + "Identity").Attribute("Version").Value;
-
+                XElement root = manifestDoc.Root;
+                Debug.Assert(root != null, "Invalid XML document. No root element.");
+                XElement manifestElement = root.Element(ns + "Metadata");
+                Debug.Assert(manifestElement != null, "Invalid XML document. No Manifest element.");
+                XElement identityElement = manifestElement.Element(ns + "Identity");
+                Debug.Assert(identityElement != null, "Invalid XML document. No Identity element.");
+                string version = identityElement.Attribute("Version").Value;
+                
                 string sourcePath = Path.Combine(sourceBasePath, version);
 
                 string destinationPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "TsdLib", "Assemblies", version);

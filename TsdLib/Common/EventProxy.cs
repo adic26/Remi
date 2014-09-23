@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TsdLib.Proxies
+namespace TsdLib
 {
     /// <summary>
     /// Proxy object that can be used to send events across AppDomain boundaries.

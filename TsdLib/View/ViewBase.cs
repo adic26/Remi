@@ -45,21 +45,10 @@ namespace TsdLib.View
         {
             InitializeComponent();
 
-            Text = Application.ProductName + " v." + Application.ProductVersion;
-
             Listener = new TextBoxTraceListener(textBox_Status);
             Trace.Listeners.Add(Listener);
 
             Load += (sender, args) => SetState(State.ReadyToTest);
-        }
-
-        /// <summary>
-        /// Gets or sets the text displayed in the UI title bar.
-        /// </summary>
-        public override sealed string Text
-        {
-            get { return base.Text; }
-            set { base.Text = value; }
         }
 
         #region Display Methods

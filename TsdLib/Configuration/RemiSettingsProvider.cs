@@ -60,7 +60,7 @@ namespace TsdLib.Configuration
                     {
                         string configType = settingProperty.PropertyType.GetGenericArguments()[0].Name;
                         Debug.WriteLine("Pulling " + configType + " from Remi.");
-                        string valueFromRemi = _remiControl.ReadStringFromRemi((string)context["ApplicationName"], (string)context["ApplicationVersion"], configType + ".xml");
+                        string valueFromRemi = _remiControl.ReadStringFromRemi((string)context["TestSystemName"], (string)context["TestSystemVersion"], configType + ".xml");
 
                         SettingsPropertyValue settingValue = new SettingsPropertyValue(settingProperty)
                         {
@@ -113,7 +113,7 @@ namespace TsdLib.Configuration
 
                         Debug.WriteLine("Pushing " + configType + " to Remi.");
                         
-                        _remiControl.WriteStringToRemi((string) settingValue.SerializedValue, (string)context["ApplicationName"], (string)context["ApplicationVersion"], configType + ".xml");
+                        _remiControl.WriteStringToRemi((string) settingValue.SerializedValue, (string)context["TestSystemName"], (string)context["TestSystemVersion"], configType + ".xml");
                     }
                 }
                 catch (Exception ex)

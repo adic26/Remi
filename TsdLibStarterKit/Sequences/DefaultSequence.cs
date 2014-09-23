@@ -35,5 +35,10 @@ namespace $safeprojectname$.Sequences
                 Thread.Sleep(1000);
             }
         }
+        
+        public override string TestSystemName
+        {
+            get { return "$safeprojectname$"; }
+        }
     }
 }

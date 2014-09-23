@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading;
 using System.Xml.Serialization;
 using TsdLib.Configuration;
-using TsdLib.Proxies;
 using TsdLib.Instrument;
 using TsdLib.TestResults;
 
@@ -23,8 +22,20 @@ namespace TsdLib.TestSequence
         where TProductConfig : ProductConfigCommon
         where TTestConfig : TestConfigCommon
     {
-        private readonly CancellationTokenSource _cts;
+        /// <summary>
+        /// Override to provide the name of the test system.
+        /// </summary>
+        public abstract string TestSystemName { get; }
 
+        /// <summary>
+        /// Client application overrides this method to define test steps.
+        /// </summary>
+        /// <param name="stationConfig">Station config instance containing station-specific configuration.</param>
+        /// <param name="productConfig">Product config instance containing product-specific configuration.</param>
+        /// <param name="testConfig">Test config instance containing test-specific configuration.</param>
+        protected abstract void Execute(TStationConfig stationConfig, TProductConfig productConfig, TTestConfig testConfig);
+
+        private readonly CancellationTokenSource _cts;
         /// <summary>
         /// Gets a CancellationToken that can be used to cancel a test sequence in progress.
         /// </summary>
@@ -75,14 +86,6 @@ namespace TsdLib.TestSequence
         }
 
         /// <summary>
-        /// Client application overrides this method to define test steps.
-        /// </summary>
-        /// <param name="stationConfig">Station config instance containing station-specific configuration.</param>
-        /// <param name="productConfig">Product config instance containing product-specific configuration.</param>
-        /// <param name="testConfig">Test config instance containing test-specific configuration.</param>
-        protected abstract void Execute(TStationConfig stationConfig, TProductConfig productConfig, TTestConfig testConfig);
-
-        /// <summary>
         /// Start execution of the test sequence with the specified configuration objects.
         /// </summary>
         /// <param name="stationConfig">Station config instance containing station-specific configuration.</param>
@@ -103,6 +106,7 @@ namespace TsdLib.TestSequence
                 bool overallPass = TestResults.Any() && TestResults.All(m => m.Result == MeasurementResult.Pass);
 
                 TestResults.AddHeader( new TestResultsHeader(
+                    TestSystemName,
                     "_JobNumber",
                     "_UnitNumber",
                     "_TestType",
@@ -115,7 +119,7 @@ namespace TsdLib.TestSequence
                     ));
 
                 XmlSerializer xs = new XmlSerializer(typeof(TestResultCollection));
-                string measurementFile = Path.Combine(SpecialFolders.Measurements, "Results.xml");
+                string measurementFile = Path.Combine(SpecialFolders.GetMeasurementsFolder(TestSystemName), "Results.xml");
                 using (Stream s = File.Create(measurementFile))
                     xs.Serialize(s, TestResults);
 

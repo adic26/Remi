@@ -18,7 +18,7 @@ namespace TsdLib.CodeGeneratorApp
                 return -1;
             }
 
-            string applicationName = args[0];
+            string testSystemName = args[0];
             string instrumentsFolder = args[1];
             string schemaFile = args[2];
             string outputDirectory = args[3];
@@ -29,7 +29,7 @@ namespace TsdLib.CodeGeneratorApp
                 .Where(file => Path.GetExtension(file) == ".xml")
                 .ToArray();
 
-            Generator.GenerateInstrumentsClass(applicationName, instrumentsFiles, schemaFile, outputDirectory, outputFileName, language);
+            Generator.GenerateInstrumentsClass(testSystemName, instrumentsFiles, schemaFile, outputDirectory, outputFileName, language);
 
             return 0;
         }

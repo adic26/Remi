@@ -65,7 +65,7 @@
 <NamespaceSummaryItem name="TsdLib.TestSequence" isDocumented="True">Contains functionality to define and execute dynamic test sequences by sending/receiving commands/responses to/from test equipment and DUTs.</NamespaceSummaryItem>
 <NamespaceSummaryItem name="TsdLib.View" isDocumented="True">Contains functionality to display information and collect input from the user. Loose coupling to the Controller allows UI logic to be completely separate from business logic, test sequences or instrument control. The 'View' in the Model-View-Controller design pattern.</NamespaceSummaryItem>
 <NamespaceSummaryItem name="TsdLib.CodeGenerator" isDocumented="True">Contains functionality to generate dynamic assemblies for test sequences and instrument definitions.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="TsdLib.Proxies" isDocumented="True">Contains functionality to operate with multiple Application Domains.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="TsdLib.Proxies" isDocumented="False">Contains functionality to operate with multiple Application Domains.</NamespaceSummaryItem>
 <NamespaceSummaryItem name="TsdLib.TestResults" isDocumented="True">Contains functionality to capture and record measurements from test sequences.</NamespaceSummaryItem>
 <NamespaceSummaryItem name="(global)" isDocumented="False" /></NamespaceSummaries>
   </PropertyGroup>

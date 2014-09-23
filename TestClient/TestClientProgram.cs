@@ -41,6 +41,7 @@ namespace TestClient
             Console.WriteLine("Done");
         }
 
+        //TODO: move to separate application
         private static void UpdateTestConfig(string sourceFolder, string destinationFolder, bool remiSetting)
         {
             if (!Directory.Exists(destinationFolder))

@@ -6,5 +6,6 @@ namespace TestClient.Configuration
     [Serializable]
     public class TestConfig : TestConfigCommon
     {
+
     }
 }

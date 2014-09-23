@@ -6,5 +6,6 @@ namespace $safeprojectname$.Configuration
     [Serializable]
     public class TestConfig : TestConfigCommon
     {
+
     }
 }

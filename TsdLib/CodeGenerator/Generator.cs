@@ -19,13 +19,13 @@ namespace TsdLib.CodeGenerator
         /// <summary>
         /// Generates an assembly from the specified XML instrument definition file(s) and test sequence source code file.
         /// </summary>
-        /// <param name="applicationName">Name of the client application. Will be used to generate namespaces.</param>
+        /// <param name="testSystemName">Name of the test system. Will be used to generate namespaces.</param>
         /// <param name="instrumentFiles">An array of absolute or relative paths to the XML instrument definition files to compile into the assembly.</param>
         /// <param name="schemaFile">XML schema (*.xsd) file used to validate the XML input files.</param>
         /// <param name="sequenceFile">Absolute or relative path to the test sequence source code file to compile into the assembly.</param>
         /// <param name="language">Generate C# or Visual Basic code.</param>
         /// <returns>Absolute path the the generated assembly.</returns>
-        public static string GenerateDynamicAssembly(string applicationName, string[] instrumentFiles, string schemaFile, string sequenceFile, Language language)
+        public static string GenerateDynamicAssembly(string testSystemName, string[] instrumentFiles, string schemaFile, string sequenceFile, Language language)
         {
             Trace.WriteLine("Compiling test sequence from:");
             foreach (string instrumentsFile in instrumentFiles)
@@ -47,7 +47,7 @@ namespace TsdLib.CodeGenerator
             cp.CompilerOptions += " /d:TRACE";
 #endif
 
-            GenerateInstrumentsClass(applicationName, instrumentFiles, schemaFile, Environment.CurrentDirectory, "Instruments", language);
+            GenerateInstrumentsClass(testSystemName, instrumentFiles, schemaFile, Environment.CurrentDirectory, "Instruments", language);
 
             MatchCollection sequenceAssemblyReferences = Regex.Matches(File.ReadAllText(sequenceFile), "(?<=assembly: AssemblyReference\\(\").*(?=\"\\))");
             foreach (Match sequenceAssemblyReference in sequenceAssemblyReferences)
@@ -68,23 +68,24 @@ namespace TsdLib.CodeGenerator
         /// <summary>
         /// Generates a source code file from the specified XML instrument definition file(s).
         /// </summary>
-        /// <param name="applicationName">Name of the client application. Will be used to generate namespaces.</param>
+        /// <param name="testSystemName">Name of the test system. Will be used to generate namespaces.</param>
         /// <param name="instrumentFiles">An array of absolute or relative paths to the XML instrument definition files to compile into the assembly.</param>
         /// <param name="schemaFile">XML schema (*.xsd) file used to validate the XML input files.</param>
         /// <param name="outputDirectoryName">Absolute directory path to store the output file. If the directory does not exist, it will be created.</param>
         /// <param name="outputFilename">Name to assign to the output source code file. The file extension will automatically be assigned, based on the value of the language parameter.</param>
         /// <param name="language">Generate C# or Visual Basic code.</param>
-        public static void GenerateInstrumentsClass(string applicationName, string[] instrumentFiles, string schemaFile, string outputDirectoryName, string outputFilename, Language language)
+        public static void GenerateInstrumentsClass(string testSystemName, string[] instrumentFiles, string schemaFile, string outputDirectoryName, string outputFilename, Language language)
         {
-            CodeCompileUnit ccu = generateInstrumentCodeCompileUnit(applicationName, instrumentFiles, schemaFile);
+            CodeCompileUnit ccu = generateInstrumentCodeCompileUnit(testSystemName, instrumentFiles, schemaFile);
             if (Path.HasExtension(outputFilename))
                 outputFilename = Path.ChangeExtension(outputFilename, null);
             generateSource(ccu, outputDirectoryName, outputFilename, language);
         }
 
-        private static CodeCompileUnit generateInstrumentCodeCompileUnit(string applicationName, string[] instrumentFiles, string schemaFile)
+        private static CodeCompileUnit generateInstrumentCodeCompileUnit(string testSystemName, string[] instrumentFiles, string schemaFile)
         {
-            CodeNamespace ns = new CodeNamespace(applicationName + ".Instruments");
+            testSystemName = testSystemName.Replace(' ', '_');
+            CodeNamespace ns = new CodeNamespace(testSystemName + ".Instruments");
             CodeCompileUnit ccu = new CodeCompileUnit();
             ccu.Namespaces.Add(ns);
 

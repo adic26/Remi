@@ -28,12 +28,12 @@ namespace TsdLib.Configuration
 
         BindingList<T> AllConfigItems { get; set; }
 
-        public ConfigGroup(string applicationName, string applicationVersion)
+        public ConfigGroup(string testSystemName, string testSystemVersion)
         {
-            if (!string.IsNullOrEmpty(applicationName))
-                Context.Add("ApplicationName", applicationName);
-            if (!string.IsNullOrEmpty(applicationVersion))
-                Context.Add("ApplicationVersion", applicationVersion);
+            if (!string.IsNullOrEmpty(testSystemName))
+                Context.Add("TestSystemName", testSystemName);
+            if (!string.IsNullOrEmpty(testSystemVersion))
+                Context.Add("TestSystemVersion", testSystemVersion);
 
             Synchronized(this);
 

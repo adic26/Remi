@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="4777abe4-e85b-45bf-9c25-b914caeb31d6" Version="0.14.1.26969" Language="en-US" Publisher="BlackBerry" />
+    <Identity Id="4777abe4-e85b-45bf-9c25-b914caeb31d6" Version="0.14.1.13402" Language="en-US" Publisher="BlackBerry" />
     <DisplayName>TsdLibStarterKit</DisplayName>
     <Description>Empty VSIX Project.</Description>
   </Metadata>

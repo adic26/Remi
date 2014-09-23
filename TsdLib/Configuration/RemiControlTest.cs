@@ -22,38 +22,38 @@ namespace TsdLib.Configuration
         }
 
         /// <summary>
-        /// Write a string of data to Remi.
+        /// Write a string to the database using the name/version of the test system and dataDescription as indexes.
         /// </summary>
-        /// <param name="data">The raw data to write.</param>
-        /// <param name="applicationName">Name of the currently executing application. Used to determine where to store the data.</param>
-        /// <param name="applicationVersion">Version of the currently executing application. Used to determine where to store the data.</param>
-        /// <param name="dataCategory">Category or type of the data being written. Used to determine where to store the data.</param>
-        public void WriteStringToRemi(string data, string applicationName, string applicationVersion, string dataCategory)
+        /// <param name="data">Data to write.</param>
+        /// <param name="testSystemName">Name of the test system.</param>
+        /// <param name="testSystemVersion">Version of the test system.</param>
+        /// <param name="dataDescription">Description of the data</param>
+        public void WriteStringToRemi(string data, string testSystemName, string testSystemVersion, string dataDescription)
         {
-            Match match = Regex.Match(applicationVersion, AppVersionFilter);
-            string appVersion = match.Success ? match.Value : applicationVersion;
-            string directoryName = Path.Combine(_settingsBasePath, applicationName, appVersion);
+            Match match = Regex.Match(testSystemVersion, AppVersionFilter);
+            string appVersion = match.Success ? match.Value : testSystemVersion;
+            string directoryName = Path.Combine(_settingsBasePath, testSystemName, appVersion);
             if (!Directory.Exists(directoryName))
                 Directory.CreateDirectory(directoryName);
 
-            File.WriteAllText(Path.Combine(directoryName, dataCategory), data);
+            File.WriteAllText(Path.Combine(directoryName, dataDescription), data);
         }
 
         /// <summary>
-        /// Read a string of data from Remi.
+        /// Read a string from the database using the name/version of the test system and dataDescription as indexes.
         /// </summary>
-        /// <param name="applicationName">Name of the currently executing application. Used to determine where to retrieve the data from.</param>
-        /// <param name="applicationVersion">Version of the currently executing application. Used to determine where to retrieve the data from.</param>
-        /// <param name="dataCategory">Category or type of the data to be read. Used to determine where to store the data.</param>
-        /// <returns>The data from the specified location.</returns>
-        public string ReadStringFromRemi(string applicationName, string applicationVersion, string dataCategory)
+        /// <param name="testSystemName">Name of the test system.</param>
+        /// <param name="testSystemVersion">Version of the test system.</param>
+        /// <param name="dataDescription">Description of the data</param>
+        /// <returns>Data read from Remi in the specified indexes.</returns>
+        public string ReadStringFromRemi(string testSystemName, string testSystemVersion, string dataDescription)
         {
-            Match match = Regex.Match(applicationVersion, AppVersionFilter);
-            string appVersion = match.Success ? match.Value : applicationVersion;
-            string filePath = Path.Combine(_settingsBasePath, applicationName, appVersion, dataCategory);
+            Match match = Regex.Match(testSystemVersion, AppVersionFilter);
+            string appVersion = match.Success ? match.Value : testSystemVersion;
+            string filePath = Path.Combine(_settingsBasePath, testSystemName, appVersion, dataDescription);
 
             if (!File.Exists(filePath))
-                throw new ConfigDoesNotExistInRemiException(applicationName, applicationVersion, dataCategory);
+                throw new ConfigDoesNotExistInRemiException(testSystemName, testSystemVersion, dataDescription);
 
             string data = File.ReadAllText(filePath);
 
@@ -67,20 +67,7 @@ namespace TsdLib.Configuration
     [Serializable]
     class ConfigDoesNotExistInRemiException : Exception
     {
-        public string ApplicationName { get; private set; }
-        public string ApplicationVersion { get; private set; }
-        public string ConfigType { get; private set; }
-
-        public override string Message
-        {
-            get { return ConfigType + " does not exist for " + ApplicationName + " v." + ApplicationVersion + "."; }
-        }
-
-        public ConfigDoesNotExistInRemiException(string applicationName, string applicationVersion, string configType)
-        {
-            ApplicationName = applicationName;
-            ApplicationVersion = applicationVersion;
-            ConfigType = configType;
-        }
+        public ConfigDoesNotExistInRemiException(string testSystemName, string testSystemVersion, string configType)
+            : base(configType + " does not exist for " + testSystemName + " v." + testSystemVersion + ".") { }
     }
 }

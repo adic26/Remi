@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace TsdLib
@@ -38,17 +37,15 @@ namespace TsdLib
         }
 
         /// <summary>
-        /// Gets the folder where Test Sequence measurements are stored.
+        /// Gets the folder where Test Sequence measurements are stored for the specified test system.
         /// </summary>
-        public static string Measurements
+        /// <param name="testSystemName">Name of the test system for which to get the measurements folder.</param>
+        public static string GetMeasurementsFolder(string testSystemName)
         {
-            get
-            {
-                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "TsdLib", Process.GetCurrentProcess().ProcessName, "Measurements");
-                if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
-                return path;
-            }
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "TsdLib", testSystemName, "Measurements");
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            return path;
         }
     }
 }

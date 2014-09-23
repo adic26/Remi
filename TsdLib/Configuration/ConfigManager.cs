@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace TsdLib.Configuration
@@ -7,29 +8,30 @@ namespace TsdLib.Configuration
     /// Static class to manage configuration items.
     /// </summary>
     /// <typeparam name="T">Type of configuration. Must be a class derived from <see cref="TsdLib.Configuration.ConfigItem"/>.</typeparam>
-    public class ConfigManager<T>
+    public sealed class ConfigManager<T> : IDisposable
         where T : ConfigItem, new()
     {
         private static ConfigManager<T> _instance;
-        private ConfigManager(string applicationName, string applicationVersion)
+
+        private ConfigManager(string testSystemName, string testSystemVersion)
         {
-            _applicationName = applicationName;
-            _applicationVersion = applicationVersion;
+            _testSystemName = testSystemName;
+            _testSystemVersion = testSystemVersion;
         }
 
         /// <summary>
-        /// Gets an ConfigManager instance used to expose settings (eg. ProductConfig, StationConfig, etc) for a specified application.
+        /// Gets an ConfigManager instance used to expose settings (eg. ProductConfig, StationConfig, etc) for a specified test system, using the specified version.
         /// </summary>
-        /// <param name="applicationName">Name of the application for which to return the </param>
-        /// <param name="applicationversion">Version of the application</param>
+        /// <param name="testSystemName">Name of the test system for which to manage the configuration.</param>
+        /// <param name="testSystemVersion">OPTIONAL: Version of the test system. Omit to specify the currently released version.</param>
         /// <returns>A ConfigManager object to expose the application settings.</returns>
-        public static ConfigManager<T> GetInstance(string applicationName, string applicationversion)
+        public static ConfigManager<T> GetInstance(string testSystemName, string testSystemVersion)
         {
-            return _instance ?? (_instance = new ConfigManager<T>(applicationName, applicationversion));
+            return _instance ?? (_instance = new ConfigManager<T>(testSystemName, testSystemVersion));
         }
 
-        private readonly string _applicationName;
-        private readonly string _applicationVersion;
+        private readonly string _testSystemName;
+        private readonly string _testSystemVersion;
 
         private ConfigGroup<T> _configGroup;
 
@@ -39,7 +41,7 @@ namespace TsdLib.Configuration
         /// <returns>A configuration group containing all instances of the specified configuration type.</returns>
         public IConfigGroup<T> GetConfigGroup()
         {
-            return _configGroup ?? (_configGroup = new ConfigGroup<T>(_applicationName, _applicationVersion));
+            return _configGroup ?? (_configGroup = new ConfigGroup<T>(_testSystemName, _testSystemVersion));
         }
 
         /// <summary>
@@ -70,9 +72,17 @@ namespace TsdLib.Configuration
                     if (form.DialogResult == DialogResult.OK)
                         _configGroup.Save();
                     else
-                        _configGroup = new ConfigGroup<T>(_applicationName, _applicationVersion); //reload from persisted settings
+                        _configGroup = new ConfigGroup<T>(_testSystemName, _testSystemVersion); //reload from persisted settings
                 }
             }
+        }
+
+        /// <summary>
+        /// Disposes the ConfigManager, allowing to connect to a different application configuration.
+        /// </summary>
+        public void Dispose()
+        {
+            _instance = null;
         }
     }
 }

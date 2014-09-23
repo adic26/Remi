@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TsdLib.CodeGenerator;
 using TsdLib.Configuration;
-using TsdLib.Proxies;
 using TsdLib.TestSequence;
 using TsdLib.View;
 using TsdLib.TestResults;
@@ -45,42 +44,41 @@ namespace TsdLib.Controller
         /// </summary>
         public IView View { get; private set; }
         /// <summary>
-        /// Gets the name of the client application. Also used as the client's namespace.
+        /// Gets the name of the test system. Also used as the client's namespace.
         /// </summary>
-        public string ApplicationName { get; private set; }
+        public string TestSystemName { get; private set; }
         /// <summary>
-        /// Gets the client application version.
+        /// Gets the test system version.
         /// </summary>
-        public string ApplicationVersion { get; private set; }
+        public string TestSystemVersion { get; private set; }
 
         #endregion
 
         #region Constructor
 
-
-
         /// <summary>
         /// Initialize a new system controller.
         /// </summary>
         /// <param name="devMode">True to enable Developer Mode - config can be modified but results are stored in the Analysis category.</param>
-        /// <param name="applicationName">Name of the client application.</param>
-        /// <param name="applicationVersion">Version of the client application.</param>
-        protected ControllerBase(bool devMode, string applicationName, string applicationVersion)
+        /// <param name="testSystemName">Name of the test system. Required for application settings and results logging.</param>
+        /// <param name="testSystemVersion">Version of the test system.</param>
+        protected ControllerBase(bool devMode, string testSystemName, string testSystemVersion)
         {
             _devMode = devMode;
-            ApplicationName = applicationName;
-            ApplicationVersion = applicationVersion;
+            TestSystemName = testSystemName;
+            TestSystemVersion = testSystemVersion;
 
             //TODO: if _devMode, do not pull from Remi??
 
-            _stationConfigManager = ConfigManager<TStationConfig>.GetInstance(applicationName, applicationVersion);
-            _productConfigManager = ConfigManager<TProductConfig>.GetInstance(applicationName, applicationVersion);
-            _testConfigManager = ConfigManager<TTestConfig>.GetInstance(applicationName, applicationVersion);
-            _sequenceConfigManager = ConfigManager<SequenceConfig>.GetInstance(applicationName, applicationVersion);
+            _stationConfigManager = ConfigManager<TStationConfig>.GetInstance(testSystemName, testSystemVersion);
+            _productConfigManager = ConfigManager<TProductConfig>.GetInstance(testSystemName, testSystemVersion);
+            _testConfigManager = ConfigManager<TTestConfig>.GetInstance(testSystemName, testSystemVersion);
+            _sequenceConfigManager = ConfigManager<SequenceConfig>.GetInstance(testSystemName, testSystemVersion);
 
             //set up view
             View = new TView
             {
+                Text = testSystemName + " v." + testSystemVersion,
                 StationConfigList = _stationConfigManager.GetConfigGroup().GetList(),
                 ProductConfigList = _productConfigManager.GetConfigGroup().GetList(),
                 TestConfigList = _testConfigManager.GetConfigGroup().GetList(),
@@ -143,7 +141,7 @@ namespace TsdLib.Controller
                     _tokenSource = new CancellationTokenSource();
 
                     sequenceAssembly = Generator.GenerateDynamicAssembly(
-                        ApplicationName,
+                        TestSystemName,
                         new[] { @"C:\Users\jmckee\Source\Repos\TsdLib\TestClient\Instruments\DummyPowerSupply.xml" },
                         @"CodeGenerator\TsdLib.Instruments.xsd",
                         sequenceConfig.LocalFile,

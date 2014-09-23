@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
@@ -76,6 +74,7 @@ namespace TsdLib.TestResults
         /// <summary>
         /// Initialize a new TestResultsHeader to hold test result metadata.
         /// </summary>
+        /// <param name="testName">Name of the test system.</param>
         /// <param name="jobNumber">The job/request number.</param>
         /// <param name="unitNumber">Unit number for the DUT.</param>
         /// <param name="testType">Type of test (drop, tumble, etc).</param>
@@ -85,11 +84,11 @@ namespace TsdLib.TestResults
         /// <param name="dateStarted">DateTime that the test was started.</param>
         /// <param name="dateCompleted">DateTime that the test was completed.</param>
         /// <param name="additionalInfo">Any additional information that does not fit into the previous categories.</param>
-        public TestResultsHeader(string jobNumber, string unitNumber, string testType,
+        public TestResultsHeader(string testName, string jobNumber, string unitNumber, string testType,
             string testStage, string bsn, string finalResult, DateTime dateStarted,
             DateTime dateCompleted, string additionalInfo)
         {
-            TestName = Path.GetFileNameWithoutExtension(Process.GetCurrentProcess().MainModule.FileName);
+            TestName = testName;
             JobNumber = jobNumber;
             UnitNumber = unitNumber;
             TestType = testType;

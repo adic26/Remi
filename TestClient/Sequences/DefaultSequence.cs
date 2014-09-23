@@ -34,5 +34,10 @@ namespace TestClient.Sequences
                 Thread.Sleep(1000);
             }
         }
+
+        public override string TestSystemName
+        {
+            get { return "TestClient"; }
+        }
     }
 }
