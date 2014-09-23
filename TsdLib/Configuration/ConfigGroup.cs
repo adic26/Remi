@@ -113,18 +113,25 @@ namespace TsdLib.Configuration
     /// A group of configuration instances.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IConfigGroup<T> : IListSource, IEnumerable<T>
+    public interface IConfigGroup<T> :IEnumerable<T>, IConfigGroup
         where T : ConfigItem
     {
-        /// <summary>
-        /// Save the configuration group.
-        /// </summary>
-        void Save();
         /// <summary>
         /// Add a new instance to the configuration group.
         /// </summary>
         /// <param name="configItem">A new configuration instance.</param>
         /// <param name="useRemi">True to store configuration locally and on Remi. False to store locally only.</param>
         void Add(T configItem, bool useRemi = true);
+    }
+
+    /// <summary>
+    /// A group of weakly-typed configuration instances.
+    /// </summary>
+    public interface IConfigGroup : IListSource
+    {
+        /// <summary>
+        /// Save the configuration group.
+        /// </summary>
+        void Save();
     }
 }

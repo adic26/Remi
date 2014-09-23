@@ -6,9 +6,9 @@ namespace TsdLib.Configuration
     partial class ConfigFormCreate<T> : Form
         where T : ConfigItem, new()
     {
-        private readonly ConfigGroup<T> _configGroup;
+        private readonly IConfigGroup<T> _configGroup;
         
-        public ConfigFormCreate(ConfigGroup<T> configGroup)
+        public ConfigFormCreate(IConfigGroup<T> configGroup)
         {
             InitializeComponent();
             _configGroup = configGroup;

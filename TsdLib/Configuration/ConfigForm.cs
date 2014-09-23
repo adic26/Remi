@@ -7,9 +7,9 @@ namespace TsdLib.Configuration
     sealed partial class ConfigForm<T> : Form
         where T : ConfigItem, new()
     {
-        private readonly ConfigGroup<T> _configGroup;
+        private readonly IConfigGroup<T> _configGroup;
         
-        public ConfigForm(ConfigGroup<T> configGroup, bool editable)
+        public ConfigForm(IConfigGroup<T> configGroup, bool editable)
         {
             InitializeComponent();
             Text = typeof(T).Name;
