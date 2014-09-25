@@ -20,7 +20,7 @@ namespace TestClient
 
             if (args.Contains("-seq"))
             {
-                Trace.WriteLine("Updating Remi Sequence Config");
+                Trace.WriteLine("Updating Sequence Config on the database");
                 List<string> argsList = args.ToList();
                 UpdateTestConfig(argsList[argsList.IndexOf("-seq") + 1], argsList[argsList.IndexOf("-seq") + 2], bool.Parse(argsList[argsList.IndexOf("-seq") + 3]));
                 return;
@@ -41,28 +41,30 @@ namespace TestClient
             Console.WriteLine("Done");
         }
 
-        //TODO: move to separate application
-        private static void UpdateTestConfig(string sourceFolder, string destinationFolder, bool remiSetting)
+        
+        private static void UpdateTestConfig(string sourceFolder, string destinationFolder, bool storeInDatabase)
         {
-            if (!Directory.Exists(destinationFolder))
-                Directory.CreateDirectory(destinationFolder);
+            //TODO: move to separate application
 
-            IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetInstance("TestClient", Application.ProductVersion).GetConfigGroup();
+            //if (!Directory.Exists(destinationFolder))
+            //    Directory.CreateDirectory(destinationFolder);
 
-            Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects in Remi", cfgGroup.Count()));
+            //IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetInstance("TestClient", Application.ProductVersion, @"C:\temp\RemiSettingsTest").GetConfigGroup();
 
-            foreach (string sourceFilePath in Directory.EnumerateFiles(sourceFolder))
-            {
-                string sourceFileName = Path.GetFileName(sourceFilePath);
-                if (sourceFileName == null)
-                    throw new ArgumentException(sourceFilePath + " is not a valid file path.");
+            //Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects in the database", cfgGroup.Count()));
 
-                string destinationFilePath = Path.Combine(destinationFolder, sourceFileName);
+            //foreach (string sourceFilePath in Directory.EnumerateFiles(sourceFolder))
+            //{
+            //    string sourceFileName = Path.GetFileName(sourceFilePath);
+            //    if (sourceFileName == null)
+            //        throw new ArgumentException(sourceFilePath + " is not a valid file path.");
 
-                File.Copy(sourceFilePath, destinationFilePath, true);
-                cfgGroup.Add(new SequenceConfig(destinationFilePath) { RemiSetting = remiSetting });
-            }
-            cfgGroup.Save();
+            //    string destinationFilePath = Path.Combine(destinationFolder, sourceFileName);
+
+            //    File.Copy(sourceFilePath, destinationFilePath, true);
+            //    cfgGroup.Add(new SequenceConfig(destinationFilePath) { StoreInDatabase = storeInDatabase });
+            //}
+            //cfgGroup.Save();
         }
     }
 }

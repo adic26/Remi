@@ -36,16 +36,12 @@ namespace TsdLib.View
             this.label_Measurements = new System.Windows.Forms.Label();
             this.button_ExecuteTestSequence = new System.Windows.Forms.Button();
             this.button_AbortTestSequence = new System.Windows.Forms.Button();
-            this.button_StationConfig = new System.Windows.Forms.Button();
-            this.button_ProductConfig = new System.Windows.Forms.Button();
             this.comboBox_StationConfig = new System.Windows.Forms.ComboBox();
             this.comboBox_ProductConfig = new System.Windows.Forms.ComboBox();
             this.label_StationConfig = new System.Windows.Forms.Label();
             this.label_ProductConfig = new System.Windows.Forms.Label();
-            this.button_TestConfig = new System.Windows.Forms.Button();
             this.label_TestConfig = new System.Windows.Forms.Label();
             this.comboBox_TestConfig = new System.Windows.Forms.ComboBox();
-            this.button_SequenceConfig = new System.Windows.Forms.Button();
             this.comboBox_SequenceConfig = new System.Windows.Forms.ComboBox();
             this.label_SequenceConfig = new System.Windows.Forms.Label();
             this.measurementDataGridView = new TsdLib.View.MeasurementDataGridView();
@@ -55,6 +51,7 @@ namespace TsdLib.View
             this.LowerLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UpperLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Result = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.button_ViewEditConfiguration = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -105,26 +102,6 @@ namespace TsdLib.View
             this.button_AbortTestSequence.UseVisualStyleBackColor = true;
             this.button_AbortTestSequence.Click += new System.EventHandler(this.button_AbortTestSequence_Click);
             // 
-            // button_StationConfig
-            // 
-            this.button_StationConfig.Location = new System.Drawing.Point(195, 31);
-            this.button_StationConfig.Name = "button_StationConfig";
-            this.button_StationConfig.Size = new System.Drawing.Size(125, 23);
-            this.button_StationConfig.TabIndex = 8;
-            this.button_StationConfig.Text = "Edit Station Config";
-            this.button_StationConfig.UseVisualStyleBackColor = true;
-            this.button_StationConfig.Click += new System.EventHandler(this.button_StationConfig_Click);
-            // 
-            // button_ProductConfig
-            // 
-            this.button_ProductConfig.Location = new System.Drawing.Point(195, 70);
-            this.button_ProductConfig.Name = "button_ProductConfig";
-            this.button_ProductConfig.Size = new System.Drawing.Size(125, 23);
-            this.button_ProductConfig.TabIndex = 9;
-            this.button_ProductConfig.Text = "Edit Product Config";
-            this.button_ProductConfig.UseVisualStyleBackColor = true;
-            this.button_ProductConfig.Click += new System.EventHandler(this.button_ProductConfig_Click);
-            // 
             // comboBox_StationConfig
             // 
             this.comboBox_StationConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -161,16 +138,6 @@ namespace TsdLib.View
             this.label_ProductConfig.TabIndex = 14;
             this.label_ProductConfig.Text = "Product Config";
             // 
-            // button_TestConfig
-            // 
-            this.button_TestConfig.Location = new System.Drawing.Point(195, 111);
-            this.button_TestConfig.Name = "button_TestConfig";
-            this.button_TestConfig.Size = new System.Drawing.Size(125, 23);
-            this.button_TestConfig.TabIndex = 15;
-            this.button_TestConfig.Text = "Edit Test Config";
-            this.button_TestConfig.UseVisualStyleBackColor = true;
-            this.button_TestConfig.Click += new System.EventHandler(this.button_TestConfig_Click);
-            // 
             // label_TestConfig
             // 
             this.label_TestConfig.AutoSize = true;
@@ -189,16 +156,6 @@ namespace TsdLib.View
             this.comboBox_TestConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_TestConfig.TabIndex = 17;
             // 
-            // button_SequenceConfig
-            // 
-            this.button_SequenceConfig.Location = new System.Drawing.Point(195, 151);
-            this.button_SequenceConfig.Name = "button_SequenceConfig";
-            this.button_SequenceConfig.Size = new System.Drawing.Size(125, 23);
-            this.button_SequenceConfig.TabIndex = 18;
-            this.button_SequenceConfig.Text = "Edit Sequence Config";
-            this.button_SequenceConfig.UseVisualStyleBackColor = true;
-            this.button_SequenceConfig.Click += new System.EventHandler(this.button_SequenceConfig_Click);
-            // 
             // comboBox_SequenceConfig
             // 
             this.comboBox_SequenceConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -213,9 +170,9 @@ namespace TsdLib.View
             this.label_SequenceConfig.AutoSize = true;
             this.label_SequenceConfig.Location = new System.Drawing.Point(12, 135);
             this.label_SequenceConfig.Name = "label_SequenceConfig";
-            this.label_SequenceConfig.Size = new System.Drawing.Size(89, 13);
+            this.label_SequenceConfig.Size = new System.Drawing.Size(56, 13);
             this.label_SequenceConfig.TabIndex = 20;
-            this.label_SequenceConfig.Text = "Sequence Config";
+            this.label_SequenceConfig.Text = "Sequence";
             // 
             // measurementDataGridView
             // 
@@ -285,25 +242,32 @@ namespace TsdLib.View
             this.Result.Name = "Result";
             this.Result.ReadOnly = true;
             // 
+            // button_ViewEditConfiguration
+            // 
+            this.button_ViewEditConfiguration.Location = new System.Drawing.Point(255, 78);
+            this.button_ViewEditConfiguration.Name = "button_ViewEditConfiguration";
+            this.button_ViewEditConfiguration.Size = new System.Drawing.Size(150, 47);
+            this.button_ViewEditConfiguration.TabIndex = 21;
+            this.button_ViewEditConfiguration.Text = "View/Edit Configuration";
+            this.button_ViewEditConfiguration.UseVisualStyleBackColor = true;
+            this.button_ViewEditConfiguration.Click += new System.EventHandler(this.button_ViewEditConfiguration_Click);
+            // 
             // ViewBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(833, 576);
+            this.Controls.Add(this.button_ViewEditConfiguration);
             this.Controls.Add(this.label_SequenceConfig);
             this.Controls.Add(this.comboBox_SequenceConfig);
-            this.Controls.Add(this.button_SequenceConfig);
             this.Controls.Add(this.comboBox_TestConfig);
             this.Controls.Add(this.label_TestConfig);
-            this.Controls.Add(this.button_TestConfig);
             this.Controls.Add(this.label_ProductConfig);
             this.Controls.Add(this.label_StationConfig);
             this.Controls.Add(this.comboBox_ProductConfig);
             this.Controls.Add(this.comboBox_StationConfig);
-            this.Controls.Add(this.button_ProductConfig);
             this.Controls.Add(this.measurementDataGridView);
-            this.Controls.Add(this.button_StationConfig);
             this.Controls.Add(this.button_AbortTestSequence);
             this.Controls.Add(this.button_ExecuteTestSequence);
             this.Controls.Add(this.label_Measurements);
@@ -340,17 +304,9 @@ namespace TsdLib.View
         /// </summary>
         protected System.Windows.Forms.Button button_AbortTestSequence;
         /// <summary>
-        /// Request to modify the Station Config.
-        /// </summary>
-        protected System.Windows.Forms.Button button_StationConfig;
-        /// <summary>
         /// Displays measurements as they are generated by the Test Sequence.
         /// </summary>
         protected MeasurementDataGridView measurementDataGridView;
-        /// <summary>
-        /// Request to modify the Product Config.
-        /// </summary>
-        protected System.Windows.Forms.Button button_ProductConfig;
         private System.Windows.Forms.ComboBox comboBox_StationConfig;
         private System.Windows.Forms.ComboBox comboBox_ProductConfig;
         /// <summary>
@@ -362,18 +318,10 @@ namespace TsdLib.View
         /// </summary>
         protected System.Windows.Forms.Label label_ProductConfig;
         /// <summary>
-        /// Request to modify the Test Config.
-        /// </summary>
-        protected System.Windows.Forms.Button button_TestConfig;
-        /// <summary>
         /// Test Config label.
         /// </summary>
         protected System.Windows.Forms.Label label_TestConfig;
         private System.Windows.Forms.ComboBox comboBox_TestConfig;
-        /// <summary>
-        /// Request to modify the Sequence Config.
-        /// </summary>
-        protected System.Windows.Forms.Button button_SequenceConfig;
         private System.Windows.Forms.ComboBox comboBox_SequenceConfig;
         /// <summary>
         /// Sequence Config label.
@@ -385,5 +333,6 @@ namespace TsdLib.View
         private System.Windows.Forms.DataGridViewTextBoxColumn LowerLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn UpperLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Result;
+        private System.Windows.Forms.Button button_ViewEditConfiguration;
     }
 }

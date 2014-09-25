@@ -7,6 +7,6 @@ namespace TestClient
     public class Controller : ControllerBase<View, StationConfig, ProductConfig, TestConfig>
     {
         public Controller(bool devMode)
-            : base(devMode, "TestClient", Application.ProductVersion) { }
+            : base(devMode, "TestClient", Application.ProductVersion, @"C:\temp\RemiSettingsTest") { }
     }
 }

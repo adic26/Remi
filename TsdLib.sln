@@ -42,7 +42,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deploy", "Deploy\Deploy.csp
 		{14C1FCCF-BAD1-4143-8FA3-303500C5B16A} = {14C1FCCF-BAD1-4143-8FA3-303500C5B16A}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.ConfigManager", "TsdLib.ConfigManager\TsdLib.ConfigManager.csproj", "{A3B07997-F603-4BE4-B32F-2DCA36629BD3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.ConfigManagerApp", "TsdLib.ConfigManagerApp\TsdLib.ConfigManagerApp.csproj", "{A3B07997-F603-4BE4-B32F-2DCA36629BD3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

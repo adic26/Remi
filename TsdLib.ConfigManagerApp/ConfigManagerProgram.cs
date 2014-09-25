@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using TsdLib.Configuration;
 
-namespace TsdLib.ConfigManager
+namespace TsdLib.Configuration
 {
     static class ConfigManagerProgram
     {
@@ -17,7 +13,7 @@ namespace TsdLib.ConfigManager
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new ConfigForm<StationConfigCommon>());
+            Application.Run(new ConfigManagerForm(@"C:\temp\RemiSettingsTest"));
         }
     }
 }

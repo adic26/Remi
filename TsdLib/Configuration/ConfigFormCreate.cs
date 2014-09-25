@@ -20,10 +20,10 @@ namespace TsdLib.Configuration
             T newConfig = new T
             {
                 Name = textBox_Name.Text,
-                RemiSetting = radioButton_StoreInRemi.Checked,
+                StoreInDatabase = radioButton_StoreInDatabase.Checked,
             };
 
-            _configGroup.Add(newConfig, radioButton_StoreInRemi.Checked);
+            _configGroup.Add(newConfig, radioButton_StoreInDatabase.Checked);
         }
     }
 }

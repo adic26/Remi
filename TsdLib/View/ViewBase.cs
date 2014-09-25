@@ -17,7 +17,20 @@ namespace TsdLib.View
         /// </summary>
         public TraceListener Listener { get; private set; }
 
-        #region Config Data Bindings
+        /// <summary>
+        /// Initializes a new instance of the base UI form.
+        /// </summary>
+        protected ViewBase()
+        {
+            InitializeComponent();
+
+            Listener = new TextBoxTraceListener(textBox_Status);
+            Trace.Listeners.Add(Listener);
+
+            Load += (sender, args) => SetState(State.ReadyToTest);
+        }
+
+        #region Config ComboBox Data Bindings
 
         /// <summary>
         /// Sets the list of available Station Config instances.
@@ -37,19 +50,6 @@ namespace TsdLib.View
         public IList SequenceConfigList { set { comboBox_SequenceConfig.DataSource = value; } }
 
         #endregion
-
-        /// <summary>
-        /// Initializes a new instance of the base UI form.
-        /// </summary>
-        protected ViewBase()
-        {
-            InitializeComponent();
-
-            Listener = new TextBoxTraceListener(textBox_Status);
-            Trace.Listeners.Add(Listener);
-
-            Load += (sender, args) => SetState(State.ReadyToTest);
-        }
 
         #region Display Methods
 
@@ -87,44 +87,15 @@ namespace TsdLib.View
         #region UI Event Handlers
 
         /// <summary>
-        /// Event fired when requesting to modify the Station Config.
+        /// Event fired when requesting to modify the test system configuration.
         /// </summary>
-        public event EventHandler EditStationConfig;
-        private void button_StationConfig_Click(object sender, EventArgs e)
+        public event EventHandler ViewEditConfiguration;
+        private void button_ViewEditConfiguration_Click(object sender, EventArgs e)
         {
-            if (EditStationConfig != null)
-                EditStationConfig(this, new EventArgs());
+            if (ViewEditConfiguration != null)
+                ViewEditConfiguration(this, new EventArgs());
         }
 
-        /// <summary>
-        /// Event fired when requesting to modify the Product Config.
-        /// </summary>
-        public event EventHandler EditProductConfig;
-        private void button_ProductConfig_Click(object sender, EventArgs e)
-        {
-            if (EditProductConfig != null)
-                EditProductConfig(this, new EventArgs());
-        }
-
-        /// <summary>
-        /// Event fired when requesting to modify the Test Config.
-        /// </summary>
-        public event EventHandler EditTestConfig;
-        private void button_TestConfig_Click(object sender, EventArgs e)
-        {
-            if (EditTestConfig != null)
-                EditTestConfig(this, new EventArgs());
-        }
-
-        /// <summary>
-        /// Event fired when requesting to modify the Sequence Config.
-        /// </summary>
-        public event EventHandler EditSequenceConfig;
-        private void button_SequenceConfig_Click(object sender, EventArgs e)
-        {
-            if (EditSequenceConfig != null)
-                EditSequenceConfig(this, new EventArgs());
-        }
         /// <summary>
         /// Event fired when requesting to execute the Test Sequence.
         /// </summary>

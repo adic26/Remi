@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Drawing.Design;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
 using TsdLib.TestSequence;
 
@@ -24,11 +26,26 @@ namespace TsdLib.Configuration
         public virtual string Name { get; set; }
 
         /// <summary>
-        /// True to store configuration locally and on Remi. False to store locally only.
+        /// True to store configuration locally and on a database. False to store locally only.
         /// </summary>
         [ReadOnly(true)]
         [Category("Description")]
-        public bool RemiSetting { get; set; }
+        public bool StoreInDatabase { get; set; }
+
+        /// <summary>
+        /// Performs a deep clone of the ConfigItem object.
+        /// </summary>
+        /// <returns>A new ConfigItem object.</returns>
+        public ConfigItem Clone()
+        {
+            IFormatter formatter = new BinaryFormatter();
+            using (Stream stream = new MemoryStream())
+            {
+                formatter.Serialize(stream, this);
+                stream.Seek(0, SeekOrigin.Begin);
+                return (ConfigItem)formatter.Deserialize(stream);
+            }
+        }
 
         /// <summary>
         /// Returns the name of the configuration item.
@@ -109,7 +126,7 @@ namespace TsdLib.Configuration
     /// Can be parameterized by StationConfig, ProductConfig, TestConfig.
     /// </summary>
     [Serializable]
-    public class SequenceConfig : ConfigItem
+    public class Sequence : ConfigItem
     {
         /// <summary>
         /// Gets the file name containing the test sequence source code.
@@ -145,13 +162,13 @@ namespace TsdLib.Configuration
         /// <summary>
         /// Default constructor required for serialization.
         /// </summary>
-        public SequenceConfig() { }
+        public Sequence() { }
 
         /// <summary>
         /// Initialize a new SequenceConfig with the specified test sequence source code file.
         /// </summary>
         /// <param name="localFile">Path to the source code file containing the test sequence execute method.</param>
-        public SequenceConfig(string localFile)
+        public Sequence(string localFile)
         {
             LocalFile = localFile;
         }

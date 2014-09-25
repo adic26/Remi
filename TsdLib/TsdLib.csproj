@@ -35,6 +35,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -44,6 +45,25 @@
     <Compile Include="CodeGenerator\Generator.cs" />
     <Compile Include="CodeGenerator\CodeGeneratorException.cs" />
     <Compile Include="CodeGenerator\Enums.cs" />
+    <Compile Include="Configuration\ConfigFormBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\ConfigFormBase.Designer.cs">
+      <DependentUpon>ConfigFormBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\ConfigItemCreate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\ConfigItemCreate.Designer.cs">
+      <DependentUpon>ConfigItemCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\ConfigManagerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\ConfigManagerForm.Designer.cs">
+      <DependentUpon>ConfigManagerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\FilePath.cs" />
     <Compile Include="Instrument\InstrumentAttributes.cs" />
     <Compile Include="TestResults\MeasurementEventArgs.cs" />
     <Compile Include="TestResults\MeasurementParameter.cs" />
@@ -53,7 +73,7 @@
     <Compile Include="TestResults\TestResultsHeader.cs" />
     <Compile Include="Common\EventProxy.cs" />
     <Compile Include="Common\States.cs" />
-    <Compile Include="Common\IRemiControl.cs" />
+    <Compile Include="Common\IDatabaseConnection.cs" />
     <Compile Include="TestResults\Measurement.cs" />
     <Compile Include="Common\SpecialFolders.cs" />
     <Compile Include="TestSequence\AssemblyReferenceAttribute.cs" />
@@ -81,8 +101,8 @@
     <Compile Include="Configuration\MultiLineStringEditor.Designer.cs">
       <DependentUpon>MultiLineStringEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Configuration\RemiControlTest.cs" />
-    <Compile Include="Configuration\RemiSettingsProvider.cs" />
+    <Compile Include="Configuration\DatabaseFolderConnection.cs" />
+    <Compile Include="Configuration\DatabaseSettingsProvider.cs" />
     <Compile Include="Controller\ControllerBase.cs" />
     <Compile Include="Instrument\ConnectionBase.cs" />
     <Compile Include="Instrument\Dummy\DummyConnection.cs" />
@@ -118,8 +138,17 @@
     <EmbeddedResource Include="Configuration\ConfigForm.resx">
       <DependentUpon>ConfigForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\ConfigFormBase.resx">
+      <DependentUpon>ConfigFormBase.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Configuration\ConfigFormCreate.resx">
       <DependentUpon>ConfigFormCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\ConfigItemCreate.resx">
+      <DependentUpon>ConfigItemCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\ConfigManagerForm.resx">
+      <DependentUpon>ConfigManagerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration\MultiLineStringEditor.resx">
       <DependentUpon>MultiLineStringEditor.cs</DependentUpon>

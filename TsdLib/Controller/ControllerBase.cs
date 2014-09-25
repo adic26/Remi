@@ -25,20 +25,11 @@ namespace TsdLib.Controller
         where TProductConfig : ProductConfigCommon, new()
         where TTestConfig : TestConfigCommon, new()
     {
-        #region Private Fields
-
+        //Private fields
         private readonly bool _devMode;
         private CancellationTokenSource _tokenSource;
 
-        private readonly ConfigManager<TStationConfig> _stationConfigManager;
-        private readonly ConfigManager<TProductConfig> _productConfigManager;
-        private readonly ConfigManager<TTestConfig> _testConfigManager;
-        private readonly ConfigManager<SequenceConfig> _sequenceConfigManager;
-
-        #endregion
-
-        #region Public Properties
-
+        //Public properties
         /// <summary>
         /// Gets a reference to the user interface.
         /// </summary>
@@ -52,77 +43,42 @@ namespace TsdLib.Controller
         /// </summary>
         public string TestSystemVersion { get; private set; }
 
-        #endregion
-
-        #region Constructor
-
+        //Constructor
         /// <summary>
         /// Initialize a new system controller.
         /// </summary>
         /// <param name="devMode">True to enable Developer Mode - config can be modified but results are stored in the Analysis category.</param>
         /// <param name="testSystemName">Name of the test system. Required for application settings and results logging.</param>
         /// <param name="testSystemVersion">Version of the test system.</param>
-        protected ControllerBase(bool devMode, string testSystemName, string testSystemVersion)
+        /// <param name="settingsLocation">Local or network location where settings will be stored.</param>
+        protected ControllerBase(bool devMode, string testSystemName, string testSystemVersion, string settingsLocation)
         {
             _devMode = devMode;
             TestSystemName = testSystemName;
             TestSystemVersion = testSystemVersion;
 
-            //TODO: if _devMode, do not pull from Remi??
+            //TODO: if _devMode, do not pull from database??
 
-            _stationConfigManager = ConfigManager<TStationConfig>.GetInstance(testSystemName, testSystemVersion);
-            _productConfigManager = ConfigManager<TProductConfig>.GetInstance(testSystemName, testSystemVersion);
-            _testConfigManager = ConfigManager<TTestConfig>.GetInstance(testSystemName, testSystemVersion);
-            _sequenceConfigManager = ConfigManager<SequenceConfig>.GetInstance(testSystemName, testSystemVersion);
+            ConfigManager manager = new ConfigManager<TStationConfig, TProductConfig, TTestConfig, Sequence>(testSystemName, TestSystemVersion, settingsLocation);
 
             //set up view
             View = new TView
             {
                 Text = testSystemName + " v." + testSystemVersion,
-                StationConfigList = _stationConfigManager.GetConfigGroup().GetList(),
-                ProductConfigList = _productConfigManager.GetConfigGroup().GetList(),
-                TestConfigList = _testConfigManager.GetConfigGroup().GetList(),
-                SequenceConfigList = _sequenceConfigManager.GetConfigGroup().GetList()
+                StationConfigList = manager.GetConfigGroup<TStationConfig>().GetList(),
+                ProductConfigList = manager.GetConfigGroup<TProductConfig>().GetList(),
+                TestConfigList = manager.GetConfigGroup<TTestConfig>().GetList(),
+                SequenceConfigList = manager.GetConfigGroup<Sequence>().GetList()
             };
 
             //subscribe to view events
-            View.EditStationConfig += _view_EditStationConfig;
-            View.EditProductConfig += _view_EditProductConfig;
-            View.EditTestConfig += _view_EditTestConfig;
-            View.EditSequenceConfig += View_EditSequenceConfig;
-            View.ExecuteTestSequence += _view_ExecuteTestSequence;
-            View.AbortTestSequence += _view_AbortTestSequence;
+            View.ViewEditConfiguration += (s, o) => manager.Edit();
+            View.ExecuteTestSequence += ExecuteTestSequence;
+            View.AbortTestSequence += (s, o) => _tokenSource.Cancel();
         }
 
-        #endregion
-
-        #region Config
-
-        void _view_EditStationConfig(object sender, EventArgs e)
-        {
-            _stationConfigManager.Edit(_devMode);
-        }
-
-        void _view_EditProductConfig(object sender, EventArgs e)
-        {
-            _productConfigManager.Edit(_devMode);
-        }
-
-        void _view_EditTestConfig(object sender, EventArgs e)
-        {
-            _testConfigManager.Edit(_devMode);
-        }
-
-        void View_EditSequenceConfig(object sender, EventArgs e)
-        {
-            _sequenceConfigManager.Edit(_devMode);
-        }
-
-        #endregion
-
-        #region View event handlers
-
-        async void _view_ExecuteTestSequence(object sender, TestSequenceEventArgs e)
+        //Methods
+        async void ExecuteTestSequence(object sender, TestSequenceEventArgs e)
         {
             string sequenceAssembly = null;
             AppDomain sequenceDomain = null;
@@ -134,7 +90,7 @@ namespace TsdLib.Controller
                 TStationConfig stationConfig = (TStationConfig) e.StationConfig;
                 TProductConfig productConfig = (TProductConfig) e.ProductConfig;
                 TTestConfig testConfig = (TTestConfig) e.TestConfig;
-                SequenceConfig sequenceConfig = (SequenceConfig) e.SequenceConfig;
+                Sequence sequenceConfig = (Sequence) e.SequenceConfig;
 
                 await Task.Run(() =>
                 {
@@ -199,12 +155,5 @@ namespace TsdLib.Controller
             Measurement measurement = e.Measurement;
             View.AddMeasurement(measurement);
         }
-
-        void _view_AbortTestSequence(object sender, EventArgs e)
-        {
-            _tokenSource.Cancel();
-        }
-
-        #endregion
     }
 }

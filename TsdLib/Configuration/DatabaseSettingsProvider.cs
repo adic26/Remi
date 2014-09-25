@@ -6,20 +6,20 @@ using System.Diagnostics;
 namespace TsdLib.Configuration
 {
     /// <summary>
-    /// Extends System.Configuration.LocalFileSettingsProvider to persist application settings to Remi
+    /// Extends System.Configuration.LocalFileSettingsProvider to persist application settings to a database.
     /// </summary>
-    public class RemiSettingsProvider : LocalFileSettingsProvider
+    public class DatabaseSettingsProvider : LocalFileSettingsProvider
     {
         static readonly object locker = new object();
 
-        private IRemiControl _remiControl;
+        private IDatabaseConnection _databaseConnection;
 
         /// <summary>
         /// Gets the name of the settings provider.
         /// </summary>
         public override string Name
         {
-            get { return "RemiSettingsProvider"; }
+            get { return GetType().Name; }
         }
 
         /// <summary>
@@ -27,10 +27,9 @@ namespace TsdLib.Configuration
         /// </summary>
         public override string Description
         {
-            get { return "Extends the LocalSettingsProvider by pushing/pulling local config values to/from the Remi database."; }
+            get { return "Extends the LocalSettingsProvider by pushing/pulling local config values to/from the database."; }
         }
 
-        //TODO: initialize _remiControl to the live version
         /// <summary>
         /// Initialize the settings provider.
         /// </summary>
@@ -38,7 +37,7 @@ namespace TsdLib.Configuration
         /// <param name="values">The values for initialization.</param>
         public override void Initialize(string name, NameValueCollection values)
         {
-            _remiControl = new RemiControlTest(@"C:\temp\RemiSettingsTest");
+            _databaseConnection = new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest");
             
         }
 
@@ -54,33 +53,33 @@ namespace TsdLib.Configuration
             {
                 try
                 {
-                    SettingsPropertyValueCollection configFromRemi = new SettingsPropertyValueCollection();
+                    SettingsPropertyValueCollection configFromDb = new SettingsPropertyValueCollection();
                     
                     foreach (SettingsProperty settingProperty in properties)
                     {
                         string configType = settingProperty.PropertyType.GetGenericArguments()[0].Name;
-                        Debug.WriteLine("Pulling " + configType + " from Remi.");
-                        string valueFromRemi = _remiControl.ReadStringFromRemi((string)context["TestSystemName"], (string)context["TestSystemVersion"], configType + ".xml");
+                        Debug.WriteLine("Pulling " + configType + " from database.");
+                        string valueFromDb = _databaseConnection.ReadStringFromDatabase((string)context["TestSystemName"], (string)context["TestSystemVersion"], configType + ".xml");
 
                         SettingsPropertyValue settingValue = new SettingsPropertyValue(settingProperty)
                         {
-                            SerializedValue = valueFromRemi,
+                            SerializedValue = valueFromDb,
                             Deserialized = false,
                             IsDirty = true,
                         };
-                        configFromRemi.Add(settingValue);
+                        configFromDb.Add(settingValue);
                     }
                     
-                    base.SetPropertyValues(context, configFromRemi);
+                    base.SetPropertyValues(context, configFromDb);
                 }
-                catch (ConfigDoesNotExistInRemiException ex)
+                catch (DataDoesNotExistException ex)
                 {
                     Trace.WriteLine(ex.Message + " Pushing up local config data.");
                     SetPropertyValues(context, base.GetPropertyValues(context, properties));
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine(ex.GetType().Name + ": Could not pull config from REMI. Using local settings.");
+                    Trace.WriteLine(ex.GetType().Name + ": Could not pull config from database. Using local settings.");
                     Trace.WriteLine("STACK TRACE: " + ex.StackTrace);
                     Trace.WriteLine(ex.Message);
                 }
@@ -111,14 +110,14 @@ namespace TsdLib.Configuration
                     {
                         string configType = settingValue.Property.PropertyType.GetGenericArguments()[0].Name;
 
-                        Debug.WriteLine("Pushing " + configType + " to Remi.");
+                        Debug.WriteLine("Pushing " + configType + " to database.");
                         
-                        _remiControl.WriteStringToRemi((string) settingValue.SerializedValue, (string)context["TestSystemName"], (string)context["TestSystemVersion"], configType + ".xml");
+                        _databaseConnection.WriteStringToDatabase((string) settingValue.SerializedValue, (string)context["TestSystemName"], (string)context["TestSystemVersion"], configType + ".xml");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine("Could not push config to REMI.");
+                    Trace.WriteLine("Could not push config to database.");
                     Trace.WriteLine("Exception type:" + ex.GetType().Name);
                     Trace.WriteLine("Exception message: " + ex.Message);
                 }

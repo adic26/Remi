@@ -20,7 +20,7 @@ namespace $safeprojectname$
 
             if (args.Contains("-seq"))
             {
-                Trace.WriteLine("Updating Remi Sequence Config");
+                Trace.WriteLine("Updating Sequence Config on the database");
                 List<string> argsList = args.ToList();
                 UpdateTestConfig(argsList[argsList.IndexOf("-seq") + 1], argsList[argsList.IndexOf("-seq") + 2], bool.Parse(argsList[argsList.IndexOf("-seq") + 3]));
                 return;
@@ -39,14 +39,14 @@ namespace $safeprojectname$
             Console.WriteLine("Done");
         }
 
-        private static void UpdateTestConfig(string sourceFolder, string destinationFolder, bool remiSetting)
+        private static void UpdateTestConfig(string sourceFolder, string destinationFolder, bool storeInDatabase)
         {
             if (!Directory.Exists(destinationFolder))
                 Directory.CreateDirectory(destinationFolder);
 
             IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetInstance("TestClient", Application.ProductVersion).GetConfigGroup();
 
-            Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects in Remi", cfgGroup.Count()));
+            Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects in the database", cfgGroup.Count()));
 
             foreach (string sourceFilePath in Directory.EnumerateFiles(sourceFolder))
             {
@@ -57,7 +57,7 @@ namespace $safeprojectname$
                 string destinationFilePath = Path.Combine(destinationFolder, sourceFileName);
 
                 File.Copy(sourceFilePath, destinationFilePath, true);
-                cfgGroup.Add(new SequenceConfig(destinationFilePath) { RemiSetting = remiSetting });
+                cfgGroup.Add(new SequenceConfig(destinationFilePath) { StoreInDatabase = storeInDatabase });
             }
             cfgGroup.Save();
         }

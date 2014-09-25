@@ -16,21 +16,9 @@ namespace TsdLib.View
         TraceListener Listener { get; }
 
         /// <summary>
-        /// Event fired when requesting to modify the Station Config.
+        /// Event fired when requesting to view or modify the test system configuration.
         /// </summary>
-        event EventHandler EditStationConfig;
-        /// <summary>
-        /// Event fired when requesting to modify the Product Config.
-        /// </summary>
-        event EventHandler EditProductConfig;
-        /// <summary>
-        /// Event fired when requesting to modify the Test Config.
-        /// </summary>
-        event EventHandler EditTestConfig;
-        /// <summary>
-        /// Event fired when requesting to modify the Sequence Config.
-        /// </summary>
-        event EventHandler EditSequenceConfig;
+        event EventHandler ViewEditConfiguration;
 
         /// <summary>
         /// Event fired when requesting to execute the Test Sequence.

@@ -10,8 +10,10 @@ namespace TsdLib.Configuration
     sealed class ConfigGroup<T> : ApplicationSettingsBase, IConfigGroup<T>
         where T : ConfigItem, new()
     {
+        private readonly string _settingsLocation;
+
         [UserScopedSetting]
-        [SettingsProvider(typeof(RemiSettingsProvider))]
+        [SettingsProvider(typeof(DatabaseSettingsProvider))]
         public BindingList<T> ConfigItems
         {
             get { return (BindingList<T>)this["ConfigItems"]; }
@@ -28,12 +30,16 @@ namespace TsdLib.Configuration
 
         BindingList<T> AllConfigItems { get; set; }
 
-        public ConfigGroup(string testSystemName, string testSystemVersion)
+        //TODO: inject IDatabaseConnection
+        public ConfigGroup(string testSystemName, string testSystemVersion, string settingsLocation)
         {
+            _settingsLocation = settingsLocation;
             if (!string.IsNullOrEmpty(testSystemName))
                 Context.Add("TestSystemName", testSystemName);
             if (!string.IsNullOrEmpty(testSystemVersion))
                 Context.Add("TestSystemVersion", testSystemVersion);
+            if (!string.IsNullOrEmpty(settingsLocation))
+                Context.Add("File", new DatabaseFolderConnection(settingsLocation));
 
             Synchronized(this);
 
@@ -43,16 +49,16 @@ namespace TsdLib.Configuration
             if (LocalConfigItems == null)
                 LocalConfigItems = new BindingList<T>();
 
-            //Add a local default config if these is no config available
+            //Add a default config if these is no config available
             if (ConfigItems.Count == 0 && LocalConfigItems.Count == 0)
             {
                 T newConfig = new T
                 {
                     Name = "Default" + typeof(T).Name,
-                    RemiSetting = false,
+                    StoreInDatabase = true,
                 };
 
-                LocalConfigItems.Add(newConfig);
+                ConfigItems.Add(newConfig);
                 Save();
             }
 
@@ -61,11 +67,21 @@ namespace TsdLib.Configuration
                 AllConfigItems.Add(configItem);
             foreach (T localConfigItem in LocalConfigItems)
                 AllConfigItems.Add(localConfigItem);
+
+            AllConfigItems.ListChanged += AllConfigItems_ListChanged;
+
+            SettingsSaving += ConfigGroup_SettingsSaving;
         }
 
-        public void Add(T config, bool useRemi = true)
+        void ConfigGroup_SettingsSaving(object sender, CancelEventArgs e)
         {
-            BindingList<T> list = useRemi ? ConfigItems : LocalConfigItems;
+            //TODO: upload assembly to _settingsLocation to support stand-alone app
+            string dummy = _settingsLocation;
+        }
+
+        public void Add(T config, bool storeInDatabase = true)
+        {
+            BindingList<T> list = storeInDatabase ? ConfigItems : LocalConfigItems;
 
             T existing = list.FirstOrDefault(cfg => cfg.Name == config.Name);
 
@@ -78,6 +94,23 @@ namespace TsdLib.Configuration
 
             list.Add(config);
             AllConfigItems.Add(config);
+        }
+
+        /// <summary>
+        /// Gets the type of <see cref="TsdLib.Configuration.ConfigItem"/>.
+        /// </summary>
+        public string ConfigType
+        {
+            get { return typeof(T).Name; }
+        }
+
+        /// <summary>
+        /// Gets a description of the <see cref="TsdLib.Configuration.ConfigGroup{T}"/> including type of <see cref="TsdLib.Configuration.ConfigItem"/>.
+        /// </summary>
+        /// <returns>A string describing the <see cref="TsdLib.Configuration.ConfigGroup{T}"/> including type of <see cref="TsdLib.Configuration.ConfigItem"/>.</returns>
+        public override string ToString()
+        {
+            return ConfigType;
         }
 
         #region IEnumerable implementation
@@ -106,6 +139,18 @@ namespace TsdLib.Configuration
             return AllConfigItems;
         }
 
+        void AllConfigItems_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            if (e.ListChangedType == ListChangedType.ItemAdded)
+            {
+                T cfg = AllConfigItems[e.NewIndex];
+                if (cfg.StoreInDatabase)
+                    ConfigItems.Add(cfg);
+                else
+                    LocalConfigItems.Add(cfg);
+            }
+        }
+
         #endregion
     }
 
@@ -120,8 +165,8 @@ namespace TsdLib.Configuration
         /// Add a new instance to the configuration group.
         /// </summary>
         /// <param name="configItem">A new configuration instance.</param>
-        /// <param name="useRemi">True to store configuration locally and on Remi. False to store locally only.</param>
-        void Add(T configItem, bool useRemi = true);
+        /// <param name="storeInDatabase">True to store configuration locally and on the database. False to store locally only.</param>
+        void Add(T configItem, bool storeInDatabase = true);
     }
 
     /// <summary>
@@ -130,8 +175,13 @@ namespace TsdLib.Configuration
     public interface IConfigGroup : IListSource
     {
         /// <summary>
+        /// Gets the type of <see cref="TsdLib.Configuration.ConfigItem"/>.
+        /// </summary>
+        string ConfigType { get; }
+        /// <summary>
         /// Save the configuration group.
         /// </summary>
         void Save();
+
     }
 }

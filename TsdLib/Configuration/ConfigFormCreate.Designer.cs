@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.textBox_Name = new System.Windows.Forms.TextBox();
-            this.radioButton_StoreInRemi = new System.Windows.Forms.RadioButton();
+            this.radioButton_StoreInDatabase = new System.Windows.Forms.RadioButton();
             this.button_Ok = new System.Windows.Forms.Button();
             this.button_Cancel = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -43,17 +43,17 @@
             this.textBox_Name.Size = new System.Drawing.Size(179, 20);
             this.textBox_Name.TabIndex = 0;
             // 
-            // radioButton_StoreInRemi
+            // radioButton_StoreInDatabase
             // 
-            this.radioButton_StoreInRemi.AutoSize = true;
-            this.radioButton_StoreInRemi.Checked = true;
-            this.radioButton_StoreInRemi.Location = new System.Drawing.Point(12, 69);
-            this.radioButton_StoreInRemi.Name = "radioButton_StoreInRemi";
-            this.radioButton_StoreInRemi.Size = new System.Drawing.Size(88, 17);
-            this.radioButton_StoreInRemi.TabIndex = 1;
-            this.radioButton_StoreInRemi.TabStop = true;
-            this.radioButton_StoreInRemi.Text = "Store in Remi";
-            this.radioButton_StoreInRemi.UseVisualStyleBackColor = true;
+            this.radioButton_StoreInDatabase.AutoSize = true;
+            this.radioButton_StoreInDatabase.Checked = true;
+            this.radioButton_StoreInDatabase.Location = new System.Drawing.Point(12, 69);
+            this.radioButton_StoreInDatabase.Name = "radioButton_StoreInDatabase";
+            this.radioButton_StoreInDatabase.Size = new System.Drawing.Size(110, 17);
+            this.radioButton_StoreInDatabase.TabIndex = 1;
+            this.radioButton_StoreInDatabase.TabStop = true;
+            this.radioButton_StoreInDatabase.Text = "Store in Database";
+            this.radioButton_StoreInDatabase.UseVisualStyleBackColor = true;
             // 
             // button_Ok
             // 
@@ -107,7 +107,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button_Cancel);
             this.Controls.Add(this.button_Ok);
-            this.Controls.Add(this.radioButton_StoreInRemi);
+            this.Controls.Add(this.radioButton_StoreInDatabase);
             this.Controls.Add(this.textBox_Name);
             this.Name = "ConfigFormCreate";
             this.ResumeLayout(false);
@@ -118,7 +118,7 @@
         #endregion
 
         private System.Windows.Forms.TextBox textBox_Name;
-        private System.Windows.Forms.RadioButton radioButton_StoreInRemi;
+        private System.Windows.Forms.RadioButton radioButton_StoreInDatabase;
         private System.Windows.Forms.Button button_Ok;
         private System.Windows.Forms.Button button_Cancel;
         private System.Windows.Forms.Label label1;
