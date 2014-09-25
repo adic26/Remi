@@ -50,8 +50,6 @@
     <Compile Include="Configuration\ProductConfig.cs" />
     <Compile Include="Configuration\StationConfig.cs" />
     <Compile Include="Configuration\TestConfig.cs" />
-    <Compile Include="Sequences\DefaultSequence.cs" />
-    <Compile Include="Instruments\Instruments.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="$safeprojectname$Program.cs" />
     <Compile Include="View.cs">
@@ -63,6 +61,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Sequences\DefaultSequence.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Instruments\Instruments.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="View.resx">
@@ -71,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Instruments\DummyPowerSupply.xml" />
+    <Content Include="CodeGenerator\TsdLib.Instruments.xsd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

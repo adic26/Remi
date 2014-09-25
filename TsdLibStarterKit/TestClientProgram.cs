@@ -41,25 +41,25 @@ namespace $safeprojectname$
 
         private static void UpdateTestConfig(string sourceFolder, string destinationFolder, bool storeInDatabase)
         {
-            if (!Directory.Exists(destinationFolder))
-                Directory.CreateDirectory(destinationFolder);
+            //if (!Directory.Exists(destinationFolder))
+            //    Directory.CreateDirectory(destinationFolder);
 
-            IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetInstance("TestClient", Application.ProductVersion).GetConfigGroup();
+            //IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetInstance("TestClient", Application.ProductVersion).GetConfigGroup();
 
-            Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects in the database", cfgGroup.Count()));
+            //Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects in the database", cfgGroup.Count()));
 
-            foreach (string sourceFilePath in Directory.EnumerateFiles(sourceFolder))
-            {
-                string sourceFileName = Path.GetFileName(sourceFilePath);
-                if (sourceFileName == null)
-                    throw new ArgumentException(sourceFilePath + " is not a valid file path.");
+            //foreach (string sourceFilePath in Directory.EnumerateFiles(sourceFolder))
+            //{
+            //    string sourceFileName = Path.GetFileName(sourceFilePath);
+            //    if (sourceFileName == null)
+            //        throw new ArgumentException(sourceFilePath + " is not a valid file path.");
 
-                string destinationFilePath = Path.Combine(destinationFolder, sourceFileName);
+            //    string destinationFilePath = Path.Combine(destinationFolder, sourceFileName);
 
-                File.Copy(sourceFilePath, destinationFilePath, true);
-                cfgGroup.Add(new SequenceConfig(destinationFilePath) { StoreInDatabase = storeInDatabase });
-            }
-            cfgGroup.Save();
+            //    File.Copy(sourceFilePath, destinationFilePath, true);
+            //    cfgGroup.Add(new SequenceConfig(destinationFilePath) { StoreInDatabase = storeInDatabase });
+            //}
+            //cfgGroup.Save();
         }
     }
 }

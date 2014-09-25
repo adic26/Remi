@@ -70,6 +70,9 @@
   <ItemGroup>
     <Content Include="AssemblyInfo.cs" />
     <Content Include="App.config" />
+    <Content Include="CodeGenerator\TsdLib.Instruments.xsd">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="TsdLibStarterKit.ico" />
   </ItemGroup>
   <ItemGroup>

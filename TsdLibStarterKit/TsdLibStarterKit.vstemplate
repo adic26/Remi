@@ -29,6 +29,9 @@
         <ProjectItem ReplaceParameters="true" TargetFileName="DummyPowerSupply.xml">DummyPowerSupply.xml</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="Instruments.cs">Instruments.cs</ProjectItem>
       </Folder>
+      <Folder Name="CodeGenerator" TargetFolderName="CodeGenerator">
+        <ProjectItem ReplaceParameters="true" TargetFileName="TsdLib.Instruments.xsd">TsdLib.Instruments.xsd</ProjectItem>
+      </Folder>
       <ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$Program.cs">TestClientProgram.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="View.cs">View.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="View.Designer.cs">View.Designer.cs</ProjectItem>
