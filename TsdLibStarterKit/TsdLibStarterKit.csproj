@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <VSTemplate Include="TsdLibStarterKit.vstemplate" />
+    <Content Include="atom.xml" />
     <Content Include="View.Designer.cs">
       <DependentUpon>View.cs</DependentUpon>
     </Content>

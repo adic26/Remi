@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -91,17 +93,19 @@ namespace TsdLib.Controller
                 TProductConfig productConfig = (TProductConfig) e.ProductConfig;
                 TTestConfig testConfig = (TTestConfig) e.TestConfig;
                 Sequence sequenceConfig = (Sequence) e.SequenceConfig;
-
+                
+                //TODO: get instrument references from instrument config - for now they are parsed out and added to the CodeCompileUnit of the xml by the code generator
                 await Task.Run(() =>
                 {
                     _tokenSource = new CancellationTokenSource();
 
                     sequenceAssembly = Generator.GenerateDynamicAssembly(
                         TestSystemName,
-                        new[] { @"C:\Users\jmckee\Source\Repos\TsdLib\TestClient\Instruments\DummyPowerSupply.xml" },
+                        Directory.EnumerateFiles("Instruments", "*.xml").ToArray(),
                         @"CodeGenerator\TsdLib.Instruments.xsd",
                         sequenceConfig.LocalFile,
-                        Language.CSharp);
+                        Language.CSharp,
+                        sequenceConfig.GetReferencedAssemblies());
 
                     sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
 

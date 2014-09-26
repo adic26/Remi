@@ -14,5 +14,24 @@
     <p>
         &nbsp;</p>
 
+    <p>
+        Instrument&nbsp; files are not compiled as part of the build process - the xml source files are copied to the output directory where they can be picked up by the code generator and dynamically compiled into a separate Application Domain where the test sequence will execute.</p>
+    <p>
+        There is a pre-build event to transform the instrument xml files into the .NET class file, but this is just to show the developer what the generated instrument classes look like.</p>
+    <p>
+        &nbsp;</p>
+    <p>
+        &nbsp;</p>
+    <p>
+        Sequence files are not compiled as part of the build process. There is a post-build event to upload the contents of the sequence files to the database as Sequence config items. This makes the design-time sequences available in the run-time sequence selector.</p>
+    <p>
+        &nbsp;</p>
+    <p>
+        &nbsp;</p>
+    <p>
+        We should compile sequence files (and probably instruments too) to make sure the code will build (no syntac errors, missing dependencies) - but will put them into a different namespace so they won&#39;t clash with the dynamically generated types in the temp assembly. NEED TO CHANGE THE NAMESPACE OF DYNAMICALLY COMPILED TYPES.</p>
+    <p>
+        Design time will be TestClient.Sequences but code generator will generate TestClient.Sequences.Dynamic</p>
+
 </body>
 </html>

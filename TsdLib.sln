@@ -44,6 +44,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deploy", "Deploy\Deploy.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.ConfigManagerApp", "TsdLib.ConfigManagerApp\TsdLib.ConfigManagerApp.csproj", "{A3B07997-F603-4BE4-B32F-2DCA36629BD3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InstrumentLibrary", "InstrumentLibrary", "{CF0B0AAA-F2F3-4576-AE6B-11E4BD94F9B9}"
+	ProjectSection(SolutionItems) = preProject
+		DummyPowerSupply.xml = DummyPowerSupply.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

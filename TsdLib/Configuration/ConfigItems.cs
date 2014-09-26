@@ -142,7 +142,6 @@ namespace TsdLib.Configuration
         /// </summary>
         internal string LocalFile { get; set; }
 
-
         /// <summary>
         /// The source code containing the step-by-step instructions.
         /// </summary>
@@ -156,13 +155,22 @@ namespace TsdLib.Configuration
                     File.WriteAllText(LocalFile, "//Add test sequence here by subclassing TsdLib.TestSequence.TestSequenceBase");
                 return File.ReadAllText(LocalFile);
             }
-            set { File.WriteAllText(LocalFile, value); }
+            set
+            {
+                //Append .Dynamic to namespace declaration
+                
+                string dynamicNamespaced = value.Replace("namespace ", "namespace ");
+                File.WriteAllText(LocalFile, dynamicNamespaced);
+            }
         }
 
         /// <summary>
         /// Default constructor required for serialization.
         /// </summary>
-        public Sequence() { }
+        public Sequence()
+        {
+        
+        }
 
         /// <summary>
         /// Initialize a new SequenceConfig with the specified test sequence source code file.
@@ -171,6 +179,21 @@ namespace TsdLib.Configuration
         public Sequence(string localFile)
         {
             LocalFile = localFile;
+        }
+
+        private string[] _referencedAssemblies;
+        /// <summary>
+        /// Gets the assemblies referenced by the test sequence code.
+        /// </summary>
+        public string[] GetReferencedAssemblies()
+        {
+            if (_referencedAssemblies == null)
+            {
+                MatchCollection sequenceAssemblyReferences = Regex.Matches(TestSequenceSourceCode, "(?<=assembly: AssemblyReference\\(\").*(?=\"\\))");
+                string[] references = sequenceAssemblyReferences.Cast<Match>().Select(m => m.Value).ToArray();
+                _referencedAssemblies = references;
+            }
+            return _referencedAssemblies;
         }
 
         private string _namespace;

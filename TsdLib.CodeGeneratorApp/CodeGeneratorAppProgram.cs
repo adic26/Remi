@@ -12,7 +12,7 @@ namespace TsdLib.CodeGeneratorApp
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
 
-            if (args.Length < 6)
+            if (args.Length < 5)
             {
                 Trace.WriteLine("Wrong number of arguments");
                 return -1;
@@ -22,14 +22,13 @@ namespace TsdLib.CodeGeneratorApp
             string instrumentsFolder = args[1];
             string schemaFile = args[2];
             string outputDirectory = args[3];
-            string outputFileName = args[4];
-            Language language = (Language)Enum.Parse(typeof(Language), args[5]);
+            Language language = (Language)Enum.Parse(typeof(Language), args[4]);
 
             string[] instrumentsFiles = Directory.EnumerateFiles(instrumentsFolder)
                 .Where(file => Path.GetExtension(file) == ".xml")
                 .ToArray();
 
-            Generator.GenerateInstrumentsClass(testSystemName, instrumentsFiles, schemaFile, outputDirectory, outputFileName, language);
+            Generator.GenerateInstrumentsClassFile(testSystemName, instrumentsFiles, schemaFile, outputDirectory, language, false);
 
             return 0;
         }

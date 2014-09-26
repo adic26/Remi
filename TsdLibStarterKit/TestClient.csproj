@@ -79,7 +79,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$assemblyfolder$\TsdLib.CodeGeneratorApp.exe" "$(ProjectName)" "$(ProjectDir)Instruments" "$assemblyfolder$\TsdLib.Instruments.xsd" "$(ProjectDir)Instruments" Instruments CSharp</PreBuildEvent>
+    <PreBuildEvent>"$assemblyfolder$\TsdLib.CodeGeneratorApp.exe" "$(ProjectName)" "$(ProjectDir)Instruments" "$assemblyfolder$\TsdLib.Instruments.xsd" "$(ProjectDir)Instruments" CSharp</PreBuildEvent>
     <PostBuildEvent>"$(TargetPath)" -seq "$(ProjectDir)Sequences" "$(TargetDir)Sequences" true</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
