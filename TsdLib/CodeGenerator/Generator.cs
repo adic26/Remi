@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.Schema;
+using TsdLib.Configuration;
 
 namespace TsdLib.CodeGenerator
 {
@@ -19,18 +20,17 @@ namespace TsdLib.CodeGenerator
         /// Generates an assembly from the specified XML instrument definition file(s) and test sequence source code file.
         /// </summary>
         /// <param name="testSystemName">Name of the test system. Will be used to generate namespaces.</param>
+        /// <param name="sequence">Sequence config object containing the test sequence source code and supporting information.</param>
         /// <param name="instrumentFiles">An array of absolute or relative paths to the XML instrument definition files to compile into the assembly.</param>
         /// <param name="schemaFile">XML schema (*.xsd) file used to validate the XML input files.</param>
-        /// <param name="sequenceFile">Absolute or relative path to the test sequence source code file to compile into the assembly.</param>
         /// <param name="language">Generate C# or Visual Basic code.</param>
-        /// <param name="assemblyReferences">Zero or more assemblies to add references to.</param>
         /// <returns>Absolute path the the generated assembly.</returns>
-        public static string GenerateDynamicAssembly(string testSystemName, string[] instrumentFiles, string schemaFile, string sequenceFile, Language language, params string[] assemblyReferences)
+        public static string GenerateDynamicAssembly(string testSystemName, Sequence sequence, string[] instrumentFiles, string schemaFile, Language language)
         {
             Trace.WriteLine("Compiling test sequence from:");
             foreach (string instrumentsFile in instrumentFiles)
                 Trace.WriteLine("\t" + Path.GetFileNameWithoutExtension(instrumentsFile));
-            Trace.WriteLine("\t" + Path.GetFileNameWithoutExtension(sequenceFile));
+            Trace.WriteLine("\t" + sequence.Name);
 
             CodeDomProvider provider = CodeDomProvider.CreateProvider(language.ToString());
 
@@ -47,14 +47,10 @@ namespace TsdLib.CodeGenerator
             cp.CompilerOptions += " /d:TRACE";
 #endif
 
-            foreach (string assemblyReference in assemblyReferences)
-            {
-                if (!cp.ReferencedAssemblies.Contains(assemblyReference))
-                    cp.ReferencedAssemblies.Add(assemblyReference);
-            }
-
             CodeCompileUnit ccu = generateInstrumentCodeCompileUnit(testSystemName, instrumentFiles, schemaFile, true);
-            CodeSnippetCompileUnit seq = new CodeSnippetCompileUnit(File.ReadAllText(sequenceFile));
+
+            CodeSnippetCompileUnit seq = new CodeSnippetCompileUnit(sequence.TestSequenceSourceCode);
+            seq.ReferencedAssemblies.AddRange(sequence.GetReferencedAssemblies());
             
             CompilerResults compilerResults = provider.CompileAssemblyFromDom(cp, ccu, seq);
 

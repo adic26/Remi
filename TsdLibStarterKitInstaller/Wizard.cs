@@ -17,15 +17,21 @@ namespace TsdLibStarterKitInstaller
             {
                 string sourceBasePath = replacementsDictionary["$wizarddata$"];
 
-                XDocument manifestDoc = XDocument.Load(Path.Combine(sourceBasePath, "extension.vsixmanifest"));
-                XNamespace ns = "http://schemas.microsoft.com/developer/vsx-schema/2011";
-                XElement root = manifestDoc.Root;
-                Debug.Assert(root != null, "Invalid XML document. No root element.");
-                XElement manifestElement = root.Element(ns + "Metadata");
-                Debug.Assert(manifestElement != null, "Invalid XML document. No Manifest element.");
-                XElement identityElement = manifestElement.Element(ns + "Identity");
-                Debug.Assert(identityElement != null, "Invalid XML document. No Identity element.");
-                string version = identityElement.Attribute("Version").Value;
+                XNamespace atomNs = "http://www.w3.org/2005/Atom";
+                XNamespace vsixNs = "http://schemas.microsoft.com/developer/vsx-syndication-schema/2010";
+
+
+                XDocument atomDoc = XDocument.Load(Path.Combine(sourceBasePath, "atom.xml"));
+                XElement feedElement = atomDoc.Root;
+                Debug.Assert(feedElement != null, "Invalid atom.xml document. No root element.");
+                XElement entryElement = feedElement.Element(atomNs + "entry");
+                Debug.Assert(entryElement != null, "Invalid XML document. No entry element.");
+                XElement vsixElement = entryElement.Element(vsixNs + "Vsix");
+                Debug.Assert(vsixElement != null, "Invalid XML document. No Vsix element.");
+                XElement versionElement = vsixElement.Element(vsixNs + "Version");
+                Debug.Assert(versionElement != null, "Invalid XML document. No Version element.");
+
+                string version = versionElement.Value;
                 
                 string sourcePath = Path.Combine(sourceBasePath, version);
 

@@ -1,21 +1,31 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace TsdLib.Configuration
 {
+    /// <summary>
+    /// Extends the non-generic <see cref="TsdLib.Configuration.ConfigManager"/> to allow initialization of stronly typed configuration groups.
+    /// </summary>
+    /// <typeparam name="TStationConfig">Type of station configuration. Must be a class derived from <see cref="TsdLib.Configuration.StationConfigCommon"/>.</typeparam>
+    /// <typeparam name="TProductConfig">Type of product configuration. Must be a class derived from <see cref="TsdLib.Configuration.ProductConfigCommon"/>.</typeparam>
+    /// <typeparam name="TTestConfig">Type of test configuration. Must be a class derived from <see cref="TsdLib.Configuration.TestConfigCommon"/>.</typeparam>
+    /// <typeparam name="TSequenceConfig">Type of sequence configuration. Must be a class derived from <see cref="TsdLib.Configuration.Sequence"/>.</typeparam>
     public class ConfigManager<TStationConfig, TProductConfig, TTestConfig, TSequenceConfig> : ConfigManager
         where TStationConfig : StationConfigCommon, new()
         where TProductConfig : ProductConfigCommon, new()
         where TTestConfig : TestConfigCommon, new()
         where TSequenceConfig : Sequence, new()
     {
-        public ConfigManager(string testSystemName, string testSystemVersion, string settingsLocation)
-            : base(testSystemName, testSystemVersion, settingsLocation)
+        /// <summary>
+        /// Initialize a new ConfigManager instance to manage the configuration for a specified test system.
+        /// </summary>
+        /// <param name="testSystemName">Name of the test system.</param>
+        /// <param name="testSystemVersion">Version of the test system.</param>
+        /// <param name="databaseConnection">An <see cref="IDatabaseConnection"/> object to handle persistence with a database.</param>
+        public ConfigManager(string testSystemName, string testSystemVersion, IDatabaseConnection databaseConnection)
+            : base(testSystemName, testSystemVersion, databaseConnection)
         {
             GetConfigGroup<TStationConfig>();
             GetConfigGroup<TProductConfig>();
@@ -24,49 +34,65 @@ namespace TsdLib.Configuration
         }
     }
 
+    /// <summary>
+    /// Contains functionality to manage the test system configuration.
+    /// </summary>
     public class ConfigManager
     {
-        internal static readonly List<IConfigGroup> ConfigGroups = new List<IConfigGroup>();
+        private static readonly List<IConfigGroup> configGroups = new List<IConfigGroup>();
 
-        internal readonly string _testSystemName;
-        internal readonly string _testSystemVersion;
-        internal readonly string _settingsLocation;
+        private readonly string _testSystemName;
+        private readonly string _testSystemVersion;
+        private readonly IDatabaseConnection _databaseConnection;
 
-        public ConfigManager(string testSystemName, string testSystemVersion, string settingsLocation)
+        /// <summary>
+        /// Initialize a new ConfigManager instance to manage the configuration for a specified test system.
+        /// </summary>
+        /// <param name="testSystemName">Name of the test system.</param>
+        /// <param name="testSystemVersion">Version of the test system.</param>
+        /// <param name="databaseConnection">An <see cref="IDatabaseConnection"/> object to handle persistence with a database.</param>
+        public ConfigManager(string testSystemName, string testSystemVersion, IDatabaseConnection databaseConnection)
         {
             _testSystemName = testSystemName;
             _testSystemVersion = testSystemVersion;
-            _settingsLocation = settingsLocation;
+            _databaseConnection = databaseConnection;
         }
 
-        public void Add(IConfigGroup configGroup)
-        {
-            ConfigGroups.Add(configGroup);
-        }
-
+        /// <summary>
+        /// Gets the group of configuration instances.
+        /// </summary>
+        /// <typeparam name="T">Type of configuration.</typeparam>
+        /// <returns>A configuration group containing all instances of the specified configuration type.</returns>
         public IConfigGroup<T> GetConfigGroup<T>()
             where T : ConfigItem, new()
         {
-            IConfigGroup cfgGrp = ConfigGroups.FirstOrDefault(cfg => cfg.ConfigType == typeof (T).Name);
+            IConfigGroup cfgGrp = configGroups.FirstOrDefault(cfg => cfg.ConfigType == typeof (T).Name);
             if (cfgGrp == null)
             {
-                cfgGrp = (IConfigGroup<T>)Activator.CreateInstance(typeof(ConfigGroup<T>), _testSystemName, _testSystemVersion, _settingsLocation);
-                ConfigGroups.Add(cfgGrp);
+                cfgGrp = (IConfigGroup<T>)Activator.CreateInstance(typeof(ConfigGroup<T>), _testSystemName, _testSystemVersion, _databaseConnection);
+                configGroups.Add(cfgGrp);
             }
             return cfgGrp as IConfigGroup<T>;
         }
 
-        public void Edit()
+        /// <summary>
+        /// Displays the configuration form to view and modify configuration parameters.
+        /// </summary>
+        /// <param name="editable">True to make configuration parameters writable; False to make configuration parameters read-only.</param>
+        public void Edit(bool editable)
         {
-            using (ConfigManagerForm form = new ConfigManagerForm(ConfigGroups, _testSystemName, _testSystemVersion))
+            using (ConfigManagerForm form = new ConfigManagerForm(configGroups, _testSystemName, _testSystemVersion, editable))
             {
                 form.ShowDialog();
 
-                if (form.DialogResult == DialogResult.OK)
-                    ConfigGroups.ForEach(s => s.Save());
-                else
-                    for (int i = 0; i < ConfigGroups.Count; i++)
-                        ConfigGroups[i] = (IConfigGroup)Activator.CreateInstance(ConfigGroups[i].GetType(), _testSystemName, _testSystemVersion, _settingsLocation);
+                if (editable)
+                {
+                    if (form.DialogResult == DialogResult.OK)
+                        configGroups.ForEach(s => s.Save());
+                    else
+                        for (int i = 0; i < configGroups.Count; i++)
+                            configGroups[i] = (IConfigGroup) Activator.CreateInstance(configGroups[i].GetType(), _testSystemName, _testSystemVersion, _databaseConnection);
+                }
             }
         }
     }

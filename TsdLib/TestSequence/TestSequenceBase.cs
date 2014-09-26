@@ -68,12 +68,12 @@ namespace TsdLib.TestSequence
             FactoryEvents.Connected += FactoryEvents_Connected;
         }
 
-        void FactoryEvents_Connected(object sender, ConnectedEventArgs e)
+        private void FactoryEvents_Connected(object sender, ConnectedEventArgs e)
         {
-            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Description", e.Instrument.Description, "n/a", "n/a", "n/a");
-            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Model Number", e.Instrument.ModelNumber, "n/a", "n/a", "n/a");
-            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Serial Number", e.Instrument.SerialNumber, "n/a", "n/a", "n/a");
-            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Firmware Version", e.Instrument.FirmwareVersion, "n/a", "n/a", "n/a");
+            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Description", e.Instrument.Description, "Info", "", "");
+            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Model Number", e.Instrument.ModelNumber, "Info", "", "");
+            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Serial Number", e.Instrument.SerialNumber, "Info", "", "");
+            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Firmware Version", e.Instrument.FirmwareVersion, "Info", "", "");
         }
 
         /// <summary>

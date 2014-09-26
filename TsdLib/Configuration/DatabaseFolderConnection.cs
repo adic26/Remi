@@ -30,9 +30,8 @@ namespace TsdLib.Configuration
         /// <param name="dataDescription">Description of the data</param>
         public void WriteStringToDatabase(string data, string testSystemName, string testSystemVersion, string dataDescription)
         {
-            Match match = Regex.Match(testSystemVersion, AppVersionFilter);
-            string appVersion = match.Success ? match.Value : testSystemVersion;
-            string directoryName = Path.Combine(_settingsBasePath, testSystemName, appVersion);
+            string directoryName = getDirectory(testSystemVersion, testSystemName);
+
             if (!Directory.Exists(directoryName))
                 Directory.CreateDirectory(directoryName);
 
@@ -48,9 +47,9 @@ namespace TsdLib.Configuration
         /// <returns>Data read from database in the specified indexes.</returns>
         public string ReadStringFromDatabase(string testSystemName, string testSystemVersion, string dataDescription)
         {
-            Match match = Regex.Match(testSystemVersion, AppVersionFilter);
-            string appVersion = match.Success ? match.Value : testSystemVersion;
-            string filePath = Path.Combine(_settingsBasePath, testSystemName, appVersion, dataDescription);
+            string directoryName = getDirectory(testSystemVersion, testSystemName);
+
+            string filePath = Path.Combine(directoryName, dataDescription);
 
             if (!File.Exists(filePath))
                 throw new DataDoesNotExistException(testSystemName, testSystemVersion, dataDescription);
@@ -58,6 +57,43 @@ namespace TsdLib.Configuration
             string data = File.ReadAllText(filePath);
 
             return data;
+        }
+
+        /// <summary>
+        /// Uploads a file to the database using the name/version of the test system and dataDescription as indexes.
+        /// </summary>
+        /// <param name="sourceFilePath">Absolute path to the file to upload.</param>
+        /// <param name="testSystemName">Name of the test system.</param>
+        /// <param name="testSystemVersion">Version of the test system.</param>
+        /// <param name="fileDescription">Description of the file.</param>
+        /// <param name="overWrite">True to overwrite existing file.</param>
+        public void UploadFileToDatabase(string sourceFilePath, string testSystemName, string testSystemVersion, string fileDescription, bool overWrite)
+        {
+            string directoryName = getDirectory(testSystemVersion, testSystemName);
+
+            string fileName = Path.GetFileName(sourceFilePath);
+            if (fileName == null)
+                throw new InvalidFilePathException(sourceFilePath);
+
+            string destinationFilePath = Path.Combine(directoryName, fileName);
+
+            if (!overWrite && File.Exists(destinationFilePath))
+                return;
+
+            if (!Directory.Exists(directoryName))
+                Directory.CreateDirectory(directoryName);
+
+            File.Copy(sourceFilePath, destinationFilePath);
+            
+        }
+
+        private string getDirectory(string testSystemVersion, string testSystemName)
+        {
+            Match match = Regex.Match(testSystemVersion, AppVersionFilter);
+            string appVersion = match.Success ? match.Value : testSystemVersion;
+            string directoryName = Path.Combine(_settingsBasePath, testSystemName, appVersion);
+
+            return directoryName;
         }
     }
 

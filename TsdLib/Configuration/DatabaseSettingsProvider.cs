@@ -12,8 +12,6 @@ namespace TsdLib.Configuration
     {
         static readonly object locker = new object();
 
-        private IDatabaseConnection _databaseConnection;
-
         /// <summary>
         /// Gets the name of the settings provider.
         /// </summary>
@@ -37,7 +35,7 @@ namespace TsdLib.Configuration
         /// <param name="values">The values for initialization.</param>
         public override void Initialize(string name, NameValueCollection values)
         {
-            _databaseConnection = new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest");
+            
             
         }
 
@@ -54,12 +52,14 @@ namespace TsdLib.Configuration
                 try
                 {
                     SettingsPropertyValueCollection configFromDb = new SettingsPropertyValueCollection();
-                    
+
+                    IDatabaseConnection databaseConnection = (IDatabaseConnection) context["DatabaseConnection"];
+
                     foreach (SettingsProperty settingProperty in properties)
                     {
                         string configType = settingProperty.PropertyType.GetGenericArguments()[0].Name;
                         Debug.WriteLine("Pulling " + configType + " from database.");
-                        string valueFromDb = _databaseConnection.ReadStringFromDatabase((string)context["TestSystemName"], (string)context["TestSystemVersion"], configType + ".xml");
+                        string valueFromDb = databaseConnection.ReadStringFromDatabase((string)context["TestSystemName"], (string)context["TestSystemVersion"], configType + ".xml");
 
                         SettingsPropertyValue settingValue = new SettingsPropertyValue(settingProperty)
                         {
@@ -97,13 +97,16 @@ namespace TsdLib.Configuration
         {
             lock (locker)
             {
-// ReSharper disable once NotAccessedVariable - used for reading the PropertyValue to set the IsDirty flag
+                // ReSharper disable once NotAccessedVariable - used for reading the PropertyValue to set the IsDirty flag
                 object dummy;
                 foreach (SettingsPropertyValue settingsPropertyValue in values)
-// ReSharper disable once RedundantAssignment
+                    // ReSharper disable once RedundantAssignment
                     dummy = settingsPropertyValue.PropertyValue;
 
                 base.SetPropertyValues(context, values);
+
+                IDatabaseConnection databaseConnection = (IDatabaseConnection)context["DatabaseConnection"];
+
                 try
                 {
                     foreach (SettingsPropertyValue settingValue in values)
@@ -112,7 +115,7 @@ namespace TsdLib.Configuration
 
                         Debug.WriteLine("Pushing " + configType + " to database.");
                         
-                        _databaseConnection.WriteStringToDatabase((string) settingValue.SerializedValue, (string)context["TestSystemName"], (string)context["TestSystemVersion"], configType + ".xml");
+                        databaseConnection.WriteStringToDatabase((string) settingValue.SerializedValue, (string)context["TestSystemName"], (string)context["TestSystemVersion"], configType + ".xml");
                     }
                 }
                 catch (Exception ex)

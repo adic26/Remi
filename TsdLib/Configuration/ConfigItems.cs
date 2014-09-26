@@ -128,20 +128,8 @@ namespace TsdLib.Configuration
     [Serializable]
     public class Sequence : ConfigItem
     {
-        /// <summary>
-        /// Gets the file name containing the test sequence source code.
-        /// </summary>
-        public override string Name
-        {
-            get { return Path.GetFileNameWithoutExtension(LocalFile); }
-            set { LocalFile = Path.Combine(Directory.GetCurrentDirectory(), value + ".cs"); }
-        }
 
-        /// <summary>
-        /// Gets the absolute path to the source code file.
-        /// </summary>
-        internal string LocalFile { get; set; }
-
+        private string _testSequenceSourceCode;
         /// <summary>
         /// The source code containing the step-by-step instructions.
         /// </summary>
@@ -149,42 +137,21 @@ namespace TsdLib.Configuration
         [Category("Test Sequence")]
         public string TestSequenceSourceCode
         {
-            get
-            {
-                if (!File.Exists(LocalFile))
-                    File.WriteAllText(LocalFile, "//Add test sequence here by subclassing TsdLib.TestSequence.TestSequenceBase");
-                return File.ReadAllText(LocalFile);
-            }
+            get { return _testSequenceSourceCode; }
             set
             {
                 //Append .Dynamic to namespace declaration
-                
-                string dynamicNamespaced = value.Replace("namespace ", "namespace ");
-                File.WriteAllText(LocalFile, dynamicNamespaced);
+                string originalNsDeclaration = value.Split(new []{'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries)
+                    .First(l => l.StartsWith("namespace"));
+                _testSequenceSourceCode = originalNsDeclaration.EndsWith("Dynamic") ? value : value.Replace(originalNsDeclaration, originalNsDeclaration + ".Dynamic");
             }
-        }
-
-        /// <summary>
-        /// Default constructor required for serialization.
-        /// </summary>
-        public Sequence()
-        {
-        
-        }
-
-        /// <summary>
-        /// Initialize a new SequenceConfig with the specified test sequence source code file.
-        /// </summary>
-        /// <param name="localFile">Path to the source code file containing the test sequence execute method.</param>
-        public Sequence(string localFile)
-        {
-            LocalFile = localFile;
         }
 
         private string[] _referencedAssemblies;
         /// <summary>
         /// Gets the assemblies referenced by the test sequence code.
         /// </summary>
+        /// <returns>A string array containing the names of the referenced assemblies.</returns>
         public string[] GetReferencedAssemblies()
         {
             if (_referencedAssemblies == null)
@@ -211,7 +178,7 @@ namespace TsdLib.Configuration
                 .FirstOrDefault(line => line.Trim().StartsWith("namespace"));
 
             if (namespaceDeclarationLine == null)
-                throw new TestSequenceException(LocalFile);
+                throw new TestSequenceException(Name);
 
             _namespace = namespaceDeclarationLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1];
             return _namespace;
@@ -232,7 +199,7 @@ namespace TsdLib.Configuration
                 .FirstOrDefault(line => line.Trim().StartsWith("public class"));
 
             if (classDeclarationLine == null)
-                throw new TestSequenceException(LocalFile);
+                throw new TestSequenceException(Name);
 
             _className = classDeclarationLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[2];
             return _className;

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="4777abe4-e85b-45bf-9c25-b914caeb31d6" Version="0.15.1.27034" Language="en-US" Publisher="BlackBerry" />
+    <Identity Id="69d7b1ff-89bd-42a4-bdbb-95a78d9dcce4" Version="0.15.1.26926" Language="en-US" Publisher="BlackBerry" />
     <DisplayName>TsdLibStarterKit</DisplayName>
-    <Description>Empty VSIX Project.</Description>
+    <Description xml:space="preserve">Starter kit for developing applications based on the TsdLib Framework.</Description>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="11.0" />

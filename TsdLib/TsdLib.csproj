@@ -45,12 +45,6 @@
     <Compile Include="CodeGenerator\Generator.cs" />
     <Compile Include="CodeGenerator\CodeGeneratorException.cs" />
     <Compile Include="CodeGenerator\Enums.cs" />
-    <Compile Include="Configuration\ConfigFormBase.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Configuration\ConfigFormBase.Designer.cs">
-      <DependentUpon>ConfigFormBase.cs</DependentUpon>
-    </Compile>
     <Compile Include="Configuration\ConfigItemCreate.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -80,18 +74,6 @@
     <Compile Include="TestSequence\TestSequenceException.cs" />
     <Compile Include="Common\TsdLibException.cs" />
     <Compile Include="Configuration\ConfigExceptions.cs" />
-    <Compile Include="Configuration\ConfigForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Configuration\ConfigForm.Designer.cs">
-      <DependentUpon>ConfigForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Configuration\ConfigFormCreate.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Configuration\ConfigFormCreate.Designer.cs">
-      <DependentUpon>ConfigFormCreate.cs</DependentUpon>
-    </Compile>
     <Compile Include="Configuration\ConfigGroup.cs" />
     <Compile Include="Configuration\ConfigItems.cs" />
     <Compile Include="Configuration\ConfigManager.cs" />
@@ -135,15 +117,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Configuration\ConfigForm.resx">
-      <DependentUpon>ConfigForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Configuration\ConfigFormBase.resx">
-      <DependentUpon>ConfigFormBase.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Configuration\ConfigFormCreate.resx">
-      <DependentUpon>ConfigFormCreate.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Configuration\ConfigItemCreate.resx">
       <DependentUpon>ConfigItemCreate.cs</DependentUpon>
     </EmbeddedResource>

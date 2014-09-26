@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -13,7 +12,7 @@ using TsdLib.View;
 using TsdLib.TestResults;
 
 namespace TsdLib.Controller
-{//TODO: add string properties for application name and version - add to constructor
+{
     /// <summary>
     /// Contains base functionality for the system controller.
     /// </summary>
@@ -28,7 +27,6 @@ namespace TsdLib.Controller
         where TTestConfig : TestConfigCommon, new()
     {
         //Private fields
-        private readonly bool _devMode;
         private CancellationTokenSource _tokenSource;
 
         //Public properties
@@ -52,16 +50,15 @@ namespace TsdLib.Controller
         /// <param name="devMode">True to enable Developer Mode - config can be modified but results are stored in the Analysis category.</param>
         /// <param name="testSystemName">Name of the test system. Required for application settings and results logging.</param>
         /// <param name="testSystemVersion">Version of the test system.</param>
-        /// <param name="settingsLocation">Local or network location where settings will be stored.</param>
-        protected ControllerBase(bool devMode, string testSystemName, string testSystemVersion, string settingsLocation)
+        /// <param name="databaseConnection">An <see cref="IDatabaseConnection"/> object to handle persistence with a database.</param>
+        protected ControllerBase(bool devMode, string testSystemName, string testSystemVersion, IDatabaseConnection databaseConnection)
         {
-            _devMode = devMode;
             TestSystemName = testSystemName;
             TestSystemVersion = testSystemVersion;
 
             //TODO: if _devMode, do not pull from database??
 
-            ConfigManager manager = new ConfigManager<TStationConfig, TProductConfig, TTestConfig, Sequence>(testSystemName, TestSystemVersion, settingsLocation);
+            ConfigManager manager = new ConfigManager<TStationConfig, TProductConfig, TTestConfig, Sequence>(testSystemName, TestSystemVersion, databaseConnection);
 
             //set up view
             View = new TView
@@ -74,7 +71,7 @@ namespace TsdLib.Controller
             };
 
             //subscribe to view events
-            View.ViewEditConfiguration += (s, o) => manager.Edit();
+            View.ViewEditConfiguration += (s, o) => manager.Edit(devMode);
             View.ExecuteTestSequence += ExecuteTestSequence;
             View.AbortTestSequence += (s, o) => _tokenSource.Cancel();
         }
@@ -93,7 +90,7 @@ namespace TsdLib.Controller
                 TProductConfig productConfig = (TProductConfig) e.ProductConfig;
                 TTestConfig testConfig = (TTestConfig) e.TestConfig;
                 Sequence sequenceConfig = (Sequence) e.SequenceConfig;
-                
+
                 //TODO: get instrument references from instrument config - for now they are parsed out and added to the CodeCompileUnit of the xml by the code generator
                 await Task.Run(() =>
                 {
@@ -101,17 +98,16 @@ namespace TsdLib.Controller
 
                     sequenceAssembly = Generator.GenerateDynamicAssembly(
                         TestSystemName,
+                        sequenceConfig,
                         Directory.EnumerateFiles("Instruments", "*.xml").ToArray(),
                         @"CodeGenerator\TsdLib.Instruments.xsd",
-                        sequenceConfig.LocalFile,
-                        Language.CSharp,
-                        sequenceConfig.GetReferencedAssemblies());
+                        Language.CSharp);
 
                     sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
 
                     TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence =
                         (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)
-                            sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, sequenceConfig.GetNamespace()+ "." + sequenceConfig.GetClassName() );
+                            sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, sequenceConfig.GetNamespace() + "." + sequenceConfig.GetClassName());
 
                     sequence.AddTraceListener(View.Listener);
 
@@ -126,11 +122,15 @@ namespace TsdLib.Controller
                 });
 
             }
-            catch (Exception ex)
+            catch (TsdLibException ex)
             {
-                var result = MessageBox.Show("Error details:" + Environment.NewLine + ex.Message + Environment.NewLine + "Would you like to view help for this error?", ex.GetType().Name, MessageBoxButtons.YesNo);
+                DialogResult result = MessageBox.Show("Error details:" + Environment.NewLine + ex.Message + Environment.NewLine + "Would you like to view help for this error?", ex.GetType().Name, MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                     Process.Start(ex.HelpLink);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error details:" + Environment.NewLine + ex.Message + Environment.NewLine + "This error was unexpected and not handled by the TsdLib Application. Please contact TSD for support.", ex.GetType().Name);
             }
             finally
             {

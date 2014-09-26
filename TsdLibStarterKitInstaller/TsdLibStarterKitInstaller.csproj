@@ -87,13 +87,17 @@
       <DependentUpon>UserInputForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="atom.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup>
-    <PreBuildEvent>rem $(SolutionDir)VersionSync\$(OutDir)VersionSync.exe $(SolutionDir)TsdLibStarterKit\$(OutDir)TsdLib.dll $(ProjectDir)source.extension.vsixmanifest $(ProjectDir)atom.xml</PreBuildEvent>
+    <PreBuildEvent>$(SolutionDir)VersionSync\$(OutDir)VersionSync.exe $(SolutionDir)TsdLib\$(OutDir)TsdLib.dll $(ProjectDir)source.extension.vsixmanifest $(ProjectDir)atom.xml</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>rem $(SolutionDir)Deploy\$(OutDir)Deploy.exe \\fsg52ykf\ReliabilityTSD\TsdLib $(SolutionDir)TsdLib\$(OutDir)TsdLib.dll $(SolutionDir)TsdLib\$(OutDir)TsdLib.pdb $(SolutionDir)TsdLib\$(OutDir)TsdLib.xml $(SolutionDir)TsdLib.CodeGeneratorApp\$(OutDir)TsdLib.CodeGeneratorApp.exe $(SolutionDir)TsdLib\$(OutDir)CodeGenerator\TsdLib.Instruments.xsd</PostBuildEvent>
+    <PostBuildEvent>$(SolutionDir)Deploy\$(OutDir)Deploy.exe \\fsg52ykf\ReliabilityTSD\TsdLib $(SolutionDir)TsdLib\$(OutDir)TsdLib.dll $(SolutionDir)TsdLib\$(OutDir)TsdLib.pdb $(SolutionDir)TsdLib\$(OutDir)TsdLib.xml $(SolutionDir)TsdLib.CodeGeneratorApp\$(OutDir)TsdLib.CodeGeneratorApp.exe $(SolutionDir)TsdLib\$(OutDir)CodeGenerator\TsdLib.Instruments.xsd $(TargetDir)extension.vsixmanifest $(TargetDir)TsdLibStarterKitInstaller.vsix
+xcopy /y $(ProjectDir)atom.xml \\fsg52ykf\ReliabilityTSD\TsdLib</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

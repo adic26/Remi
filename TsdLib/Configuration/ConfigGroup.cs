@@ -4,14 +4,13 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 
 namespace TsdLib.Configuration
 {
     sealed class ConfigGroup<T> : ApplicationSettingsBase, IConfigGroup<T>
         where T : ConfigItem, new()
     {
-        private readonly string _settingsLocation;
-
         [UserScopedSetting]
         [SettingsProvider(typeof(DatabaseSettingsProvider))]
         public BindingList<T> ConfigItems
@@ -30,16 +29,18 @@ namespace TsdLib.Configuration
 
         BindingList<T> AllConfigItems { get; set; }
 
-        //TODO: inject IDatabaseConnection
-        public ConfigGroup(string testSystemName, string testSystemVersion, string settingsLocation)
+        public ConfigGroup(string testSystemName, string testSystemVersion, IDatabaseConnection databaseConnection)
         {
-            _settingsLocation = settingsLocation;
+            //upload assembly to database to support stand-alone app reflection
+            if (databaseConnection != null)
+                databaseConnection.UploadFileToDatabase(Assembly.GetEntryAssembly().Location, testSystemName, testSystemVersion, "ClientAssembly", true);
+
             if (!string.IsNullOrEmpty(testSystemName))
                 Context.Add("TestSystemName", testSystemName);
             if (!string.IsNullOrEmpty(testSystemVersion))
                 Context.Add("TestSystemVersion", testSystemVersion);
-            if (!string.IsNullOrEmpty(settingsLocation))
-                Context.Add("File", new DatabaseFolderConnection(settingsLocation));
+            if (databaseConnection != null)
+                Context.Add("DatabaseConnection", databaseConnection);
 
             Synchronized(this);
 
@@ -69,14 +70,6 @@ namespace TsdLib.Configuration
                 AllConfigItems.Add(localConfigItem);
 
             AllConfigItems.ListChanged += AllConfigItems_ListChanged;
-
-            SettingsSaving += ConfigGroup_SettingsSaving;
-        }
-
-        void ConfigGroup_SettingsSaving(object sender, CancelEventArgs e)
-        {
-            //TODO: upload assembly to _settingsLocation to support stand-alone app
-            string dummy = _settingsLocation;
         }
 
         public void Add(T config, bool storeInDatabase = true)

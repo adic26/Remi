@@ -45,8 +45,9 @@ namespace TsdLib.Configuration
         /// Initialize a new EmptyConfigGroupException with the specified <see cref="TsdLib.Configuration.IConfigGroup"/> configuration group.
         /// </summary>
         /// <param name="configGroup">The empty <see cref="TsdLib.Configuration.IConfigGroup"/>.</param>
-        public EmptyConfigGroupException(IConfigGroup configGroup)
-            : base(configGroup.ConfigType + " does not contain any config instances.") { }
+        /// <param name="inner">OPTIONAL: The Exception that caused the ConfigDoesNotExistException.</param>
+        public EmptyConfigGroupException(IConfigGroup configGroup, Exception inner = null)
+            : base(configGroup.ConfigType + " does not contain any config instances.", inner) { }
 
         ///// <summary>
         ///// Deserialization constructor used by the .NET Framework to initialize an instance of the EmptyConfigGroupException class from serialized data.
@@ -54,6 +55,29 @@ namespace TsdLib.Configuration
         ///// <param name="info">The SerialzationInfo that holds the serialized object data about the exception being thrown.</param>
         ///// <param name="context">The StreamingContext that contains the contextual information about the source or destination.</param>
         //protected EmptyConfigGroupException(SerializationInfo info, StreamingContext context)
+        //    : base(info, context) { }
+    }
+
+    /// <summary>
+    /// Exception due to an invalid file path when uploading a file to the database.
+    /// </summary>
+    [Serializable]
+    public class InvalidFilePathException : TsdLibException
+    {
+        /// <summary>
+        /// Initialize a new InvalidFileException with the specified file name.
+        /// </summary>
+        /// <param name="fileName">Name of the file causing the exception</param>
+        /// <param name="inner">OPTIONAL: The Exception that caused the ConfigDoesNotExistException.</param>
+        public InvalidFilePathException(string fileName, Exception inner = null)
+            : base("The filename " + fileName + " is invalid. Please ensure it is an absolute file path.", inner) { }
+
+        ///// <summary>
+        ///// Deserialization constructor used by the .NET Framework to initialize an instance of the InvalidFileException class from serialized data.
+        ///// </summary>
+        ///// <param name="info">The SerialzationInfo that holds the serialized object data about the exception being thrown.</param>
+        ///// <param name="context">The StreamingContext that contains the contextual information about the source or destination.</param>
+        //protected InvalidFileException(SerializationInfo info, StreamingContext context)
         //    : base(info, context) { }
     }
 }

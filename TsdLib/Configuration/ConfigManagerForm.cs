@@ -10,8 +10,9 @@ namespace TsdLib.Configuration
     partial class ConfigManagerForm : Form
     {
         private readonly string _settingsLocation;
+        private readonly bool _editable;
 
-        //From stand-alone
+        //For stand-alone
         public ConfigManagerForm(string settingsLocation)
         {
             InitializeComponent();
@@ -27,8 +28,8 @@ namespace TsdLib.Configuration
             panel_EditControls.Enabled = false;
         }
 
-        //From Client app
-        public ConfigManagerForm(IList<IConfigGroup> configGroups, string testSystemName, string testSystemVersion)
+        //For Client app
+        public ConfigManagerForm(IList<IConfigGroup> configGroups, string testSystemName, string testSystemVersion, bool editable)
         {
             InitializeComponent();
 
@@ -39,22 +40,9 @@ namespace TsdLib.Configuration
 
             comboBox_ConfigType.DisplayMember = "ConfigType";
             comboBox_ConfigType.DataSource = configGroups;
+
+            _editable = editable;
         }
-
-        //protected override void CreateNew()
-        //{
-        //    IList configs = ConfigGroup.GetList();
-
-        //    ConfigItem newCfgItem = ((ConfigItem)configs[0]).Clone();
-
-        //    using (ConfigItemCreate getName = new ConfigItemCreate(true))
-        //    {
-        //        getName.ShowDialog();
-        //        newCfgItem.Name = getName.ConfigItemName;
-        //        newCfgItem.StoreInDatabase = getName.StoreInDatabase;
-        //    }
-        //    configs.Add(newCfgItem);
-        //}
 
         private void comboBox_TestSystemName_SelectedValueChanged(object sender, EventArgs e)
         {
@@ -92,7 +80,7 @@ namespace TsdLib.Configuration
             propertyGrid_Settings.SelectedObject = list[0];
 
             panel_EditControls.Enabled = true;
-            propertyGrid_Settings.Enabled = true;
+            propertyGrid_Settings.Enabled = _editable;
             button_CreateNew.Enabled = true;
             button_OK.Enabled = true;
         }
