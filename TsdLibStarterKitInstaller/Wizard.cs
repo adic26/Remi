@@ -45,7 +45,7 @@ namespace TsdLibStarterKitInstaller
                 }
 
                 XmlSchema schema;
-                var s = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+                
                 using (Stream schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TsdLibStarterKitInstaller.WizardData.xsd"))
                 {
                     Debug.Assert(schemaStream != null, "The XML schema: TsdLib.CodeGenerator.TsdLib.Instruments.xsd is missing from the TsdLib.dll");
