@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Forms;
 using System.Xml.Linq;
 using System.Xml.Schema;
 
@@ -35,10 +36,13 @@ namespace TsdLib.CodeGenerator
 
             CodeDomProvider provider = CodeDomProvider.CreateProvider(language.ToString());
 
+            string tempPath = Path.GetTempPath();
+            string tempFileName = Path.GetTempFileName();
+
             CompilerParameters cp = new CompilerParameters
             {
                 IncludeDebugInformation = true,
-                OutputAssembly = Path.Combine(Path.GetTempPath(), Path.GetTempFileName() + ".dll")
+                OutputAssembly = Path.Combine(tempPath, tempFileName + ".dll")
             };
 
 #if DEBUG
@@ -48,12 +52,20 @@ namespace TsdLib.CodeGenerator
             cp.CompilerOptions += " /d:TRACE";
 #endif
 
-            CodeCompileUnit ccu = generateInstrumentCodeCompileUnit(testSystemName, instrumentFiles, true);
-
-            CodeSnippetCompileUnit seq = new CodeSnippetCompileUnit(testSequenceSourceCode);
-            seq.ReferencedAssemblies.AddRange(testSequenceReferencedAssemblies);
+            CodeCompileUnit instrumentCcu = generateInstrumentCodeCompileUnit(testSystemName, instrumentFiles, true);
             
-            CompilerResults compilerResults = provider.CompileAssemblyFromDom(cp, ccu, seq);
+            CodeSnippetCompileUnit sequenceCcu = new CodeSnippetCompileUnit(testSequenceSourceCode);
+            sequenceCcu.ReferencedAssemblies.AddRange(testSequenceReferencedAssemblies);
+
+            CodeGeneratorOptions options = new CodeGeneratorOptions { BracingStyle = "C"};
+            using (StreamWriter w = new StreamWriter(Path.Combine(tempPath, "instruments." + provider.FileExtension), false))
+                provider.GenerateCodeFromCompileUnit(instrumentCcu, w, options);
+            using (StreamWriter w = new StreamWriter(Path.Combine(tempPath, "sequence." + provider.FileExtension), false))
+                provider.GenerateCodeFromCompileUnit(sequenceCcu, w, options);
+
+            //CompilerResults compilerResults = provider.CompileAssemblyFromDom(cp, instrumentCcu, sequenceCcu);
+            CompilerResults compilerResults = provider.CompileAssemblyFromFile(cp, Path.Combine(tempPath, "instruments." + provider.FileExtension), Path.Combine(tempPath, "sequence." + provider.FileExtension));
+            
 
             Trace.WriteLine("Compiled successfully.");
 

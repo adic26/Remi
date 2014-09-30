@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Threading;
 using TestClient.Configuration;
 using TestClient.Instruments;
+using TsdLib.TestResults;
 using TsdLib.TestSequence;
 
 [assembly: AssemblyReference("System.dll")]
@@ -23,15 +24,18 @@ namespace TestClient.Sequences
             //Debugger.Break();
 
             Random random = new Random();
-            DummyPowerSupply ps = DummyPowerSupply.Connect();
+            DummyPowerSupply ps = DummyPowerSupply.Connect(stationConfig.PowerSupplyAddress);
 
-            for (int v = 10; v >= 0; v--)
+            for (int i = 0; i < testConfig.LoopIterations; i++)
             {
-                Token.ThrowIfCancellationRequested();
-                ps.SetVoltage(v);
-                ps.DummyConnection.StringToRead = random.NextDouble().ToString(CultureInfo.InvariantCulture);
-                TestResults.AddMeasurement("Current", ps.GetCurrent(), "Amps", 0.1, 0.8);
-                Thread.Sleep(1000);
+                foreach (double voltageSetting in testConfig.VoltageSettings)
+                {
+                    Token.ThrowIfCancellationRequested();
+                    ps.SetVoltage(voltageSetting);
+                    ps.DummyConnection.StringToRead = random.NextDouble().ToString(CultureInfo.InvariantCulture);
+                    TestResults.AddMeasurement("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, new MeasurementParameter("Voltage", voltageSetting));
+                    Thread.Sleep(1000);
+                }
             }
         }
 

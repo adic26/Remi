@@ -113,7 +113,7 @@
     <PreBuildEvent>$(SolutionDir)VersionSync\$(OutDir)VersionSync.exe $(SolutionDir)TsdLib\$(OutDir)TsdLib.dll $(ProjectDir)source.extension.vsixmanifest $(ProjectDir)atom.xml</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /y TsdLibStarterKitInstaller.vsix \\fsg52ykf\ReliabilityTSD\TsdLib</PostBuildEvent>
+    <PostBuildEvent>if $(ConfigurationName) == Release xcopy /y TsdLibStarterKitInstaller.vsix \\fsg52ykf\ReliabilityTSD\TsdLib</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

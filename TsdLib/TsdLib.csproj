@@ -136,7 +136,7 @@
   <PropertyGroup>
     <PostBuildEvent>del TsdLib.*.nupkg
 nuget pack -symbols $(ProjectPath) -Prop Configuration=$(ConfigurationName)
-xcopy /y TsdLib.*.nupkg \\fsg52ykf\ReliabilityTSD\TsdLib\Packages\</PostBuildEvent>
+if $(ConfigurationName) == Release xcopy /y TsdLib.*.nupkg \\fsg52ykf\ReliabilityTSD\TsdLib\Packages\</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
