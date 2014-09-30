@@ -51,7 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <VSTemplate Include="TsdLibStarterKit.vstemplate" />
-    <Content Include="atom.xml" />
     <Content Include="View.Designer.cs">
       <DependentUpon>View.cs</DependentUpon>
     </Content>
@@ -71,9 +70,6 @@
   <ItemGroup>
     <Content Include="AssemblyInfo.cs" />
     <Content Include="App.config" />
-    <Content Include="CodeGenerator\TsdLib.Instruments.xsd">
-      <SubType>Designer</SubType>
-    </Content>
     <None Include="TsdLibStarterKit.ico" />
   </ItemGroup>
   <ItemGroup>

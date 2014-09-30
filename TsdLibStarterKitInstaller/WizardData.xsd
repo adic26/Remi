@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="WizardData"
+    targetNamespace="TsdLib.WizardData.xsd"
+    elementFormDefault="qualified"
+    xmlns="TsdLib.WizardData.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="Root">
+    <xs:annotation>
+      <xs:documentation>The WizardData element containing the data to send to the project template wizard.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ServerLocation" type="ServerLocationElement" minOccurs="1" maxOccurs="1" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:complexType name="ServerLocationElement">
+    <xs:annotation>
+      <xs:documentation>Specifies the location of the server containing the VSIX installer.</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="Path" />
+  </xs:complexType>
+</xs:schema>

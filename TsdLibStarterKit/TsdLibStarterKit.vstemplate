@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010" xmlns:w="TsdLib.WizardData.xsd">
   <TemplateData>
     <Name>TsdLibStarterKit</Name>
     <Description>Starter kit for developing applications based on the TsdLib Framework.</Description>
@@ -29,9 +29,6 @@
         <ProjectItem ReplaceParameters="true" TargetFileName="DummyPowerSupply.xml">DummyPowerSupply.xml</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="Instruments.cs">Instruments.cs</ProjectItem>
       </Folder>
-      <Folder Name="CodeGenerator" TargetFolderName="CodeGenerator">
-        <ProjectItem ReplaceParameters="true" TargetFileName="TsdLib.Instruments.xsd">TsdLib.Instruments.xsd</ProjectItem>
-      </Folder>
       <ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$Program.cs">TestClientProgram.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="View.cs">View.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="View.Designer.cs">View.Designer.cs</ProjectItem>
@@ -42,5 +39,10 @@
     <Assembly>TsdLibStarterKitInstaller, Version=1.0.0.0, Culture=Neutral, PublicKeyToken=null</Assembly>
     <FullClassName>TsdLibStarterKitInstaller.Wizard</FullClassName>
   </WizardExtension>
-  <WizardData>\\fsg52ykf\ReliabilityTSD\TsdLib</WizardData>
+  <WizardData>
+    <w:Root>
+      <w:ServerLocation Path="\\fsg52ykf\ReliabilityTSD\TsdLib" />
+    </w:Root>
+  </WizardData>
 </VSTemplate>
+    <!--\\fsg52ykf\ReliabilityTSD\TsdLib-->

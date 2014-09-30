@@ -108,13 +108,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="CodeGenerator\TsdLib.Instruments.xsd">
+    <EmbeddedResource Include="CodeGenerator\TsdLib.Instruments.xsd">
       <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </EmbeddedResource>
     <None Include="TestResults\ResultFile.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="TsdLib.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Configuration\ConfigItemCreate.resx">
@@ -133,6 +133,11 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>del TsdLib.*.nupkg
+nuget pack -symbols $(ProjectPath) -Prop Configuration=$(ConfigurationName)
+xcopy /y TsdLib.*.nupkg \\fsg52ykf\ReliabilityTSD\TsdLib\Packages\</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

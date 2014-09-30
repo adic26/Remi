@@ -42,7 +42,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="TsdLib">
-      <HintPath>$assemblyfolder$\TsdLib.dll</HintPath>
+      <!--<HintPath>$assemblyfolder$\TsdLib.dll</HintPath>-->
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -50,6 +50,8 @@
     <Compile Include="Configuration\ProductConfig.cs" />
     <Compile Include="Configuration\StationConfig.cs" />
     <Compile Include="Configuration\TestConfig.cs" />
+    <Compile Include="Instruments\Instruments.cs" />
+    <Compile Include="Sequences\DefaultSequence.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="$safeprojectname$Program.cs" />
     <Compile Include="View.cs">
@@ -61,12 +63,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Sequences\DefaultSequence.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Instruments\Instruments.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="View.resx">
@@ -75,13 +71,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Instruments\DummyPowerSupply.xml" />
-    <Content Include="CodeGenerator\TsdLib.Instruments.xsd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>"$assemblyfolder$\TsdLib.CodeGeneratorApp.exe" "$(ProjectName)" "$(ProjectDir)Instruments" "$assemblyfolder$\TsdLib.Instruments.xsd" "$(ProjectDir)Instruments" CSharp</PreBuildEvent>
-    <PostBuildEvent>"$(TargetPath)" -seq "$(ProjectDir)Sequences" "$(TargetDir)Sequences" true</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

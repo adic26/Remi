@@ -30,16 +30,25 @@ namespace VersionSync
 
             #region manifest
             
+
             XDocument manifestDocument = XDocument.Load(manifestPath);
 
-            XElement manifestIdElement = manifestDocument
-                .Descendants()
-                .FirstOrDefault(e => e.Name.LocalName == "Identity");
+            XNamespace manifestNs = "http://schemas.microsoft.com/developer/vsx-schema/2011";
 
-            if (manifestIdElement == null)
-                throw new ArgumentException(manifestPath + " is not a valid VSIX manifest.");
+            XElement manifestRoot = manifestDocument.Root;
+            Debug.Assert(manifestRoot != null, "Invalid VSIX manifest. No root element.");
+            XElement manifestMetaDataElement = manifestRoot.Element(manifestNs + "Metadata");
+            Debug.Assert(manifestMetaDataElement != null, "Invalid VSIX manifest. No Metadata element.");
+            XElement manifestIdentityElement = manifestMetaDataElement.Element(manifestNs + "Identity");
+            Debug.Assert(manifestIdentityElement != null, "Invalid VSIX manifest. No Metadata.Identity element.");
+            manifestIdentityElement.Attribute("Version").Value = version;
 
-            manifestIdElement.Attribute("Version").Value = version;
+            //XElement manifestAssetsElement = manifestRoot.Element(manifestNs + "Assets");
+            //Debug.Assert(manifestAssetsElement != null, "Invalid VSIX manifest. No Assets element.");
+            //XElement nupkgElement = manifestAssetsElement.Elements(manifestNs + "Asset")
+            //    .FirstOrDefault(assetElement => assetElement.Attribute("Type").Value == "TsdLib.nupkg");
+            //if (nupkgElement != null)
+            //    nupkgElement.Attribute("Path").Value = "packages/" + "TsdLib." + version + ".nupkg";
 
             manifestDocument.Save(manifestPath, SaveOptions.None);
 

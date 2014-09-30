@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using TsdLib.Configuration;
 
 namespace TsdLib.CodeGenerator
 {
@@ -20,17 +20,18 @@ namespace TsdLib.CodeGenerator
         /// Generates an assembly from the specified XML instrument definition file(s) and test sequence source code file.
         /// </summary>
         /// <param name="testSystemName">Name of the test system. Will be used to generate namespaces.</param>
-        /// <param name="sequence">Sequence config object containing the test sequence source code and supporting information.</param>
+        /// <param name="testSequenceName">Name of the test sequence that will be compiled.</param>
+        /// <param name="testSequenceSourceCode">Name of the test sequence to run.</param>
+        /// <param name="testSequenceReferencedAssemblies">Names of assemblies to be referenced by the test sequence assembly.</param>
         /// <param name="instrumentFiles">An array of absolute or relative paths to the XML instrument definition files to compile into the assembly.</param>
-        /// <param name="schemaFile">XML schema (*.xsd) file used to validate the XML input files.</param>
         /// <param name="language">Generate C# or Visual Basic code.</param>
         /// <returns>Absolute path the the generated assembly.</returns>
-        public static string GenerateDynamicAssembly(string testSystemName, Sequence sequence, string[] instrumentFiles, string schemaFile, Language language)
+        public static string GenerateDynamicAssembly(string testSystemName, string testSequenceName, string testSequenceSourceCode, string[] testSequenceReferencedAssemblies, string[] instrumentFiles, Language language)
         {
             Trace.WriteLine("Compiling test sequence from:");
             foreach (string instrumentsFile in instrumentFiles)
                 Trace.WriteLine("\t" + Path.GetFileNameWithoutExtension(instrumentsFile));
-            Trace.WriteLine("\t" + sequence.Name);
+            Trace.WriteLine("\t" + Path.GetFileNameWithoutExtension(testSequenceName));
 
             CodeDomProvider provider = CodeDomProvider.CreateProvider(language.ToString());
 
@@ -47,10 +48,10 @@ namespace TsdLib.CodeGenerator
             cp.CompilerOptions += " /d:TRACE";
 #endif
 
-            CodeCompileUnit ccu = generateInstrumentCodeCompileUnit(testSystemName, instrumentFiles, schemaFile, true);
+            CodeCompileUnit ccu = generateInstrumentCodeCompileUnit(testSystemName, instrumentFiles, true);
 
-            CodeSnippetCompileUnit seq = new CodeSnippetCompileUnit(sequence.TestSequenceSourceCode);
-            seq.ReferencedAssemblies.AddRange(sequence.GetReferencedAssemblies());
+            CodeSnippetCompileUnit seq = new CodeSnippetCompileUnit(testSequenceSourceCode);
+            seq.ReferencedAssemblies.AddRange(testSequenceReferencedAssemblies);
             
             CompilerResults compilerResults = provider.CompileAssemblyFromDom(cp, ccu, seq);
 
@@ -64,13 +65,12 @@ namespace TsdLib.CodeGenerator
         /// </summary>
         /// <param name="testSystemName">Name of the test system. Will be used to generate namespaces.</param>
         /// <param name="instrumentFiles">An array of absolute or relative paths to the XML instrument definition files to compile into the assembly.</param>
-        /// <param name="schemaFile">XML schema (*.xsd) file used to validate the XML input files.</param>
         /// <param name="outputDirectoryName">Absolute directory path to store the output file. If the directory does not exist, it will be created.</param>
         /// <param name="language">Generate C# or Visual Basic code.</param>
         /// <param name="runTime">True if calling from run-time. Namespace will be appended with .Dynamic</param>
-        public static void GenerateInstrumentsClassFile(string testSystemName, string[] instrumentFiles, string schemaFile, string outputDirectoryName, Language language, bool runTime)
+        public static void GenerateInstrumentsClassFile(string testSystemName, string[] instrumentFiles, string outputDirectoryName, Language language, bool runTime)
         {
-            CodeCompileUnit ccu = generateInstrumentCodeCompileUnit(testSystemName, instrumentFiles, schemaFile, runTime);
+            CodeCompileUnit ccu = generateInstrumentCodeCompileUnit(testSystemName, instrumentFiles, runTime);
             
             CodeDomProvider provider = CodeDomProvider.CreateProvider(language.ToString());
 
@@ -81,7 +81,7 @@ namespace TsdLib.CodeGenerator
                 provider.GenerateCodeFromCompileUnit(ccu, writer, new CodeGeneratorOptions { BracingStyle = "C" });
         }
 
-        private static CodeCompileUnit generateInstrumentCodeCompileUnit(string testSystemName, string[] instrumentFiles, string schemaFile, bool runTime)
+        private static CodeCompileUnit generateInstrumentCodeCompileUnit(string testSystemName, string[] instrumentFiles, bool runTime)
         {
             string namespaceDeclaration = testSystemName.Replace(' ', '_') + ".Instruments";
 
@@ -89,10 +89,15 @@ namespace TsdLib.CodeGenerator
             CodeCompileUnit ccu = new CodeCompileUnit();
             ccu.Namespaces.Add(ns);
 
+            XmlSchema schema;
+            using (Stream schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TsdLib.CodeGenerator.TsdLib.Instruments.xsd"))
+            {
+                Debug.Assert(schemaStream != null, "The XML schema: TsdLib.CodeGenerator.TsdLib.Instruments.xsd is missing from the TsdLib.dll");
+                schema = XmlSchema.Read(schemaStream, null);
+            }
+            string tns = schema.TargetNamespace;
             XmlSchemaSet schemas = new XmlSchemaSet();
-            XmlSchema s = schemas.Add(null, schemaFile);
-            string tns = s.TargetNamespace;
-
+            schemas.Add(schema);
             XDocument[] docs = instrumentFiles
                 .Select(file => XDocument.Load(file, LoadOptions.SetBaseUri))
                 .Where(
@@ -104,7 +109,7 @@ namespace TsdLib.CodeGenerator
 
             if (docs.Length != instrumentFiles.Count())
             {
-                Trace.WriteLine("Warning: Some input files do not conform to the schema:" + Path.GetFileName(schemaFile));
+                Trace.WriteLine("Warning: Some input files do not conform to the schema: TsdLib.Instruments.xsd");
 
                 IEnumerable<string> badFiles = instrumentFiles.Except(docs.Select(doc => Path.GetFileName(doc.BaseUri)));
                 foreach (string badFile in badFiles)
@@ -119,7 +124,7 @@ namespace TsdLib.CodeGenerator
                 string docName = new Uri(doc.BaseUri).AbsolutePath;
 
                 doc.Validate(schemas,
-                    (o, e) => { throw new CodeGeneratorException( "File: " + docName + " could not be validated against schema: " + schemaFile, e.Exception); });
+                    (o, e) => { throw new CodeGeneratorException("File: " + docName + " could not be validated against schema: TsdLib.Instruments.xsd.", e.Exception); });
 
                 XElement rootElement = doc.Root;
 

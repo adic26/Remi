@@ -91,16 +91,16 @@ namespace TsdLib.Controller
                 TTestConfig testConfig = (TTestConfig) e.TestConfig;
                 Sequence sequenceConfig = (Sequence) e.SequenceConfig;
 
-                //TODO: get instrument references from instrument config - for now they are parsed out and added to the CodeCompileUnit of the xml by the code generator
                 await Task.Run(() =>
                 {
                     _tokenSource = new CancellationTokenSource();
 
                     sequenceAssembly = Generator.GenerateDynamicAssembly(
                         TestSystemName,
-                        sequenceConfig,
+                        sequenceConfig.Name,
+                        sequenceConfig.TestSequenceSourceCode,
+                        sequenceConfig.GetReferencedAssemblies(),
                         Directory.EnumerateFiles("Instruments", "*.xml").ToArray(),
-                        @"CodeGenerator\TsdLib.Instruments.xsd",
                         Language.CSharp);
 
                     sequenceDomain = AppDomain.CreateDomain("SequenceDomain");

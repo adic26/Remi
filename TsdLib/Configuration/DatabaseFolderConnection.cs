@@ -83,7 +83,7 @@ namespace TsdLib.Configuration
             if (!Directory.Exists(directoryName))
                 Directory.CreateDirectory(directoryName);
 
-            File.Copy(sourceFilePath, destinationFilePath);
+            File.Copy(sourceFilePath, destinationFilePath, overWrite);
             
         }
 

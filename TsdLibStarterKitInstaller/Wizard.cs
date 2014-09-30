@@ -1,27 +1,76 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using System.Xml.Schema;
+using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TemplateWizard;
 using EnvDTE;
+using NuGet;
+using NuGet.VisualStudio;
 
 namespace TsdLibStarterKitInstaller
 {
     public class Wizard : IWizard
     {
+        [Import]
+        internal IVsPackageInstaller NuGetPackageInstaller { get; set; }
+        private string _serverLocation;
+        private string _version;
+
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
         {
             try
             {
-                string sourceBasePath = replacementsDictionary["$wizarddata$"];
+                using (ServiceProvider serviceProvider = new ServiceProvider((Microsoft.VisualStudio.OLE.Interop.IServiceProvider)automationObject))
+                {
+                    IComponentModel componentModel = (IComponentModel)serviceProvider.GetService(typeof(SComponentModel));
+                    using (CompositionContainer container = new CompositionContainer(componentModel.DefaultExportProvider))
+                        container.ComposeParts(this);
+                }
+
+
+                if (NuGetPackageInstaller == null)
+                {
+                    MessageBox.Show("NuGet Package Manager not available.");
+
+                    throw new WizardBackoutException("NuGet Package Manager not available.");
+                }
+
+                XmlSchema schema;
+                var s = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+                using (Stream schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TsdLibStarterKitInstaller.WizardData.xsd"))
+                {
+                    Debug.Assert(schemaStream != null, "The XML schema: TsdLib.CodeGenerator.TsdLib.Instruments.xsd is missing from the TsdLib.dll");
+                    schema = XmlSchema.Read(schemaStream, null);
+                }
+                XNamespace ns = schema.TargetNamespace;
+
+                XmlSchemaSet schemaSet = new XmlSchemaSet();
+                schemaSet.Add(schema);
+                schemaSet.Compile();
+                XmlSchemaObject schemaObject = schemaSet.GlobalElements.Values.OfType<XmlSchemaObject>().First();
+
+                XElement wizardRootElement = XElement.Parse(replacementsDictionary["$wizarddata$"]);
+
+                wizardRootElement.Validate(schemaObject, schemaSet, (o, e) => Debug.Fail("TsdLibStarterKit.vstemplate could not be validated against schema: TsdLib.WizardData.xsd."));
+
+
+// ReSharper disable once PossibleNullReferenceException
+                _serverLocation = wizardRootElement.Element(ns + "ServerLocation")
+                    .Attribute("Path").Value;
 
                 XNamespace atomNs = "http://www.w3.org/2005/Atom";
                 XNamespace vsixNs = "http://schemas.microsoft.com/developer/vsx-syndication-schema/2010";
 
-
-                XDocument atomDoc = XDocument.Load(Path.Combine(sourceBasePath, "atom.xml"));
+                XDocument atomDoc = XDocument.Load(Path.Combine(_serverLocation, "atom.xml"));
                 XElement feedElement = atomDoc.Root;
                 Debug.Assert(feedElement != null, "Invalid atom.xml document. No root element.");
                 XElement entryElement = feedElement.Element(atomNs + "entry");
@@ -31,73 +80,7 @@ namespace TsdLibStarterKitInstaller
                 XElement versionElement = vsixElement.Element(vsixNs + "Version");
                 Debug.Assert(versionElement != null, "Invalid XML document. No Version element.");
 
-                string version = versionElement.Value;
-                
-                string sourcePath = Path.Combine(sourceBasePath, version);
-
-                string destinationPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "TsdLib", "Assemblies", version);
-                if (!Directory.Exists(destinationPath))
-                    Directory.CreateDirectory(destinationPath);
-
-                replacementsDictionary["$assemblyfolder$"] = destinationPath;
-
-                foreach (string file in Directory.GetFiles(sourcePath))
-                    if (file != null)
-                    {
-                        string destinationFile = Path.Combine(destinationPath, Path.GetFileName(file));
-                        if (!File.Exists(destinationFile))
-                            File.Copy(file, destinationFile);
-                    }
-
-                //string extensionsFolder = Path.Combine(
-                //    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                //    dte.RegistryRoot.TrimStart(@"Software\".ToCharArray()),
-                //    "Extensions");
-
-                //string namedDirectory = Path.Combine(extensionsFolder, "BlackBerry", "TsdLibStarterKit");
-                //if (Directory.Exists(namedDirectory))
-                //    extensionsFolder = namedDirectory;
-
-                //FileInfo[] contentFiles = new DirectoryInfo(extensionsFolder)
-                //    .GetDirectories() //one folder per extension
-                //    .OrderBy(d => d.CreationTime).Last() //get the newest directory (most recently installed extension)
-                //    .GetDirectories("Dependencies")
-                //    .First() //get the embedded folder where the VSIX installer placed the references and content files
-                //    .GetFiles();
-
-                //string tsdLibVersion = FileVersionInfo.GetVersionInfo
-                //    (
-                //        contentFiles
-                //        .First(f => f.Name == "TsdLib.dll")
-                //        .FullName
-                //    ).FileVersion;
-
-                //string dependencyFolder = Path.Combine(
-                //    Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                //    "TsdLib",
-                //    "Dependencies",
-                //    tsdLibVersion);
-
-                //GlobalDictionary["$dependencyfolder$"] = dependencyFolder;
-
-                //if (!Directory.Exists(dependencyFolder))
-                //    Directory.CreateDirectory(dependencyFolder);
-                //foreach (FileInfo contentFile in contentFiles)
-                //    contentFile.CopyTo(Path.Combine(dependencyFolder, contentFile.Name), true);
-
-
-                //if (replacementsDictionary.ContainsKey("$wizarddata$"))
-                //{
-                //    XElement dataElement = XElement.Parse(replacementsDictionary["$wizarddata$"]);
-                //    IEnumerable<FileInfo> additionalFiles = dataElement
-                //        .Elements()
-                //        .Where(e => e.Name.LocalName == "File")
-                //        .Select(e => (string)e.Attribute("Path"))
-                //        .Select(s => new FileInfo(s));
-
-                //    foreach (FileInfo additionalFile in additionalFiles)
-                //        additionalFile.CopyTo(Path.Combine(dependencyFolder, additionalFile.Name), true);
-                //}
+                _version = versionElement.Value;
             }
             catch (Exception ex)
             {
@@ -112,23 +95,38 @@ namespace TsdLibStarterKitInstaller
 
         public void ProjectFinishedGenerating(Project project)
         {
-            //var vsproject = project.Object as VSLangProj.VSProject;
+            if (NuGetPackageInstaller != null)
+            {
+                PackageRepositoryFactory factory = PackageRepositoryFactory.Default;
+                IPackageRepository repository = factory.CreateRepository(Path.Combine(_serverLocation, "Packages"));
 
-            //foreach (VSLangProj.Reference reference in vsproject.References)
-            //{
-            //    if (reference.SourceProject == null)
-            //    {
-            //        // This is an assembly reference
-            //        var fullName = GetFullName(reference);
-            //        var assemblyName = new AssemblyName(fullName);
-            //        //yield return assemblyName;
-            //    }
-            //    //else
-            //    //{
-            //    //    // This is a project reference
-            //    //}
-            //}
+                NuGetPackageInstaller.InstallPackage(repository, project, "TsdLib", _version, false, false);
 
+                string nugetConfigPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "NuGet",
+                    "nuget.config"
+                    );
+
+                XDocument nugetConfig = XDocument.Load(nugetConfigPath);
+
+                XElement tsdPackageSourcElement = new XElement("add", new XAttribute("key", "Tsd"), new XAttribute("value", repository.Source));
+
+                XElement configurationElement = nugetConfig.Root;
+                Debug.Assert(configurationElement != null, "Could not install NuGet package source. Invalid nuget.config file.");
+                XElement packageSourcesElement = configurationElement.Element("packageSources");
+                if (packageSourcesElement == null)
+                    configurationElement.Add(new XElement("packageSources", tsdPackageSourcElement));
+                else
+                {
+                    if (packageSourcesElement.Elements("add").All(e => e.Attribute("key").Value != "Tsd"))
+                    {
+                        packageSourcesElement.Add(tsdPackageSourcElement);
+                        nugetConfig.Save(nugetConfigPath);
+                    }
+                }
+
+            }
         }
 
         #endregion

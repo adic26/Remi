@@ -128,7 +128,6 @@ namespace TsdLib.Configuration
     [Serializable]
     public class Sequence : ConfigItem
     {
-
         private string _testSequenceSourceCode;
         /// <summary>
         /// The source code containing the step-by-step instructions.
