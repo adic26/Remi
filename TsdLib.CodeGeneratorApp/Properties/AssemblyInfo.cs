@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TsdLib.CodeGeneratorApp")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Application to generate Instruments.cs files from xml instrument definition files.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BlackBerry")]
 [assembly: AssemblyProduct("TsdLib.CodeGeneratorApp")]

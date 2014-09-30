@@ -32,9 +32,9 @@ namespace TestClient.Sequences
                 {
                     Token.ThrowIfCancellationRequested();
                     ps.SetVoltage(voltageSetting);
+                    Thread.Sleep(productConfig.SettlingTime);
                     ps.DummyConnection.StringToRead = random.NextDouble().ToString(CultureInfo.InvariantCulture);
                     TestResults.AddMeasurement("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, new MeasurementParameter("Voltage", voltageSetting));
-                    Thread.Sleep(1000);
                 }
             }
         }

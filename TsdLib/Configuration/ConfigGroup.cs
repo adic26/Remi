@@ -72,6 +72,18 @@ namespace TsdLib.Configuration
             AllConfigItems.ListChanged += AllConfigItems_ListChanged;
         }
 
+        void AllConfigItems_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            if (e.ListChangedType == ListChangedType.ItemAdded)
+            {
+                T cfg = AllConfigItems[e.NewIndex];
+                if (cfg.StoreInDatabase)
+                    ConfigItems.Add(cfg);
+                else
+                    LocalConfigItems.Add(cfg);
+            }
+        }
+
         public void Add(T config, bool storeInDatabase = true)
         {
             BindingList<T> list = storeInDatabase ? ConfigItems : LocalConfigItems;
@@ -81,11 +93,10 @@ namespace TsdLib.Configuration
             if (existing != null)
             {
                 Trace.WriteLine(string.Format("Config already contains and item named {0}. Replacing.", config.Name));
-                list.Remove(existing);
                 AllConfigItems.Remove(existing);
+                list.Remove(existing);
             }
 
-            list.Add(config);
             AllConfigItems.Add(config);
         }
 
@@ -130,18 +141,6 @@ namespace TsdLib.Configuration
         public IList GetList()
         {
             return AllConfigItems;
-        }
-
-        void AllConfigItems_ListChanged(object sender, ListChangedEventArgs e)
-        {
-            if (e.ListChangedType == ListChangedType.ItemAdded)
-            {
-                T cfg = AllConfigItems[e.NewIndex];
-                if (cfg.StoreInDatabase)
-                    ConfigItems.Add(cfg);
-                else
-                    LocalConfigItems.Add(cfg);
-            }
         }
 
         #endregion

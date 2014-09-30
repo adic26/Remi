@@ -13,7 +13,7 @@
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -78,11 +78,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rem $(TargetPath) -seq $(ProjectDir)Sequences $(TargetDir)Sequences true
-</PostBuildEvent>
+    <PostBuildEvent>$(TargetPath) -seq $(ProjectDir)Sequences true</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>rem $(SolutionDir)TsdLib.CodeGeneratorApp\bin\$(ConfigurationName)\TsdLib.CodeGeneratorApp.exe $(ProjectName) $(ProjectDir)Instruments $(ProjectDir)Instruments CSharp</PreBuildEvent>
+    <PreBuildEvent>$(SolutionDir)TsdLib.CodeGeneratorApp\bin\$(ConfigurationName)\TsdLib.CodeGeneratorApp.exe $(ProjectName) $(ProjectDir)Instruments $(ProjectDir)Instruments CSharp</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

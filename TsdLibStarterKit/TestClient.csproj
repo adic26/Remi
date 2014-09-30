@@ -73,6 +73,12 @@
     <Content Include="Instruments\DummyPowerSupply.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>$(TargetPath) -seq $(TargetDir)Sequences true</PostBuildEvent>
+  </PropertyGroup>
+  <!--<PropertyGroup>
+    <PreBuildEvent>$(SolutionDir)TsdLib.CodeGeneratorApp\bin\$(ConfigurationName)\TsdLib.CodeGeneratorApp.exe $(ProjectName) $(ProjectDir)Instruments $(ProjectDir)Instruments CSharp</PreBuildEvent>
+  </PropertyGroup>-->
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

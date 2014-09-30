@@ -89,24 +89,31 @@ namespace TsdLibStarterKitInstaller
             }
         }
 
-        #region Not implemented
-
-        public void RunFinished() { }
-
         public void ProjectFinishedGenerating(Project project)
         {
             if (NuGetPackageInstaller != null)
             {
+                string packageLocation = Path.Combine(_serverLocation, "Packages");
                 PackageRepositoryFactory factory = PackageRepositoryFactory.Default;
-                IPackageRepository repository = factory.CreateRepository(Path.Combine(_serverLocation, "Packages"));
+                IPackageRepository repository = factory.CreateRepository(packageLocation);
+                IQueryable<IPackage> availablePackages = repository.GetPackages();
+
+
+
+
+
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new SelectPackagesForm(Directory.EnumerateFiles(packageLocation)));
+
+
 
                 NuGetPackageInstaller.InstallPackage(repository, project, "TsdLib", _version, false, false);
 
                 string nugetConfigPath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                     "NuGet",
-                    "nuget.config"
-                    );
+                    "nuget.config");
 
                 XDocument nugetConfig = XDocument.Load(nugetConfigPath);
 
@@ -128,6 +135,10 @@ namespace TsdLibStarterKitInstaller
 
             }
         }
+
+        #region Not implemented
+
+        public void RunFinished() { }
 
         #endregion
 

@@ -12,14 +12,14 @@ namespace TestClient.Configuration
         //The values for these properties will be configured by the application at run-time (in Development mode only) or in the database
         //The property values will be accessed by the TestSequence.Execute() method
 
-        [Category("RF")]
-        public List<int> WcdmaBands { get; set; }
+        [Category("Timing")]
+        public int SettlingTime { get; set; }
 
         //Use public parameterless constructor to set default values
         public ProductConfig()
         {
-            if (WcdmaBands == default(List<int>))
-                WcdmaBands = new List<int>{1, 2, 5};
+            if (SettlingTime == default(int))
+                SettlingTime = 500;
         }
     }
 }

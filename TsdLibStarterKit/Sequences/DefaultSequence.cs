@@ -26,13 +26,16 @@ namespace $safeprojectname$.Sequences
             Random random = new Random();
             DummyPowerSupply ps = DummyPowerSupply.Connect();
 
-            for (int v = 10; v >= 0; v--)
+            for (int i = 0; i < testConfig.LoopIterations; i++)
             {
-                Token.ThrowIfCancellationRequested();
-                ps.SetVoltage(v);
-                ps.DummyConnection.StringToRead = random.NextDouble().ToString(CultureInfo.InvariantCulture);
-                TestResults.AddMeasurement("Current", ps.GetCurrent(), "Amps", 0.1, 0.8);
-                Thread.Sleep(1000);
+                foreach (double voltageSetting in testConfig.VoltageSettings)
+                {
+                    Token.ThrowIfCancellationRequested();
+                    ps.SetVoltage(voltageSetting);
+                    Thread.Sleep(productConfig.SettlingTime);
+                    ps.DummyConnection.StringToRead = random.NextDouble().ToString(CultureInfo.InvariantCulture);
+                    TestResults.AddMeasurement("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, new MeasurementParameter("Voltage", voltageSetting));
+                }
             }
         }
         

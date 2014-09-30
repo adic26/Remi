@@ -22,7 +22,7 @@ namespace $safeprojectname$
             {
                 Trace.WriteLine("Updating Sequence Config on the database");
                 List<string> argsList = args.ToList();
-                UpdateTestConfig(argsList[argsList.IndexOf("-seq") + 1], argsList[argsList.IndexOf("-seq") + 2], bool.Parse(argsList[argsList.IndexOf("-seq") + 3]));
+                UpdateTestConfig(argsList[argsList.IndexOf("-seq") + 1], bool.Parse(argsList[argsList.IndexOf("-seq") + 2]));
                 return;
             }
 
@@ -39,27 +39,29 @@ namespace $safeprojectname$
             Console.WriteLine("Done");
         }
 
-        private static void UpdateTestConfig(string sourceFolder, string destinationFolder, bool storeInDatabase)
+        private static void UpdateTestConfig(string sourceFolder, bool storeInDatabase)
         {
-            //if (!Directory.Exists(destinationFolder))
-            //    Directory.CreateDirectory(destinationFolder);
+            ConfigManager manager = new ConfigManager("TestClient", Application.ProductVersion, new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest"));
+            
+            IConfigGroup<Sequence> cfgGroup = manager.GetConfigGroup<Sequence>();
 
-            //IConfigGroup<SequenceConfig> cfgGroup = ConfigManager<SequenceConfig>.GetInstance("TestClient", Application.ProductVersion).GetConfigGroup();
+            Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects in the database", cfgGroup.Count()));
 
-            //Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects in the database", cfgGroup.Count()));
+            foreach (string sourceFilePath in Directory.EnumerateFiles(sourceFolder))
+            {
+                Trace.WriteLine("Pushing " + sourceFilePath);
+                string sourceFileName = Path.GetFileName(sourceFilePath);
+                if (sourceFileName == null)
+                    throw new ArgumentException(sourceFilePath + " is not a valid file path.");
 
-            //foreach (string sourceFilePath in Directory.EnumerateFiles(sourceFolder))
-            //{
-            //    string sourceFileName = Path.GetFileName(sourceFilePath);
-            //    if (sourceFileName == null)
-            //        throw new ArgumentException(sourceFilePath + " is not a valid file path.");
-
-            //    string destinationFilePath = Path.Combine(destinationFolder, sourceFileName);
-
-            //    File.Copy(sourceFilePath, destinationFilePath, true);
-            //    cfgGroup.Add(new SequenceConfig(destinationFilePath) { StoreInDatabase = storeInDatabase });
-            //}
-            //cfgGroup.Save();
+                cfgGroup.Add(new Sequence
+                {
+                    Name = Path.GetFileNameWithoutExtension(sourceFilePath),
+                    StoreInDatabase = storeInDatabase,
+                    TestSequenceSourceCode = File.ReadAllText(sourceFilePath)
+                });
+            }
+            cfgGroup.Save();
         }
     }
 }

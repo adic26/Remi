@@ -88,7 +88,7 @@ namespace TsdLib.CodeGenerator
 
             if (Directory.Exists(outputDirectoryName))
                 Directory.CreateDirectory(outputDirectoryName);
-            string fullFileName = Path.Combine(outputDirectoryName, "Instruments" + provider.FileExtension);
+            string fullFileName = Path.Combine(outputDirectoryName, "Instruments." + provider.FileExtension);
             using (StreamWriter writer = new StreamWriter(fullFileName, false))
                 provider.GenerateCodeFromCompileUnit(ccu, writer, new CodeGeneratorOptions { BracingStyle = "C" });
         }
