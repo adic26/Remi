@@ -11,14 +11,14 @@ namespace $safeprojectname$.Configuration
         //The values for these properties will be configured by the application at run-time (in Development mode only) or in the database
         //The property values will be accessed by the TestSequence.Execute() method
 
-        [Category("RF")]
-        public int LoopIterations { get; set; }
+        [Category("Power Supply")]
+        public string PowerSupplyAddress { get; set; }
 
         //Use public parameterless constructor to set default values
         public StationConfig()
         {
-            if (LoopIterations == default(int))
-                LoopIterations = 1;
+            if (PowerSupplyAddress == default(string))
+                PowerSupplyAddress = "GPIB0::1::INST";
         }
     }
 }

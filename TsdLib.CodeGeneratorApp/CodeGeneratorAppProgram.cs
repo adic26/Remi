@@ -27,7 +27,8 @@ namespace TsdLib.CodeGeneratorApp
                 .Where(file => Path.GetExtension(file) == ".xml")
                 .ToArray();
 
-            Generator.GenerateInstrumentsClassFile(testSystemName, instrumentsFiles, outputDirectory, language, false);
+            using (Generator generator = new Generator(testSystemName, instrumentsFiles, language))
+                generator.GenerateInstrumentsClassFile(outputDirectory, false);
 
             return 0;
         }

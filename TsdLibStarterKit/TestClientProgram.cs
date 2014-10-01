@@ -41,7 +41,7 @@ namespace $safeprojectname$
 
         private static void UpdateTestConfig(string sourceFolder, bool storeInDatabase)
         {
-            ConfigManager manager = new ConfigManager("TestClient", Application.ProductVersion, new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest"));
+            ConfigManager manager = new ConfigManager("$safeprojectname$", Application.ProductVersion, new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest"));
             
             IConfigGroup<Sequence> cfgGroup = manager.GetConfigGroup<Sequence>();
 

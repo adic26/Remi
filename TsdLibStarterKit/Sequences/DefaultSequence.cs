@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Threading;
 using $safeprojectname$.Configuration;
 using $safeprojectname$.Instruments;
+using TsdLib.TestResults;
 using TsdLib.TestSequence;
 
 [assembly: AssemblyReference("System.dll")]

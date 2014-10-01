@@ -135,11 +135,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>del *.nupkg
-
-nuget pack -symbols $(ProjectPath) -Prop Configuration=$(ConfigurationName)
-
-if $(ConfigurationName) == Release xcopy /y *.nupkg \\fsg52ykf\ReliabilityTSD\TsdLib\Packages\</PostBuildEvent>
+    <PostBuildEvent>call $(SolutionDir)NuGet_Pack_Publish.bat $(ProjectPath) $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

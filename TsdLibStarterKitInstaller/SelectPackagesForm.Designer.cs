@@ -34,12 +34,13 @@
             // 
             // listView_Packages
             // 
-            this.listView_Packages.Location = new System.Drawing.Point(45, 60);
+            this.listView_Packages.CheckBoxes = true;
+            this.listView_Packages.Location = new System.Drawing.Point(57, 28);
             this.listView_Packages.Name = "listView_Packages";
-            this.listView_Packages.Size = new System.Drawing.Size(187, 97);
+            this.listView_Packages.Size = new System.Drawing.Size(682, 97);
             this.listView_Packages.TabIndex = 0;
             this.listView_Packages.UseCompatibleStateImageBehavior = false;
-            this.listView_Packages.View = System.Windows.Forms.View.List;
+            this.listView_Packages.View = System.Windows.Forms.View.Details;
             // 
             // button_OK
             // 
@@ -50,12 +51,15 @@
             this.button_OK.TabIndex = 1;
             this.button_OK.Text = "OK";
             this.button_OK.UseVisualStyleBackColor = true;
+            this.button_OK.Click += new System.EventHandler(this.button_OK_Click);
             // 
             // SelectPackagesForm
             // 
+            this.AcceptButton = this.button_OK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 262);
+            this.ClientSize = new System.Drawing.Size(820, 262);
+            this.ControlBox = false;
             this.Controls.Add(this.button_OK);
             this.Controls.Add(this.listView_Packages);
             this.Name = "SelectPackagesForm";

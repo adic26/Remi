@@ -79,7 +79,6 @@ namespace TsdLib.Controller
         //Methods
         async void ExecuteTestSequence(object sender, TestSequenceEventArgs e)
         {
-            string sequenceAssembly = null;
             AppDomain sequenceDomain = null;
 
             try
@@ -95,30 +94,32 @@ namespace TsdLib.Controller
                 {
                     _tokenSource = new CancellationTokenSource();
 
-                    sequenceAssembly = Generator.GenerateDynamicAssembly(
-                        TestSystemName,
-                        sequenceConfig.Name,
-                        sequenceConfig.TestSequenceSourceCode,
-                        sequenceConfig.GetReferencedAssemblies(),
-                        Directory.EnumerateFiles("Instruments", "*.xml").ToArray(),
-                        Language.CSharp);
+                    using (Generator generator = new Generator(TestSystemName, Directory.EnumerateFiles("Instruments", "*.xml").ToArray(), Language.CSharp))
+                    {
 
-                    sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
+                        string sequenceAssembly = generator.GenerateTestSequenceAssembly(
+                            sequenceConfig.Name,
+                            sequenceConfig.TestSequenceSourceCode,
+                            sequenceConfig.GetReferencedAssemblies()
+                            );
 
-                    TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence =
-                        (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)
-                            sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, sequenceConfig.GetNamespace() + "." + sequenceConfig.GetClassName());
+                        sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
 
-                    sequence.AddTraceListener(View.Listener);
+                        TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence =
+                            (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)
+                                sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, sequenceConfig.GetNamespace() + "." + sequenceConfig.GetClassName());
 
-                    EventProxy<MeasurementEventArgs> measurementEventProxy = new EventProxy<MeasurementEventArgs>();
-                    sequence.MeasurementEventProxy = measurementEventProxy;
+                        sequence.AddTraceListener(View.Listener);
 
-                    measurementEventProxy.Event += measurementEventHandler;
+                        EventProxy<MeasurementEventArgs> measurementEventProxy = new EventProxy<MeasurementEventArgs>();
+                        sequence.MeasurementEventProxy = measurementEventProxy;
 
-                    _tokenSource.Token.Register(sequence.Abort);
+                        measurementEventProxy.Event += measurementEventHandler;
 
-                    sequence.ExecuteSequence(stationConfig, productConfig, testConfig);
+                        _tokenSource.Token.Register(sequence.Abort);
+
+                        sequence.ExecuteSequence(stationConfig, productConfig, testConfig);
+                    }
                 });
 
             }
@@ -136,20 +137,6 @@ namespace TsdLib.Controller
             {
                 if (sequenceDomain != null)
                     AppDomain.Unload(sequenceDomain);
-
-                if (sequenceAssembly != null)
-                {
-                    if (File.Exists(sequenceAssembly))
-                        File.Delete(sequenceAssembly);
-
-                    string sequencePdb = Path.ChangeExtension(sequenceAssembly, "pdb");
-                    if (File.Exists(sequencePdb))
-                        File.Delete(sequencePdb);
-
-                    string sequenceTmp = Path.ChangeExtension(sequenceAssembly, null);
-                    if (File.Exists(sequenceTmp))
-                        File.Delete(sequenceTmp);
-                }
                 View.SetState(State.ReadyToTest);
             }
         }

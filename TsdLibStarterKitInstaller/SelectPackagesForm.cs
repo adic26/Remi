@@ -1,27 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using NuGet;
 
 namespace TsdLibStarterKitInstaller
 {
     public partial class SelectPackagesForm : Form
     {
-        public SelectPackagesForm()
+        private readonly List<IPackage> _packages;
+        public List<IPackage> SelectedPackages { get; private set; }
+
+        public SelectPackagesForm(IEnumerable<IPackage> packages)
         {
             InitializeComponent();
+
+            _packages = new List<IPackage>(packages);
+
+            listView_Packages.Columns.AddRange(new[] 
+            {
+                new ColumnHeader {Text = "Package Name"},
+                new ColumnHeader {Text = "Package Version"},
+                new ColumnHeader {Text = "Description"}
+            });
+
+
+            listView_Packages.Items.AddRange(_packages.Select(p => new ListViewItem(new[] 
+            {
+                p.Title,
+                p.Version.ToString(),
+                p.Description
+            })).ToArray());
         }
 
-        public SelectPackagesForm(IEnumerable<string> data)
+        private void button_OK_Click(object sender, System.EventArgs e)
         {
-            InitializeComponent();
-            
-            listView_Packages.Items.AddRange(data.Select(d => new ListViewItem(d)).ToArray());
+            SelectedPackages = new List<IPackage>();
+            foreach (int checkedIndex in listView_Packages.CheckedItems.Cast<ListViewItem>().Select(i => i.Index))
+                 SelectedPackages.Add(_packages.ElementAt(checkedIndex));
+            Close();
         }
     }
 }

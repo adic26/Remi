@@ -23,7 +23,6 @@ namespace TsdLibStarterKitInstaller
         [Import]
         internal IVsPackageInstaller NuGetPackageInstaller { get; set; }
         private string _serverLocation;
-        private string _version;
 
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
         {
@@ -36,11 +35,9 @@ namespace TsdLibStarterKitInstaller
                         container.ComposeParts(this);
                 }
 
-
                 if (NuGetPackageInstaller == null)
                 {
                     MessageBox.Show("NuGet Package Manager not available.");
-
                     throw new WizardBackoutException("NuGet Package Manager not available.");
                 }
 
@@ -62,25 +59,9 @@ namespace TsdLibStarterKitInstaller
 
                 wizardRootElement.Validate(schemaObject, schemaSet, (o, e) => Debug.Fail("TsdLibStarterKit.vstemplate could not be validated against schema: TsdLib.WizardData.xsd."));
 
-
-// ReSharper disable once PossibleNullReferenceException
+// ReSharper disable once PossibleNullReferenceException - doc is validated against schema
                 _serverLocation = wizardRootElement.Element(ns + "ServerLocation")
                     .Attribute("Path").Value;
-
-                XNamespace atomNs = "http://www.w3.org/2005/Atom";
-                XNamespace vsixNs = "http://schemas.microsoft.com/developer/vsx-syndication-schema/2010";
-
-                XDocument atomDoc = XDocument.Load(Path.Combine(_serverLocation, "atom.xml"));
-                XElement feedElement = atomDoc.Root;
-                Debug.Assert(feedElement != null, "Invalid atom.xml document. No root element.");
-                XElement entryElement = feedElement.Element(atomNs + "entry");
-                Debug.Assert(entryElement != null, "Invalid XML document. No entry element.");
-                XElement vsixElement = entryElement.Element(vsixNs + "Vsix");
-                Debug.Assert(vsixElement != null, "Invalid XML document. No Vsix element.");
-                XElement versionElement = vsixElement.Element(vsixNs + "Version");
-                Debug.Assert(versionElement != null, "Invalid XML document. No Version element.");
-
-                _version = versionElement.Value;
             }
             catch (Exception ex)
             {
@@ -91,49 +72,45 @@ namespace TsdLibStarterKitInstaller
 
         public void ProjectFinishedGenerating(Project project)
         {
-            if (NuGetPackageInstaller != null)
+            string packageLocation = Path.Combine(_serverLocation, "Packages");
+            IPackageRepository repository = PackageRepositoryFactory.Default.CreateRepository(packageLocation);
+                
+            IQueryable<IPackage> packages = repository.GetPackages()
+                .GroupBy(p => p.Id)
+                .Select(g => g.OrderBy(p => p.Version)
+                    .Last());
+
+            using (SelectPackagesForm form = new SelectPackagesForm(packages))
             {
-                string packageLocation = Path.Combine(_serverLocation, "Packages");
-                PackageRepositoryFactory factory = PackageRepositoryFactory.Default;
-                IPackageRepository repository = factory.CreateRepository(packageLocation);
-                IQueryable<IPackage> availablePackages = repository.GetPackages();
-
-
-
-
-
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new SelectPackagesForm(Directory.EnumerateFiles(packageLocation)));
-
-
-
-                NuGetPackageInstaller.InstallPackage(repository, project, "TsdLib", _version, false, false);
-
-                string nugetConfigPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    "NuGet",
-                    "nuget.config");
-
-                XDocument nugetConfig = XDocument.Load(nugetConfigPath);
-
-                XElement tsdPackageSourcElement = new XElement("add", new XAttribute("key", "Tsd"), new XAttribute("value", repository.Source));
-
-                XElement configurationElement = nugetConfig.Root;
-                Debug.Assert(configurationElement != null, "Could not install NuGet package source. Invalid nuget.config file.");
-                XElement packageSourcesElement = configurationElement.Element("packageSources");
-                if (packageSourcesElement == null)
-                    configurationElement.Add(new XElement("packageSources", tsdPackageSourcElement));
-                else
-                {
-                    if (packageSourcesElement.Elements("add").All(e => e.Attribute("key").Value != "Tsd"))
-                    {
-                        packageSourcesElement.Add(tsdPackageSourcElement);
-                        nugetConfig.Save(nugetConfigPath);
-                    }
-                }
-
+                form.ShowDialog();
+                foreach (IPackage selectedPackage in form.SelectedPackages)
+                    NuGetPackageInstaller.InstallPackage(repository, project, selectedPackage.Id, selectedPackage.Version.ToString(), false, false);
             }
+
+
+            string nugetConfigPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "NuGet",
+                "nuget.config");
+
+            XDocument nugetConfig = XDocument.Load(nugetConfigPath);
+
+            XElement tsdPackageSourcElement = new XElement("add", new XAttribute("key", "Tsd"), new XAttribute("value", repository.Source));
+
+            XElement configurationElement = nugetConfig.Root;
+            Debug.Assert(configurationElement != null, "Could not install NuGet package source. Invalid nuget.config file.");
+            XElement packageSourcesElement = configurationElement.Element("packageSources");
+            if (packageSourcesElement == null)
+                configurationElement.Add(new XElement("packageSources", tsdPackageSourcElement));
+            else
+            {
+                if (packageSourcesElement.Elements("add").All(e => e.Attribute("key").Value != "Tsd"))
+                {
+                    packageSourcesElement.Add(tsdPackageSourcElement);
+                    nugetConfig.Save(nugetConfigPath);
+                }
+            }
+
         }
 
         #region Not implemented
