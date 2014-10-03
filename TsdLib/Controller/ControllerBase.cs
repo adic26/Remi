@@ -48,9 +48,7 @@ namespace TsdLib.Controller
         /// Initialize a new system controller.
         /// </summary>
         /// <param name="devMode">True to enable Developer Mode - config can be modified but results are stored in the Analysis category.</param>
-        /// <param name="testSystemName">Name of the test system. Required for application settings and results logging.</param>
-        /// <param name="testSystemVersion">Version of the test system.</param>
-        /// <param name="databaseConnection">An <see cref="IDatabaseConnection"/> object to handle persistence with a database.</param>
+        /// <param name="databaseConnection">An <see cref="DatabaseConnection"/> object to handle persistence with a database.</param>
         protected ControllerBase(bool devMode, DatabaseConnection databaseConnection)
         {
             TestSystemName = databaseConnection.TestSystemName;

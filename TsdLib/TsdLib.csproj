@@ -69,7 +69,7 @@
     <Compile Include="TestResults\TestResultsHeader.cs" />
     <Compile Include="Common\EventProxy.cs" />
     <Compile Include="Common\States.cs" />
-    <Compile Include="Common\IDatabaseConnection.cs" />
+    <Compile Include="Common\DatabaseConnection.cs" />
     <Compile Include="TestResults\Measurement.cs" />
     <Compile Include="Common\SpecialFolders.cs" />
     <Compile Include="TestSequence\AssemblyReferenceAttribute.cs" />

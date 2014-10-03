@@ -21,7 +21,7 @@ namespace TsdLib.Configuration
         /// <summary>
         /// Initialize a new ConfigManager instance to manage the configuration for a specified test system.
         /// </summary>
-        /// <param name="databaseConnection">An <see cref="IDatabaseConnection"/> object to handle persistence with a database.</param>
+        /// <param name="databaseConnection">An <see cref="DatabaseConnection"/> object to handle persistence with a database.</param>
         public ConfigManager(DatabaseConnection databaseConnection)
             : base(databaseConnection)
         {
@@ -47,7 +47,7 @@ namespace TsdLib.Configuration
         /// <summary>
         /// Initialize a new ConfigManager instance to manage the configuration for a specified test system.
         /// </summary>
-        /// <param name="databaseConnection">An <see cref="IDatabaseConnection"/> object to handle persistence with a database.</param>
+        /// <param name="databaseConnection">An <see cref="DatabaseConnection"/> object to handle persistence with a database.</param>
         public ConfigManager(DatabaseConnection databaseConnection)
         {
             TestSystemName = databaseConnection.TestSystemName;
