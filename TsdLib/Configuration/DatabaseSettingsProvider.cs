@@ -53,13 +53,13 @@ namespace TsdLib.Configuration
                 {
                     SettingsPropertyValueCollection configFromDb = new SettingsPropertyValueCollection();
 
-                    IDatabaseConnection databaseConnection = (IDatabaseConnection) context["DatabaseConnection"];
+                    DatabaseConnection databaseConnection = (DatabaseConnection) context["DatabaseConnection"];
 
                     foreach (SettingsProperty settingProperty in properties)
                     {
                         string configType = settingProperty.PropertyType.GetGenericArguments()[0].Name;
                         Debug.WriteLine("Pulling " + configType + " from database.");
-                        string valueFromDb = databaseConnection.ReadStringFromDatabase((string)context["TestSystemName"], (string)context["TestSystemVersion"], configType + ".xml");
+                        string valueFromDb = databaseConnection.ReadStringFromDatabase(configType + ".xml");
 
                         SettingsPropertyValue settingValue = new SettingsPropertyValue(settingProperty)
                         {
@@ -105,7 +105,7 @@ namespace TsdLib.Configuration
 
                 base.SetPropertyValues(context, values);
 
-                IDatabaseConnection databaseConnection = (IDatabaseConnection)context["DatabaseConnection"];
+                DatabaseConnection databaseConnection = (DatabaseConnection)context["DatabaseConnection"];
 
                 try
                 {
@@ -115,7 +115,7 @@ namespace TsdLib.Configuration
 
                         Debug.WriteLine("Pushing " + configType + " to database.");
                         
-                        databaseConnection.WriteStringToDatabase((string) settingValue.SerializedValue, (string)context["TestSystemName"], (string)context["TestSystemVersion"], configType + ".xml");
+                        databaseConnection.WriteStringToDatabase((string) settingValue.SerializedValue, configType + ".xml");
                     }
                 }
                 catch (Exception ex)

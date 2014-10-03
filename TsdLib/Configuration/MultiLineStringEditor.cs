@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing.Design;
@@ -40,14 +41,28 @@ namespace TsdLib.Configuration
 
         public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
+            bool sequence = false;
             IWindowsFormsEditorService svc = provider.GetService(typeof(IWindowsFormsEditorService)) as IWindowsFormsEditorService;
-            string str = value as string;
+            string str;
+            if (value is HashSet<string>)
+            {
+                sequence = true;
+                str = string.Join(Environment.NewLine, (IEnumerable<string>) value);
+            }
+            else
+                str = value as string;
+
             Debug.Assert(svc != null, "Error initializing IWindowsFormsEditorService");
-            Debug.Assert(str != null, "Must pass a string.");
+            Debug.Assert(str != null, "Must pass a string or IEnumerable<string>.");
             using (MultiLineStringEditorForm form = new MultiLineStringEditorForm(str))
             {
                 if (svc.ShowDialog(form) == DialogResult.OK)
                     str = form.Value; // update object
+            }
+            if (sequence)
+            {
+                var seq = new HashSet<string>( str.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries) );
+                return seq;
             }
             return str;
         }

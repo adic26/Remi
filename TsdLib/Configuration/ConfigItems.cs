@@ -1,17 +1,21 @@
 ﻿using System;
+using System.CodeDom;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Text.RegularExpressions;
-using TsdLib.TestSequence;
+using Microsoft.CSharp;
 
 namespace TsdLib.Configuration
 {
-
     /// <summary>
     /// Base class for a specific instance of a configuration. Multiple ConfigItems can be added to a ConfigGroup to form a selectable list used for parameterizing test sequences.
     /// </summary>
@@ -23,7 +27,7 @@ namespace TsdLib.Configuration
         /// </summary>
         [ReadOnly(true)]
         [Category("Description")]
-        public virtual string Name { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// True to store configuration locally and on a database. False to store locally only.
@@ -31,6 +35,16 @@ namespace TsdLib.Configuration
         [ReadOnly(true)]
         [Category("Description")]
         public bool StoreInDatabase { get; set; }
+
+        /// <summary>
+        /// Gets the name of the test system that the configuration item is used for.
+        /// </summary>
+        [ReadOnly(true)]
+        [Category("Description")]
+        internal string TestSystemName
+        {
+            get { return ConfigManager.TestSystemName; }
+        }
 
         /// <summary>
         /// Performs a deep clone of the ConfigItem object.
@@ -120,7 +134,6 @@ namespace TsdLib.Configuration
 
     }
 
-    //TODO: don't edit Sequence config in a property grid - just launch the multi-line string editor
     /// <summary>
     /// Conatins the step-by-step instrument control and measurement capturing instructions that make up a test sequence.
     /// Can be parameterized by StationConfig, ProductConfig, TestConfig.
@@ -128,80 +141,156 @@ namespace TsdLib.Configuration
     [Serializable]
     public class Sequence : ConfigItem
     {
-        private string _testSequenceSourceCode;
         /// <summary>
-        /// The source code containing the step-by-step instructions.
+        /// Gets the complete source code for the test sequence.
+        /// </summary>
+        [Browsable(false)]
+        public string FullSourceCode { get; set; }
+
+        private HashSet<string> _assemblyReferences;
+        /// <summary>
+        /// Gets or sets a list of assemblies needed to be referenced declared in the test sequence.
+        /// </summary>
+        //[Editor(@"System.Windows.Forms.Design.StringCollectionEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
+        [Editor(typeof(MultiLineStringEditor), typeof(UITypeEditor))]
+        [TypeConverter(typeof(HashSetConverter))]
+        [Category("Dependencies")]
+        public HashSet<string> AssemblyReferences
+        {
+            get { return _assemblyReferences ?? (_assemblyReferences = new HashSet<string> { "System.dll", "System.Xml.dll", "TsdLib.dll", TestSystemName + ".exe" }); }
+            set { _assemblyReferences = value; }
+        }
+
+
+        private HashSet<string> _usingDirectives;
+        /// <summary>
+        /// Gets or sets a list of namespace import (using) statements declared in the test sequence.
+        /// </summary>
+        //[Editor(@"System.Windows.Forms.Design.StringCollectionEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
+        [Editor(typeof(MultiLineStringEditor), typeof(UITypeEditor))]
+        [TypeConverter(typeof(HashSetConverter))]
+        [Category("Dependencies")]
+        public HashSet<string> UsingDirectives
+        {
+            get { return _usingDirectives ?? (_usingDirectives = new HashSet<string> { "System", "TsdLib.TestResults", "TsdLib.TestSequence", TestSystemName + ".Configuration", TestSystemName + ".Instruments" }); }
+            set { _usingDirectives = value; }
+        }
+
+        /// <summary>
+        /// Gets the namespace declared in the test sequence.
+        /// </summary>
+        [Category("Declarations")]
+        [ReadOnly(true)]
+        public string NamespaceDeclaration { get { return TestSystemName + ".Sequences"; } }
+
+        /// <summary>
+        /// Gerts the name of the test sequence class.
+        /// </summary>
+        [Category("Declarations")]
+        [ReadOnly(true)]
+        public string ClassDeclaration { get { return TestSystemName; } }
+
+        /// <summary>
+        /// Gets the signature of the Execute method defined in the test sequence class.
+        /// </summary>
+        [Category("Declarations")]
+        [ReadOnly(true)]
+        public string ExecuteMethodSignature { get { return "protected override void Execute(StationConfig stationConfig, ProductConfig productConfig, TestConfig testConfig)"; } }
+
+        /// <summary>
+        /// Gets or sets the source code for the step-by-step execution of the test sequence.
         /// </summary>
         [Editor(typeof(MultiLineStringEditor), typeof(UITypeEditor))]
         [Category("Test Sequence")]
-        public string TestSequenceSourceCode
+        public string SequenceCode { get; set; }
+
+        /// <summary>
+        /// Initialize a new Sequence configuration instance from persisted settings.
+        /// </summary>
+        public Sequence()
         {
-            get { return _testSequenceSourceCode; }
-            set
+            //Assembly clientAssembly = Assembly.GetEntryAssembly();
+            //TestSystemName = clientAssembly.GetName().Name;
+            //Type[] clientTypes = clientAssembly.GetTypes();
+            //Type stationConfigType = clientTypes.FirstOrDefault(t => t.BaseType == typeof(StationConfigCommon)) ?? typeof(StationConfigCommon);
+            //Type productConfigType = clientTypes.FirstOrDefault(t => t.BaseType == typeof(ProductConfigCommon)) ?? typeof(ProductConfigCommon);
+            //Type testConfigType = clientTypes.FirstOrDefault(t => t.BaseType == typeof(TestConfigCommon)) ?? typeof(TestConfigCommon);
+
+            string stationConfigType = ConfigManager.ConfigGroups
+                .Select(c => c.BaseConfigType)
+                .FirstOrDefault(bc => bc == "StationConfigCommon") ?? "StationConfigCommon";
+
+            string productConfigType = ConfigManager.ConfigGroups
+                .Select(c => c.BaseConfigType)
+                .FirstOrDefault(bc => bc == "ProductConfigCommon") ?? "ProductConfigCommon";
+
+            string testConfigType = ConfigManager.ConfigGroups
+                .Select(c => c.BaseConfigType)
+                .FirstOrDefault(bc => bc == "TestConfigCommon") ?? "TestConfigCommon";
+
+            if (FullSourceCode == null)
             {
-                //Append .Dynamic to namespace declaration
-                string originalNsDeclaration = value.Split(new []{'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries)
-                    .First(l => l.StartsWith("namespace"));
-                _testSequenceSourceCode = originalNsDeclaration.EndsWith("Dynamic") ? value : value.Replace(originalNsDeclaration, originalNsDeclaration + ".Dynamic");
+                try
+                {
+                    CodeNamespace cns = new CodeNamespace();
+
+                    cns.Imports.AddRange(UsingDirectives.Select(s => new CodeNamespaceImport(s)).ToArray());
+
+                    cns.Name = NamespaceDeclaration;
+
+                    CodeTypeDeclaration sequenceClass = new CodeTypeDeclaration(ClassDeclaration);
+                    CodeTypeReference sequenceBaseReference = new CodeTypeReference("TestSequenceBase", new CodeTypeReference(stationConfigType), new CodeTypeReference(productConfigType), new CodeTypeReference(testConfigType));
+                    sequenceClass.BaseTypes.Add(sequenceBaseReference);
+
+                    CodeMemberMethod executeMethod = new CodeMemberMethod { Name = "Execute" };
+                    executeMethod.Parameters.AddRange(new[] { new CodeParameterDeclarationExpression(stationConfigType, "stationConfig"), new CodeParameterDeclarationExpression(productConfigType, "productConfig"), new CodeParameterDeclarationExpression(testConfigType, "testConfig") });
+                    executeMethod.Statements.Add(new CodeSnippetStatement(SequenceCode));
+
+                    sequenceClass.Members.Add(executeMethod);
+
+                    cns.Types.Add(sequenceClass);
+
+                    using (StringWriter writer = new StringWriter(new StringBuilder()))
+                    {
+                        using (CSharpCodeProvider provider = new CSharpCodeProvider())
+                            provider.GenerateCodeFromNamespace(cns, writer, new CodeGeneratorOptions { BracingStyle = "C" });
+                        FullSourceCode = writer.ToString();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    FullSourceCode = "ERROR: " + ex.GetType().Name + Environment.NewLine + ex.Message;
+                }
             }
         }
 
-        private string[] _referencedAssemblies;
         /// <summary>
-        /// Gets the assemblies referenced by the test sequence code.
+        /// Initialize a new Sequence config uration instance from a source code file.
         /// </summary>
-        /// <returns>A string array containing the names of the referenced assemblies.</returns>
-        public string[] GetReferencedAssemblies()
+        /// <param name="csFile">C# code file containing the complete test sequence class.</param>
+        /// <param name="storeInDatabase">True to store configuration locally and on the database. False to store locally only.</param>
+        /// <param name="assemblyReferences">Zero or more assemblies that are referenced by the test sequence class.</param>
+        public Sequence(string csFile, bool storeInDatabase, params string[] assemblyReferences)
         {
-            if (_referencedAssemblies == null)
+            FullSourceCode = File.ReadAllText(csFile);
+            Name = Path.GetFileNameWithoutExtension(csFile);
+            StoreInDatabase = storeInDatabase;
+            SequenceCode = Regex.Match(FullSourceCode, @"(?<=protected override void Execute.*\{).*(?=\}\s+\}\s+\})", RegexOptions.Singleline).Value;
+            foreach (string assemblyReference in assemblyReferences)
+                AssemblyReferences.Add(assemblyReference);
+        }
+    }
+
+    internal class HashSetConverter : TypeConverter
+    {
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        {
+            HashSet<string> v = value as HashSet<string>;
+            if (v != null && destinationType == typeof (string))
             {
-                MatchCollection sequenceAssemblyReferences = Regex.Matches(TestSequenceSourceCode, "(?<=assembly: AssemblyReference\\(\").*(?=\"\\))");
-                string[] references = sequenceAssemblyReferences.Cast<Match>().Select(m => m.Value).ToArray();
-                _referencedAssemblies = references;
+                return string.Join(Environment.NewLine, v);
             }
-            return _referencedAssemblies;
-        }
-
-        private string _namespace;
-        /// <summary>
-        /// Gets the namespace declared in the test sequence source code.
-        /// </summary>
-        /// <returns>The namespace declaration.</returns>
-        public string GetNamespace()
-        {
-            if (_namespace != null)
-                return _namespace;
-
-            string namespaceDeclarationLine = TestSequenceSourceCode
-                .Split('\r', '\n')
-                .FirstOrDefault(line => line.Trim().StartsWith("namespace"));
-
-            if (namespaceDeclarationLine == null)
-                throw new TestSequenceException(Name);
-
-            _namespace = namespaceDeclarationLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1];
-            return _namespace;
-        }
-
-        private string _className;
-        /// <summary>
-        /// Gets the name of the class declared in the test sequence source code.
-        /// </summary>
-        /// <returns>The class name.</returns>
-        public string GetClassName()
-        {
-            if (_className != null)
-                return _className;
-
-            string classDeclarationLine = TestSequenceSourceCode
-                .Split('\r', '\n')
-                .FirstOrDefault(line => line.Trim().StartsWith("public class"));
-
-            if (classDeclarationLine == null)
-                throw new TestSequenceException(Name);
-
-            _className = classDeclarationLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[2];
-            return _className;
+            return base.ConvertTo(context, culture, value, destinationType);
         }
     }
 }

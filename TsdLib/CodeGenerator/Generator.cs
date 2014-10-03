@@ -16,7 +16,7 @@ namespace TsdLib.CodeGenerator
     /// </summary>
     public class Generator : IDisposable
     {
-        private readonly List<string> _generatedFiles;
+        private readonly List<string> _generatedFiles; //TODO: just create a temp subfolder and delete it after, rather than tracking individual files
         private readonly string _testSystemName;
         private readonly string[] _instrumentFiles;
         private readonly Language _language;
@@ -126,8 +126,8 @@ namespace TsdLib.CodeGenerator
         {
             if (disposing)
             {
-                foreach (string generatedFile in _generatedFiles)
-                    File.Delete(generatedFile);
+                //foreach (string generatedFile in _generatedFiles)
+                //    File.Delete(generatedFile);
                 _generatedFiles.Clear();
             }
         }

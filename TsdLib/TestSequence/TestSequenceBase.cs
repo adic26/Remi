@@ -23,11 +23,6 @@ namespace TsdLib.TestSequence
         where TTestConfig : TestConfigCommon
     {
         /// <summary>
-        /// Override to provide the name of the test system.
-        /// </summary>
-        public abstract string TestSystemName { get; }
-
-        /// <summary>
         /// Client application overrides this method to define test steps.
         /// </summary>
         /// <param name="stationConfig">Station config instance containing station-specific configuration.</param>
@@ -57,6 +52,7 @@ namespace TsdLib.TestSequence
         protected TestSequenceBase()
         {
             _cts = new CancellationTokenSource();
+            
             TestResults = new TestResultCollection();
             TestResults.ListChanged += (sender, e) =>
             {
@@ -106,7 +102,7 @@ namespace TsdLib.TestSequence
                 bool overallPass = TestResults.Any() && TestResults.All(m => m.Result == MeasurementResult.Pass);
 
                 TestResults.AddHeader( new TestResultsHeader(
-                    TestSystemName,
+                    testConfig.TestSystemName,
                     "_JobNumber",
                     "_UnitNumber",
                     "_TestType",
@@ -119,7 +115,7 @@ namespace TsdLib.TestSequence
                     ));
 
                 XmlSerializer xs = new XmlSerializer(typeof(TestResultCollection));
-                string measurementFile = Path.Combine(SpecialFolders.GetMeasurementsFolder(TestSystemName), "Results.xml");
+                string measurementFile = Path.Combine(SpecialFolders.GetMeasurementsFolder(ConfigManager.TestSystemName), "Results.xml");
                 using (Stream s = File.Create(measurementFile))
                     xs.Serialize(s, TestResults);
 

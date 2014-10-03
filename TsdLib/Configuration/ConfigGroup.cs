@@ -29,18 +29,12 @@ namespace TsdLib.Configuration
 
         BindingList<T> AllConfigItems { get; set; }
 
-        public ConfigGroup(string testSystemName, string testSystemVersion, IDatabaseConnection databaseConnection)
+        public ConfigGroup(DatabaseConnection databaseConnection)
         {
             //upload assembly to database to support stand-alone app reflection
-            if (databaseConnection != null)
-                databaseConnection.UploadFileToDatabase(Assembly.GetEntryAssembly().Location, testSystemName, testSystemVersion, "ClientAssembly", true);
+            databaseConnection.UploadFileToDatabase(Assembly.GetEntryAssembly().Location, "ClientAssembly", true);
 
-            if (!string.IsNullOrEmpty(testSystemName))
-                Context.Add("TestSystemName", testSystemName);
-            if (!string.IsNullOrEmpty(testSystemVersion))
-                Context.Add("TestSystemVersion", testSystemVersion);
-            if (databaseConnection != null)
-                Context.Add("DatabaseConnection", databaseConnection);
+            Context.Add("DatabaseConnection", databaseConnection);
 
             Synchronized(this);
 
@@ -57,6 +51,7 @@ namespace TsdLib.Configuration
                 {
                     Name = "Default" + typeof(T).Name,
                     StoreInDatabase = true,
+                    //TestSystemName = databaseConnection.TestSystemName
                 };
 
                 ConfigItems.Add(newConfig);
@@ -106,6 +101,17 @@ namespace TsdLib.Configuration
         public string ConfigType
         {
             get { return typeof(T).Name; }
+        }
+
+        /// <summary>
+        /// Gets the base type of <see cref="TsdLib.Configuration.ConfigItem"/>.
+        /// </summary>
+        public string BaseConfigType
+        {
+            get
+            {
+                return typeof(T).BaseType.Name;
+            }
         }
 
         /// <summary>
@@ -170,6 +176,12 @@ namespace TsdLib.Configuration
         /// Gets the type of <see cref="TsdLib.Configuration.ConfigItem"/>.
         /// </summary>
         string ConfigType { get; }
+
+        /// <summary>
+        /// Gets the base type of <see cref="TsdLib.Configuration.ConfigItem"/>.
+        /// </summary>
+        string BaseConfigType { get; }
+
         /// <summary>
         /// Save the configuration group.
         /// </summary>

@@ -51,19 +51,19 @@ namespace TsdLib.Controller
         /// <param name="testSystemName">Name of the test system. Required for application settings and results logging.</param>
         /// <param name="testSystemVersion">Version of the test system.</param>
         /// <param name="databaseConnection">An <see cref="IDatabaseConnection"/> object to handle persistence with a database.</param>
-        protected ControllerBase(bool devMode, string testSystemName, string testSystemVersion, IDatabaseConnection databaseConnection)
+        protected ControllerBase(bool devMode, DatabaseConnection databaseConnection)
         {
-            TestSystemName = testSystemName;
-            TestSystemVersion = testSystemVersion;
+            TestSystemName = databaseConnection.TestSystemName;
+            TestSystemVersion = databaseConnection.TestSystemVersion;
 
             //TODO: if _devMode, do not pull from database??
 
-            ConfigManager manager = new ConfigManager<TStationConfig, TProductConfig, TTestConfig, Sequence>(testSystemName, TestSystemVersion, databaseConnection);
+            ConfigManager manager = new ConfigManager<TStationConfig, TProductConfig, TTestConfig, Sequence>(databaseConnection);
 
             //set up view
             View = new TView
             {
-                Text = testSystemName + " v." + testSystemVersion,
+                Text = TestSystemName + " v." + TestSystemVersion,
                 StationConfigList = manager.GetConfigGroup<TStationConfig>().GetList(),
                 ProductConfigList = manager.GetConfigGroup<TProductConfig>().GetList(),
                 TestConfigList = manager.GetConfigGroup<TTestConfig>().GetList(),
@@ -99,15 +99,15 @@ namespace TsdLib.Controller
 
                         string sequenceAssembly = generator.GenerateTestSequenceAssembly(
                             sequenceConfig.Name,
-                            sequenceConfig.TestSequenceSourceCode,
-                            sequenceConfig.GetReferencedAssemblies()
+                            sequenceConfig.FullSourceCode,
+                            sequenceConfig.AssemblyReferences.ToArray()
                             );
 
                         sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
 
                         TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence =
                             (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)
-                                sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, sequenceConfig.GetNamespace() + "." + sequenceConfig.GetClassName());
+                                sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, sequenceConfig.NamespaceDeclaration + "." + sequenceConfig.Name);
 
                         sequence.AddTraceListener(View.Listener);
 

@@ -10,6 +10,12 @@ namespace TestClient
 {
     class TestClientProgram
     {
+#if DEBUG
+        private const bool Released = false;
+#else
+        private const bool Released = true;
+#endif
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -18,11 +24,28 @@ namespace TestClient
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
 
+            //TODO: move to separate application
             if (args.Contains("-seq"))
             {
-                Trace.WriteLine("Updating Sequence Config on the database");
+                IConfigGroup<Sequence> sequences = new ConfigManager(new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest", "TestClient", Application.ProductVersion, Released)).GetConfigGroup<Sequence>();
                 List<string> argsList = args.ToList();
-                UpdateTestConfig(argsList[argsList.IndexOf("-seq") + 1], bool.Parse(argsList[argsList.IndexOf("-seq") + 2]));
+
+                string sequenceFolder = argsList[argsList.IndexOf("-seq") + 1];
+                bool storeInDatabase = bool.Parse(argsList[argsList.IndexOf("-seq") + 2]);
+
+
+                //string sequenceFolder = @"C:\Users\jmckee\Source\Repos\TsdLib\TestClient\Sequences";
+                //bool storeInDatabase = true;
+
+                foreach (Sequence sequence in sequences)
+                {
+                    string vsFile = Path.Combine(sequenceFolder, sequence.Name + ".cs");
+                    if (!File.Exists(vsFile))
+                        File.WriteAllText(vsFile, sequence.FullSourceCode);
+                }
+                foreach (string seqFile in Directory.EnumerateFiles(sequenceFolder))
+                    sequences.Add(new Sequence(seqFile, storeInDatabase));
+                sequences.Save();
                 return;
             }
 
@@ -32,41 +55,13 @@ namespace TestClient
             bool devMode = args.Length > 0 && args[0] == "-d";
 
             Controller c = new Controller(devMode);
-            
+
             if (c.View is Form)
                 Application.Run(c.View as Form);
-
+            
             //TODO: figure out how to launch non-form view
 
             Console.WriteLine("Done");
-        }
-
-        
-        private static void UpdateTestConfig(string sourceFolder, bool storeInDatabase)
-        {
-            //TODO: move to separate application
-
-            ConfigManager manager = new ConfigManager("TestClient", Application.ProductVersion, new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest"));
-            
-            IConfigGroup<Sequence> cfgGroup = manager.GetConfigGroup<Sequence>();
-
-            Trace.WriteLine(string.Format("Detected {0} SequenceConfig objects in the database", cfgGroup.Count()));
-
-            foreach (string sourceFilePath in Directory.EnumerateFiles(sourceFolder))
-            {
-                Trace.WriteLine("Pushing " + sourceFilePath);
-                string sourceFileName = Path.GetFileName(sourceFilePath);
-                if (sourceFileName == null)
-                    throw new ArgumentException(sourceFilePath + " is not a valid file path.");
-
-                cfgGroup.Add(new Sequence
-                {
-                    Name = Path.GetFileNameWithoutExtension(sourceFilePath),
-                    StoreInDatabase = storeInDatabase,
-                    TestSequenceSourceCode = File.ReadAllText(sourceFilePath)
-                });
-            }
-            cfgGroup.Save();
         }
     }
 }
