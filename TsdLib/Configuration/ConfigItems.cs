@@ -41,9 +41,24 @@ namespace TsdLib.Configuration
         /// </summary>
         [ReadOnly(true)]
         [Category("Description")]
-        internal string TestSystemName
+        public string TestSystemName { get; set; }
+
+        /// <summary>
+        /// Initialize a new configuration instance from persisted settings.
+        /// </summary>
+        public ConfigItem() { }
+
+        /// <summary>
+        /// Initialize a new ConfigItem with the specified parameters.
+        /// </summary>
+        /// <param name="name">Name of the configuration instance..</param>
+        /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
+        /// <param name="testSystemName">Name of the test system the config item is used for.</param>
+        public ConfigItem(string name, bool storeInDatabase, string testSystemName)
         {
-            get { return ConfigManager.TestSystemName; }
+            Name = name;
+            StoreInDatabase = storeInDatabase;
+            TestSystemName = testSystemName;
         }
 
         /// <summary>
@@ -81,10 +96,10 @@ namespace TsdLib.Configuration
         private readonly int _assemblyCount;
 
         /// <summary>
-        /// Default constuctor required to initialize default values.
+        /// Initialize a new station configuration instance from persisted settings.
         /// </summary>
         public StationConfigCommon()
-        {
+        {//TODO: replace with assy.GetName()
             string[] tsdLibAssemblies =
                 AppDomain.CurrentDomain.GetAssemblies()
                 .Where(assy => assy.FullName.Contains("TsdLib"))
@@ -94,6 +109,20 @@ namespace TsdLib.Configuration
             _assemblies = new StringCollection();
             _assemblies.AddRange(tsdLibAssemblies);
             _assemblyCount = _assemblies.Count;
+        }
+
+        /// <summary>
+        /// Initialize a new StationConfigCommon instance.
+        /// </summary>
+        /// <param name="name">Name of the configuration instance.</param>
+        /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
+        /// <param name="testSystemName">Name of the test system the config item is used for.</param>
+        public StationConfigCommon(string name, bool storeInDatabase, string testSystemName)
+            : base(name, storeInDatabase, testSystemName)
+        {
+            Name = name;
+            StoreInDatabase = storeInDatabase;
+            TestSystemName = testSystemName;
         }
 
         /// <summary>
@@ -121,7 +150,19 @@ namespace TsdLib.Configuration
     [Serializable]
     public class ProductConfigCommon : ConfigItem
     {
+        /// <summary>
+        /// Initialize a new product configuration instance from persisted settings.
+        /// </summary>
+        public ProductConfigCommon() { }
 
+        /// <summary>
+        /// Initialize a new StationConfigCommon instance.
+        /// </summary>
+        /// <param name="name">Name of the configuration instance.</param>
+        /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
+        /// <param name="testSystemName">Name of the test system the config item is used for.</param>
+        public ProductConfigCommon(string name, bool storeInDatabase, string testSystemName)
+            : base(name, storeInDatabase, testSystemName) { }
     }
 
     /// <summary>
@@ -131,7 +172,19 @@ namespace TsdLib.Configuration
     [Serializable]
     public class TestConfigCommon : ConfigItem
     {
+        /// <summary>
+        /// Initialize a new test configuration instance from persisted settings.
+        /// </summary>
+        public TestConfigCommon() { }
 
+        /// <summary>
+        /// Initialize a new TestConfigCommon instance.
+        /// </summary>
+        /// <param name="name">Name of the configuration instance.</param>
+        /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
+        /// <param name="testSystemName">Name of the test system the config item is used for.</param>
+        public TestConfigCommon(string name, bool storeInDatabase, string testSystemName)
+            : base(name, storeInDatabase, testSystemName) { }
     }
 
     /// <summary>
@@ -141,40 +194,34 @@ namespace TsdLib.Configuration
     [Serializable]
     public class Sequence : ConfigItem
     {
+        private string _fullSourceCode;
         /// <summary>
         /// Gets the complete source code for the test sequence.
         /// </summary>
         [Browsable(false)]
-        public string FullSourceCode { get; set; }
+        public string FullSourceCode
+        {
+            get { return _fullSourceCode ?? (_fullSourceCode = writeSourceCode()); }
+            set { _fullSourceCode = value; }
+        }
 
-        private HashSet<string> _assemblyReferences;
         /// <summary>
         /// Gets or sets a list of assemblies needed to be referenced declared in the test sequence.
         /// </summary>
         //[Editor(@"System.Windows.Forms.Design.StringCollectionEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
-        [Editor(typeof(MultiLineStringEditor), typeof(UITypeEditor))]
-        [TypeConverter(typeof(HashSetConverter))]
+        [Editor(typeof (MultiLineStringEditor), typeof (UITypeEditor))]
+        [TypeConverter(typeof (HashSetConverter))]
         [Category("Dependencies")]
-        public HashSet<string> AssemblyReferences
-        {
-            get { return _assemblyReferences ?? (_assemblyReferences = new HashSet<string> { "System.dll", "System.Xml.dll", "TsdLib.dll", TestSystemName + ".exe" }); }
-            set { _assemblyReferences = value; }
-        }
+        public HashSet<string> AssemblyReferences { get; set; }
 
-
-        private HashSet<string> _usingDirectives;
         /// <summary>
         /// Gets or sets a list of namespace import (using) statements declared in the test sequence.
         /// </summary>
         //[Editor(@"System.Windows.Forms.Design.StringCollectionEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
-        [Editor(typeof(MultiLineStringEditor), typeof(UITypeEditor))]
-        [TypeConverter(typeof(HashSetConverter))]
+        [Editor(typeof (MultiLineStringEditor), typeof (UITypeEditor))]
+        [TypeConverter(typeof (HashSetConverter))]
         [Category("Dependencies")]
-        public HashSet<string> UsingDirectives
-        {
-            get { return _usingDirectives ?? (_usingDirectives = new HashSet<string> { "System", "TsdLib.TestResults", "TsdLib.TestSequence", TestSystemName + ".Configuration", TestSystemName + ".Instruments" }); }
-            set { _usingDirectives = value; }
-        }
+        public HashSet<string> UsingDirectives { get; set; }
 
         /// <summary>
         /// Gets the namespace declared in the test sequence.
@@ -209,13 +256,38 @@ namespace TsdLib.Configuration
         /// </summary>
         public Sequence()
         {
-            //Assembly clientAssembly = Assembly.GetEntryAssembly();
-            //TestSystemName = clientAssembly.GetName().Name;
-            //Type[] clientTypes = clientAssembly.GetTypes();
-            //Type stationConfigType = clientTypes.FirstOrDefault(t => t.BaseType == typeof(StationConfigCommon)) ?? typeof(StationConfigCommon);
-            //Type productConfigType = clientTypes.FirstOrDefault(t => t.BaseType == typeof(ProductConfigCommon)) ?? typeof(ProductConfigCommon);
-            //Type testConfigType = clientTypes.FirstOrDefault(t => t.BaseType == typeof(TestConfigCommon)) ?? typeof(TestConfigCommon);
+            //TODO: make sure sequence code is generated in pre-build event
+        }
 
+
+        /// <summary>
+        /// Initialize a new Sequence instance.
+        /// </summary>
+        /// <param name="name">Name of the configuration instance.</param>
+        /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
+        /// <param name="testSystemName">Name of the test system the config item is used for.</param>
+        public Sequence(string name, bool storeInDatabase, string testSystemName)
+            : base(name, storeInDatabase, testSystemName) { }
+
+        /// <summary>
+        /// Initialize a new Sequence config uration instance from a source code file.
+        /// </summary>
+        /// <param name="csFile">C# code file containing the complete test sequence class.</param>
+        /// <param name="storeInDatabase">True to store configuration locally and on the database. False to store locally only.</param>
+        /// <param name="assemblyReferences">Zero or more assemblies that are referenced by the test sequence class.</param>
+        /// <param name="testSystemName">Name of the test system the config item is used for.</param>
+        public Sequence(string csFile, bool storeInDatabase, string testSystemName, IEnumerable<string> assemblyReferences)
+            : base(Path.GetFileNameWithoutExtension(csFile), storeInDatabase, testSystemName)
+        {
+            FullSourceCode = File.ReadAllText(csFile);
+            SequenceCode = Regex.Match(FullSourceCode, @"(?<=protected override void Execute.*\{).*(?=\}\s+\}\s+\})", RegexOptions.Singleline).Value;
+            UsingDirectives = new HashSet<string>(Regex.Matches(FullSourceCode, @"(?<=using ).*(?=;)").Cast<Match>().Select(m => m.Value));
+            AssemblyReferences = new HashSet<string>(assemblyReferences);
+        }
+
+        private string writeSourceCode()
+        {
+            //TODO: move to property initializer instead of constructor - this must run AFTER field initializers
             string stationConfigType = ConfigManager.ConfigGroups
                 .Select(c => c.BaseConfigType)
                 .FirstOrDefault(bc => bc == "StationConfigCommon") ?? "StationConfigCommon";
@@ -228,56 +300,38 @@ namespace TsdLib.Configuration
                 .Select(c => c.BaseConfigType)
                 .FirstOrDefault(bc => bc == "TestConfigCommon") ?? "TestConfigCommon";
 
-            if (FullSourceCode == null)
+            try
             {
-                try
+                CodeNamespace cns = new CodeNamespace();
+
+                cns.Imports.AddRange(UsingDirectives.Select(s => new CodeNamespaceImport(s)).ToArray());
+
+                cns.Name = TestSystemName + ".Sequences";
+
+                CodeTypeDeclaration sequenceClass = new CodeTypeDeclaration(TestSystemName);
+                CodeTypeReference sequenceBaseReference = new CodeTypeReference("TestSequenceBase", new CodeTypeReference(stationConfigType), new CodeTypeReference(productConfigType), new CodeTypeReference(testConfigType));
+                sequenceClass.BaseTypes.Add(sequenceBaseReference);
+
+                CodeMemberMethod executeMethod = new CodeMemberMethod { Name = "Execute" };
+                executeMethod.Parameters.AddRange(new[] { new CodeParameterDeclarationExpression(stationConfigType, "stationConfig"), new CodeParameterDeclarationExpression(productConfigType, "productConfig"), new CodeParameterDeclarationExpression(testConfigType, "testConfig") });
+                executeMethod.Statements.Add(new CodeSnippetStatement(SequenceCode));
+
+                sequenceClass.Members.Add(executeMethod);
+
+                cns.Types.Add(sequenceClass);
+
+                using (StringWriter writer = new StringWriter(new StringBuilder()))
                 {
-                    CodeNamespace cns = new CodeNamespace();
-
-                    cns.Imports.AddRange(UsingDirectives.Select(s => new CodeNamespaceImport(s)).ToArray());
-
-                    cns.Name = NamespaceDeclaration;
-
-                    CodeTypeDeclaration sequenceClass = new CodeTypeDeclaration(ClassDeclaration);
-                    CodeTypeReference sequenceBaseReference = new CodeTypeReference("TestSequenceBase", new CodeTypeReference(stationConfigType), new CodeTypeReference(productConfigType), new CodeTypeReference(testConfigType));
-                    sequenceClass.BaseTypes.Add(sequenceBaseReference);
-
-                    CodeMemberMethod executeMethod = new CodeMemberMethod { Name = "Execute" };
-                    executeMethod.Parameters.AddRange(new[] { new CodeParameterDeclarationExpression(stationConfigType, "stationConfig"), new CodeParameterDeclarationExpression(productConfigType, "productConfig"), new CodeParameterDeclarationExpression(testConfigType, "testConfig") });
-                    executeMethod.Statements.Add(new CodeSnippetStatement(SequenceCode));
-
-                    sequenceClass.Members.Add(executeMethod);
-
-                    cns.Types.Add(sequenceClass);
-
-                    using (StringWriter writer = new StringWriter(new StringBuilder()))
-                    {
-                        using (CSharpCodeProvider provider = new CSharpCodeProvider())
-                            provider.GenerateCodeFromNamespace(cns, writer, new CodeGeneratorOptions { BracingStyle = "C" });
-                        FullSourceCode = writer.ToString();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    FullSourceCode = "ERROR: " + ex.GetType().Name + Environment.NewLine + ex.Message;
+                    using (CSharpCodeProvider provider = new CSharpCodeProvider())
+                        provider.GenerateCodeFromNamespace(cns, writer, new CodeGeneratorOptions { BracingStyle = "C" });
+                    return writer.ToString();
                 }
             }
-        }
-
-        /// <summary>
-        /// Initialize a new Sequence config uration instance from a source code file.
-        /// </summary>
-        /// <param name="csFile">C# code file containing the complete test sequence class.</param>
-        /// <param name="storeInDatabase">True to store configuration locally and on the database. False to store locally only.</param>
-        /// <param name="assemblyReferences">Zero or more assemblies that are referenced by the test sequence class.</param>
-        public Sequence(string csFile, bool storeInDatabase, params string[] assemblyReferences)
-        {
-            FullSourceCode = File.ReadAllText(csFile);
-            Name = Path.GetFileNameWithoutExtension(csFile);
-            StoreInDatabase = storeInDatabase;
-            SequenceCode = Regex.Match(FullSourceCode, @"(?<=protected override void Execute.*\{).*(?=\}\s+\}\s+\})", RegexOptions.Singleline).Value;
-            foreach (string assemblyReference in assemblyReferences)
-                AssemblyReferences.Add(assemblyReference);
+            catch (Exception ex)
+            {
+                return "ERROR: " + ex.GetType().Name + Environment.NewLine + ex.Message;
+            }
+            
         }
     }
 

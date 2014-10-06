@@ -26,6 +26,7 @@ namespace TsdLib.Configuration
         {
             radioButton_StoreInDatabase.Checked = storeInDatabase;
             radioButton_StoreInDatabase.Enabled = false;
+            radioButton_LocalOnly.Enabled = false;
         }
 
         private void textBox_Name_TextChanged(object sender, EventArgs e)

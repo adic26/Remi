@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -37,7 +38,7 @@ namespace TsdLib.Configuration
             Context.Add("DatabaseConnection", databaseConnection);
 
             Synchronized(this);
-
+            
             if (ConfigItems == null)
                 ConfigItems = new BindingList<T>();
 
@@ -47,12 +48,14 @@ namespace TsdLib.Configuration
             //Add a default config if these is no config available
             if (ConfigItems.Count == 0 && LocalConfigItems.Count == 0)
             {
-                T newConfig = new T
-                {
-                    Name = "Default" + typeof(T).Name,
-                    StoreInDatabase = true,
-                    //TestSystemName = databaseConnection.TestSystemName
-                };
+                //T newConfig = new T
+                //{
+                //    Name = "Default" + typeof(T).Name,
+                //    StoreInDatabase = true,
+                //    TestSystemName = databaseConnection.TestSystemName
+                //};
+
+                T newConfig = (T) Activator.CreateInstance(typeof (T), "Default" + typeof (T).Name, true, databaseConnection.TestSystemName);
 
                 ConfigItems.Add(newConfig);
                 Save();
@@ -110,7 +113,10 @@ namespace TsdLib.Configuration
         {
             get
             {
-                return typeof(T).BaseType.Name;
+                Type baseType = typeof(T).BaseType;
+                if (baseType == null)
+                    throw new ConfigDoesNotExistException(typeof(T), "Default");
+                return baseType.Name;
             }
         }
 
@@ -186,6 +192,5 @@ namespace TsdLib.Configuration
         /// Save the configuration group.
         /// </summary>
         void Save();
-
     }
 }

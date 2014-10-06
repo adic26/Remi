@@ -52,7 +52,9 @@ namespace TsdLib.View
             this.UpperLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Result = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.button_ViewEditConfiguration = new System.Windows.Forms.Button();
+            this.panel_Controls = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView)).BeginInit();
+            this.panel_Controls.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBox_Status
@@ -106,7 +108,7 @@ namespace TsdLib.View
             // 
             this.comboBox_StationConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_StationConfig.FormattingEnabled = true;
-            this.comboBox_StationConfig.Location = new System.Drawing.Point(15, 31);
+            this.comboBox_StationConfig.Location = new System.Drawing.Point(11, 29);
             this.comboBox_StationConfig.Name = "comboBox_StationConfig";
             this.comboBox_StationConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_StationConfig.TabIndex = 11;
@@ -115,7 +117,7 @@ namespace TsdLib.View
             // 
             this.comboBox_ProductConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_ProductConfig.FormattingEnabled = true;
-            this.comboBox_ProductConfig.Location = new System.Drawing.Point(15, 70);
+            this.comboBox_ProductConfig.Location = new System.Drawing.Point(11, 68);
             this.comboBox_ProductConfig.Name = "comboBox_ProductConfig";
             this.comboBox_ProductConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_ProductConfig.TabIndex = 12;
@@ -123,7 +125,7 @@ namespace TsdLib.View
             // label_StationConfig
             // 
             this.label_StationConfig.AutoSize = true;
-            this.label_StationConfig.Location = new System.Drawing.Point(12, 15);
+            this.label_StationConfig.Location = new System.Drawing.Point(8, 13);
             this.label_StationConfig.Name = "label_StationConfig";
             this.label_StationConfig.Size = new System.Drawing.Size(73, 13);
             this.label_StationConfig.TabIndex = 13;
@@ -132,7 +134,7 @@ namespace TsdLib.View
             // label_ProductConfig
             // 
             this.label_ProductConfig.AutoSize = true;
-            this.label_ProductConfig.Location = new System.Drawing.Point(12, 54);
+            this.label_ProductConfig.Location = new System.Drawing.Point(8, 52);
             this.label_ProductConfig.Name = "label_ProductConfig";
             this.label_ProductConfig.Size = new System.Drawing.Size(77, 13);
             this.label_ProductConfig.TabIndex = 14;
@@ -141,7 +143,7 @@ namespace TsdLib.View
             // label_TestConfig
             // 
             this.label_TestConfig.AutoSize = true;
-            this.label_TestConfig.Location = new System.Drawing.Point(12, 95);
+            this.label_TestConfig.Location = new System.Drawing.Point(8, 93);
             this.label_TestConfig.Name = "label_TestConfig";
             this.label_TestConfig.Size = new System.Drawing.Size(61, 13);
             this.label_TestConfig.TabIndex = 16;
@@ -151,7 +153,7 @@ namespace TsdLib.View
             // 
             this.comboBox_TestConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_TestConfig.FormattingEnabled = true;
-            this.comboBox_TestConfig.Location = new System.Drawing.Point(15, 111);
+            this.comboBox_TestConfig.Location = new System.Drawing.Point(11, 109);
             this.comboBox_TestConfig.Name = "comboBox_TestConfig";
             this.comboBox_TestConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_TestConfig.TabIndex = 17;
@@ -160,7 +162,7 @@ namespace TsdLib.View
             // 
             this.comboBox_SequenceConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_SequenceConfig.FormattingEnabled = true;
-            this.comboBox_SequenceConfig.Location = new System.Drawing.Point(15, 151);
+            this.comboBox_SequenceConfig.Location = new System.Drawing.Point(11, 149);
             this.comboBox_SequenceConfig.Name = "comboBox_SequenceConfig";
             this.comboBox_SequenceConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_SequenceConfig.TabIndex = 19;
@@ -168,7 +170,7 @@ namespace TsdLib.View
             // label_SequenceConfig
             // 
             this.label_SequenceConfig.AutoSize = true;
-            this.label_SequenceConfig.Location = new System.Drawing.Point(12, 135);
+            this.label_SequenceConfig.Location = new System.Drawing.Point(8, 133);
             this.label_SequenceConfig.Name = "label_SequenceConfig";
             this.label_SequenceConfig.Size = new System.Drawing.Size(56, 13);
             this.label_SequenceConfig.TabIndex = 20;
@@ -244,7 +246,7 @@ namespace TsdLib.View
             // 
             // button_ViewEditConfiguration
             // 
-            this.button_ViewEditConfiguration.Location = new System.Drawing.Point(255, 78);
+            this.button_ViewEditConfiguration.Location = new System.Drawing.Point(251, 76);
             this.button_ViewEditConfiguration.Name = "button_ViewEditConfiguration";
             this.button_ViewEditConfiguration.Size = new System.Drawing.Size(150, 47);
             this.button_ViewEditConfiguration.TabIndex = 21;
@@ -252,21 +254,29 @@ namespace TsdLib.View
             this.button_ViewEditConfiguration.UseVisualStyleBackColor = true;
             this.button_ViewEditConfiguration.Click += new System.EventHandler(this.button_ViewEditConfiguration_Click);
             // 
+            // panel_Controls
+            // 
+            this.panel_Controls.Controls.Add(this.button_ViewEditConfiguration);
+            this.panel_Controls.Controls.Add(this.label_SequenceConfig);
+            this.panel_Controls.Controls.Add(this.comboBox_SequenceConfig);
+            this.panel_Controls.Controls.Add(this.comboBox_TestConfig);
+            this.panel_Controls.Controls.Add(this.label_TestConfig);
+            this.panel_Controls.Controls.Add(this.label_ProductConfig);
+            this.panel_Controls.Controls.Add(this.label_StationConfig);
+            this.panel_Controls.Controls.Add(this.comboBox_ProductConfig);
+            this.panel_Controls.Controls.Add(this.comboBox_StationConfig);
+            this.panel_Controls.Location = new System.Drawing.Point(4, 2);
+            this.panel_Controls.Name = "panel_Controls";
+            this.panel_Controls.Size = new System.Drawing.Size(416, 171);
+            this.panel_Controls.TabIndex = 22;
+            // 
             // ViewBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(833, 576);
-            this.Controls.Add(this.button_ViewEditConfiguration);
-            this.Controls.Add(this.label_SequenceConfig);
-            this.Controls.Add(this.comboBox_SequenceConfig);
-            this.Controls.Add(this.comboBox_TestConfig);
-            this.Controls.Add(this.label_TestConfig);
-            this.Controls.Add(this.label_ProductConfig);
-            this.Controls.Add(this.label_StationConfig);
-            this.Controls.Add(this.comboBox_ProductConfig);
-            this.Controls.Add(this.comboBox_StationConfig);
+            this.Controls.Add(this.panel_Controls);
             this.Controls.Add(this.measurementDataGridView);
             this.Controls.Add(this.button_AbortTestSequence);
             this.Controls.Add(this.button_ExecuteTestSequence);
@@ -276,6 +286,8 @@ namespace TsdLib.View
             this.Name = "ViewBase";
             this.Text = "TsdLib Generic Test System";
             ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView)).EndInit();
+            this.panel_Controls.ResumeLayout(false);
+            this.panel_Controls.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -334,5 +346,6 @@ namespace TsdLib.View
         private System.Windows.Forms.DataGridViewTextBoxColumn UpperLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Result;
         private System.Windows.Forms.Button button_ViewEditConfiguration;
+        private System.Windows.Forms.Panel panel_Controls;
     }
 }

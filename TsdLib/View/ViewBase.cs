@@ -64,11 +64,13 @@ namespace TsdLib.View
                 case State.ReadyToTest:
                     button_ExecuteTestSequence.Enabled = true;
                     button_AbortTestSequence.Enabled = false;
+                    panel_Controls.Enabled = true;
                     break;
                 case State.TestInProgress:
                     measurementDataGridView.Rows.Clear();
                     button_ExecuteTestSequence.Enabled = false;
                     button_AbortTestSequence.Enabled = true;
+                    panel_Controls.Enabled = false;
                     break;
             }
         }

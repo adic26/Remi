@@ -98,14 +98,13 @@ namespace TsdLib.Controller
                         string sequenceAssembly = generator.GenerateTestSequenceAssembly(
                             sequenceConfig.Name,
                             sequenceConfig.FullSourceCode,
-                            sequenceConfig.AssemblyReferences.ToArray()
-                            );
+                            sequenceConfig.AssemblyReferences.ToArray());
 
                         sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
 
                         TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence =
                             (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)
-                                sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, sequenceConfig.NamespaceDeclaration + "." + sequenceConfig.Name);
+                                sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, TestSystemName + ".Sequences" + "." + sequenceConfig.Name);
 
                         sequence.AddTraceListener(View.Listener);
 

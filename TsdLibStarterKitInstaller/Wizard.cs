@@ -35,11 +35,7 @@ namespace TsdLibStarterKitInstaller
                         container.ComposeParts(this);
                 }
 
-                if (NuGetPackageInstaller == null)
-                {
-                    MessageBox.Show("NuGet Package Manager not available.");
-                    throw new WizardBackoutException("NuGet Package Manager not available.");
-                }
+
 
                 XmlSchema schema;
                 
@@ -73,6 +69,13 @@ namespace TsdLibStarterKitInstaller
         public void ProjectFinishedGenerating(Project project)
         {
             string packageLocation = Path.Combine(_serverLocation, "Packages");
+
+            if (NuGetPackageInstaller == null)
+            {
+                MessageBox.Show("NuGet Package Manager not available. Please add packages manually from the location: " + packageLocation);
+                return;
+            }
+
             IPackageRepository repository = PackageRepositoryFactory.Default.CreateRepository(packageLocation);
                 
             IQueryable<IPackage> packages = repository.GetPackages()
@@ -86,7 +89,6 @@ namespace TsdLibStarterKitInstaller
                 foreach (IPackage selectedPackage in form.SelectedPackages)
                     NuGetPackageInstaller.InstallPackage(repository, project, selectedPackage.Id, selectedPackage.Version.ToString(), false, false);
             }
-
 
             string nugetConfigPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),

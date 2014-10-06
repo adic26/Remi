@@ -14,13 +14,23 @@ namespace TestClient.Configuration
         [Category("Power")]
         public List<double> VoltageSettings { get; set; }
 
-        public TestConfig()
-        {
-            if (LoopIterations == default (int))
-                LoopIterations = 5;
+        /// <summary>
+        /// Initialize a new TestConfig configuration instance from persisted settings.
+        /// </summary>
+        public TestConfig() { }
 
-            if (VoltageSettings == default (List<double>))
-                VoltageSettings = new List<double> { 3.8, 4.0, 4.35 };
+        /// <summary>
+        /// Initialize a new TestConfig instance.
+        /// </summary>
+        /// <param name="name">Name of the configuration instance.</param>
+        /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
+        /// <param name="testSystemName">Name of the test system the config item is used for.</param>
+        public TestConfig(string name, bool storeInDatabase, string testSystemName)
+            : base(name, storeInDatabase, testSystemName)
+        {
+            LoopIterations = 5;
+
+            VoltageSettings = new List<double> { 3.8, 4.0, 4.35 };
         }
     }
 }

@@ -41,9 +41,9 @@ namespace TsdLib
         /// </summary>
         /// <param name="testSystemName">Name of the test system for which to get the measurements folder.</param>
         /// <returns>The absolute path to the measurements folder.</returns>
-        public static string GetMeasurementsFolder(string testSystemName)
+        public static string GetResultsFolder(string testSystemName)
         {
-            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "TsdLib", testSystemName, "Measurements");
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "TsdLib", testSystemName, "Results");
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
             return path;

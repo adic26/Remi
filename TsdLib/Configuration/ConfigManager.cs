@@ -39,8 +39,8 @@ namespace TsdLib.Configuration
     {
         internal static readonly List<IConfigGroup> ConfigGroups = new List<IConfigGroup>();
 
-        internal static string TestSystemName;
-        internal static string TestSystemVersion;
+        internal string TestSystemName;
+        internal string TestSystemVersion;
 
         private readonly DatabaseConnection _databaseConnection;
 
@@ -87,8 +87,11 @@ namespace TsdLib.Configuration
                     if (form.DialogResult == DialogResult.OK)
                         ConfigGroups.ForEach(s => s.Save());
                     else
+                    {
                         for (int i = 0; i < ConfigGroups.Count; i++)
-                            ConfigGroups[i] = (IConfigGroup) Activator.CreateInstance(ConfigGroups[i].GetType(), _databaseConnection);
+                            ConfigGroups[i] = (IConfigGroup)Activator.CreateInstance(ConfigGroups[i].GetType(), _databaseConnection);
+                            //ConfigGroups[i].Reload();
+                    }
                 }
             }
         }

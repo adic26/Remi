@@ -66,10 +66,10 @@ namespace TsdLib.TestSequence
 
         private void FactoryEvents_Connected(object sender, ConnectedEventArgs e)
         {
-            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Description", e.Instrument.Description, "Info", "", "");
-            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Model Number", e.Instrument.ModelNumber, "Info", "", "");
-            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Serial Number", e.Instrument.SerialNumber, "Info", "", "");
-            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Firmware Version", e.Instrument.FirmwareVersion, "Info", "", "");
+            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Description", e.Instrument.Description, "Info", " ", " ");
+            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Model Number", e.Instrument.ModelNumber, "Info", " ", " ");
+            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Serial Number", e.Instrument.SerialNumber, "Info", " ", " ");
+            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Firmware Version", e.Instrument.FirmwareVersion, "Info", " ", " ");
         }
 
         /// <summary>
@@ -115,10 +115,11 @@ namespace TsdLib.TestSequence
                     ));
 
                 XmlSerializer xs = new XmlSerializer(typeof(TestResultCollection));
-                string measurementFile = Path.Combine(SpecialFolders.GetMeasurementsFolder(ConfigManager.TestSystemName), "Results.xml");
+                string measurementFile = Path.Combine(SpecialFolders.GetResultsFolder(testConfig.TestSystemName), "Results_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".xml");
                 using (Stream s = File.Create(measurementFile))
                     xs.Serialize(s, TestResults);
 
+                //For datalogger
                 const string resultsFolder = @"C:\TestResults";
                 if (!Directory.Exists(resultsFolder))
                     Directory.CreateDirectory(resultsFolder);
@@ -127,9 +128,15 @@ namespace TsdLib.TestSequence
                 using (Stream s2 = File.Create(resultsPath))
                     xs.Serialize(s2, TestResults);
 
+                File.WriteAllText(@"C:\temp\results.csv", TestResults.ToString(Environment.NewLine, ","));
+                Process.Start(@"C:\temp\results.csv");
+
+
+                Process.Start(@"C:\temp\results.csv");
+
                 Trace.WriteLine("Test sequence completed.");
 
-                Process.Start(resultsPath);
+                Process.Start(measurementFile);
             }
             catch (OperationCanceledException)
             {

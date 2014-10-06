@@ -75,7 +75,7 @@ namespace TsdLib.TestResults
             Parameters = parameters;
             Timestamp = DateTime.Now;
 
-            if (upperLimit.ToString() == "" && lowerLimit.ToString() == "")
+            if (string.IsNullOrWhiteSpace(upperLimit.ToString()) && string.IsNullOrWhiteSpace(lowerLimit.ToString()))
                 Result = MeasurementResult.Pass;
             else if (measuredValue.CompareTo(lowerLimit) < 0)
                 Result = MeasurementResult.Fail_Low;

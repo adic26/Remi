@@ -7,11 +7,6 @@ using TestClient.Instruments;
 using TsdLib.TestResults;
 using TsdLib.TestSequence;
 
-[assembly: AssemblyReference("System.dll")]
-//[assembly: AssemblyReference("System.Xml.dll")]
-[assembly: AssemblyReference("TsdLib.dll")]
-[assembly: AssemblyReference("TestClient.exe")]
-
 namespace TestClient.Sequences
 {
     public class DefaultSequence : TestSequenceBase<StationConfig, ProductConfig, TestConfig>

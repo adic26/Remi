@@ -16,14 +16,6 @@ namespace TsdLibStarterKitInstaller
 
             _packages = new List<IPackage>(packages);
 
-            listView_Packages.Columns.AddRange(new[] 
-            {
-                new ColumnHeader {Text = "Package Name"},
-                new ColumnHeader {Text = "Package Version"},
-                new ColumnHeader {Text = "Description"}
-            });
-
-
             listView_Packages.Items.AddRange(_packages.Select(p => new ListViewItem(new[] 
             {
                 p.Title,

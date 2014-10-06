@@ -96,6 +96,7 @@ namespace TsdLib.TestResults
         /// <returns>A string representation of the MeasurementCollection formatted with row and column delimiters.</returns>
         public string ToString(string rowSeparator, string columnSeparator)
         {
+            
             return string.Join(rowSeparator, this.Select(meas => meas.ToString(columnSeparator)));
         }
 

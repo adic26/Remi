@@ -16,10 +16,10 @@ namespace TsdLib.CodeGenerator
     /// </summary>
     public class Generator : IDisposable
     {
-        private readonly List<string> _generatedFiles; //TODO: just create a temp subfolder and delete it after, rather than tracking individual files
         private readonly string _testSystemName;
         private readonly string[] _instrumentFiles;
         private readonly Language _language;
+        private readonly string _tempPath;
 
         /// <summary>
         /// Initialize a new code generator.
@@ -29,10 +29,12 @@ namespace TsdLib.CodeGenerator
         /// <param name="language">Generate C# or Visual Basic code.</param>
         public Generator(string testSystemName, string[] instrumentFiles, Language language)
         {
-            _generatedFiles = new List<string>();
             _testSystemName = testSystemName;
             _instrumentFiles = instrumentFiles;
             _language = language;
+            _tempPath = Path.Combine(Path.GetTempPath(), "TsdLib");
+            if (!Directory.Exists(_tempPath))
+                Directory.CreateDirectory(_tempPath);
         }
 
         /// <summary>
@@ -50,13 +52,9 @@ namespace TsdLib.CodeGenerator
             Trace.WriteLine("\t" + Path.GetFileNameWithoutExtension(testSequenceName));
 
             CodeDomProvider provider = CodeDomProvider.CreateProvider(_language.ToString());
-
-            string tempPath = Path.GetTempPath();
+            
             string tempFileName = Path.GetTempFileName();
-            string dllPath = Path.Combine(tempPath, tempFileName + ".dll");
-            _generatedFiles.Add(dllPath);
-            _generatedFiles.Add(Path.ChangeExtension(dllPath, "pdb"));
-            _generatedFiles.Add(Path.ChangeExtension(dllPath, null));
+            string dllPath = Path.Combine(_tempPath, tempFileName + ".dll");
 
             CompilerParameters cp = new CompilerParameters
             {
@@ -78,13 +76,11 @@ namespace TsdLib.CodeGenerator
 
             CodeGeneratorOptions options = new CodeGeneratorOptions { BracingStyle = "C"};
 
-            string instrumentCodePath = Path.Combine(tempPath, "instruments." + provider.FileExtension);
-            _generatedFiles.Add(instrumentCodePath);
+            string instrumentCodePath = Path.Combine(_tempPath, "instruments." + provider.FileExtension);
             using (StreamWriter w = new StreamWriter(instrumentCodePath, false))
                 provider.GenerateCodeFromCompileUnit(instrumentCcu, w, options);
 
-            string sequenceCodePath = Path.Combine(tempPath, "sequence." + provider.FileExtension);
-            _generatedFiles.Add(sequenceCodePath);
+            string sequenceCodePath = Path.Combine(_tempPath, "sequence." + provider.FileExtension);
             using (StreamWriter w = new StreamWriter(sequenceCodePath, false))
                 provider.GenerateCodeFromCompileUnit(sequenceCcu, w, options);
 
@@ -126,9 +122,8 @@ namespace TsdLib.CodeGenerator
         {
             if (disposing)
             {
-                //foreach (string generatedFile in _generatedFiles)
-                //    File.Delete(generatedFile);
-                _generatedFiles.Clear();
+                try { Directory.Delete(_tempPath, true); }
+                catch (Exception) { Trace.WriteLine("Could not delete temp files from: " + _tempPath); }
             }
         }
 

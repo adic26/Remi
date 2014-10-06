@@ -14,11 +14,21 @@ namespace TestClient.Configuration
         [Category("Power Supply")]
         public string PowerSupplyAddress { get; set; }
 
-        //Use public parameterless constructor to set default values
-        public StationConfig()
+        /// <summary>
+        /// Initialize a new StationConfig configuration instance from persisted settings.
+        /// </summary>
+        public StationConfig() { }
+
+        /// <summary>
+        /// Initialize a new StationConfig instance.
+        /// </summary>
+        /// <param name="name">Name of the configuration instance.</param>
+        /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
+        /// <param name="testSystemName">Name of the test system the config item is used for.</param>
+        public StationConfig(string name, bool storeInDatabase, string testSystemName)
+            : base(name, storeInDatabase, testSystemName)
         {
-            if (PowerSupplyAddress == default(string))
-                PowerSupplyAddress = "GPIB0::1::INST";
+            PowerSupplyAddress = "GPIB0::1::INSTR";
         }
     }
 }

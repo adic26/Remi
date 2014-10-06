@@ -30,14 +30,21 @@
         {
             this.listView_Packages = new System.Windows.Forms.ListView();
             this.button_OK = new System.Windows.Forms.Button();
+            this.columnHeader_PackageName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader_PackageVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader_Description = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // listView_Packages
             // 
             this.listView_Packages.CheckBoxes = true;
-            this.listView_Packages.Location = new System.Drawing.Point(57, 28);
+            this.listView_Packages.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader_PackageName,
+            this.columnHeader_PackageVersion,
+            this.columnHeader_Description});
+            this.listView_Packages.Location = new System.Drawing.Point(12, 12);
             this.listView_Packages.Name = "listView_Packages";
-            this.listView_Packages.Size = new System.Drawing.Size(682, 97);
+            this.listView_Packages.Size = new System.Drawing.Size(695, 236);
             this.listView_Packages.TabIndex = 0;
             this.listView_Packages.UseCompatibleStateImageBehavior = false;
             this.listView_Packages.View = System.Windows.Forms.View.Details;
@@ -45,20 +52,35 @@
             // button_OK
             // 
             this.button_OK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button_OK.Location = new System.Drawing.Point(99, 207);
+            this.button_OK.Location = new System.Drawing.Point(12, 254);
             this.button_OK.Name = "button_OK";
-            this.button_OK.Size = new System.Drawing.Size(75, 23);
+            this.button_OK.Size = new System.Drawing.Size(101, 32);
             this.button_OK.TabIndex = 1;
             this.button_OK.Text = "OK";
             this.button_OK.UseVisualStyleBackColor = true;
             this.button_OK.Click += new System.EventHandler(this.button_OK_Click);
+            // 
+            // columnHeader_PackageName
+            // 
+            this.columnHeader_PackageName.Text = "Package Name";
+            this.columnHeader_PackageName.Width = 122;
+            // 
+            // columnHeader_PackageVersion
+            // 
+            this.columnHeader_PackageVersion.Text = "Package Version";
+            this.columnHeader_PackageVersion.Width = 134;
+            // 
+            // columnHeader_Description
+            // 
+            this.columnHeader_Description.Text = "Description";
+            this.columnHeader_Description.Width = 422;
             // 
             // SelectPackagesForm
             // 
             this.AcceptButton = this.button_OK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(820, 262);
+            this.ClientSize = new System.Drawing.Size(719, 296);
             this.ControlBox = false;
             this.Controls.Add(this.button_OK);
             this.Controls.Add(this.listView_Packages);
@@ -72,5 +94,8 @@
 
         private System.Windows.Forms.ListView listView_Packages;
         private System.Windows.Forms.Button button_OK;
+        private System.Windows.Forms.ColumnHeader columnHeader_PackageName;
+        private System.Windows.Forms.ColumnHeader columnHeader_PackageVersion;
+        private System.Windows.Forms.ColumnHeader columnHeader_Description;
     }
 }

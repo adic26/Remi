@@ -28,14 +28,16 @@ namespace TestClient
             if (args.Contains("-seq"))
             {
                 IConfigGroup<Sequence> sequences = new ConfigManager(new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest", "TestClient", Application.ProductVersion, Released)).GetConfigGroup<Sequence>();
-                List<string> argsList = args.ToList();
-
-                string sequenceFolder = argsList[argsList.IndexOf("-seq") + 1];
-                bool storeInDatabase = bool.Parse(argsList[argsList.IndexOf("-seq") + 2]);
 
 
                 //string sequenceFolder = @"C:\Users\jmckee\Source\Repos\TsdLib\TestClient\Sequences";
                 //bool storeInDatabase = true;
+
+                List<string> argsList = args.ToList();
+                int seqArgIndex = argsList.IndexOf("-seq");
+                string sequenceFolder = argsList[seqArgIndex + 1];
+                bool storeInDatabase = bool.Parse(argsList[seqArgIndex + 2]);
+                List<string> assemblyReferences = argsList.Count > seqArgIndex + 3 ? argsList[seqArgIndex + 3].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList() : new List<string>();
 
                 foreach (Sequence sequence in sequences)
                 {
@@ -44,7 +46,7 @@ namespace TestClient
                         File.WriteAllText(vsFile, sequence.FullSourceCode);
                 }
                 foreach (string seqFile in Directory.EnumerateFiles(sequenceFolder))
-                    sequences.Add(new Sequence(seqFile, storeInDatabase));
+                    sequences.Add(new Sequence(seqFile, storeInDatabase, "TestClient", assemblyReferences));
                 sequences.Save();
                 return;
             }
@@ -53,7 +55,7 @@ namespace TestClient
             Application.SetCompatibleTextRenderingDefault(false);
 
             bool devMode = args.Length > 0 && args[0] == "-d";
-
+            
             Controller c = new Controller(devMode);
 
             if (c.View is Form)

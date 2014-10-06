@@ -7,12 +7,6 @@ using $safeprojectname$.Instruments;
 using TsdLib.TestResults;
 using TsdLib.TestSequence;
 
-[assembly: AssemblyReference("System.dll")]
-[assembly: AssemblyReference("System.Xml.dll")]
-[assembly: AssemblyReference("TsdLib.dll")]
-[assembly: AssemblyReference("$safeprojectname$.exe")]
-[assembly: AssemblyReference("$safeprojectname$.Instruments.dll")]
-
 namespace $safeprojectname$.Sequences
 {
     public class DefaultSequence : TestSequenceBase<StationConfig, ProductConfig, TestConfig>
@@ -38,11 +32,6 @@ namespace $safeprojectname$.Sequences
                     TestResults.AddMeasurement("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, new MeasurementParameter("Voltage", voltageSetting));
                 }
             }
-        }
-        
-        public override string TestSystemName
-        {
-            get { return "$safeprojectname$"; }
         }
     }
 }

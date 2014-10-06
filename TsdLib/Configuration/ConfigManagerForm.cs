@@ -96,7 +96,7 @@ namespace TsdLib.Configuration
 
             ConfigItem newCfgItem = sourcecg.Clone();
 
-            using (ConfigItemCreate getName = new ConfigItemCreate(true))
+            using (ConfigItemCreate getName = new ConfigItemCreate())
             {
                 getName.ShowDialog();
                 newCfgItem.Name = getName.ConfigItemName;
