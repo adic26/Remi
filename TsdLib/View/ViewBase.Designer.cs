@@ -44,6 +44,8 @@ namespace TsdLib.View
             this.comboBox_TestConfig = new System.Windows.Forms.ComboBox();
             this.comboBox_SequenceConfig = new System.Windows.Forms.ComboBox();
             this.label_SequenceConfig = new System.Windows.Forms.Label();
+            this.button_ViewEditConfiguration = new System.Windows.Forms.Button();
+            this.panel_Controls = new System.Windows.Forms.Panel();
             this.measurementDataGridView = new TsdLib.View.MeasurementDataGridView();
             this.MeasurementName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MeasuredValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -51,10 +53,8 @@ namespace TsdLib.View
             this.LowerLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UpperLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Result = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.button_ViewEditConfiguration = new System.Windows.Forms.Button();
-            this.panel_Controls = new System.Windows.Forms.Panel();
-            ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView)).BeginInit();
             this.panel_Controls.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox_Status
@@ -176,6 +176,32 @@ namespace TsdLib.View
             this.label_SequenceConfig.TabIndex = 20;
             this.label_SequenceConfig.Text = "Sequence";
             // 
+            // button_ViewEditConfiguration
+            // 
+            this.button_ViewEditConfiguration.Location = new System.Drawing.Point(251, 76);
+            this.button_ViewEditConfiguration.Name = "button_ViewEditConfiguration";
+            this.button_ViewEditConfiguration.Size = new System.Drawing.Size(150, 47);
+            this.button_ViewEditConfiguration.TabIndex = 21;
+            this.button_ViewEditConfiguration.Text = "View/Edit Configuration";
+            this.button_ViewEditConfiguration.UseVisualStyleBackColor = true;
+            this.button_ViewEditConfiguration.Click += new System.EventHandler(this.button_ViewEditConfiguration_Click);
+            // 
+            // panel_Controls
+            // 
+            this.panel_Controls.Controls.Add(this.button_ViewEditConfiguration);
+            this.panel_Controls.Controls.Add(this.label_SequenceConfig);
+            this.panel_Controls.Controls.Add(this.comboBox_SequenceConfig);
+            this.panel_Controls.Controls.Add(this.comboBox_TestConfig);
+            this.panel_Controls.Controls.Add(this.label_TestConfig);
+            this.panel_Controls.Controls.Add(this.label_ProductConfig);
+            this.panel_Controls.Controls.Add(this.label_StationConfig);
+            this.panel_Controls.Controls.Add(this.comboBox_ProductConfig);
+            this.panel_Controls.Controls.Add(this.comboBox_StationConfig);
+            this.panel_Controls.Location = new System.Drawing.Point(4, 2);
+            this.panel_Controls.Name = "panel_Controls";
+            this.panel_Controls.Size = new System.Drawing.Size(416, 171);
+            this.panel_Controls.TabIndex = 22;
+            // 
             // measurementDataGridView
             // 
             this.measurementDataGridView.AllowUserToAddRows = false;
@@ -244,32 +270,6 @@ namespace TsdLib.View
             this.Result.Name = "Result";
             this.Result.ReadOnly = true;
             // 
-            // button_ViewEditConfiguration
-            // 
-            this.button_ViewEditConfiguration.Location = new System.Drawing.Point(251, 76);
-            this.button_ViewEditConfiguration.Name = "button_ViewEditConfiguration";
-            this.button_ViewEditConfiguration.Size = new System.Drawing.Size(150, 47);
-            this.button_ViewEditConfiguration.TabIndex = 21;
-            this.button_ViewEditConfiguration.Text = "View/Edit Configuration";
-            this.button_ViewEditConfiguration.UseVisualStyleBackColor = true;
-            this.button_ViewEditConfiguration.Click += new System.EventHandler(this.button_ViewEditConfiguration_Click);
-            // 
-            // panel_Controls
-            // 
-            this.panel_Controls.Controls.Add(this.button_ViewEditConfiguration);
-            this.panel_Controls.Controls.Add(this.label_SequenceConfig);
-            this.panel_Controls.Controls.Add(this.comboBox_SequenceConfig);
-            this.panel_Controls.Controls.Add(this.comboBox_TestConfig);
-            this.panel_Controls.Controls.Add(this.label_TestConfig);
-            this.panel_Controls.Controls.Add(this.label_ProductConfig);
-            this.panel_Controls.Controls.Add(this.label_StationConfig);
-            this.panel_Controls.Controls.Add(this.comboBox_ProductConfig);
-            this.panel_Controls.Controls.Add(this.comboBox_StationConfig);
-            this.panel_Controls.Location = new System.Drawing.Point(4, 2);
-            this.panel_Controls.Name = "panel_Controls";
-            this.panel_Controls.Size = new System.Drawing.Size(416, 171);
-            this.panel_Controls.TabIndex = 22;
-            // 
             // ViewBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -285,9 +285,9 @@ namespace TsdLib.View
             this.Controls.Add(this.textBox_Status);
             this.Name = "ViewBase";
             this.Text = "TsdLib Generic Test System";
-            ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView)).EndInit();
             this.panel_Controls.ResumeLayout(false);
             this.panel_Controls.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -342,10 +342,10 @@ namespace TsdLib.View
         private System.Windows.Forms.DataGridViewTextBoxColumn UpperLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Result;
         private System.Windows.Forms.Button button_ViewEditConfiguration;
-        private System.Windows.Forms.Panel panel_Controls;
         protected System.Windows.Forms.ComboBox comboBox_StationConfig;
         protected System.Windows.Forms.ComboBox comboBox_ProductConfig;
         protected System.Windows.Forms.ComboBox comboBox_TestConfig;
         protected System.Windows.Forms.ComboBox comboBox_SequenceConfig;
+        protected System.Windows.Forms.Panel panel_Controls;
     }
 }
