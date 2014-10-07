@@ -97,6 +97,7 @@
     <Compile Include="Instrument\InstrumentWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestSequence\TestSequenceBase.cs" />
+    <Compile Include="Utilities\Display.cs" />
     <Compile Include="View\IView.cs" />
     <Compile Include="View\MeasurementDataGridView.cs">
       <SubType>Component</SubType>
