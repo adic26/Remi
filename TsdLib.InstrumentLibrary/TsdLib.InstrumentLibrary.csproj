@@ -60,7 +60,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="tools\Init.ps1" />
     <None Include="key.snk" />
+    <None Include="TsdLib.InstrumentLibrary.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Microsoft.VisualStudio.Shell.Interop.dll" />
