@@ -44,6 +44,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InstrumentLibrary", "Instru
 		DummyPowerSupply.xml = DummyPowerSupply.xml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.InstrumentLibrary", "TsdLib.InstrumentLibrary\TsdLib.InstrumentLibrary.csproj", "{80C459F9-6A11-4BCC-B453-151BCF954E4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +91,10 @@ Global
 		{A3B07997-F603-4BE4-B32F-2DCA36629BD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3B07997-F603-4BE4-B32F-2DCA36629BD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3B07997-F603-4BE4-B32F-2DCA36629BD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80C459F9-6A11-4BCC-B453-151BCF954E4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80C459F9-6A11-4BCC-B453-151BCF954E4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80C459F9-6A11-4BCC-B453-151BCF954E4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80C459F9-6A11-4BCC-B453-151BCF954E4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

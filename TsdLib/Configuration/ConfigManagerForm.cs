@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace TsdLib.Configuration
 {
-    partial class ConfigManagerForm : Form
+    public partial class ConfigManagerForm : Form
     {
         private readonly string _settingsLocation;
         private readonly bool _editable;

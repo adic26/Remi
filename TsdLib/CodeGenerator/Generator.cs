@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Xml.Linq;
 using System.Xml.Schema;
 
@@ -101,7 +102,7 @@ namespace TsdLib.CodeGenerator
         /// </summary>
         /// <param name="outputDirectoryName">Absolute directory path to store the output file. If the directory does not exist, it will be created.</param>
         /// <param name="runTime">True if calling from run-time. Namespace will be appended with .Dynamic</param>
-        public void GenerateInstrumentsClassFile(string outputDirectoryName, bool runTime)
+        public string GenerateInstrumentsClassFile(string outputDirectoryName, bool runTime)
         {
             CodeCompileUnit ccu = generateInstrumentCodeCompileUnit(runTime);
             
@@ -112,6 +113,25 @@ namespace TsdLib.CodeGenerator
             string fullFileName = Path.Combine(outputDirectoryName, "Instruments." + provider.FileExtension);
             using (StreamWriter writer = new StreamWriter(fullFileName, false))
                 provider.GenerateCodeFromCompileUnit(ccu, writer, new CodeGeneratorOptions { BracingStyle = "C" });
+
+            return fullFileName;
+        }
+
+        /// <summary>
+        /// Generates source code from the specified XML instrument definition file(s).
+        /// </summary>
+        /// <param name="runTime">True if calling from run-time. Namespace will be appended with .Dynamic</param>
+        public string GenerateInstrumentsClassSourceCode(bool runTime)
+        {
+            CodeCompileUnit ccu = generateInstrumentCodeCompileUnit(runTime);
+
+            CodeDomProvider provider = CodeDomProvider.CreateProvider(_language.ToString());
+
+            StringBuilder sb = new StringBuilder();
+            using (TextWriter writer = new StringWriter(sb))
+                provider.GenerateCodeFromCompileUnit(ccu, writer, new CodeGeneratorOptions { BracingStyle = "C" });
+
+            return sb.ToString();
         }
 
         /// <summary>

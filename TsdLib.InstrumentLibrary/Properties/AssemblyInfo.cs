@@ -1,15 +1,14 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TsdLib")]
-[assembly: AssemblyDescription("TsdLib API")]
+[assembly: AssemblyTitle("TsdLib.InstrumentLibrary")]
+[assembly: AssemblyDescription("Contains a collection of instrument xml definitions and wrapper classes.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BlackBerry")]
-[assembly: AssemblyProduct("TsdLib")]
+[assembly: AssemblyProduct("TsdLib.InstrumentLibrary")]
 [assembly: AssemblyCopyright("Copyright © BlackBerry 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -17,10 +16,10 @@ using System.Runtime.InteropServices;
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
+[assembly: ComVisible(true)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d7365dc1-7095-4aa1-a714-c8fa27fd156a")]
+[assembly: Guid("4ffb0c54-f2af-4af7-afe8-ef9d4e02e312")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,7 +31,4 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.19.0.*")]
-
-//http://www.sturmnet.org/blog/2005/05/10/internalsvisibleto-sn
-//[assembly: InternalsVisibleTo("TsdLib.ConfigManagerApp")]
+[assembly: AssemblyVersion("1.0.0.0")]
