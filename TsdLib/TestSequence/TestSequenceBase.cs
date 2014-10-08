@@ -66,10 +66,10 @@ namespace TsdLib.TestSequence
 
         private void FactoryEvents_Connected(object sender, ConnectedEventArgs e)
         {
-            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Description", e.Instrument.Description, "Info", " ", " ");
-            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Model Number", e.Instrument.ModelNumber, "Info", " ", " ");
-            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Serial Number", e.Instrument.SerialNumber, "Info", " ", " ");
-            TestResults.AddMeasurement(e.Instrument.GetType().Name + " Firmware Version", e.Instrument.FirmwareVersion, "Info", " ", " ");
+            TestResults.AddMeasurement(new Measurement(e.Instrument.GetType().Name + " Description", e.Instrument.Description, "Info"));
+            TestResults.AddMeasurement(new Measurement(e.Instrument.GetType().Name + " Model Number", e.Instrument.ModelNumber, "Info"));
+            TestResults.AddMeasurement(new Measurement(e.Instrument.GetType().Name + " Serial Number", e.Instrument.SerialNumber, "Info"));
+            TestResults.AddMeasurement(new Measurement(e.Instrument.GetType().Name + " Firmware Version", e.Instrument.FirmwareVersion, "Info"));
         }
 
         /// <summary>
@@ -128,11 +128,11 @@ namespace TsdLib.TestSequence
                 using (Stream s2 = File.Create(resultsPath))
                     xs.Serialize(s2, TestResults);
 
-                File.WriteAllText(@"C:\temp\results.csv", TestResults.ToString(Environment.NewLine, ","));
-                Process.Start(@"C:\temp\results.csv");
 
+                string csvResultsFile = Path.ChangeExtension(resultsFile, "csv");
+                File.WriteAllText(csvResultsFile, TestResults.ToString(Environment.NewLine, ","));
+                Process.Start(csvResultsFile);
 
-                Process.Start(@"C:\temp\results.csv");
 
                 Trace.WriteLine("Test sequence completed.");
 

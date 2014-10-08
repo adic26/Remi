@@ -39,35 +39,12 @@ namespace TsdLib.TestResults
             : base(measurements.ToList()) { }
 
         /// <summary>
-        /// Initialize a new Measurement object and add it to the collection.
+        /// Add a <see cref="TsdLib.TestResults.Measurement"/> object to the test results collection.
         /// </summary>
-        /// <typeparam name="T">Data type of the measured value, which will also apply to the lower and upper limits.</typeparam>
-        /// <param name="name">Name to describe the measurement.</param>
-        /// <param name="measuredValue">Magnitude of the measurement.</param>
-        /// <param name="units">Unit of measure.</param>
-        /// <param name="lowerLimit">Minimum inclusive value of the acceptable range of values for the measurement.</param>
-        /// <param name="upperLimit">Maximum inclusive value of the acceptable range of values for the measurement.</param>
-        /// <param name="parameters">A collection of MeasurementParameter objects describing the measurement conditions.</param>
-        public void AddMeasurement<T>(string name, T measuredValue, string units, T lowerLimit, T upperLimit, MeasurementParameterCollection parameters)
-            where T : IComparable
+        /// <param name="measurement"><see cref="TsdLib.TestResults.Measurement"/> object to add.</param>
+        public void AddMeasurement(Measurement measurement)
         {
-            Add(new Measurement(name, measuredValue, units, lowerLimit, upperLimit, parameters));
-        }
-
-        /// <summary>
-        /// Initialize a new Measurement object and add it to the collection.
-        /// </summary>
-        /// <typeparam name="T">Data type of the measured value, which will also apply to the lower and upper limits.</typeparam>
-        /// <param name="name">Name to describe the measurement.</param>
-        /// <param name="measuredValue">Magnitude of the measurement.</param>
-        /// <param name="units">Unit of measure.</param>
-        /// <param name="lowerLimit">Minimum inclusive value of the acceptable range of values for the measurement.</param>
-        /// <param name="upperLimit">Maximum inclusive value of the acceptable range of values for the measurement.</param>
-        /// <param name="parameters">Zero or more MeasurementParameter objects describing the measurement conditions.</param>
-        public void AddMeasurement<T>(string name, T measuredValue, string units, T lowerLimit, T upperLimit, params MeasurementParameter[] parameters)
-            where T : IComparable
-        {
-            AddMeasurement(name, measuredValue, units, lowerLimit, upperLimit, new MeasurementParameterCollection(parameters));
+            Add(measurement);
         }
 
         /// <summary>
