@@ -342,10 +342,25 @@ namespace TsdLib.View
         private System.Windows.Forms.DataGridViewTextBoxColumn UpperLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Result;
         private System.Windows.Forms.Button button_ViewEditConfiguration;
+        /// <summary>
+        /// ComboBox to select the Station Config instance.
+        /// </summary>
         protected System.Windows.Forms.ComboBox comboBox_StationConfig;
+        /// <summary>
+        /// ComboBox to select the Product Config instance.
+        /// </summary>
         protected System.Windows.Forms.ComboBox comboBox_ProductConfig;
+        /// <summary>
+        /// ComboBox to select the Test Config instance.
+        /// </summary>
         protected System.Windows.Forms.ComboBox comboBox_TestConfig;
+        /// <summary>
+        /// ComboBox to select the Sequence Config instance.
+        /// </summary>
         protected System.Windows.Forms.ComboBox comboBox_SequenceConfig;
+        /// <summary>
+        /// Panel to easily enable or disable controls related to test setup.
+        /// </summary>
         protected System.Windows.Forms.Panel panel_Controls;
     }
 }
