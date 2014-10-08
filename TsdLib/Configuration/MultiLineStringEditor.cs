@@ -44,6 +44,7 @@ namespace TsdLib.Configuration
             bool sequence = false;
             IWindowsFormsEditorService svc = provider.GetService(typeof(IWindowsFormsEditorService)) as IWindowsFormsEditorService;
             string str;
+// ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
             if (value is HashSet<string>)
             {
                 sequence = true;

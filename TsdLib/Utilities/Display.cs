@@ -1,30 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace TsdLib.Utilities
 {
+    /// <summary>
+    /// Contains various utility methods related to how information or user interface elements are displayed.
+    /// </summary>
     public static class Display
     {
-        public static void showOnMonitor(int showOnMonitor, System.Windows.Forms.Form f)
+        /// <summary>
+        /// Show a <see cref="System.Windows.Forms.Form"/> on the specified monitor.
+        /// </summary>
+        /// <param name="monitorNumber">Number of the monitor on which to show the <see cref="System.Windows.Forms.Form"/>.</param>
+        /// <param name="form"></param>
+        public static void ShowOnMonitor(int monitorNumber, Form form)
         {
-            System.Windows.Forms.Screen[] sc = System.Windows.Forms.Screen.AllScreens;
+            Screen[] sc = Screen.AllScreens;
 
-            if (showOnMonitor > sc.Length - 1)
-            {
-                showOnMonitor = 0;
-            }
+            if (monitorNumber > sc.Length - 1)
+                monitorNumber = 0;
 
-            var programsize = f.Bounds;
-            Int32 left = (sc[showOnMonitor].WorkingArea.Width - programsize.Width) / 2;
-            Int32 top = (sc[showOnMonitor].WorkingArea.Height - programsize.Height) / 2;
+            Rectangle programsize = form.Bounds;
+            Int32 left = (sc[monitorNumber].WorkingArea.Width - programsize.Width) / 2;
+            Int32 top = (sc[monitorNumber].WorkingArea.Height - programsize.Height) / 2;
 
-            f.Left = sc[showOnMonitor].Bounds.Left + left;
-            f.Top = sc[showOnMonitor].Bounds.Top + top;
-            f.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            f.Show();
+            form.Left = sc[monitorNumber].Bounds.Left + left;
+            form.Top = sc[monitorNumber].Bounds.Top + top;
+            form.StartPosition = FormStartPosition.Manual;
+            form.Show();
         }
     }
 }
