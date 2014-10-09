@@ -14,7 +14,7 @@ namespace VersionSync
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
 
-            if (args.Length != 3)
+            if (args.Length != 2)
             {
                 Trace.WriteLine("Wrong number of arguments. Please pass the following:" + Environment.NewLine +
                                 "Path to extension.vsixmanifest file" + Environment.NewLine +
