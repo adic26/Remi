@@ -114,29 +114,16 @@ namespace TsdLib.TestSequence
                     "_AdditionalInfo"
                     ));
 
-                XmlSerializer xs = new XmlSerializer(typeof(TestResultCollection));
-                string measurementFile = Path.Combine(SpecialFolders.GetResultsFolder(testConfig.TestSystemName), "Results_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".xml");
-                using (Stream s = File.Create(measurementFile))
-                    xs.Serialize(s, TestResults);
+                string measurementFile = TestResults.Save(new DirectoryInfo(SpecialFolders.GetResultsFolder(testConfig.TestSystemName)));
+                Process.Start(measurementFile);
 
-                //For datalogger
-                const string resultsFolder = @"C:\TestResults";
-                if (!Directory.Exists(resultsFolder))
-                    Directory.CreateDirectory(resultsFolder);
-                string resultsFile = "Results_" + DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss") + ".xml";
-                string resultsPath = Path.Combine(resultsFolder, resultsFile);
-                using (Stream s2 = File.Create(resultsPath))
-                    xs.Serialize(s2, TestResults);
+                TestResults.Save(new DirectoryInfo(@"C:\TestResults"));
 
-
-                string csvResultsFile = Path.ChangeExtension(resultsFile, "csv");
+                string csvResultsFile = Path.ChangeExtension(measurementFile, "csv");
                 File.WriteAllText(csvResultsFile, TestResults.ToString(Environment.NewLine, ","));
                 Process.Start(csvResultsFile);
 
-
                 Trace.WriteLine("Test sequence completed.");
-
-                Process.Start(measurementFile);
             }
             catch (OperationCanceledException)
             {
