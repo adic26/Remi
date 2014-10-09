@@ -48,34 +48,34 @@ namespace TsdLib.InstrumentLibrary
             return pbstrDefaultExtension.Length;
         }
 
-        [ComRegisterFunction]
-        public static void RegisterClass(Type t)
-        {
-            //Process.Start(Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "RegAsm.exe"), @"/tlb C:\Program Files (x86)\Microsoft Visual Studio 11.0\VSSDK\VisualStudioIntegration\Common\Assemblies\v2.0\Microsoft.VisualStudio.Shell.Interop.dll");
-            //TODO: get embedded resource of Microsoft.VisualStudio.Shell.Interop.dll and call RegAsm.exe /tlb on the file
+        //[ComRegisterFunction]
+        //public static void RegisterClass(Type t)
+        //{
+        //    //Process.Start(Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "RegAsm.exe"), @"/tlb C:\Program Files (x86)\Microsoft Visual Studio 11.0\VSSDK\VisualStudioIntegration\Common\Assemblies\v2.0\Microsoft.VisualStudio.Shell.Interop.dll");
+        //    //TODO: get embedded resource of Microsoft.VisualStudio.Shell.Interop.dll and call RegAsm.exe /tlb on the file
 
 
-            GuidAttribute guidAttribute = (GuidAttribute)t.GetCustomAttributes(typeof(GuidAttribute), true)[0];
-            CustomToolAttribute customToolAttribute = (CustomToolAttribute)t.GetCustomAttributes(typeof(CustomToolAttribute), true)[0];
+        //    GuidAttribute guidAttribute = (GuidAttribute)t.GetCustomAttributes(typeof(GuidAttribute), true)[0];
+        //    CustomToolAttribute customToolAttribute = (CustomToolAttribute)t.GetCustomAttributes(typeof(CustomToolAttribute), true)[0];
 
-            string regKey = Path.Combine("Software", "Microsoft", "VisualStudio", "11.0_Config", "Generators", "{" + CSharpCategoryGuid + "}", customToolAttribute.Name + "\\");
+        //    string regKey = Path.Combine("Software", "Microsoft", "VisualStudio", "11.0_Config", "Generators", "{" + CSharpCategoryGuid + "}", customToolAttribute.Name + "\\");
 
-            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(regKey))
-            {
-                Debug.Assert(key != null, "Failed to create the registry key.");
-                key.SetValue("", customToolAttribute.Description);
-                key.SetValue("CLSID", "{" + guidAttribute.Value + "}");
-                key.SetValue("GeneratesDesignTimeSource", 1);
-            }
-        }
+        //    using (RegistryKey key = Registry.CurrentUser.CreateSubKey(regKey))
+        //    {
+        //        Debug.Assert(key != null, "Failed to create the registry key.");
+        //        key.SetValue("", customToolAttribute.Description);
+        //        key.SetValue("CLSID", "{" + guidAttribute.Value + "}");
+        //        key.SetValue("GeneratesDesignTimeSource", 1);
+        //    }
+        //}
 
-        [ComUnregisterFunction]
-        public static void UnregisterClass(Type t)
-        {
-            CustomToolAttribute customToolAttribute = (CustomToolAttribute)t.GetCustomAttributes(typeof(CustomToolAttribute), true)[0];
-            string regKey = Path.Combine("Software", "Microsoft", "VisualStudio", "11.0_Config", "Generators", "{" + CSharpCategoryGuid + "}", customToolAttribute.Name + "\\");
-            Registry.LocalMachine.DeleteSubKey(regKey, false);
-        }
+        //[ComUnregisterFunction]
+        //public static void UnregisterClass(Type t)
+        //{
+        //    CustomToolAttribute customToolAttribute = (CustomToolAttribute)t.GetCustomAttributes(typeof(CustomToolAttribute), true)[0];
+        //    string regKey = Path.Combine("Software", "Microsoft", "VisualStudio", "11.0_Config", "Generators", "{" + CSharpCategoryGuid + "}", customToolAttribute.Name + "\\");
+        //    Registry.LocalMachine.DeleteSubKey(regKey, false);
+        //}
     }
 
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]

@@ -60,8 +60,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="tools\Init.ps1" />
+    <None Include="tools\Install.ps1" />
     <None Include="key.snk" />
+    <None Include="tools\_Uninstall.ps1" />
     <None Include="TsdLib.InstrumentLibrary.nuspec" />
   </ItemGroup>
   <ItemGroup>
@@ -69,7 +70,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"C:\Program Files (x86)\Microsoft SDKs\Windows\v8.0A\bin\NETFX 4.0 Tools\gacutil.exe" /i $(TargetPath)</PostBuildEvent>
+    <PostBuildEvent>rem "C:\Program Files (x86)\Microsoft SDKs\Windows\v8.0A\bin\NETFX 4.0 Tools\gacutil.exe" /i $(TargetPath)
+call $(SolutionDir)NuGet_Pack_Publish.bat $(ProjectPath) $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>rem "C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe" /tlb:Microsoft.VisualStudio.Shell.Interop</PreBuildEvent>
