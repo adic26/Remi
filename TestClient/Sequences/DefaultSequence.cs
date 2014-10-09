@@ -31,7 +31,7 @@ namespace TestClient.Sequences
                     ps.DummyConnection.StringToRead = random.NextDouble().ToString(CultureInfo.InvariantCulture);
 
                     MeasurementParameter measurementParameter = new MeasurementParameter("Voltage", voltageSetting);
-                    Measurement measurement = new Measurement("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: measurementParameter);
+                    Measurement measurement = Measurement.CreateMeasurement("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: measurementParameter);
                     TestResults.AddMeasurement(measurement);
                 }
             }

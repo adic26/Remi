@@ -26,7 +26,7 @@ namespace $safeprojectname$
 
             if (args.Contains("-seq"))
             {
-                IConfigGroup<Sequence> sequences = new ConfigManager(new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest", "TestClient", Application.ProductVersion, Released)).GetConfigGroup<Sequence>();
+                IConfigGroup<Sequence> sequences = new ConfigManager(new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest", "$safeprojectname$", Application.ProductVersion, Released)).GetConfigGroup<Sequence>();
 
                 List<string> argsList = args.ToList();
                 int seqArgIndex = argsList.IndexOf("-seq");
@@ -41,7 +41,7 @@ namespace $safeprojectname$
                         File.WriteAllText(vsFile, sequence.FullSourceCode);
                 }
                 foreach (string seqFile in Directory.EnumerateFiles(sequenceFolder))
-                    sequences.Add(new Sequence(seqFile, storeInDatabase, "TestClient", assemblyReferences));
+                    sequences.Add(new Sequence(seqFile, storeInDatabase, "$safeprojectname$", assemblyReferences));
                 sequences.Save();
                 return;
             }

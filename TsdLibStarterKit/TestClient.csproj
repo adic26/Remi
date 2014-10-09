@@ -72,7 +72,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(TargetPath) -seq $(ProjectDir)Sequences true System.dll,System.Xml.dll,TsdLib.dll,TestClient.exe</PostBuildEvent>
+    <PostBuildEvent>"$(TargetPath)" -seq "$(ProjectDir)Sequences" true System.dll,System.Xml.dll,TsdLib.dll,$safeprojectname$.exe</PostBuildEvent>
   </PropertyGroup>
   <!--<PropertyGroup>
     <PreBuildEvent>$(SolutionDir)TsdLib.CodeGeneratorApp\bin\$(ConfigurationName)\TsdLib.CodeGeneratorApp.exe $(ProjectName) $(ProjectDir)Instruments $(ProjectDir)Instruments CSharp</PreBuildEvent>

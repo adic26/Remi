@@ -16,6 +16,16 @@ namespace TsdLib.TestResults
     [XmlRoot(ElementName = "Measurement", Namespace = "TsdLib.ResultsFile.xsd")]
     public class Measurement : ISerializable, IXmlSerializable
     {
+        /// <summary>
+        /// Gets a delimited string containing the names of the <see cref="TsdLib.TestResults.Measurement"/> fields. Useful for creating a header row.
+        /// </summary>
+        /// <param name="separator">Delimiter to use for separating the fields.</param>
+        /// <returns>A header row string with the names of the <see cref="TsdLib.TestResults.Measurement"/> fields.</returns>
+        public static string GetMeasurementCategories(string separator)
+        {
+            return string.Join(separator, "Measurement Name", "Measured Value", "Units", "Lower Limit", "Upper Limit", "Result");
+        }
+
         private readonly XNamespace _ns = "TsdLib.ResultsFile.xsd";
 
         /// <summary>
@@ -82,13 +92,13 @@ namespace TsdLib.TestResults
         /// <param name="comments">OPTIONAL: Any comments to include additional information.</param>
         /// <param name="filePath">OPTIONAL: The absolute path of a file to attach.</param>
         /// <param name="parameters">OPTIONAL: A collection of MeasurementParameter objects describing the measurement conditions.</param>
-        public Measurement(string name, IComparable measuredValue, string units, IComparable lowerLimit = null, IComparable upperLimit = null, string description = " ", string comments = " ", string filePath = " ", params MeasurementParameter[] parameters)
+        private Measurement(string name, IComparable measuredValue, string units, IComparable lowerLimit = null, IComparable upperLimit = null, string description = "", string comments = "", string filePath = "", params MeasurementParameter[] parameters)
         {
             Name = name;
             MeasuredValue = measuredValue;
             Units = units;
-            LowerLimit = lowerLimit ?? " ";
-            UpperLimit = upperLimit ?? " ";
+            LowerLimit = lowerLimit ?? "N/A";
+            UpperLimit = upperLimit ?? "N/A";
             Description = description;
             Comments = comments;
             FilePath = filePath;
@@ -101,38 +111,42 @@ namespace TsdLib.TestResults
 
             //Case 2: both limits entered - check against both
             else if (lowerLimit != null && upperLimit != null)
-                if (measuredValue.CompareTo(lowerLimit) < 0)
-                    Result = MeasurementResult.Fail_Low;
+                if (measuredValue is bool && lowerLimit is bool && upperLimit is bool)
+                    Result = ((bool) measuredValue == (bool) lowerLimit == (bool) upperLimit) ? MeasurementResult.Pass : MeasurementResult.Fail;
+                else if (measuredValue.CompareTo(lowerLimit) < 0)
+                    Result = MeasurementResult.Fail_BelowLimit;
                 else if (measuredValue.CompareTo(upperLimit) > 0)
-                    Result = MeasurementResult.Fail_High;
+                    Result = MeasurementResult.Fail_AboveLimit;
                 else
                     Result = MeasurementResult.Pass;
 
             //Case 3: only lower limit entered - check against it
             else if (lowerLimit != null)
-                Result = measuredValue.CompareTo(lowerLimit) > 0 ? MeasurementResult.Pass : MeasurementResult.Fail_Low;
+                Result = measuredValue.CompareTo(lowerLimit) > 0 ? MeasurementResult.Pass : MeasurementResult.Fail_BelowLimit;
 
             //Case 4: only upper limit entered - check against it
             else
-                Result = measuredValue.CompareTo(upperLimit) < 0 ? MeasurementResult.Pass : MeasurementResult.Fail_High;
+                Result = measuredValue.CompareTo(upperLimit) < 0 ? MeasurementResult.Pass : MeasurementResult.Fail_AboveLimit;
 
         }
 
-
-        ///// <summary>
-        ///// Initialize a new Measurement object.
-        ///// </summary>
-        ///// <param name="name">Name to describe the measurement.</param>
-        ///// <param name="measuredValue">Magnitude of the measurement.</param>
-        ///// <param name="units">Unit of measure.</param>
-        ///// <param name="lowerLimit">OPTIONAL: Minimum inclusive value of the acceptable range of values for the measurement.</param>
-        ///// <param name="upperLimit">OPTIONAL: Maximum inclusive value of the acceptable range of values for the measurement.</param>
-        ///// <param name="description">OPTIONAL: A detailed description of the measurement.</param>
-        ///// <param name="comments">OPTIONAL: Any comments to include additional information.</param>
-        ///// <param name="filePath">OPTIONAL: The absolute path of a file to attach.</param>
-        ///// <param name="parameter">OPTIONAL: A MeasurementParameter object describing the measurement conditions.</param>
-        //public Measurement(string name, IComparable measuredValue, string units, IComparable lowerLimit = null, IComparable upperLimit = null, string description = null, string comments = null, string filePath = null, MeasurementParameter parameter = null)
-        //    : this(name, measuredValue, units, lowerLimit, upperLimit, description, comments, filePath, parameter != null ? new MeasurementParameterCollection(new List<MeasurementParameter>{ parameter}) : null) { }
+        /// <summary>
+        /// Create a new Measurement object.
+        /// </summary>
+        /// <param name="name">Name to describe the measurement.</param>
+        /// <param name="measuredValue">Magnitude of the measurement.</param>
+        /// <param name="units">Unit of measure.</param>
+        /// <param name="lowerLimit">OPTIONAL: Minimum inclusive value of the acceptable range of values for the measurement.</param>
+        /// <param name="upperLimit">OPTIONAL: Maximum inclusive value of the acceptable range of values for the measurement.</param>
+        /// <param name="description">OPTIONAL: A detailed description of the measurement.</param>
+        /// <param name="comments">OPTIONAL: Any comments to include additional information.</param>
+        /// <param name="filePath">OPTIONAL: The absolute path of a file to attach.</param>
+        /// <param name="parameters">OPTIONAL: A collection of MeasurementParameter objects describing the measurement conditions.</param>
+        public static Measurement CreateMeasurement<T>(string name, T measuredValue, string units, T lowerLimit = default(T), T upperLimit = default(T), string description = "", string comments = "", string filePath = "", params MeasurementParameter[] parameters)
+            where T : IComparable
+        {
+            return new Measurement(name, measuredValue, units, lowerLimit, upperLimit, description, comments, filePath, parameters);
+        }
 
         /// <summary>
         /// Returns the Measurement object formatted into a string with comma separator.
