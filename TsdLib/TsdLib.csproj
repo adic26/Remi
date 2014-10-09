@@ -65,7 +65,7 @@
     <Compile Include="TestResults\MeasurementParameter.cs" />
     <Compile Include="TestResults\MeasurmentResult.cs" />
     <Compile Include="TestResults\TestResultsExceptions.cs" />
-    <Compile Include="TestResults\TestResults.cs" />
+    <Compile Include="TestResults\TestResultsCollection.cs" />
     <Compile Include="TestResults\TestResultsHeader.cs" />
     <Compile Include="Common\EventProxy.cs" />
     <Compile Include="Common\States.cs" />
