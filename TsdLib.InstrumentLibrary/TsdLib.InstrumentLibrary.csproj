@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RegisterForComInterop>true</RegisterForComInterop>
+    <RegisterForComInterop>false</RegisterForComInterop>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -62,16 +62,15 @@
   <ItemGroup>
     <None Include="tools\Install.ps1" />
     <None Include="key.snk" />
-    <None Include="tools\_Uninstall.ps1" />
     <None Include="TsdLib.InstrumentLibrary.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Microsoft.VisualStudio.Shell.Interop.dll" />
+    <Content Include="Instruments\DummyPowerSupply.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>rem "C:\Program Files (x86)\Microsoft SDKs\Windows\v8.0A\bin\NETFX 4.0 Tools\gacutil.exe" /i $(TargetPath)
-call $(SolutionDir)NuGet_Pack_Publish.bat $(ProjectPath) $(ConfigurationName)</PostBuildEvent>
+call $(SolutionDir)NuGet_Pack_Publish.bat $(ProjectPath) $(ConfigurationName) tool</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>rem "C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe" /tlb:Microsoft.VisualStudio.Shell.Interop</PreBuildEvent>

@@ -17,5 +17,7 @@
   </metadata>
   <files>
     <file src="tools\*.*" target="tools"></file>
+    <!--<file src="Instruments\*.*" target="Instruments"/>-->
+    <!--<file src="bin\$configuration$\$id$.tlb" target="tools" />-->
   </files>
 </package>

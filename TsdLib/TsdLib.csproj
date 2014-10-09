@@ -144,8 +144,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call $(SolutionDir)NuGet_Pack_Publish.bat $(ProjectPath) $(ConfigurationName)
-"C:\Program Files (x86)\Microsoft SDKs\Windows\v8.0A\bin\NETFX 4.0 Tools\gacutil.exe" /i $(TargetPath)</PostBuildEvent>
+    <PostBuildEvent>call $(SolutionDir)NuGet_Pack_Publish.bat $(ProjectPath) $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

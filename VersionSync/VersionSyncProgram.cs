@@ -17,16 +17,12 @@ namespace VersionSync
             if (args.Length != 3)
             {
                 Trace.WriteLine("Wrong number of arguments. Please pass the following:" + Environment.NewLine +
-                                "Path to TsdLib.dll" + Environment.NewLine +
                                 "Path to extension.vsixmanifest file" + Environment.NewLine +
                                 "Path to atom.xml file");
             }
 
-            string tsdLibPath = args[0];
-            string manifestPath = args[1];
-            string atomPath = args[2];
-
-            string version = Assembly.ReflectionOnlyLoadFrom(tsdLibPath).GetName().Version.ToString();
+            string manifestPath = args[0];
+            string atomPath = args[1];
 
             #region manifest
             
@@ -41,14 +37,10 @@ namespace VersionSync
             Debug.Assert(manifestMetaDataElement != null, "Invalid VSIX manifest. No Metadata element.");
             XElement manifestIdentityElement = manifestMetaDataElement.Element(manifestNs + "Identity");
             Debug.Assert(manifestIdentityElement != null, "Invalid VSIX manifest. No Metadata.Identity element.");
-            manifestIdentityElement.Attribute("Version").Value = version;
+            Version oldVersion = new Version(manifestIdentityElement.Attribute("Version").Value); 
+            string version = new Version(oldVersion.Major, oldVersion.Minor, oldVersion.Build, oldVersion.Revision + 1).ToString();
 
-            //XElement manifestAssetsElement = manifestRoot.Element(manifestNs + "Assets");
-            //Debug.Assert(manifestAssetsElement != null, "Invalid VSIX manifest. No Assets element.");
-            //XElement nupkgElement = manifestAssetsElement.Elements(manifestNs + "Asset")
-            //    .FirstOrDefault(assetElement => assetElement.Attribute("Type").Value == "TsdLib.nupkg");
-            //if (nupkgElement != null)
-            //    nupkgElement.Attribute("Path").Value = "packages/" + "TsdLib." + version + ".nupkg";
+            manifestIdentityElement.Attribute("Version").Value = version;
 
             manifestDocument.Save(manifestPath, SaveOptions.None);
 
