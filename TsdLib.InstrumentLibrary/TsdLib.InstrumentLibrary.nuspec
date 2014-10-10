@@ -19,6 +19,7 @@
     <file src="tools\*.*" target="tools"></file>
     <file src="..\TestClient\Instruments\*.*" target="Instruments"/>
     <file src="readme.txt" target=""/>
+    <file src="..\TsdLib\CodeGenerator\TsdLib.Instruments.xsd" target="Instruments"/>
     <!--<file src="bin\$configuration$\$id$.tlb" target="tools" />-->
   </files>
 </package>

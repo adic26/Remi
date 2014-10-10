@@ -189,7 +189,7 @@
         <xs:documentation>Optional: Regular expression used to filter the raw response from the instrument.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="ReturnType">
+    <xs:attribute name="ReturnType" type="ClrTypes" use="required">
       <xs:annotation>
         <xs:documentation>CLR type that the response will be parsed into.</xs:documentation>
       </xs:annotation>
