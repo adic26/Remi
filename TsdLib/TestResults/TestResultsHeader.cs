@@ -44,7 +44,7 @@ namespace TsdLib.TestResults
         /// <summary>
         /// Gets the BSN on the current DUT.
         /// </summary>
-// ReSharper disable once InconsistentNaming
+        // ReSharper disable once InconsistentNaming
         public string BSN { get; private set; }
         /// <summary>
         /// Gets the overall test result.
@@ -67,6 +67,10 @@ namespace TsdLib.TestResults
         /// </summary>
         [XmlIgnore]
         public DateTime DateStarted { get; private set; }
+        /// <summary>
+        /// Gets the functional type (SFI: 1/MFI: 2/Acc: 3)
+        /// </summary>
+        public string FunctionalType { get; private set; }
 
         // ReSharper disable once UnusedMember.Local - Default constructor required for serialization.
         private TestResultsHeader() { }
@@ -86,7 +90,7 @@ namespace TsdLib.TestResults
         /// <param name="additionalInfo">Any additional information that does not fit into the previous categories.</param>
         public TestResultsHeader(string testName, string jobNumber, string unitNumber, string testType,
             string testStage, string bsn, string finalResult, DateTime dateStarted,
-            DateTime dateCompleted, string additionalInfo)
+            DateTime dateCompleted, string additionalInfo, string functionalType)
         {
             TestName = testName;
             JobNumber = jobNumber;
@@ -99,6 +103,7 @@ namespace TsdLib.TestResults
             DateStarted = dateStarted;
             DateCompleted = dateCompleted;
             AdditionalInfo = additionalInfo;
+            FunctionalType = functionalType;
         }
 
         #region ISerializable
@@ -121,6 +126,7 @@ namespace TsdLib.TestResults
             info.AddValue("DateStarted", DateStarted);
             info.AddValue("DateCompleted", DateCompleted);
             info.AddValue("AdditionalInfo", AdditionalInfo);
+            info.AddValue("FunctionalType", FunctionalType);
         }
 
         /// <summary>
@@ -141,6 +147,7 @@ namespace TsdLib.TestResults
             DateStarted = info.GetDateTime("DateStarted");
             DateCompleted = info.GetDateTime("DateCompleted");
             AdditionalInfo = info.GetString("AdditionalInfo");
+            FunctionalType = info.GetString("FunctionalType");
         }
 
         #endregion
@@ -170,6 +177,7 @@ namespace TsdLib.TestResults
             new XElement(_ns + "Duration", Duration.Subtract(TimeSpan.FromMilliseconds(Duration.Milliseconds)).ToString("c")).WriteTo(writer);
             new XElement(_ns + "AdditionalInfo", AdditionalInfo).WriteTo(writer);
             new XElement(_ns + "DateCompleted", DateCompleted.ToString("yyyy-MM-dd-hh-mm-ss")).WriteTo(writer);
+            new XElement(_ns + "FunctionalType", FunctionalType).WriteTo(writer);
         }
 
         /// <summary>
@@ -201,9 +209,9 @@ namespace TsdLib.TestResults
 
             DateStarted = DateCompleted - TimeSpan.Parse((string)headerElement.Element(_ns + "Duration"));
             AdditionalInfo = (string)headerElement.Element(_ns + "AdditionalInfo");
+            FunctionalType = (string)headerElement.Element(_ns + "FunctionalType");
         }
 
         #endregion
     }
-
 }
