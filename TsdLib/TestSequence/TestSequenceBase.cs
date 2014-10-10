@@ -111,7 +111,8 @@ namespace TsdLib.TestSequence
                     overallPass ? "Pass" : "Fail",
                     starTime,
                     DateTime.Now,
-                    "_AdditionalInfo"
+                    "_AdditionalInfo",
+                    "FunctionalType"
                     ));
 
                 string measurementFile = TestResults.Save(new DirectoryInfo(SpecialFolders.GetResultsFolder(testConfig.TestSystemName)));
