@@ -77,7 +77,9 @@ namespace TsdLib.TestResults
             if (!directory.Exists)
                 directory.Create();
 
-            string fileName = Path.Combine(directory.FullName, "Results_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss") + ".xml");
+            String formattedFileName = String.Format("{0}-{1}_", CollectionHeader.JobNumber, CollectionHeader.UnitNumber.ToString().PadLeft(3, '0'));
+
+            string fileName = Path.Combine(directory.FullName, formattedFileName + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss") + ".xml");
 
             XmlSerializer xs = new XmlSerializer(typeof(TestResultCollection));
 
