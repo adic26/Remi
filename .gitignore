@@ -21,6 +21,8 @@ Help/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
+# Enable the TestResults namespace
+!TsdLib/TestResults/
 [Bb]uild[Ll]og.*
 
 *_i.c

@@ -121,9 +121,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="key.snk" />
-    <None Include="TestResults\ResultFile.xsd">
+    <EmbeddedResource Include="TestResults\ResultFile.xsd">
       <SubType>Designer</SubType>
-    </None>
+    </EmbeddedResource>
     <None Include="TsdLib.nuspec" />
   </ItemGroup>
   <ItemGroup>
