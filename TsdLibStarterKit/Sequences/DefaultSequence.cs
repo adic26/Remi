@@ -29,7 +29,9 @@ namespace $safeprojectname$.Sequences
                     ps.SetVoltage(voltageSetting);
                     Thread.Sleep(productConfig.SettlingTime);
                     ps.DummyConnection.StringToRead = random.NextDouble().ToString(CultureInfo.InvariantCulture);
-                    TestResults.AddMeasurement("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, new MeasurementParameter("Voltage", voltageSetting));
+                    MeasurementParameter measurementParameter = new MeasurementParameter("Voltage", voltageSetting);
+                    Measurement measurement = Measurement.CreateMeasurement("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: measurementParameter);
+                    TestResults.AddMeasurement(measurement);
                 }
             }
         }

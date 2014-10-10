@@ -48,7 +48,6 @@
     <Compile Include="Configuration\ProductConfig.cs" />
     <Compile Include="Configuration\StationConfig.cs" />
     <Compile Include="Configuration\TestConfig.cs" />
-    <Compile Include="Instruments\Instruments.cs" />
     <Compile Include="Sequences\DefaultSequence.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="$safeprojectname$Program.cs" />
@@ -66,9 +65,6 @@
     <EmbeddedResource Include="View.resx">
       <DependentUpon>View.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Instruments\DummyPowerSupply.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

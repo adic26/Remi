@@ -56,12 +56,10 @@
     <Content Include="View.cs" />
     <Content Include="TestClientProgram.cs" />
     <Content Include="Sequences\DefaultSequence.cs" />
-    <Content Include="Instruments\Instruments.cs" />
     <Content Include="Controller.cs" />
     <Content Include="Configuration\TestConfig.cs" />
     <Content Include="Configuration\StationConfig.cs" />
     <Content Include="Configuration\ProductConfig.cs" />
-    <Content Include="Instruments\DummyPowerSupply.xml" />
     <Content Include="TestClient.csproj">
       <SubType>Designer</SubType>
     </Content>

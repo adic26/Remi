@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace $safeprojectname$.Instruments
+namespace TestClient.Instruments
 {
     using System;
     using TsdLib.Instrument;
