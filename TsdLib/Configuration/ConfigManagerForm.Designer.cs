@@ -213,13 +213,13 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboBox_ConfigType;
-        protected System.Windows.Forms.Panel panel_EditControls;
-        protected System.Windows.Forms.PropertyGrid propertyGrid_Settings;
-        protected System.Windows.Forms.Button button_CreateNew;
-        protected System.Windows.Forms.Label label5;
-        protected System.Windows.Forms.ComboBox comboBox_ConfigItem;
-        protected System.Windows.Forms.Button button_OK;
-        protected System.Windows.Forms.Button button_Cancel;
+        private System.Windows.Forms.Panel panel_EditControls;
+        private System.Windows.Forms.PropertyGrid propertyGrid_Settings;
+        private System.Windows.Forms.Button button_CreateNew;
+        private System.Windows.Forms.ComboBox comboBox_ConfigItem;
+        private System.Windows.Forms.Button button_OK;
+        private System.Windows.Forms.Button button_Cancel;
+        private System.Windows.Forms.Label label5;
 
     }
 }

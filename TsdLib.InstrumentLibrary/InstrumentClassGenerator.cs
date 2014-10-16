@@ -18,7 +18,7 @@ namespace TsdLib.InstrumentLibrary
             {
                 Generator generator = new Generator(wszDefaultNamespace, new[] { wszInputFilePath }, Language.CSharp);
 
-                string sourceCode = generator.GenerateInstrumentsClassSourceCode(false);
+                string sourceCode = generator.GenerateInstrumentsClassSourceCode();
                 byte[] bytes = Encoding.UTF8.GetBytes(sourceCode);
 
                 rgbOutputFileContents[0] = Marshal.AllocCoTaskMem(bytes.Length);

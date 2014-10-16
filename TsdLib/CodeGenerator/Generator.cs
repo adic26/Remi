@@ -102,8 +102,8 @@ namespace TsdLib.CodeGenerator
         /// Generates a source code file from the specified XML instrument definition file(s).
         /// </summary>
         /// <param name="outputDirectoryName">Absolute directory path to store the output file. If the directory does not exist, it will be created.</param>
-        /// <param name="runTime">True if calling from run-time. Namespace will be appended with .Dynamic</param>
-        public string GenerateInstrumentsClassFile(string outputDirectoryName, bool runTime)
+        /// <returns>The absolute path the the generated source code file.</returns>
+        public string GenerateInstrumentsClassFile(string outputDirectoryName)
         {
             CodeCompileUnit ccu = generateInstrumentCodeCompileUnit();
             
@@ -121,8 +121,8 @@ namespace TsdLib.CodeGenerator
         /// <summary>
         /// Generates source code from the specified XML instrument definition file(s).
         /// </summary>
-        /// <param name="runTime">True if calling from run-time. Namespace will be appended with .Dynamic</param>
-        public string GenerateInstrumentsClassSourceCode(bool runTime)
+        /// <returns>The source code as a string.</returns>
+        public string GenerateInstrumentsClassSourceCode()
         {
             CodeCompileUnit ccu = generateInstrumentCodeCompileUnit();
 

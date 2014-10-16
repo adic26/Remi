@@ -133,6 +133,7 @@ namespace TsdLib.TestResults
         /// <summary>
         /// Create a new Measurement object.
         /// </summary>
+        /// <typeparam name="T">Data type of the measured value and upper/lower limits. Must implement IComparable.</typeparam>
         /// <param name="name">Name to describe the measurement.</param>
         /// <param name="measuredValue">Magnitude of the measurement.</param>
         /// <param name="units">Unit of measure.</param>
@@ -142,6 +143,7 @@ namespace TsdLib.TestResults
         /// <param name="comments">OPTIONAL: Any comments to include additional information.</param>
         /// <param name="filePath">OPTIONAL: The absolute path of a file to attach.</param>
         /// <param name="parameters">OPTIONAL: A collection of MeasurementParameter objects describing the measurement conditions.</param>
+        /// <returns>The new <see cref="TsdLib.TestResults.Measurement"/> object.</returns>
         public static Measurement CreateMeasurement<T>(string name, T measuredValue, string units, T lowerLimit = default(T), T upperLimit = default(T), string description = "", string comments = "", string filePath = "", params MeasurementParameter[] parameters)
             where T : IComparable
         {

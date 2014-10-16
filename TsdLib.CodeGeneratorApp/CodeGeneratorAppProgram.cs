@@ -28,7 +28,7 @@ namespace TsdLib.CodeGeneratorApp
                 .ToArray();
 
             using (Generator generator = new Generator(testSystemName, instrumentsFiles, language))
-                generator.GenerateInstrumentsClassFile(outputDirectory, false);
+                generator.GenerateInstrumentsClassFile(outputDirectory);
 
             return 0;
         }

@@ -6,8 +6,18 @@ New-ItemProperty -Path 'HKCU:\Software\Microsoft\VisualStudio\11.0_Config\Genera
 New-ItemProperty -Path 'HKCU:\Software\Microsoft\VisualStudio\11.0_Config\Generators\{FAE04EC1-301F-11D3-BF4B-00C04F79EFBC}\InstrumentClassGenerator' -name "GeneratesDesignTimeSource" -value 1
 
 $RegAsm = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory() + 'RegAsm.exe'
-$Assembly = $toolsPath + '\asm\TsdLib.InstrumentLibrary.dll'
-#$Assembly = $installPath + '\lib\net45\TsdLib.InstrumentLibrary.dll'
+$SourceFolder = $toolsPath + '\asy\*'
+
+Write-Host $SourceFolder
+
+$DestinationFolder = "C:\ProgramData\TsdLib\CodeGenerator\" + $package.version
+
+Write-Host $DestinationFolder
+
+$Assembly = $DestinationFolder + '\TsdLib.InstrumentLibrary.dll'
 $Codebase = '/codebase'
+
+New-Item -Force $DestinationFolder -Type Directory
+Copy-Item $SourceFolder $DestinationFolder -Force
 
 Start-Process $RegAsm -ArgumentList $Assembly, $Codebase -Verb runAs
