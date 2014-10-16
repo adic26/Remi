@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using TsdLib.Configuration;
 
@@ -24,12 +23,11 @@ namespace TestClient
         private static void Main(string[] args)
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
-
+            
             //TODO: move to separate application
             if (args.Contains("-seq"))
             {
                 IConfigGroup<Sequence> sequences = new ConfigManager(new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest", "TestClient", Application.ProductVersion, Released)).GetConfigGroup<Sequence>();
-
 
                 //string sequenceFolder = @"C:\Users\jmckee\Source\Repos\TsdLib\TestClient\Sequences";
                 //bool storeInDatabase = true;
@@ -44,7 +42,7 @@ namespace TestClient
                 {
                     string vsFile = Path.Combine(sequenceFolder, sequence.Name + ".cs");
                     if (!File.Exists(vsFile))
-                        File.WriteAllText(vsFile, sequence.FullSourceCode);
+                        File.WriteAllText(vsFile, sequence.SourceCode);
                 }
                 foreach (string seqFile in Directory.EnumerateFiles(sequenceFolder))
                     sequences.Add(new Sequence(seqFile, storeInDatabase, "TestClient", assemblyReferences));

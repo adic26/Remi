@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.Win32;
 using TsdLib.CodeGenerator;
 
 namespace TsdLib.InstrumentLibrary

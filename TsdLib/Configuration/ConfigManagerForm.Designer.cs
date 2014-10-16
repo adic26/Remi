@@ -137,7 +137,7 @@
             // 
             // button_CreateNew
             // 
-            this.button_CreateNew.Location = new System.Drawing.Point(256, 19);
+            this.button_CreateNew.Location = new System.Drawing.Point(256, 17);
             this.button_CreateNew.Name = "button_CreateNew";
             this.button_CreateNew.Size = new System.Drawing.Size(138, 23);
             this.button_CreateNew.TabIndex = 5;

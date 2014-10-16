@@ -6,10 +6,8 @@ New-ItemProperty -Path 'HKCU:\Software\Microsoft\VisualStudio\11.0_Config\Genera
 New-ItemProperty -Path 'HKCU:\Software\Microsoft\VisualStudio\11.0_Config\Generators\{FAE04EC1-301F-11D3-BF4B-00C04F79EFBC}\InstrumentClassGenerator' -name "GeneratesDesignTimeSource" -value 1
 
 $RegAsm = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory() + 'RegAsm.exe'
-$Assembly = $toolsPath + '\TsdLib.InstrumentLibrary.dll'
-$Tlb = '/tlb:' + $toolsPath + '\TsdLib.InstrumentLibrary.tlb'
+$Assembly = $toolsPath + '\asm\TsdLib.InstrumentLibrary.dll'
+#$Assembly = $installPath + '\lib\net45\TsdLib.InstrumentLibrary.dll'
 $Codebase = '/codebase'
 
-Start-Process $RegAsm -ArgumentList $Assembly, $Tlb, $Codebase
-
-#$RegAsm +  C:\temp\proj\WindowsFormsApplication5\packages\TsdLib.InstrumentLibrary.1.0.0.2\tools\TsdLib.InstrumentLibrary.dll /tlb:C:\temp\proj\WindowsFormsApplication5\packages\TsdLib.InstrumentLibrary.1.0.0.2\tools\TsdLib.InstrumentLibrary.tlb /codebase
+Start-Process $RegAsm -ArgumentList $Assembly, $Codebase -Verb runAs

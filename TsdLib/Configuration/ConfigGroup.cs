@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 
 namespace TsdLib.Configuration
 {
@@ -32,9 +31,6 @@ namespace TsdLib.Configuration
 
         public ConfigGroup(DatabaseConnection databaseConnection)
         {
-            //upload assembly to database to support stand-alone app reflection
-            databaseConnection.UploadFileToDatabase(Assembly.GetEntryAssembly().Location, "ClientAssembly", true);
-
             Context.Add("DatabaseConnection", databaseConnection);
 
             Synchronized(this);

@@ -50,12 +50,6 @@ namespace TsdLib.Instrument
         protected InstrumentBase(TConnection connection)
         {
             Connection = connection;
-
-            InitCommandsAttribute initCommands = (InitCommandsAttribute)Attribute.GetCustomAttribute(GetType(), typeof(InitCommandsAttribute), true);
-            if (initCommands != null)
-                foreach (string command in initCommands.Commands)
-                    Connection.SendCommand(command, -1);
-
             Description = GetType().Name + " via " + connection.Description;
         }
 
@@ -67,98 +61,53 @@ namespace TsdLib.Instrument
         /// <summary>
         /// Gets the message to send to the instrument to query the model number.
         /// </summary>
-        protected abstract string ModelNumberMessage { get; }
+        protected internal abstract string ModelNumberMessage { get; }
         /// <summary>
         /// Gets the regular expression used to parse the response when querying the model number.
         /// </summary>
-        protected virtual string ModelNumberRegEx { get { return ".*"; } }
+        protected internal virtual string ModelNumberRegEx { get { return ".*"; } }
         /// <summary>
         /// Gets the termination character (if any) that the instrument will send to signal the end of the model number query response.
         /// </summary>
-        protected virtual char ModelNumberTermChar { get { return '\uD800'; } }
-        private string _modelNumber;
+        protected internal virtual char ModelNumberTermChar { get { return '\uD800'; } }
         /// <summary>
         /// Gets the instrument model number.
         /// </summary>
-        public string ModelNumber
-        {
-            get
-            {
-                if (_modelNumber == null)
-                {
-                    lock (this)
-                    {
-                        Connection.SendCommand(ModelNumberMessage, -1);
-                        _modelNumber = Connection.GetResponse<string>(ModelNumberRegEx, ModelNumberTermChar);
-                    }
-                }
-                return _modelNumber;
-            }
-        }
+        public string ModelNumber { get; internal set; }
 
         /// <summary>
         /// Gets the message to send to the instrument to query the serial number.
         /// </summary>
-        protected abstract string SerialNumberMessage { get; }
+        protected internal abstract string SerialNumberMessage { get; }
         /// <summary>
         /// Gets the regular expression used to parse the response when querying the serial number.
         /// </summary>
-        protected virtual string SerialNumberRegEx { get { return ".*"; } }
+        protected internal virtual string SerialNumberRegEx { get { return ".*"; } }
         /// <summary>
         /// Gets the termination character (if any) that the instrument will send to signal the end of the serial number query response.
         /// </summary>
-        protected virtual char SerialNumberTermChar { get { return '\uD800'; } }
-        private string _serialNumber;
+        protected internal virtual char SerialNumberTermChar { get { return '\uD800'; } }
         /// <summary>
         /// Gets the instrument serial number.
         /// </summary>
-        public string SerialNumber
-        {
-            get
-            {
-                lock (this)
-                {
-                    if (_serialNumber == null)
-                    {
-                        Connection.SendCommand(SerialNumberMessage, -1);
-                        _serialNumber = Connection.GetResponse<string>(SerialNumberRegEx, SerialNumberTermChar);
-                    }
-                }
-                return _serialNumber;
-            }
-        }
+        public string SerialNumber { get; internal set; }
 
         /// <summary>
         /// Gets the message to send to the instrument to query the firmware version.
         /// </summary>
-        protected abstract string FirmwareVersionMessage { get; }
+        protected internal abstract string FirmwareVersionMessage { get; }
         /// <summary>
         /// Gets the regular expression used to parse the response when querying the firmware version.
         /// </summary>
-        protected virtual string FirmwareVersionRegEx { get { return ".*"; } }
+        protected internal virtual string FirmwareVersionRegEx { get { return ".*"; } }
         /// <summary>
         /// Gets the termination character (if any) that the instrument will send to signal the end of the firmware version query response.
         /// </summary>
-        protected virtual char FirmwareVersionTermChar { get { return '\uD800'; } }
-        private string _firmwareVersion;
+        protected internal virtual char FirmwareVersionTermChar { get { return '\uD800'; } }
         /// <summary>
         /// Gets the instrument firmware version.
         /// </summary>
-        public string FirmwareVersion
-        {
-            get
-            {
-                lock (this)
-                {
-                    if (_firmwareVersion == null)
-                    {
-                        Connection.SendCommand(FirmwareVersionMessage, -1);
-                        _firmwareVersion = Connection.GetResponse<string>(FirmwareVersionRegEx, FirmwareVersionTermChar);
-                    }
-                    return _firmwareVersion;
-                }
-            }
-        }
+        public string FirmwareVersion { get; internal set; }
 
         /// <summary>
         /// Closes the instrument connection and disposes of any resources being used.

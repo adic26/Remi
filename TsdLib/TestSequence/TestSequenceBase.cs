@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Xml.Serialization;
 using TsdLib.Configuration;
 using TsdLib.Instrument;
 using TsdLib.TestResults;
@@ -36,6 +36,8 @@ namespace TsdLib.TestSequence
         /// </summary>
         protected CancellationToken Token { get { return _cts.Token; } }
 
+        private readonly List<IInstrument> _instruments; 
+
         /// <summary>
         /// Gets test metadata and the collection of Measurement objects captured during the Test Sequence execution.
         /// </summary>
@@ -52,6 +54,8 @@ namespace TsdLib.TestSequence
         protected TestSequenceBase()
         {
             _cts = new CancellationTokenSource();
+
+            _instruments = new List<IInstrument>();
             
             TestResults = new TestResultCollection();
             TestResults.ListChanged += (sender, e) =>
@@ -66,6 +70,7 @@ namespace TsdLib.TestSequence
 
         private void FactoryEvents_Connected(object sender, ConnectedEventArgs e)
         {
+            _instruments.Add(e.Instrument);
             TestResults.AddMeasurement(Measurement.CreateMeasurement(e.Instrument.GetType().Name + " Description", e.Instrument.Description, "Info"));
             TestResults.AddMeasurement(Measurement.CreateMeasurement(e.Instrument.GetType().Name + " Model Number", e.Instrument.ModelNumber, "Info"));
             TestResults.AddMeasurement(Measurement.CreateMeasurement(e.Instrument.GetType().Name + " Serial Number", e.Instrument.SerialNumber, "Info"));
@@ -116,13 +121,13 @@ namespace TsdLib.TestSequence
                     ));
 
                 string measurementFile = TestResults.Save(new DirectoryInfo(SpecialFolders.GetResultsFolder(testConfig.TestSystemName)));
-                Process.Start(measurementFile);
+                //Process.Start(measurementFile);
 
                 TestResults.Save(new DirectoryInfo(@"C:\TestResults"));
 
                 string csvResultsFile = Path.ChangeExtension(measurementFile, "csv");
                 File.WriteAllText(csvResultsFile, TestResults.ToString(Environment.NewLine, ","));
-                Process.Start(csvResultsFile);
+                //Process.Start(csvResultsFile);
 
                 Trace.WriteLine("Test sequence completed.");
             }
@@ -163,6 +168,10 @@ namespace TsdLib.TestSequence
             {
                 _cts.Dispose();
                 FactoryEvents.Connected -= FactoryEvents_Connected;
+                foreach (IInstrument instrument in _instruments)
+                {
+                    instrument.Dispose();
+                }
             }
         }
     }

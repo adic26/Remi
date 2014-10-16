@@ -88,6 +88,7 @@ namespace TsdLib.TestResults
         /// <param name="dateStarted">DateTime that the test was started.</param>
         /// <param name="dateCompleted">DateTime that the test was completed.</param>
         /// <param name="additionalInfo">Any additional information that does not fit into the previous categories.</param>
+        /// <param name="functionalType">The functional type. SFI = 1, MFI = 2, Acc = 3.</param>
         public TestResultsHeader(string testName, string jobNumber, string unitNumber, string testType,
             string testStage, string bsn, string finalResult, DateTime dateStarted,
             DateTime dateCompleted, string additionalInfo, string functionalType)

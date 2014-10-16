@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace TsdLib.Configuration
@@ -37,6 +38,7 @@ namespace TsdLib.Configuration
     /// </summary>
     public class ConfigManager
     {
+        private static bool _firstRun = true;
         internal static readonly List<IConfigGroup> ConfigGroups = new List<IConfigGroup>();
 
         internal string TestSystemName;
@@ -53,6 +55,13 @@ namespace TsdLib.Configuration
             TestSystemName = databaseConnection.TestSystemName;
             TestSystemVersion = databaseConnection.TestSystemVersion;
             _databaseConnection = databaseConnection;
+
+            //upload assembly to database to support stand-alone app reflection
+            if (_firstRun)
+            {
+                databaseConnection.UploadFileToDatabase(Assembly.GetEntryAssembly().Location, "ClientAssembly", true);
+                _firstRun = false;
+            }
         }
 
         /// <summary>

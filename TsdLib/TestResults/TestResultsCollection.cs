@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
@@ -77,21 +76,14 @@ namespace TsdLib.TestResults
             if (!directory.Exists)
                 directory.Create();
 
-            String formattedFileName = String.Format("{0}-{1}_", CollectionHeader.JobNumber, CollectionHeader.UnitNumber.ToString().PadLeft(3, '0'));
+            string formattedFileName = string.Format("{0}-{1}_", CollectionHeader.JobNumber, CollectionHeader.UnitNumber.PadLeft(3, '0'));
 
             string fileName = Path.Combine(directory.FullName, formattedFileName + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss") + ".xml");
 
             XmlSerializer xs = new XmlSerializer(typeof(TestResultCollection));
 
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-            ns.Add("urn", "xmlns:relab.rim.com/ResultFile.xsd");
-
             using (Stream s = File.Create(fileName))
-                xs.Serialize(s, this, ns);
-
-            //string prefixedNamespace = Regex.Replace(File.ReadAllText(fileName), "<TestResults xmlns=\"TsdLib.ResultsFile.xsd\">", "<TestResults xmlns:urn=\"TsdLib.ResultsFile.xsd\">");
-
-            //File.WriteAllText(fileName, prefixedNamespace);
+                xs.Serialize(s, this);
 
             return fileName;
         }

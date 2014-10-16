@@ -7,13 +7,19 @@ using System.Windows.Forms;
 
 namespace TsdLib.Configuration
 {
+    /// <summary>
+    /// User interface for viewing or editing configuration.
+    /// </summary>
     public partial class ConfigManagerForm : Form
     {
         private readonly string _settingsLocation;
-        private readonly bool _editable;
 
-        //For stand-alone
-        public ConfigManagerForm(string settingsLocation)
+        /// <summary>
+        /// Initialize a new <see cref="TsdLib.Configuration.ConfigManagerForm"/> to view or edit the configuration at a specified location.
+        /// </summary>
+        /// <param name="settingsLocation">Path to the folder or network share containing the configuration to view or edit.</param>
+        /// <param name="editable">True to allow editing. False to make the configuration read-only.</param>
+        public ConfigManagerForm(string settingsLocation, bool editable)
         {
             InitializeComponent();
 
@@ -26,9 +32,17 @@ namespace TsdLib.Configuration
 
             panel_SelectControls.Enabled = true;
             panel_EditControls.Enabled = false;
+            propertyGrid_Settings.Enabled = editable;
         }
 
         //For Client app
+        /// <summary>
+        /// Initialize a new <see cref="TsdLib.Configuration.ConfigManagerForm"/> to view or edit the specified configuration groups.
+        /// </summary>
+        /// <param name="configGroups">Configuration groups to view or edit.</param>
+        /// <param name="testSystemName">Name of the test system.</param>
+        /// <param name="testSystemVersion">Version of the test system.</param>
+        /// <param name="editable">True to allow editing. False to make the configuration read-only.</param>
         public ConfigManagerForm(IList<IConfigGroup> configGroups, string testSystemName, string testSystemVersion, bool editable)
         {
             InitializeComponent();
@@ -40,8 +54,8 @@ namespace TsdLib.Configuration
 
             comboBox_ConfigType.DisplayMember = "ConfigType";
             comboBox_ConfigType.DataSource = configGroups;
-
-            _editable = editable;
+            
+            propertyGrid_Settings.Enabled = editable;
         }
 
         private void comboBox_TestSystemName_SelectedValueChanged(object sender, EventArgs e)
@@ -80,7 +94,6 @@ namespace TsdLib.Configuration
             propertyGrid_Settings.SelectedObject = list[0];
 
             panel_EditControls.Enabled = true;
-            propertyGrid_Settings.Enabled = _editable;
             button_CreateNew.Enabled = true;
             button_OK.Enabled = true;
         }

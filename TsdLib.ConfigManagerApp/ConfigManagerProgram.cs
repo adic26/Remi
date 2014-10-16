@@ -13,7 +13,7 @@ namespace TsdLib.Configuration
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ConfigManagerForm(@"C:\temp\RemiSettingsTest"));
+            Application.Run(new ConfigManagerForm(@"C:\temp\RemiSettingsTest", true));
         }
     }
 }

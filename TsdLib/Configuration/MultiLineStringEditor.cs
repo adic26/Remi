@@ -41,13 +41,13 @@ namespace TsdLib.Configuration
 
         public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
-            bool sequence = false;
+            bool hashSet = false;
             IWindowsFormsEditorService svc = provider.GetService(typeof(IWindowsFormsEditorService)) as IWindowsFormsEditorService;
             string str;
 // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
             if (value is HashSet<string>)
             {
-                sequence = true;
+                hashSet = true;
                 str = string.Join(Environment.NewLine, (IEnumerable<string>) value);
             }
             else
@@ -60,12 +60,15 @@ namespace TsdLib.Configuration
                 if (svc.ShowDialog(form) == DialogResult.OK)
                     str = form.Value; // update object
             }
-            if (sequence)
+            if (hashSet)
             {
-                var seq = new HashSet<string>( str.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries) );
+                HashSet<string> seq = new HashSet<string>( str.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries) );
                 return seq;
             }
-            return str;
+
+            string[] lines = str.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
+            return string.Join(Environment.NewLine, lines);
+            
         }
     }
 }

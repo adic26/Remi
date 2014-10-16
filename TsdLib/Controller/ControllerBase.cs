@@ -97,25 +97,26 @@ namespace TsdLib.Controller
 
                         string sequenceAssembly = generator.GenerateTestSequenceAssembly(
                             sequenceConfig.Name,
-                            sequenceConfig.FullSourceCode,
+                            sequenceConfig.SourceCode,
                             sequenceConfig.AssemblyReferences.ToArray());
 
                         sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
 
-                        TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence =
+                        using (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence =
                             (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)
-                                sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, TestSystemName + ".Sequences" + "." + sequenceConfig.Name);
+                                sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, TestSystemName + ".Sequences" + "." + sequenceConfig.Name))
+                        {
+                            sequence.AddTraceListener(View.Listener);
 
-                        sequence.AddTraceListener(View.Listener);
+                            EventProxy<MeasurementEventArgs> measurementEventProxy = new EventProxy<MeasurementEventArgs>();
+                            sequence.MeasurementEventProxy = measurementEventProxy;
 
-                        EventProxy<MeasurementEventArgs> measurementEventProxy = new EventProxy<MeasurementEventArgs>();
-                        sequence.MeasurementEventProxy = measurementEventProxy;
+                            measurementEventProxy.Event += measurementEventHandler;
 
-                        measurementEventProxy.Event += measurementEventHandler;
+                            _tokenSource.Token.Register(sequence.Abort);
 
-                        _tokenSource.Token.Register(sequence.Abort);
-
-                        sequence.ExecuteSequence(stationConfig, productConfig, testConfig);
+                            sequence.ExecuteSequence(stationConfig, productConfig, testConfig);
+                        }
                     }
                 });
 

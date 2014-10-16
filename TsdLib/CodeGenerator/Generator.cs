@@ -54,8 +54,7 @@ namespace TsdLib.CodeGenerator
 
             CodeDomProvider provider = CodeDomProvider.CreateProvider(_language.ToString());
             
-            string tempFileName = Path.GetTempFileName();
-            string dllPath = Path.Combine(_tempPath, tempFileName + ".dll");
+            string dllPath = Path.Combine(_tempPath, "sequence.dll");
 
             CompilerParameters cp = new CompilerParameters
             {
@@ -70,7 +69,7 @@ namespace TsdLib.CodeGenerator
             cp.CompilerOptions += " /d:TRACE";
 #endif
 
-            CodeCompileUnit instrumentCcu = generateInstrumentCodeCompileUnit(true);
+            CodeCompileUnit instrumentCcu = generateInstrumentCodeCompileUnit();
             
             CodeSnippetCompileUnit sequenceCcu = new CodeSnippetCompileUnit(testSequenceSourceCode);
             sequenceCcu.ReferencedAssemblies.AddRange(testSequenceReferencedAssemblies);
@@ -80,6 +79,8 @@ namespace TsdLib.CodeGenerator
             string instrumentCodePath = Path.Combine(_tempPath, "instruments." + provider.FileExtension);
             using (StreamWriter w = new StreamWriter(instrumentCodePath, false))
                 provider.GenerateCodeFromCompileUnit(instrumentCcu, w, options);
+
+            //TODO: set StreamWriter line endings to Environment.NewLine
 
             string sequenceCodePath = Path.Combine(_tempPath, "sequence." + provider.FileExtension);
             using (StreamWriter w = new StreamWriter(sequenceCodePath, false))
@@ -104,7 +105,7 @@ namespace TsdLib.CodeGenerator
         /// <param name="runTime">True if calling from run-time. Namespace will be appended with .Dynamic</param>
         public string GenerateInstrumentsClassFile(string outputDirectoryName, bool runTime)
         {
-            CodeCompileUnit ccu = generateInstrumentCodeCompileUnit(runTime);
+            CodeCompileUnit ccu = generateInstrumentCodeCompileUnit();
             
             CodeDomProvider provider = CodeDomProvider.CreateProvider(_language.ToString());
 
@@ -123,7 +124,7 @@ namespace TsdLib.CodeGenerator
         /// <param name="runTime">True if calling from run-time. Namespace will be appended with .Dynamic</param>
         public string GenerateInstrumentsClassSourceCode(bool runTime)
         {
-            CodeCompileUnit ccu = generateInstrumentCodeCompileUnit(runTime);
+            CodeCompileUnit ccu = generateInstrumentCodeCompileUnit();
 
             CodeDomProvider provider = CodeDomProvider.CreateProvider(_language.ToString());
 
@@ -142,8 +143,8 @@ namespace TsdLib.CodeGenerator
         {
             if (disposing)
             {
-                try { Directory.Delete(_tempPath, true); }
-                catch (Exception) { Trace.WriteLine("Could not delete temp files from: " + _tempPath); }
+                //try { Directory.Delete(_tempPath, true); }
+                //catch (Exception) { Trace.WriteLine("Could not delete temp files from: " + _tempPath); }
             }
         }
 
@@ -156,11 +157,12 @@ namespace TsdLib.CodeGenerator
             GC.SuppressFinalize(this);
         }
 
-        private CodeCompileUnit generateInstrumentCodeCompileUnit(bool runTime)
+        private CodeCompileUnit generateInstrumentCodeCompileUnit()
         {
             string namespaceDeclaration = _testSystemName.Replace(' ', '_') + ".Instruments";
 
-            CodeNamespace ns = new CodeNamespace(runTime ? namespaceDeclaration + ".Dynamic" : namespaceDeclaration);
+            //CodeNamespace ns = new CodeNamespace(runTime ? namespaceDeclaration + ".Dynamic" : namespaceDeclaration);
+            CodeNamespace ns = new CodeNamespace(namespaceDeclaration);
             CodeCompileUnit ccu = new CodeCompileUnit();
             ccu.Namespaces.Add(ns);
 
@@ -193,6 +195,8 @@ namespace TsdLib.CodeGenerator
 
             ns.Imports.Add(new CodeNamespaceImport("System"));
             ns.Imports.Add(new CodeNamespaceImport("TsdLib.Instrument"));
+            //ns.Imports.Add(new CodeNamespaceImport("TsdLib.InstrumentLibrary.Instruments"));
+            //ns.Imports.Add(new CodeNamespaceImport("TsdLib.InstrumentLibrary.Helpers"));
 
             foreach (XDocument doc in docs)
             {

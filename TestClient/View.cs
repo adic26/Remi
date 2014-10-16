@@ -11,5 +11,10 @@ namespace TestClient
         {
             InitializeComponent();
         }
+
+        public void DisplayCount()
+        {
+
+        }
     }
 }

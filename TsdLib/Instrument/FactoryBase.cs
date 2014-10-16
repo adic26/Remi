@@ -78,7 +78,7 @@ namespace TsdLib.Instrument
                     }
                     else
                     {
-                        Debug.WriteLine("No response from " + instrumentAddress + ". Disposing connection");
+                        Debug.WriteLine("Response from " + instrumentAddress + " does not match expected response: " + idAtt.Response + ". Disposing connection");
                         conn.Dispose();
                     }
                 }
@@ -93,6 +93,21 @@ namespace TsdLib.Instrument
                 null,
                 new object[] { connections[0] },
                 null);
+
+
+            InitCommandsAttribute initCommands = (InitCommandsAttribute)Attribute.GetCustomAttribute(typeof(TInstrument), typeof(InitCommandsAttribute), true);
+            if (initCommands != null)
+                foreach (string command in initCommands.Commands)
+                    inst.Connection.SendCommand(command, -1);
+
+            inst.Connection.SendCommand(inst.ModelNumberMessage, -1);
+            inst.ModelNumber = inst.Connection.GetResponse<string>(inst.ModelNumberRegEx, inst.ModelNumberTermChar);
+
+            inst.Connection.SendCommand(inst.SerialNumberMessage, -1);
+            inst.SerialNumber = inst.Connection.GetResponse<string>(inst.SerialNumberRegEx, inst.SerialNumberTermChar);
+
+            inst.Connection.SendCommand(inst.FirmwareVersionMessage, -1);
+            inst.FirmwareVersion = inst.Connection.GetResponse<string>(inst.FirmwareVersionRegEx, inst.FirmwareVersionTermChar);
 
             Debug.WriteLine("Connected to " + inst.Description);
             Debug.WriteLine("Model number: " + inst.ModelNumber);
