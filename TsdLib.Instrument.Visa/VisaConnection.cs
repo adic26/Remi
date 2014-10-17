@@ -61,7 +61,7 @@ namespace TsdLib.Instrument.Visa
         /// <returns>True in case of error; False otherwise.</returns>
         protected override bool CheckForError()
         {
-            return _session.LastStatus != VisaStatusCode.Success && _session.LastStatus != VisaStatusCode.SuccessMaxCountRead;
+            return _session.LastStatus != VisaStatusCode.Success && _session.LastStatus != VisaStatusCode.SuccessMaxCountRead && _session.LastStatus != VisaStatusCode.SuccessTerminationCharacterRead;
         }
 
         /// <summary>
