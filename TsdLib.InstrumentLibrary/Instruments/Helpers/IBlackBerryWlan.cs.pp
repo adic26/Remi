@@ -1,4 +1,4 @@
-﻿namespace TsdLib.InstrumentLibrary.Helpers
+﻿namespace $rootnamespace$.Instruments.Helpers
 {
     public interface IBlackBerryWlan
     {

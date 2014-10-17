@@ -133,7 +133,7 @@ namespace TsdLib.TestResults
         /// <summary>
         /// Create a new Measurement object.
         /// </summary>
-        /// <typeparam name="T">Data type of the measured value and upper/lower limits. Must implement IComparable.</typeparam>
+        /// <typeparam name="T">Data type of the measured value and upper/lower limits. Must implement IComparable and IComparable{T}.</typeparam>
         /// <param name="name">Name to describe the measurement.</param>
         /// <param name="measuredValue">Magnitude of the measurement.</param>
         /// <param name="units">Unit of measure.</param>
@@ -145,8 +145,9 @@ namespace TsdLib.TestResults
         /// <param name="parameters">OPTIONAL: A collection of MeasurementParameter objects describing the measurement conditions.</param>
         /// <returns>The new <see cref="TsdLib.TestResults.Measurement"/> object.</returns>
         public static Measurement CreateMeasurement<T>(string name, T measuredValue, string units, T lowerLimit = default(T), T upperLimit = default(T), string description = "", string comments = "", string filePath = "", params MeasurementParameter[] parameters)
-            where T : IComparable
+            where T : IComparable, IComparable<T>
         {
+            //TODO: figure out how to handle when limits are equal to defaut(T), ie. when a double with a value of 0.0 is passed
             return new Measurement(name, measuredValue, units, lowerLimit, upperLimit, description, comments, filePath, parameters);
         }
 

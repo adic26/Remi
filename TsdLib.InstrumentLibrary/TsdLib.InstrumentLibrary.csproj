@@ -46,7 +46,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InstrumentClassGenerator.cs" />
-    <Compile Include="Helpers\IBlackBerryWlan.cs" />
+    <Content Include="Instruments\Helpers\IBlackBerryWlan.cs.pp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Instruments\BCM4334.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>BCM4334.xml</DependentUpon>
@@ -57,6 +59,7 @@
   <ItemGroup>
     <None Include="tools\Install.ps1" />
     <None Include="key.snk" />
+    <None Include="tools\Uninstall.ps1" />
     <None Include="TsdLib.InstrumentLibrary.nuspec">
       <SubType>Designer</SubType>
     </None>
@@ -85,7 +88,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>rem "C:\Program Files (x86)\Microsoft SDKs\Windows\v8.0A\bin\NETFX 4.0 Tools\gacutil.exe" /i $(TargetPath)
-call $(SolutionDir)NuGet_Pack_Publish.bat $(ProjectPath) $(ConfigurationName)</PostBuildEvent>
+call $(SolutionDir)NuGet_Pack_Publish.bat $(ProjectPath) $(ConfigurationName) tool</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>rem "C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe" /tlb:Microsoft.VisualStudio.Shell.Interop</PreBuildEvent>

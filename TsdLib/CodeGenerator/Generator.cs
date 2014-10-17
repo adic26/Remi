@@ -197,7 +197,7 @@ namespace TsdLib.CodeGenerator
 
             ns.Imports.Add(new CodeNamespaceImport("System"));
             ns.Imports.Add(new CodeNamespaceImport("TsdLib.Instrument"));
-            ns.Imports.Add(new CodeNamespaceImport("TsdLib.InstrumentLibrary.Helpers"));
+            ns.Imports.Add(new CodeNamespaceImport(namespaceDeclaration + ".Helpers"));
 
             foreach (XDocument doc in docs)
             {

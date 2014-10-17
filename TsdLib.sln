@@ -17,9 +17,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib", "TsdLib\TsdLib.csproj", "{DA39D49A-E06E-4CD9-B2A2-326057BDC41D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient", "TestClient\TestClient.csproj", "{7FAF514E-EFC9-40FB-B367-4E2F844547BC}"
-	ProjectSection(ProjectDependencies) = postProject
-		{14C1FCCF-BAD1-4143-8FA3-303500C5B16A} = {14C1FCCF-BAD1-4143-8FA3-303500C5B16A}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Template", "Template", "{7D3E0D66-0881-4ED3-AF14-85E3810AF580}"
 EndProject
@@ -27,15 +24,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionSync", "VersionSync\
 EndProject
 Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "TsdLib.Documentation", "TsdLib.Documentation\TsdLib.Documentation.shfbproj", "{2A2F878D-9E16-4E3A-B226-F2E5FE2B2965}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.CodeGeneratorApp", "TsdLib.CodeGeneratorApp\TsdLib.CodeGeneratorApp.csproj", "{14C1FCCF-BAD1-4143-8FA3-303500C5B16A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLibStarterKit", "TsdLibStarterKit\TsdLibStarterKit.csproj", "{923CAB77-E583-406A-93B0-987D3AE10F74}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLibStarterKitInstaller", "TsdLibStarterKitInstaller\TsdLibStarterKitInstaller.csproj", "{37004D55-3112-401C-A7F2-D222648FDC1E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F2A44688-E60E-47BB-AB58-21C4F06C9ABB} = {F2A44688-E60E-47BB-AB58-21C4F06C9ABB}
 		{DA39D49A-E06E-4CD9-B2A2-326057BDC41D} = {DA39D49A-E06E-4CD9-B2A2-326057BDC41D}
-		{14C1FCCF-BAD1-4143-8FA3-303500C5B16A} = {14C1FCCF-BAD1-4143-8FA3-303500C5B16A}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.ConfigManagerApp", "TsdLib.ConfigManagerApp\TsdLib.ConfigManagerApp.csproj", "{A3B07997-F603-4BE4-B32F-2DCA36629BD3}"
@@ -76,10 +70,6 @@ Global
 		{2A2F878D-9E16-4E3A-B226-F2E5FE2B2965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2A2F878D-9E16-4E3A-B226-F2E5FE2B2965}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A2F878D-9E16-4E3A-B226-F2E5FE2B2965}.Release|Any CPU.Build.0 = Release|Any CPU
-		{14C1FCCF-BAD1-4143-8FA3-303500C5B16A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{14C1FCCF-BAD1-4143-8FA3-303500C5B16A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{14C1FCCF-BAD1-4143-8FA3-303500C5B16A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{14C1FCCF-BAD1-4143-8FA3-303500C5B16A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{923CAB77-E583-406A-93B0-987D3AE10F74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{923CAB77-E583-406A-93B0-987D3AE10F74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{923CAB77-E583-406A-93B0-987D3AE10F74}.Release|Any CPU.ActiveCfg = Release|Any CPU
