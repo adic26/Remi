@@ -159,7 +159,9 @@ namespace TsdLib.CodeGenerator
 
         private CodeCompileUnit generateInstrumentCodeCompileUnit()
         {
-            string namespaceDeclaration = _testSystemName.Replace(' ', '_') + ".Instruments";
+            string namespaceDeclaration = _testSystemName.Replace(' ', '_');
+            if (!namespaceDeclaration.Contains(".Instruments"))
+                namespaceDeclaration += ".Instruments";
 
             //CodeNamespace ns = new CodeNamespace(runTime ? namespaceDeclaration + ".Dynamic" : namespaceDeclaration);
             CodeNamespace ns = new CodeNamespace(namespaceDeclaration);
@@ -195,8 +197,7 @@ namespace TsdLib.CodeGenerator
 
             ns.Imports.Add(new CodeNamespaceImport("System"));
             ns.Imports.Add(new CodeNamespaceImport("TsdLib.Instrument"));
-            //ns.Imports.Add(new CodeNamespaceImport("TsdLib.InstrumentLibrary.Instruments"));
-            //ns.Imports.Add(new CodeNamespaceImport("TsdLib.InstrumentLibrary.Helpers"));
+            ns.Imports.Add(new CodeNamespaceImport("TsdLib.InstrumentLibrary.Helpers"));
 
             foreach (XDocument doc in docs)
             {

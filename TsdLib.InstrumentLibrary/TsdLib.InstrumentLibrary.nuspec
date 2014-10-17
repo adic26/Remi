@@ -19,7 +19,7 @@
     <file src="tools\*.*" target="tools"></file>
     <file src="bin\$configuration$\$id$.dll" target="tools\asy"/>
     <file src="..\TsdLib\bin\$configuration$\TsdLib.dll" target="tools\asy"/>
-    <file src="..\TsdLib\CodeGenerator\TsdLib.Instruments.xsd" target=""/>
+    <file src="..\TsdLib\CodeGenerator\TsdLib.Instruments.xsd" target="content"/>
     <file src="readme.txt" target=""/>
   </files>
 </package>

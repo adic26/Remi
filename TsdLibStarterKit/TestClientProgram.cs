@@ -38,7 +38,7 @@ namespace $safeprojectname$
                 {
                     string vsFile = Path.Combine(sequenceFolder, sequence.Name + ".cs");
                     if (!File.Exists(vsFile))
-                        File.WriteAllText(vsFile, sequence.FullSourceCode);
+                        File.WriteAllText(vsFile, sequence.SourceCode);
                 }
                 foreach (string seqFile in Directory.EnumerateFiles(sequenceFolder))
                     sequences.Add(new Sequence(seqFile, storeInDatabase, "$safeprojectname$", assemblyReferences));
