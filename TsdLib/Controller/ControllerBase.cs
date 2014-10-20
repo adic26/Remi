@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -28,6 +29,7 @@ namespace TsdLib.Controller
     {
         //Private fields
         private CancellationTokenSource _tokenSource;
+        private readonly bool _localDomain;
 
         //Public properties
         /// <summary>
@@ -49,10 +51,12 @@ namespace TsdLib.Controller
         /// </summary>
         /// <param name="devMode">True to enable Developer Mode - config can be modified but results are stored in the Analysis category.</param>
         /// <param name="databaseConnection">An <see cref="DatabaseConnection"/> object to handle persistence with a database.</param>
-        protected ControllerBase(bool devMode, DatabaseConnection databaseConnection)
+        protected ControllerBase(bool devMode, DatabaseConnection databaseConnection, bool localDomain = false)
         {
             TestSystemName = databaseConnection.TestSystemName;
             TestSystemVersion = databaseConnection.TestSystemVersion;
+
+            _localDomain = localDomain;
 
             //TODO: if _devMode, do not pull from database??
 
@@ -77,8 +81,6 @@ namespace TsdLib.Controller
         //Methods
         async void ExecuteTestSequence(object sender, TestSequenceEventArgs e)
         {
-            AppDomain sequenceDomain = null;
-
             try
             {
                 View.SetState(State.TestInProgress);
@@ -88,37 +90,14 @@ namespace TsdLib.Controller
                 TTestConfig testConfig = (TTestConfig) e.TestConfig;
                 Sequence sequenceConfig = (Sequence) e.SequenceConfig;
 
-                await Task.Run(() =>
-                {
-                    _tokenSource = new CancellationTokenSource();
+                _tokenSource = new CancellationTokenSource();
 
-                    using (Generator generator = new Generator(TestSystemName, Directory.EnumerateFiles("Instruments", "*.xml").ToArray(), Language.CSharp))
-                    {
+                Trace.WriteLine(string.Format("Using {0} application domain", _localDomain ? "local" : "remote"));
 
-                        string sequenceAssembly = generator.GenerateTestSequenceAssembly(
-                            sequenceConfig.Name,
-                            sequenceConfig.SourceCode,
-                            sequenceConfig.AssemblyReferences.ToArray());
-
-                        sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
-
-                        using (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence =
-                            (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)
-                                sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, TestSystemName + ".Sequences" + "." + sequenceConfig.Name))
-                        {
-                            sequence.AddTraceListener(View.Listener);
-
-                            EventProxy<MeasurementEventArgs> measurementEventProxy = new EventProxy<MeasurementEventArgs>();
-                            sequence.MeasurementEventProxy = measurementEventProxy;
-
-                            measurementEventProxy.Event += measurementEventHandler;
-
-                            _tokenSource.Token.Register(sequence.Abort);
-
-                            sequence.ExecuteSequence(stationConfig, productConfig, testConfig);
-                        }
-                    }
-                });
+                if (_localDomain)
+                    await Task.Run(() => ExecuteLocalDomain(stationConfig, productConfig, testConfig, sequenceConfig, _tokenSource));
+                else
+                    await Task.Run(() => ExecuteRemoteDomain(stationConfig, productConfig, testConfig, sequenceConfig, _tokenSource));
 
             }
             catch (TsdLibException ex)
@@ -133,9 +112,66 @@ namespace TsdLib.Controller
             }
             finally
             {
+                View.SetState(State.ReadyToTest);
+            }
+        }
+
+        void ExecuteRemoteDomain(TStationConfig stationConfig, TProductConfig productConfig, TTestConfig testConfig, Sequence sequenceConfig, CancellationTokenSource tokenSource)
+        {
+            AppDomain sequenceDomain = null;
+
+            try
+            {
+                using (Generator generator = new Generator(TestSystemName, Directory.EnumerateFiles("Instruments", "*.xml").ToArray(), Language.CSharp))
+                {
+
+                    string sequenceAssembly = generator.GenerateTestSequenceAssembly(
+                        sequenceConfig.Name,
+                        sequenceConfig.SourceCode,
+                        sequenceConfig.AssemblyReferences.ToArray());
+
+                    sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
+
+                    using (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence =
+                        (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)
+                            sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, TestSystemName + ".Sequences" + "." + sequenceConfig.Name))
+                    {
+                        sequence.AddTraceListener(View.Listener);
+
+                        EventProxy<MeasurementEventArgs> measurementEventProxy = new EventProxy<MeasurementEventArgs>();
+                        sequence.MeasurementEventProxy = measurementEventProxy;
+
+                        measurementEventProxy.Event += measurementEventHandler;
+
+                        tokenSource.Token.Register(sequence.Abort);
+
+                        sequence.ExecuteSequence(stationConfig, productConfig, testConfig);
+                    }
+                }
+            }
+            finally
+            {
                 if (sequenceDomain != null)
                     AppDomain.Unload(sequenceDomain);
-                View.SetState(State.ReadyToTest);
+            }
+        }
+
+        private void ExecuteLocalDomain(TStationConfig stationConfig, TProductConfig productConfig, TTestConfig testConfig, Sequence sequenceConfig, CancellationTokenSource tokenSource)
+        {
+            Type sequenceType = Assembly.GetEntryAssembly().GetType(TestSystemName + ".Sequences" + "." + sequenceConfig.Name);
+
+            using (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence =
+                (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)
+                    Activator.CreateInstance(sequenceType))
+            {
+                EventProxy<MeasurementEventArgs> measurementEventProxy = new EventProxy<MeasurementEventArgs>();
+                sequence.MeasurementEventProxy = measurementEventProxy;
+
+                measurementEventProxy.Event += measurementEventHandler;
+
+                tokenSource.Token.Register(sequence.Abort);
+
+                sequence.ExecuteSequence(stationConfig, productConfig, testConfig);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using NationalInstruments.VisaNS;
+﻿using System.Text;
+using NationalInstruments.VisaNS;
 
 namespace TsdLib.Instrument.Visa
 {
@@ -34,6 +35,11 @@ namespace TsdLib.Instrument.Visa
         /// <param name="message">String to write.</param>
         protected override void Write(string message)
         {
+            if (_session.TerminationCharacterEnabled)
+            {
+                message += Encoding.ASCII.GetString( new [] { _session.TerminationCharacter});
+                message = message.Replace(";", "\n;");
+            }
             _session.Write(message);
         }
 

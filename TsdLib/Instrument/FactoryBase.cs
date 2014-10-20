@@ -51,7 +51,7 @@ namespace TsdLib.Instrument
 
             string[] instrumentAddresses;
 
-            if (address == null)
+            if (string.IsNullOrWhiteSpace(address))
             {
                 instrumentAddresses = SearchForInstruments().ToArray();
                 Debug.WriteLine("Found instruments:" + Environment.NewLine + string.Join(Environment.NewLine, instrumentAddresses));

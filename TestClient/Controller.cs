@@ -13,7 +13,7 @@ namespace TestClient
         private const bool Released = true;
 #endif
 
-        public Controller(bool devMode)
-            : base(devMode, new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest", "TestClient", Application.ProductVersion, Released)) { }
+        public Controller(bool devMode, bool localDomain = false)
+            : base(devMode, new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest", "TestClient", Application.ProductVersion, Released), localDomain) { }
     }
 }

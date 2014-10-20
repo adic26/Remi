@@ -15,4 +15,7 @@
     <copyright>Copyright BlackBerry 2014</copyright>
     <!--<tags>Tag1 Tag2</tags>-->
   </metadata>
+  <files>
+    <file src="\bin\$configuration$\NationalInstruments.*.dll" target="content" />
+  </files>
 </package>
