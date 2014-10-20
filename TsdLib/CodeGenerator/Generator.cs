@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 
@@ -29,10 +28,10 @@ namespace TsdLib.CodeGenerator
         /// <param name="testSystemName">Name of the test system. Will be used to generate namespaces.</param>
         /// <param name="instrumentFiles">An array of absolute or relative paths to the XML instrument definition files to compile into the assembly.</param>
         /// <param name="language">Generate C# or Visual Basic code.</param>
-        public Generator(string testSystemName, string[] instrumentFiles, Language language)
+        public Generator(string testSystemName, IEnumerable<string> instrumentFiles, Language language)
         {
             _testSystemName = testSystemName;
-            _instrumentFiles = instrumentFiles;
+            _instrumentFiles = instrumentFiles.ToArray();
             _language = language;
             _tempPath = Path.Combine(Path.GetTempPath(), "TsdLib");
             if (!Directory.Exists(_tempPath))
@@ -46,7 +45,7 @@ namespace TsdLib.CodeGenerator
         /// <param name="testSequenceSourceCode">Name of the test sequence to run.</param>
         /// <param name="testSequenceReferencedAssemblies">Names of assemblies to be referenced by the test sequence assembly.</param>
         /// <returns>Absolute path the the generated assembly.</returns>
-        public string GenerateTestSequenceAssembly(string testSequenceName, string testSequenceSourceCode, string[] testSequenceReferencedAssemblies)
+        public string GenerateTestSequenceAssembly(string testSequenceName, string testSequenceSourceCode, IEnumerable<string> testSequenceReferencedAssemblies)
         {
             Trace.WriteLine("Compiling test sequence from:");
             foreach (string instrumentsFile in _instrumentFiles)
@@ -73,7 +72,7 @@ namespace TsdLib.CodeGenerator
             CodeCompileUnit instrumentCcu = generateInstrumentCodeCompileUnit();
             
             CodeSnippetCompileUnit sequenceCcu = new CodeSnippetCompileUnit(testSequenceSourceCode);
-            sequenceCcu.ReferencedAssemblies.AddRange(testSequenceReferencedAssemblies);
+            sequenceCcu.ReferencedAssemblies.AddRange(testSequenceReferencedAssemblies.ToArray());
 
             CodeGeneratorOptions options = new CodeGeneratorOptions { BracingStyle = "C"};
 
@@ -178,9 +177,6 @@ namespace TsdLib.CodeGenerator
             string tns = schema.TargetNamespace;
             XmlSchemaSet schemas = new XmlSchemaSet();
             schemas.Add(schema);
-
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.NewLineHandling = NewLineHandling.Entitize;
 
             XDocument[] docs = _instrumentFiles
                 .Select(file => XDocument.Load(file, LoadOptions.SetBaseUri))
