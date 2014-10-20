@@ -15,7 +15,6 @@ namespace TsdLib.InstrumentLibrary.Instruments
     using System;
     using TsdLib.Instrument;
     using TsdLib.Instrument.Telnet;
-    using TsdLib.InstrumentLibrary.Helpers;
     
     // ReSharper disable once FieldCanBeMadeReadOnly.Local
     [IdQuery("BlackBerry Device")]

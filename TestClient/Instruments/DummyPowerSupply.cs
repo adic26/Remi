@@ -16,7 +16,7 @@ namespace TestClient.Instruments
     
     
     // ReSharper disable once FieldCanBeMadeReadOnly.Local
-    [IdQuery("MyInstrument, Model 12345")]
+    [IdQuery("MyInstrument, Model 12345", "*IDN?\\n")]
     public class DummyPowerSupply : InstrumentBase<DummyConnection>
     {
         
@@ -39,7 +39,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "*IDN?";
+                return "*IDN?\\n";
             }
         }
         
@@ -47,7 +47,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "*IDN?";
+                return "*IDN?\\n";
             }
         }
         
@@ -55,7 +55,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "*IDN?";
+                return "*IDN?\\n";
             }
         }
         

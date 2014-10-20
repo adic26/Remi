@@ -2,20 +2,20 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title type="text">Visual Studio Extension Gallery</title>
   <id>uuid:CDC295B0-7885-4B59-9BDF-F059A9F4B338;id=1</id>
-  <updated>2014-10-17T14:15:45.41423Z</updated>
+  <updated>2014-10-20T13:46:35.7153967Z</updated>
   <entry>
     <id>69d7b1ff-89bd-42a4-bdbb-95a78d9dcce4</id>
     <title type="text">TsdLib Starter Kit</title>
     <summary type="text">Template for developing applications based on the TsdLib Framework.</summary>
     <published>2013-12-11T19:00:00Z</published>
-    <updated>2014-10-17T14:15:45.41423Z</updated>
+    <updated>2014-10-20T13:46:35.7153967Z</updated>
     <author>
       <name>BlackBerry</name>
     </author>
     <content type="application/octet-stream" src="TsdLibStarterKitInstaller.vsix" />
     <Vsix xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/developer/vsx-syndication-schema/2010">
       <Id>69d7b1ff-89bd-42a4-bdbb-95a78d9dcce4</Id>
-      <Version>1.0.0.19</Version>
+      <Version>1.0.0.20</Version>
       <References />
       <Rating xsi:nil="true" />
       <RatingCount xsi:nil="true" />

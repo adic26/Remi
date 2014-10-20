@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 
@@ -177,6 +178,10 @@ namespace TsdLib.CodeGenerator
             string tns = schema.TargetNamespace;
             XmlSchemaSet schemas = new XmlSchemaSet();
             schemas.Add(schema);
+
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.NewLineHandling = NewLineHandling.Entitize;
+
             XDocument[] docs = _instrumentFiles
                 .Select(file => XDocument.Load(file, LoadOptions.SetBaseUri))
                 .Where(
@@ -185,7 +190,7 @@ namespace TsdLib.CodeGenerator
                         doc.Root.Attribute("xmlns") != null &&
                         (string) doc.Root.Attribute("xmlns") == tns)
                 .ToArray();
-
+            
             if (docs.Length != _instrumentFiles.Count())
             {
                 Trace.WriteLine("Warning: Some input files do not conform to the schema: TsdLib.Instruments.xsd");
@@ -197,7 +202,6 @@ namespace TsdLib.CodeGenerator
 
             ns.Imports.Add(new CodeNamespaceImport("System"));
             ns.Imports.Add(new CodeNamespaceImport("TsdLib.Instrument"));
-            ns.Imports.Add(new CodeNamespaceImport(namespaceDeclaration + ".Helpers"));
 
             foreach (XDocument doc in docs)
             {
@@ -304,6 +308,9 @@ namespace TsdLib.CodeGenerator
 
     #region Custom Instrument Code Member Classes
     // ReSharper disable BitwiseOperatorOnEnumWithoutFlags
+
+    
+
     class CustomAttributeDeclaration : CodeAttributeDeclaration
     {
         public CustomAttributeDeclaration(string name, string argumentValue)
@@ -321,7 +328,7 @@ namespace TsdLib.CodeGenerator
 
             string response = (string)xElement.Attribute("Response");
             Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(response)));
-
+            //TODO: figure out how to handle newline characters
             string command = (string)xElement.Attribute("Command");
             if (command != null)
                 Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(command)));

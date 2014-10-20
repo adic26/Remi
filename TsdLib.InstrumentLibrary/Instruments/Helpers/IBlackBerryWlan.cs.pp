@@ -1,4 +1,4 @@
-﻿namespace $rootnamespace$.Instruments.Helpers
+﻿namespace $rootnamespace$.Instruments
 {
     public interface IBlackBerryWlan
     {

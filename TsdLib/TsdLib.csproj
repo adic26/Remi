@@ -123,6 +123,7 @@
     <EmbeddedResource Include="TestResults\ResultFile.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="tools\Install.ps1" />
     <None Include="TsdLib.nuspec" />
   </ItemGroup>
   <ItemGroup>
