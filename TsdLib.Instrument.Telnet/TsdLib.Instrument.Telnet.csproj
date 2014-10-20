@@ -60,13 +60,21 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call $(SolutionDir)NuGet_Pack_Publish.bat $(ProjectPath) $(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
   -->
+  <Target Name="AfterBuild">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
+    </GetAssemblyIdentity>
+    <Exec Command="del *.nupkg" WorkingDirectory="$(TargetDir)"/>
+    <Exec Command="nuget pack $(ProjectPath) -Prop Configuration=$(ConfigurationName) -IncludeReferencedProjects" WorkingDirectory="$(TargetDir)"/>
+    <Exec Condition="'$(Configuration)' == 'Debug'" Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages_Debug\" WorkingDirectory="$(TargetDir)"/>
+    <Exec Condition="'$(Configuration)' == 'Release'" Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages\" WorkingDirectory="$(TargetDir)"/>
+  </Target>
 </Project>

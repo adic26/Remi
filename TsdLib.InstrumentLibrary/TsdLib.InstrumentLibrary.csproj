@@ -87,8 +87,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rem "C:\Program Files (x86)\Microsoft SDKs\Windows\v8.0A\bin\NETFX 4.0 Tools\gacutil.exe" /i $(TargetPath)
-call $(SolutionDir)NuGet_Pack_Publish.bat $(ProjectPath) $(ConfigurationName) tool</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>rem "C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe" /tlb:Microsoft.VisualStudio.Shell.Interop</PreBuildEvent>
@@ -97,7 +97,15 @@ call $(SolutionDir)NuGet_Pack_Publish.bat $(ProjectPath) $(ConfigurationName) to
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
   -->
+  <Target Name="AfterBuild">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
+    </GetAssemblyIdentity>
+    <Exec Command="cd $(TargetDir)" />
+    <Exec Command="del *.nupkg" WorkingDirectory="$(TargetDir)"/>
+    <Exec Command="nuget pack $(ProjectPath) -Prop Configuration=$(ConfigurationName) -IncludeReferencedProjects -Tool -NoPackageAnalysis" WorkingDirectory="$(TargetDir)"/>
+    <Exec Condition="'$(Configuration)' == 'Debug'" Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages_Debug\" WorkingDirectory="$(TargetDir)"/>
+    <Exec Condition="'$(Configuration)' == 'Release'" Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages\" WorkingDirectory="$(TargetDir)"/>
+  </Target>
 </Project>
