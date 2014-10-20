@@ -80,6 +80,22 @@ namespace TsdLib.TestResults
         // ReSharper disable once UnusedMember.Local - Default constructor required for serialization.
         private Measurement() { }
 
+        private Measurement(string name, IComparable measuredValue, string units, string description = "", string comments = "", string filePath = "", params MeasurementParameter[] parameters)
+        {
+            Name = name;
+            MeasuredValue = measuredValue;
+            Units = units;
+            LowerLimit = "N/A";
+            UpperLimit = "N/A";
+            Description = description;
+            Comments = comments;
+            FilePath = filePath;
+            Parameters = parameters.Length > 0 ? new MeasurementParameterCollection(parameters) : new MeasurementParameterCollection();
+            Timestamp = DateTime.Now;
+
+            Result = MeasurementResult.Pass;
+        }
+
         /// <summary>
         /// Initialize a new Measurement object.
         /// </summary>
@@ -92,25 +108,21 @@ namespace TsdLib.TestResults
         /// <param name="comments">OPTIONAL: Any comments to include additional information.</param>
         /// <param name="filePath">OPTIONAL: The absolute path of a file to attach.</param>
         /// <param name="parameters">OPTIONAL: A collection of MeasurementParameter objects describing the measurement conditions.</param>
-        private Measurement(string name, IComparable measuredValue, string units, IComparable lowerLimit = null, IComparable upperLimit = null, string description = "", string comments = "", string filePath = "", params MeasurementParameter[] parameters)
+        private Measurement(string name, IComparable measuredValue, string units, IComparable lowerLimit, IComparable upperLimit, string description = "", string comments = "", string filePath = "", params MeasurementParameter[] parameters)
         {
             Name = name;
             MeasuredValue = measuredValue;
             Units = units;
-            LowerLimit = lowerLimit ?? "N/A";
-            UpperLimit = upperLimit ?? "N/A";
+            LowerLimit = lowerLimit;
+            UpperLimit = upperLimit;
             Description = description;
             Comments = comments;
             FilePath = filePath;
             Parameters = parameters.Length > 0 ? new MeasurementParameterCollection(parameters) : new MeasurementParameterCollection();
             Timestamp = DateTime.Now;
 
-            //Case 1: no limits entered - result is a pass
-            if (lowerLimit == null && upperLimit == null)
-                Result = MeasurementResult.Pass;
-
-            //Case 2: both limits entered - check against both
-            else if (lowerLimit != null && upperLimit != null)
+            //both limits entered - check against both
+            if (lowerLimit != null && upperLimit != null)
                 if (measuredValue is bool && lowerLimit is bool && upperLimit is bool)
                     Result = ((bool) measuredValue == (bool) lowerLimit == (bool) upperLimit) ? MeasurementResult.Pass : MeasurementResult.Fail;
                 else if (measuredValue.CompareTo(lowerLimit) < 0)
@@ -120,18 +132,35 @@ namespace TsdLib.TestResults
                 else
                     Result = MeasurementResult.Pass;
 
-            //Case 3: only lower limit entered - check against it
+            //only lower limit entered - check against it
             else if (lowerLimit != null)
                 Result = measuredValue.CompareTo(lowerLimit) > 0 ? MeasurementResult.Pass : MeasurementResult.Fail_BelowLimit;
 
-            //Case 4: only upper limit entered - check against it
+            //only upper limit entered - check against it
             else
                 Result = measuredValue.CompareTo(upperLimit) < 0 ? MeasurementResult.Pass : MeasurementResult.Fail_AboveLimit;
 
         }
 
         /// <summary>
-        /// Create a new Measurement object.
+        /// Create a new information Measurement object that does not have any upper or lower limits. The result will always be a pass.
+        /// </summary>
+        /// <param name="name">Name to describe the measurement.</param>
+        /// <param name="information">Information to include in the measurement.</param>
+        /// <param name="units">OPTIONAL: Unit of measure.</param>
+        /// <param name="description">OPTIONAL: A detailed description of the measurement.</param>
+        /// <param name="comments">OPTIONAL: Any comments to include additional information.</param>
+        /// <param name="filePath">OPTIONAL: The absolute path of a file to attach.</param>
+        /// <param name="parameters">OPTIONAL: A collection of MeasurementParameter objects describing the measurement conditions.</param>
+        /// <returns>The new <see cref="TsdLib.TestResults.Measurement"/> object.</returns>
+        
+        public static Measurement CreateInformationalMeasurement(string name, string information, string units = "Info", string description = "", string comments = "", string filePath = "", params MeasurementParameter[] parameters)
+        {
+            return new Measurement(name, information, units, description, comments, filePath, parameters);
+        }
+
+        /// <summary>
+        /// Create a new Measurement object with upper and lower limits..
         /// </summary>
         /// <typeparam name="T">Data type of the measured value and upper/lower limits. Must implement IComparable and IComparable{T}.</typeparam>
         /// <param name="name">Name to describe the measurement.</param>
@@ -147,7 +176,6 @@ namespace TsdLib.TestResults
         public static Measurement CreateMeasurement<T>(string name, T measuredValue, string units, T lowerLimit = default(T), T upperLimit = default(T), string description = "", string comments = "", string filePath = "", params MeasurementParameter[] parameters)
             where T : IComparable, IComparable<T>
         {
-            //TODO: figure out how to handle when limits are equal to defaut(T), ie. when a double with a value of 0.0 is passed
             return new Measurement(name, measuredValue, units, lowerLimit, upperLimit, description, comments, filePath, parameters);
         }
 
