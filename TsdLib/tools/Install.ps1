@@ -1,4 +1,7 @@
-﻿ Install-Package chocolatey -Source nuget.org
- Initialize-Chocolatey
- Uninstall-Package chocolatey
- choco install NuGet.CommandLine
+﻿ If(-Not (Test-Path C:\ProgramData\chocolatey))
+ {
+	 Install-Package chocolatey -Source nuget.org
+	 Initialize-Chocolatey
+	 Uninstall-Package chocolatey
+	 choco install NuGet.CommandLine
+ }
