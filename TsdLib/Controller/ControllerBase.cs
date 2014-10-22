@@ -88,7 +88,12 @@ namespace TsdLib.Controller
         }
 
         //Methods
-        async void ExecuteTestSequence(object sender, TestSequenceEventArgs e)
+        /// <summary>
+        /// Default handler for the View.ExecuteTestSequence event.
+        /// </summary>
+        /// <param name="sender">Object that raised the exception.</param>
+        /// <param name="e">EventArgs containing the product, station, test and sequence configuration objects.</param>
+        protected async void ExecuteTestSequence(object sender, TestSequenceEventArgs e)
         {
             AppDomain sequenceDomain = null;
             try
@@ -115,6 +120,8 @@ namespace TsdLib.Controller
                     else
                     {
                         string sequenceAssembly;
+                        if (!Directory.Exists("Instruments"))
+                            Directory.CreateDirectory("Instruments");
                         using (Generator generator = new Generator(TestSystemName, Directory.EnumerateFiles("Instruments", "*.xml"), Language.CSharp))
                             sequenceAssembly = generator.GenerateTestSequenceAssembly(sequenceConfig.Name, sequenceConfig.SourceCode, sequenceConfig.AssemblyReferences);
 

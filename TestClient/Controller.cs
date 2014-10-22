@@ -18,6 +18,7 @@ namespace TestClient
             : base(devMode, new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest", "TestClient", Application.ProductVersion, Released), localDomain)
         {
             TestClientView = View as View;
+            View.ExecuteTestSequence -= ExecuteTestSequence;
         }
     }
 }
