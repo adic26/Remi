@@ -89,24 +89,10 @@ namespace TsdLib.Configuration
     [Serializable]
     public class StationConfigCommon : ConfigItem
     {
-        private readonly StringCollection _assemblies;
-        private readonly int _assemblyCount;
-
         /// <summary>
         /// Initialize a new station configuration instance from persisted settings.
         /// </summary>
-        public StationConfigCommon()
-        {//TODO: replace with assy.GetName()
-            string[] tsdLibAssemblies =
-                AppDomain.CurrentDomain.GetAssemblies()
-                .Where(assy => assy.FullName.Contains("TsdLib"))
-                .Select(assy => Regex.Match(assy.FullName, ".*(?=,.*,.*)").Value)
-                .ToArray();
-
-            _assemblies = new StringCollection();
-            _assemblies.AddRange(tsdLibAssemblies);
-            _assemblyCount = _assemblies.Count;
-        }
+        public StationConfigCommon() { }
 
         /// <summary>
         /// Initialize a new StationConfigCommon instance.
@@ -116,23 +102,6 @@ namespace TsdLib.Configuration
         /// <param name="testSystemName">Name of the test system the config item is used for.</param>
         public StationConfigCommon(string name, bool storeInDatabase, string testSystemName)
             : base(name, storeInDatabase, testSystemName) { }
-
-        /// <summary>
-        /// Gets a collection of the TsdLib assemblies currently loaded.
-        /// </summary>
-        [Editor("System.Windows.Forms.Design.StringCollectionEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
-        [ReadOnly(true)]
-        [Category("Description")]
-        public StringCollection Assemblies
-        {
-            get
-            {
-                //Duplicates will be added if the constructor is called and the object is deserialized
-                while (_assemblyCount <= _assemblies.Count - 1)
-                    _assemblies.RemoveAt(_assemblies.Count - 1);
-                return _assemblies;
-            }
-        }
     }
 
     /// <summary>

@@ -13,7 +13,12 @@ namespace $safeprojectname$
         private const bool Released = true;
 #endif
 
+        public View $safeprojectname$View;
+
         public Controller(bool devMode)
-            : base(devMode, new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest", "$safeprojectname$", Application.ProductVersion, Released)) { }
+            : base(devMode, new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest", "$safeprojectname$", Application.ProductVersion, Released))
+        {
+            $safeprojectname$View = base.View as View;
+        }
     }
 }

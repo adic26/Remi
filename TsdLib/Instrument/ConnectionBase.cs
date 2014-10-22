@@ -62,6 +62,10 @@ namespace TsdLib.Instrument
         /// </summary>
         /// <returns>True in case of error; False otherwise.</returns>
         protected abstract bool CheckForError();
+        /// <summary>
+        /// Gets the string used to separate commands sent in a single line.
+        /// </summary>
+        protected virtual string[] CommandSeparators { get { return null; } }
 
         /// <summary>
         /// Returns true if the instrument is connected and ready to communicate.
@@ -106,10 +110,16 @@ namespace TsdLib.Instrument
             lock (_locker)
             {
                 string fullCommand = string.Format(command, args);
-                Debug.WriteLine("Sending command to " + Description + ": " + fullCommand);
-                Write(fullCommand);
-                if (CheckForError())
-                    throw new CommandException(this, fullCommand);
+
+                string[] split = CommandSeparators != null ? fullCommand.Split(CommandSeparators, StringSplitOptions.RemoveEmptyEntries) : new []{fullCommand};
+
+                foreach (string partialCommand in split)
+                {
+                    Debug.WriteLine("Sending command to " + Description + ": " + partialCommand);
+                    Write(partialCommand);
+                    if (CheckForError())
+                        throw new CommandException(this, partialCommand);
+                }
             }
         }
 
@@ -149,10 +159,18 @@ namespace TsdLib.Instrument
                     if (parsedResponse != response)
                         Debug.WriteLine("RegEx pattern: " + regex + "  Parsed response: " + parsedResponse);
 
-                    T retval = (T)Convert.ChangeType(parsedResponse, typeof(T));
-
                     if (typeof(T) != typeof(string))
                         Debug.WriteLine("Returning as: " + typeof(T).Name);
+
+                    if (typeof(T) == typeof(bool))
+                    {
+                        if (parsedResponse == "0")
+                            parsedResponse = "false";
+                        if (parsedResponse == "1")
+                            parsedResponse = "true";
+                    }
+
+                    T retval = (T)Convert.ChangeType(parsedResponse, typeof(T));
 
                     return retval;
                 }

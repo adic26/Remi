@@ -10,6 +10,12 @@ namespace TsdLib.Instrument.Visa
     {
         private readonly MessageBasedSession _session;
 
+        private readonly string[] _commandSeparators = {";"};
+        protected override string[] CommandSeparators
+        {
+            get { return _commandSeparators; }
+        }
+
         /// <summary>
         /// Returns true if the Visa-based instrument is connected and ready to communicate.
         /// </summary>
@@ -36,10 +42,7 @@ namespace TsdLib.Instrument.Visa
         protected override void Write(string message)
         {
             if (_session.TerminationCharacterEnabled)
-            {
                 message += Encoding.ASCII.GetString( new [] { _session.TerminationCharacter});
-                message = message.Replace(";", "\n;");
-            }
             _session.Write(message);
         }
 

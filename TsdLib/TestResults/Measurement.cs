@@ -146,17 +146,16 @@ namespace TsdLib.TestResults
         /// Create a new information Measurement object that does not have any upper or lower limits. The result will always be a pass.
         /// </summary>
         /// <param name="name">Name to describe the measurement.</param>
-        /// <param name="information">Information to include in the measurement.</param>
+        /// <param name="value">Information to include in the measurement.</param>
         /// <param name="units">OPTIONAL: Unit of measure.</param>
         /// <param name="description">OPTIONAL: A detailed description of the measurement.</param>
         /// <param name="comments">OPTIONAL: Any comments to include additional information.</param>
         /// <param name="filePath">OPTIONAL: The absolute path of a file to attach.</param>
         /// <param name="parameters">OPTIONAL: A collection of MeasurementParameter objects describing the measurement conditions.</param>
         /// <returns>The new <see cref="TsdLib.TestResults.Measurement"/> object.</returns>
-        
-        public static Measurement CreateInformationalMeasurement(string name, string information, string units = "Info", string description = "", string comments = "", string filePath = "", params MeasurementParameter[] parameters)
+        public static Measurement CreateInformationalMeasurement(string name, string value, string units = "Info", string description = "", string comments = "", string filePath = "", params MeasurementParameter[] parameters)
         {
-            return new Measurement(name, information, units, description, comments, filePath, parameters);
+            return new Measurement(name, value, units, description, comments, filePath, parameters);
         }
 
         /// <summary>

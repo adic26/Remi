@@ -12,6 +12,13 @@ namespace TsdLib.Instrument.Telnet
     public class TelnetConnection : ConnectionBase
     {
         private readonly TcpClient _tcpSocket;
+        private string _rxBuffer;
+
+        private readonly string[] _commandSeparators = { ";" };
+        protected override string[] CommandSeparators
+        {
+            get { return _commandSeparators; }
+        }
 
         /// <summary>
         /// Initialize a new Connection object.
@@ -56,7 +63,11 @@ namespace TsdLib.Instrument.Telnet
         /// <returns>A string from the instrument.</returns>
         protected override string ReadString()
         {
-            return Read(DefaultDelay);
+            StringBuilder sb = new StringBuilder(_rxBuffer);
+            _rxBuffer = "";
+            if (_tcpSocket.Available > 0)
+                sb.AppendLine(Read(DefaultDelay));
+            return sb.ToString();
         }
 
         /// <summary>
@@ -66,6 +77,8 @@ namespace TsdLib.Instrument.Telnet
         protected override void Write(string message)
         {
             WriteLine(message);
+            string buffer = Read(DefaultDelay);
+            _rxBuffer = buffer.Contains(message) ? buffer.Remove(0, message.Length).Replace("#", "").Replace("\0", "").Trim() : buffer;
         }
 
         /// <summary>

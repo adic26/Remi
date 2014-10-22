@@ -12,8 +12,12 @@ namespace TestClient
 #else
         private const bool Released = true;
 #endif
+        public View TestClientView;
 
         public Controller(bool devMode, bool localDomain = false)
-            : base(devMode, new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest", "TestClient", Application.ProductVersion, Released), localDomain) { }
+            : base(devMode, new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest", "TestClient", Application.ProductVersion, Released), localDomain)
+        {
+            TestClientView = View as View;
+        }
     }
 }
