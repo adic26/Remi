@@ -6,7 +6,11 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("TsdLib.Instrument.Telnet")]
 [assembly: AssemblyDescription("TsdLib Instrument module for controlling instruments (usually BlackBerry devices) through the Telnet protocol.")]
-[assembly: AssemblyConfiguration("")]
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
+[assembly: AssemblyConfiguration("Release")]
+#endif
 [assembly: AssemblyCompany("BlackBerry")]
 [assembly: AssemblyProduct("TsdLib.Instrument.Telnet")]
 [assembly: AssemblyCopyright("Copyright © BlackBerry 2014")]

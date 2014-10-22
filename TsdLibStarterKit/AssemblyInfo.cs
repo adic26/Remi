@@ -7,7 +7,11 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("$projectname$")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
+[assembly: AssemblyConfiguration("Release")]
+#endif
 [assembly: AssemblyCompany("$registeredorganization$")]
 [assembly: AssemblyProduct("$projectname$")]
 [assembly: AssemblyCopyright("Copyright © $registeredorganization$ $year$")]

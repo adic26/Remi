@@ -6,7 +6,11 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("TsdLib.Instrument.Visa")]
 [assembly: AssemblyDescription("TsdLib Instrument module for controlling VISA (Virtual Instrument Software Architecture) instruments through GPIB, Ethernet, USB or Serial connections.")]
-[assembly: AssemblyConfiguration("")]
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
+[assembly: AssemblyConfiguration("Release")]
+#endif
 [assembly: AssemblyCompany("BlackBerry")]
 [assembly: AssemblyProduct("TsdLib.Instrument.Visa")]
 [assembly: AssemblyCopyright("Copyright © BlackBerry 2014")]
