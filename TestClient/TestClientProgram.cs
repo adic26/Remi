@@ -27,7 +27,7 @@ namespace TestClient
             //TODO: move to separate application
             if (args.Contains("-seq"))
             {
-                IConfigGroup<Sequence> sequences = new ConfigManager(new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest", "TestClient", Application.ProductVersion, Released)).GetConfigGroup<Sequence>();
+                IConfigGroup<Sequence> sequences = new ConfigManager(new DatabaseFolderConnection(@"C:\temp\TsdLibSettings", "TestClient", Application.ProductVersion, Released)).GetConfigGroup<Sequence>();
 
                 //string sequenceFolder = @"C:\Users\jmckee\Source\Repos\TsdLib\TestClient\Sequences";
                 //bool storeInDatabase = true;

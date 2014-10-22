@@ -26,7 +26,7 @@ namespace $safeprojectname$
 
             if (args.Contains("-seq"))
             {
-                IConfigGroup<Sequence> sequences = new ConfigManager(new DatabaseFolderConnection(@"C:\temp\RemiSettingsTest", "$safeprojectname$", Application.ProductVersion, Released)).GetConfigGroup<Sequence>();
+                IConfigGroup<Sequence> sequences = new ConfigManager(new DatabaseFolderConnection(@"C:\temp\TsdLibSettings", "$safeprojectname$", Application.ProductVersion, Released)).GetConfigGroup<Sequence>();
 
                 List<string> argsList = args.ToList();
                 int seqArgIndex = argsList.IndexOf("-seq");
