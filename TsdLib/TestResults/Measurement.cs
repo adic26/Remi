@@ -172,7 +172,7 @@ namespace TsdLib.TestResults
         /// <param name="filePath">OPTIONAL: The absolute path of a file to attach.</param>
         /// <param name="parameters">OPTIONAL: A collection of MeasurementParameter objects describing the measurement conditions.</param>
         /// <returns>The new <see cref="TsdLib.TestResults.Measurement"/> object.</returns>
-        public static Measurement CreateMeasurement<T>(string name, T measuredValue, string units, T lowerLimit = default(T), T upperLimit = default(T), string description = "", string comments = "", string filePath = "", params MeasurementParameter[] parameters)
+        public static Measurement CreateMeasurement<T>(string name, T measuredValue, string units, T lowerLimit, T upperLimit, string description = "", string comments = "", string filePath = "", params MeasurementParameter[] parameters)
             where T : IComparable, IComparable<T>
         {
             return new Measurement(name, measuredValue, units, lowerLimit, upperLimit, description, comments, filePath, parameters);
