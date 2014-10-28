@@ -130,7 +130,7 @@ namespace TsdLib.TestSequence
 
                 TestSummary summary = new TestSummary(stationConfig.Name, productConfig.Name, testConfig.Name, overallPass ? "Pass" : "Fail", startTime, endTime);
 
-                TestResultCollection testResults = new TestResultCollection(testDetails, Information, Measurements, summary);
+                TestResultCollection testResults = new TestResultCollection(testDetails, Measurements, summary, Information);
 
                 DirectoryInfo resultsDirectory = SpecialFolders.GetResultsFolder(testConfig.TestSystemName);
 

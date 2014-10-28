@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -101,7 +102,9 @@ namespace TsdLib.TestResults
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter"/> stream to which the object is serialized.</param>
         public void WriteXml(XmlWriter writer)
         {
-            
+            writer.WriteElementString("FinalResult", FinalResult);
+            writer.WriteElementString("Duration", Duration.ToString("g").Split('.')[0]);
+            writer.WriteElementString("DateCompleted", DateCompleted.ToString("yyyy-MM-dd-hh-mm-ss"));
         }
 
         /// <summary>
@@ -110,9 +113,14 @@ namespace TsdLib.TestResults
         /// <param name="reader">The <see cref="T:System.Xml.XmlReader"/> stream from which the object is deserialized.</param>
         public void ReadXml(XmlReader reader)
         {
-            //TODO: implement ReadXml
             reader.ReadStartElement();
-
+            StationConfig = ProductConfig = TestConfig = "";
+            FinalResult = reader.ReadElementContentAsString("FinalResult", "");
+            FinalResult = reader.ReadElementContentAsString("FinalResult", "");
+            int[] dateStarted = reader.ReadElementContentAsString("DateStarted", "").Split('-').Select(Int32.Parse).ToArray();
+            DateStarted = new DateTime(dateStarted[0], dateStarted[1], dateStarted[2], dateStarted[3], dateStarted[4], dateStarted[5]);
+            int[] dateScompleted = reader.ReadElementContentAsString("DateCompleted", "").Split('-').Select(Int32.Parse).ToArray();
+            DateCompleted = new DateTime(dateScompleted[0], dateScompleted[1], dateScompleted[2], dateScompleted[3], dateScompleted[4], dateScompleted[5]);
             reader.ReadEndElement();
         }
     }

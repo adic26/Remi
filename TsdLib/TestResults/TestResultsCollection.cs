@@ -62,15 +62,15 @@ namespace TsdLib.TestResults
         /// Initialize a new TestResultCollection.
         /// </summary>
         /// <param name="details">A <see cref="TsdLib.Configuration.TestDetails"/> object describing the test request or job details.</param>
-        /// <param name="information">A sequence of informational entries captured during the test sequence.</param>
         /// <param name="measurements">A sequence of measurements captured during the test sequence. Can be any type deriving from <see cref="TsdLib.TestResults.MeasurementBase"/>.</param>
         /// <param name="summary">A <see cref="TsdLib.TestResults.TestSummary"/> object summarizing the test results.</param>
-        public TestResultCollection(TestDetails details, IEnumerable<TestInfo> information, IEnumerable<MeasurementBase> measurements, TestSummary summary)
+        /// <param name="information">OPTIONAL: A sequence of informational entries captured during the test sequence.</param>
+        public TestResultCollection(TestDetails details, IEnumerable<MeasurementBase> measurements, TestSummary summary, IEnumerable<TestInfo> information = null)
         {
             Details = details;
-            Information = information;
             Measurements = measurements;
             Summary = summary;
+            Information = information ?? new List<TestInfo>();
         }
 
 
@@ -191,9 +191,7 @@ namespace TsdLib.TestResults
             writer.WriteEndElement();
 
             writer.WriteStartElement("Footer");
-            writer.WriteElementString("FinalResult", Summary.FinalResult);
-            writer.WriteElementString("Duration", Summary.Duration.ToString("g").Split('.')[0]);
-            writer.WriteElementString("DateCompleted", Summary.DateCompleted.ToString("yyyy-MM-dd-hh-mm-ss"));
+            Summary.WriteXml(writer);
             writer.WriteEndElement();
         }
 

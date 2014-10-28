@@ -76,14 +76,15 @@ namespace TsdLib.Configuration
         [Category("Test Details")]
         [DisplayName("OS Image")]
         [Description("Type of OS image loaded on the DUT, eg. MFI or SFI")]
-        public string FunctionalType { get; set; }
+        public FunctionalType FunctionalType { get; set; }
 
         /// <summary>
         /// Initialize a new TestDetails object filled with empty strings.
         /// </summary>
         public TestDetails()
         {
-            TestName = JobNumber = TestType = TestStage = BSN = FunctionalType = string.Empty;
+            TestName = JobNumber = TestType = TestStage = BSN = string.Empty;
+            FunctionalType = FunctionalType.SFI;
             StationName = Environment.MachineName;
             UnitNumber = 0;
         }
@@ -98,7 +99,7 @@ namespace TsdLib.Configuration
         /// <param name="testStage">Current stage of testing. Could be trial number, modifications performed or some other descriptor to identify what has been performed on the DUT.</param>
         /// <param name="bsn">OPTIONAL: BSN of the DUT.</param>
         /// <param name="functionalType">OPTIONAL: Type of OS image loaded on the DUT, eg. MFI or SFI.</param>
-        public TestDetails(string testName, string jobNumber, uint unitNumber, string testType, string testStage, string bsn = "", string functionalType = "")
+        public TestDetails(string testName, string jobNumber, uint unitNumber, string testType, string testStage, string bsn = "", FunctionalType functionalType = FunctionalType.None)
         {
             TestName = testName;
             JobNumber = jobNumber;
@@ -166,7 +167,7 @@ namespace TsdLib.Configuration
             writer.WriteElementString("TestStage", TestStage);
             writer.WriteElementString("StationName", StationName);
             writer.WriteElementString("BSN", BSN);
-            writer.WriteElementString("FunctionalType", FunctionalType);
+            writer.WriteElementString("FunctionalType", ((int)FunctionalType).ToString(CultureInfo.InvariantCulture));
         }
 
         /// <summary>
@@ -184,9 +185,32 @@ namespace TsdLib.Configuration
             TestType = reader.ReadElementContentAsString("TestType", "");
             TestStage = reader.ReadElementContentAsString("TestStage", "");
             StationName = reader.ReadElementContentAsString("StationName", "");
-            BSN = "Not implemented yet";
-            FunctionalType = "Not implemented yet";
+            BSN = reader.ReadElementContentAsString("BSN", "");
+            FunctionalType = (FunctionalType)Enum.Parse(typeof (FunctionalType), reader.ReadElementContentAsString("FunctionalType", ""));
             reader.ReadEndElement();
         }
+    }
+
+    /// <summary>
+    /// Type of OS image loaded on the DUT.
+    /// </summary>
+    public enum FunctionalType
+    {
+        /// <summary>
+        /// Do not include the OS image information.
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// Software Flash Image.
+        /// </summary>
+        SFI = 1,
+        /// <summary>
+        /// Manufacturing Flash Image.
+        /// </summary>
+        MFI = 2,
+        /// <summary>
+        /// No OS image, in case of accessory.
+        /// </summary>
+        Accessory = 3
     }
 }
