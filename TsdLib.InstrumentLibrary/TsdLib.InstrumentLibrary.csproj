@@ -54,6 +54,10 @@
       <DependentUpon>BCM4334.xml</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Compile Include="Instruments\DummyPowerSupply.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DummyPowerSupply.xml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -103,9 +107,9 @@
       <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
     </GetAssemblyIdentity>
     <Exec Command="cd $(TargetDir)" />
-    <Exec Command="del *.nupkg" WorkingDirectory="$(TargetDir)"/>
-    <Exec Command="nuget pack $(ProjectPath) -Prop Configuration=$(ConfigurationName) -IncludeReferencedProjects -Tool -NoPackageAnalysis" WorkingDirectory="$(TargetDir)"/>
-    <Exec Condition="'$(Configuration)' == 'Debug'" Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages_Debug\" WorkingDirectory="$(TargetDir)"/>
-    <Exec Condition="'$(Configuration)' == 'Release'" Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages\" WorkingDirectory="$(TargetDir)"/>
+    <Exec Command="del *.nupkg" WorkingDirectory="$(TargetDir)" />
+    <Exec Command="nuget pack $(ProjectPath) -Prop Configuration=$(ConfigurationName) -IncludeReferencedProjects -Tool -NoPackageAnalysis" WorkingDirectory="$(TargetDir)" />
+    <Exec Condition="'$(Configuration)' == 'Debug'" Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages_Debug\" WorkingDirectory="$(TargetDir)" />
+    <Exec Condition="'$(Configuration)' == 'Release'" Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages\" WorkingDirectory="$(TargetDir)" />
   </Target>
 </Project>

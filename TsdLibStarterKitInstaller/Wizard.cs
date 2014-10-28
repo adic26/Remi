@@ -41,7 +41,8 @@ namespace TsdLibStarterKitInstaller
                 
                 using (Stream schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TsdLibStarterKitInstaller.WizardData.xsd"))
                 {
-                    Debug.Assert(schemaStream != null, "The XML schema: TsdLib.CodeGenerator.TsdLib.Instruments.xsd is missing from the TsdLib.dll");
+                    if (schemaStream == null)
+                        throw new WizardBackoutException("The XML schema: TsdLib.CodeGenerator.TsdLib.Instruments.xsd is missing from the TsdLib.dll");
                     schema = XmlSchema.Read(schemaStream, null);
                 }
                 XNamespace ns = schema.TargetNamespace;
@@ -100,7 +101,8 @@ namespace TsdLibStarterKitInstaller
             XElement tsdPackageSourcElement = new XElement("add", new XAttribute("key", "Tsd"), new XAttribute("value", repository.Source));
 
             XElement configurationElement = nugetConfig.Root;
-            Debug.Assert(configurationElement != null, "Could not install NuGet package source. Invalid nuget.config file.");
+            if (configurationElement == null)
+                throw new WizardBackoutException("Could not install NuGet package source. Invalid nuget.config file.");
             XElement packageSourcesElement = configurationElement.Element("packageSources");
             if (packageSourcesElement == null)
                 configurationElement.Add(new XElement("packageSources", tsdPackageSourcElement));

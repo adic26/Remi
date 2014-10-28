@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
+using TsdLib.Annotations;
 
 namespace TsdLib.Configuration
 {
@@ -7,6 +7,7 @@ namespace TsdLib.Configuration
     {
         private readonly bool _stripExtension;
 
+        [NotNull]
         public string FullPath { get; private set; }
 
         public FilePath(string fullPath, bool stripExtension)
@@ -17,7 +18,6 @@ namespace TsdLib.Configuration
 
         public override string ToString()
         {
-            Debug.Assert(FullPath != null);
             return _stripExtension ? Path.GetFileNameWithoutExtension(FullPath) : Path.GetFileName(FullPath);
         }
     }

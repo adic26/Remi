@@ -7,7 +7,6 @@ namespace TsdLib
     /// </summary>
     /// <typeparam name="T">Type of EventArgs to assign to the event.</typeparam>
     public class EventProxy<T> : MarshalByRefObject
-        where T : EventArgs
     {
         /// <summary>
         /// Exposes the event to attach handlers.

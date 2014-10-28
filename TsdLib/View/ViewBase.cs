@@ -76,10 +76,19 @@ namespace TsdLib.View
         }
 
         /// <summary>
-        /// Add a new measurement to the data grid view.
+        /// Add a <see cref="TsdLib.TestResults.TestInfo"/> to the DataGridView.
+        /// </summary>
+        /// <param name="info">TestInfo object to add.</param>
+        public void AddInformation(TestInfo info)
+        {
+            //TODO: implement this
+        }
+
+        /// <summary>
+        /// Add a <see cref="TsdLib.TestResults.MeasurementBase"/> to the DataGridView.
         /// </summary>
         /// <param name="measurement">Measurement to add.</param>
-        public void AddMeasurement(Measurement measurement)
+        public void AddMeasurement(MeasurementBase measurement)
         {
             measurementDataGridView.AddMeasurement(measurement);
         }

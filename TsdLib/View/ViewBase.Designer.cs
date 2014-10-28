@@ -341,7 +341,6 @@ namespace TsdLib.View
         private System.Windows.Forms.DataGridViewTextBoxColumn LowerLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn UpperLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Result;
-        private System.Windows.Forms.Button button_ViewEditConfiguration;
         /// <summary>
         /// ComboBox to select the Station Config instance.
         /// </summary>
@@ -362,5 +361,9 @@ namespace TsdLib.View
         /// Panel to easily enable or disable controls related to test setup.
         /// </summary>
         protected System.Windows.Forms.Panel panel_Controls;
+        /// <summary>
+        /// Request to view or modify the test configuration.
+        /// </summary>
+        protected System.Windows.Forms.Button button_ViewEditConfiguration;
     }
 }

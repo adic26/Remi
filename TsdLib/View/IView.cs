@@ -34,11 +34,18 @@ namespace TsdLib.View
         /// </summary>
         /// <param name="state">State to set.</param>
         void SetState(State state);
+
         /// <summary>
-        /// Add a new measurement to the UI display.
+        /// Add a <see cref="TsdLib.TestResults.TestInfo"/> to the UI display.
+        /// </summary>
+        /// <param name="info">TestInfo object to add.</param>
+        void AddInformation(TestInfo info);
+        /// <summary>
+        /// Add a <see cref="TsdLib.TestResults.MeasurementBase"/> to the UI display.
         /// </summary>
         /// <param name="measurement">Measurement to add.</param>
-        void AddMeasurement(Measurement measurement);
+        void AddMeasurement(MeasurementBase measurement);
+
 
         /// <summary>
         /// Gets or sets the text displayed in the title section of the UI.

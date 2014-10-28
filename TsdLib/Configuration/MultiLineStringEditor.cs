@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing.Design;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
@@ -42,7 +41,11 @@ namespace TsdLib.Configuration
         public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
             bool hashSet = false;
+
             IWindowsFormsEditorService svc = provider.GetService(typeof(IWindowsFormsEditorService)) as IWindowsFormsEditorService;
+            if (svc == null)
+                throw new Exception("Could not initialize IWindowsFormsEditorService");
+
             string str;
 // ReSharper disable once CanBeReplacedWithTryCastAndCheckForNull
             if (value is HashSet<string>)
@@ -53,8 +56,9 @@ namespace TsdLib.Configuration
             else
                 str = value as string;
 
-            Debug.Assert(svc != null, "Error initializing IWindowsFormsEditorService");
-            Debug.Assert(str != null, "Must pass a string or IEnumerable<string>.");
+            if (str == null)
+                throw new ArgumentException("Must pass a string or IEnumerable<string>.", "value");
+            
             using (MultiLineStringEditorForm form = new MultiLineStringEditorForm(str))
             {
                 if (svc.ShowDialog(form) == DialogResult.OK)

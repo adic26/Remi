@@ -13,6 +13,7 @@ namespace TsdLib.TestResults
     /// </summary>
     [Serializable]
     [XmlRoot(ElementName = "Header", Namespace = "TsdLib.ResultsFile.xsd")]
+    [Obsolete("TestResultsHeader will soon be obsolete. You will soon need to implement TestDetails and TestResultsSummary instead.")]
     public class TestResultsHeader : ISerializable, IXmlSerializable
     {
         private readonly XNamespace _ns = "TsdLib.ResultsFile.xsd";

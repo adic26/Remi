@@ -14,7 +14,7 @@ namespace TsdLib.View
         /// Add a measurement to the DataGridView.
         /// </summary>
         /// <param name="measurement">Measurement to add.</param>
-        public void AddMeasurement(Measurement measurement)
+        public void AddMeasurement(MeasurementBase measurement)
         {
             string[] measurementObjects = measurement.ToString(",").Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);
 

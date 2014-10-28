@@ -29,7 +29,8 @@ namespace VersionSync
             XDocument manifestDocument = XDocument.Load(manifestPath);
 
             XNamespace manifestNs = "http://schemas.microsoft.com/developer/vsx-schema/2011";
-
+            
+            // ReSharper disable PossibleNullReferenceException
             XElement manifestRoot = manifestDocument.Root;
             Debug.Assert(manifestRoot != null, "Invalid VSIX manifest. No root element.");
             XElement manifestMetaDataElement = manifestRoot.Element(manifestNs + "Metadata");
@@ -38,7 +39,7 @@ namespace VersionSync
             Debug.Assert(manifestIdentityElement != null, "Invalid VSIX manifest. No Metadata.Identity element.");
             Version oldVersion = new Version(manifestIdentityElement.Attribute("Version").Value); 
             string version = new Version(oldVersion.Major, oldVersion.Minor, oldVersion.Build, oldVersion.Revision + 1).ToString();
-
+            // ReSharper restore PossibleNullReferenceException
             manifestIdentityElement.Attribute("Version").Value = version;
 
             manifestDocument.Save(manifestPath, SaveOptions.None);

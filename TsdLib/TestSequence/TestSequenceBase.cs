@@ -36,15 +36,25 @@ namespace TsdLib.TestSequence
         /// </summary>
         protected CancellationToken Token { get { return _cts.Token; } }
 
-        private readonly List<IInstrument> _instruments; 
+        private readonly List<IInstrument> _instruments;
 
         /// <summary>
-        /// Gets test metadata and the collection of Measurement objects captured during the Test Sequence execution.
+        /// Gets the collection of information captured during the test sequence.
         /// </summary>
-        public TestResultCollection TestResults { get; protected set; }
+        public BindingList<TestInfo> Information { get; protected set; }
 
         /// <summary>
-        /// Gets or sets an EventProxy object that can be used to send events across AppDomain boundaries.
+        /// Gets or sets an EventProxy object that can be used to send information events across AppDomain boundaries.
+        /// </summary>
+        public EventProxy<TestInfo> InfoEventProxy { get; set; }
+
+        /// <summary>
+        /// Gets the collection of measurements captured during the test sequence.
+        /// </summary>
+        public BindingList<MeasurementBase> Measurements { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets an EventProxy object that can be used to send measurement events across AppDomain boundaries.
         /// </summary>
         public EventProxy<MeasurementEventArgs> MeasurementEventProxy { get; set; }
 
@@ -56,13 +66,21 @@ namespace TsdLib.TestSequence
             _cts = new CancellationTokenSource();
 
             _instruments = new List<IInstrument>();
-            
-            TestResults = new TestResultCollection();
-            TestResults.ListChanged += (sender, e) =>
+
+            Information = new BindingList<TestInfo>();
+            Information.ListChanged += (sender, e) =>
+            {
+                IBindingList list = sender as IBindingList;
+                if (list != null && InfoEventProxy != null)
+                    InfoEventProxy.FireEvent((TestInfo)list[e.NewIndex]);
+            };
+
+            Measurements = new BindingList<MeasurementBase>();
+            Measurements.ListChanged += (sender, e) =>
             {
                 IBindingList list = sender as IBindingList;
                 if (list != null && MeasurementEventProxy != null)
-                    MeasurementEventProxy.FireEvent(new MeasurementEventArgs((Measurement)list[e.NewIndex]));
+                    MeasurementEventProxy.FireEvent(new MeasurementEventArgs((MeasurementBase)list[e.NewIndex]));
             };
 
             FactoryEvents.Connected += FactoryEvents_Connected;
@@ -71,10 +89,11 @@ namespace TsdLib.TestSequence
         private void FactoryEvents_Connected(object sender, ConnectedEventArgs e)
         {
             _instruments.Add(e.Instrument);
-            TestResults.AddMeasurement(Measurement.CreateInformationalMeasurement(e.Instrument.GetType().Name + " Description", e.Instrument.Description));
-            TestResults.AddMeasurement(Measurement.CreateInformationalMeasurement(e.Instrument.GetType().Name + " Model Number", e.Instrument.ModelNumber));
-            TestResults.AddMeasurement(Measurement.CreateInformationalMeasurement(e.Instrument.GetType().Name + " Serial Number", e.Instrument.SerialNumber));
-            TestResults.AddMeasurement(Measurement.CreateInformationalMeasurement(e.Instrument.GetType().Name + " Firmware Version", e.Instrument.FirmwareVersion));
+            string instrumentType = e.Instrument.GetType().Name;
+            Information.Add(new TestInfo(instrumentType + " Description", e.Instrument.Description));
+            Information.Add(new TestInfo(instrumentType + " Model Number", e.Instrument.ModelNumber));
+            Information.Add(new TestInfo(instrumentType + " Serial Number", e.Instrument.SerialNumber));
+            Information.Add(new TestInfo(instrumentType + " Firmware Version", e.Instrument.FirmwareVersion));
         }
 
         /// <summary>
@@ -92,43 +111,37 @@ namespace TsdLib.TestSequence
         /// <param name="stationConfig">Station config instance containing station-specific configuration.</param>
         /// <param name="productConfig">Product config instance containing product-specific configuration.</param>
         /// <param name="testConfig">Test config instance containing test-specific configuration.</param>
-        public void ExecuteSequence(TStationConfig stationConfig, TProductConfig productConfig, TTestConfig testConfig)
+        /// <param name="testDetails">Details about the test request or job.</param>
+        public void ExecuteSequence(TStationConfig stationConfig, TProductConfig productConfig, TTestConfig testConfig, TestDetails testDetails)
         {
             try
             {
                 //Pre-test
+                DateTime startTime = DateTime.Now;
                 Trace.WriteLine("Executing test sequence...");
-                DateTime starTime = DateTime.Now;
 
                 //Execute test
                 Execute(stationConfig, productConfig, testConfig);
 
+                DateTime endTime = DateTime.Now;
+
                 //Post-test
-                bool overallPass = TestResults.Any() && TestResults.All(m => m.Result == MeasurementResult.Pass);
+                bool overallPass = Measurements.Any() && Measurements.All(m => m.Result == MeasurementResult.Pass);
 
-                TestResults.AddHeader( new TestResultsHeader(
-                    testConfig.TestSystemName,
-                    "_JobNumber",
-                    "_UnitNumber",
-                    "_TestType",
-                    "_TestStage",
-                    "_BSN",
-                    overallPass ? "Pass" : "Fail",
-                    starTime,
-                    DateTime.Now,
-                    "_AdditionalInfo",
-                    "FunctionalType"
-                    ));
+                TestSummary summary = new TestSummary(stationConfig.Name, productConfig.Name, testConfig.Name, overallPass ? "Pass" : "Fail", startTime, endTime);
 
-                string measurementFile = TestResults.Save(new DirectoryInfo(SpecialFolders.GetResultsFolder(testConfig.TestSystemName)));
+                TestResultCollection testResults = new TestResultCollection(testDetails, Information, Measurements, summary);
+
+                DirectoryInfo resultsDirectory = SpecialFolders.GetResultsFolder(testConfig.TestSystemName);
+
+                testResults.Save(resultsDirectory);
+                //string measurementFile = testResults.Save(resultsDirectory);
                 //Process.Start(measurementFile);
 
-                TestResults.Save(new DirectoryInfo(@"C:\TestResults"));
-
-                string csvResultsFile = Path.ChangeExtension(measurementFile, "csv");
-                File.WriteAllText(csvResultsFile, TestResults.ToString(Environment.NewLine, ","));
+                string formattedFileName = string.Format("{0}-{1}_", testDetails.JobNumber, testDetails.UnitNumber.ToString("D4"));
+                string csvResultsFile = Path.Combine(resultsDirectory.FullName, formattedFileName + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss") + ".xml");
+                File.WriteAllText(csvResultsFile, testResults.ToString(Environment.NewLine, ","));
                 //Process.Start(csvResultsFile);
-
                 Trace.WriteLine("Test sequence completed.");
             }
             catch (OperationCanceledException)

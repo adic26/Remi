@@ -16,7 +16,7 @@ namespace TestClient.Instruments
     
     
     // ReSharper disable once FieldCanBeMadeReadOnly.Local
-    [IdQuery("MyInstrument, Model 12345", "*IDN?\\n")]
+    [IdQuery("MyInstrument, Model 12345")]
     public class DummyPowerSupply : InstrumentBase<DummyConnection>
     {
         
@@ -39,7 +39,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "*IDN?\\n";
+                return "*IDN?";
             }
         }
         
@@ -47,7 +47,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "*IDN?\\n";
+                return "*IDN?";
             }
         }
         
@@ -55,7 +55,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "*IDN?\\n";
+                return "*IDN?";
             }
         }
         
@@ -69,12 +69,12 @@ namespace TestClient.Instruments
             return _factory.GetInstrument<DummyPowerSupply>(address);
         }
         
-        public virtual void SetVoltage(Double voltage)
+        public void SetVoltage(Double voltage)
         {
             Connection.SendCommand("SET:VOLT {0}", -1, voltage);
         }
         
-        public virtual Double GetCurrent()
+        public Double GetCurrent()
         {
             Connection.SendCommand("GET:CURRENT?", -1);
             return Connection.GetResponse<Double>();
@@ -135,12 +135,12 @@ namespace TestClient.Instruments
             return _factory.GetInstrument<DummyPowerSupply2>(address);
         }
         
-        public virtual void SetVoltage(Double voltage)
+        public void SetVoltage(Double voltage)
         {
             Connection.SendCommand("SET:VOLT {0}", -1, voltage);
         }
         
-        public virtual Double GetCurrent()
+        public Double GetCurrent()
         {
             Connection.SendCommand("GET:CURRENT?", -1);
             return Connection.GetResponse<Double>();

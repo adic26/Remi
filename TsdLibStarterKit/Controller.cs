@@ -15,8 +15,8 @@ namespace $safeprojectname$
 
         public View $safeprojectname$View;
 
-        public Controller(bool devMode)
-            : base(devMode, new DatabaseFolderConnection(@"C:\temp\TsdLibSettings", "$safeprojectname$", Application.ProductVersion, Released))
+        public Controller(bool devMode, bool localDomain = false)
+            : base(devMode, new DatabaseFolderConnection(@"C:\temp\TsdLibSettings", "$safeprojectname$", Application.ProductVersion, Released), localDomain)
         {
             $safeprojectname$View = base.View as View;
         }

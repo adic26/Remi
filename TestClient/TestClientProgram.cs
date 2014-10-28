@@ -23,7 +23,7 @@ namespace TestClient
         private static void Main(string[] args)
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
-            
+
             //TODO: move to separate application
             if (args.Contains("-seq"))
             {

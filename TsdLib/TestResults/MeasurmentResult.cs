@@ -15,18 +15,18 @@ namespace TsdLib.TestResults
         /// <summary>
         /// The measurement is within the specified range.
         /// </summary>
-        Pass = 1,
+        Pass = 1,        /// <summary>
+        /// The measurement is outside the specified range.
+        /// </summary>
+        Fail = 2,
         /// <summary>
         /// The measurement is below the specified range.
         /// </summary>
-        Fail_BelowLimit = 2,
+        Fail_BelowLimit = 6,
         /// <summary>
         /// The measurement is above the specified range.
         /// </summary>
-        Fail_AboveLimit = 4,
-        /// <summary>
-        /// The measurement is outside the specified range.
-        /// </summary>
-        Fail = Fail_BelowLimit | Fail_AboveLimit
+        Fail_AboveLimit = 10,
+
     }
 }

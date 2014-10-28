@@ -50,8 +50,8 @@ namespace $safeprojectname$
             Application.SetCompatibleTextRenderingDefault(false);
 
             bool devMode = args.Length > 0 && args[0] == "-d";
-
-            Controller c = new Controller(devMode);
+            bool localDomain = args.Length > 0 && args.Contains("-localDomain");
+            Controller c = new Controller(devMode, localDomain);
             
             if (c.View is Form)
                 Application.Run(c.View as Form);

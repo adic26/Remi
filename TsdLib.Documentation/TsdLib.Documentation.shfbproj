@@ -68,7 +68,8 @@
 <NamespaceSummaryItem name="TsdLib.Proxies" isDocumented="False">Contains functionality to operate with multiple Application Domains.</NamespaceSummaryItem>
 <NamespaceSummaryItem name="TsdLib.TestResults" isDocumented="True">Contains functionality to capture and record measurements from test sequences.</NamespaceSummaryItem>
 <NamespaceSummaryItem name="(global)" isDocumented="False" />
-<NamespaceSummaryItem name="TsdLib.Utilities" isDocumented="True">Contains static classes and methods to perform miscellaneous operations.</NamespaceSummaryItem></NamespaceSummaries>
+<NamespaceSummaryItem name="TsdLib.Utilities" isDocumented="True">Contains static classes and methods to perform miscellaneous operations.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="TsdLib.Annotations" isDocumented="False">Contains attribute definitions useful for controlling ReSharper code analysis.</NamespaceSummaryItem></NamespaceSummaries>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

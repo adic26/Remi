@@ -11,13 +11,13 @@ namespace TsdLib.TestResults
         /// <summary>
         /// Gets the Measurement object that generated the event.
         /// </summary>
-        public Measurement Measurement { get; private set; }
+        public MeasurementBase Measurement { get; private set; }
 
         /// <summary>
         /// Initialize a new instance of the MeasurementEventArgs class.
         /// </summary>
         /// <param name="measurement">Measurement to pass to the event handlers.</param>
-        public MeasurementEventArgs(Measurement measurement)
+        public MeasurementEventArgs(MeasurementBase measurement)
         {
             Measurement = measurement;
         }

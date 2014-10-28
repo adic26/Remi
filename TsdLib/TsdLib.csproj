@@ -43,6 +43,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -65,17 +66,28 @@
       <DependentUpon>ConfigManagerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Configuration\FilePath.cs" />
+    <Compile Include="Configuration\TestDetails.cs" />
+    <Compile Include="Configuration\TestDetailsEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration\TestDetailsEditor.Designer.cs">
+      <DependentUpon>TestDetailsEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Instrument\InstrumentAttributes.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="TestResults\MeasurementEventArgs.cs" />
+    <Compile Include="TestResults\MeasurementImplementations.cs" />
     <Compile Include="TestResults\MeasurementParameter.cs" />
     <Compile Include="TestResults\MeasurmentResult.cs" />
+    <Compile Include="TestResults\TestInfo.cs" />
+    <Compile Include="TestResults\TestSummary.cs" />
     <Compile Include="TestResults\TestResultsExceptions.cs" />
     <Compile Include="TestResults\TestResultsCollection.cs" />
     <Compile Include="TestResults\TestResultsHeader.cs" />
     <Compile Include="Common\EventProxy.cs" />
     <Compile Include="Common\States.cs" />
     <Compile Include="Common\DatabaseConnection.cs" />
-    <Compile Include="TestResults\Measurement.cs" />
+    <Compile Include="TestResults\MeasurementBase.cs" />
     <Compile Include="Common\SpecialFolders.cs" />
     <Compile Include="TestSequence\AssemblyReferenceAttribute.cs" />
     <Compile Include="TestSequence\TestSequenceException.cs" />
@@ -120,6 +132,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="key.snk" />
+    <EmbeddedResource Include="Configuration\TestDetailsEditor.resx">
+      <DependentUpon>TestDetailsEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TestResults\ResultFile.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -157,9 +172,9 @@ rem call $(SolutionDir)NuGet_Publish.bat $(ConfigurationName)</PostBuildEvent>
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
       <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
     </GetAssemblyIdentity>
-    <Exec Command="del *.nupkg" WorkingDirectory="$(TargetDir)"/>
-    <Exec Command="nuget pack $(ProjectPath) -Prop Configuration=$(ConfigurationName) -IncludeReferencedProjects" WorkingDirectory="$(TargetDir)"/>
-    <Exec Condition="'$(Configuration)' == 'Debug'" Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages_Debug\" WorkingDirectory="$(TargetDir)"/>
-    <Exec Condition="'$(Configuration)' == 'Release'" Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages\" WorkingDirectory="$(TargetDir)"/>
-    </Target>
+    <Exec Command="del *.nupkg" WorkingDirectory="$(TargetDir)" />
+    <Exec Command="nuget pack $(ProjectPath) -Prop Configuration=$(ConfigurationName) -IncludeReferencedProjects" WorkingDirectory="$(TargetDir)" />
+    <Exec Condition="'$(Configuration)' == 'Debug'" Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages_Debug\" WorkingDirectory="$(TargetDir)" />
+    <Exec Condition="'$(Configuration)' == 'Release'" Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages\" WorkingDirectory="$(TargetDir)" />
+  </Target>
 </Project>

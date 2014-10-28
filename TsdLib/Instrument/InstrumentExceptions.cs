@@ -61,6 +61,16 @@ namespace TsdLib.Instrument
         /// <summary>
         /// Initialize a new CommandException caused by the specified command with a specified inner exception.
         /// </summary>
+        /// <param name="command">Command that caused the error.</param>
+        /// <param name="message">Message describing the error.</param>
+        /// <param name="inner">OPTIONAL: The Exception that is the cause of the CommandException.</param>
+       
+        public CommandException(string command, string message, Exception inner = null)
+            : base("Error sending command: " + command + Environment.NewLine + message, inner) { }
+
+        /// <summary>
+        /// Initialize a new CommandException caused by the specified command with a specified inner exception.
+        /// </summary>
         /// <param name="connection">Connection where the error occurred.</param>
         /// <param name="command">Command that caused the error.</param>
         /// <param name="inner">OPTIONAL: The Exception that is the cause of the CommandException.</param>

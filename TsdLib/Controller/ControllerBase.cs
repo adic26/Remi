@@ -43,6 +43,15 @@ namespace TsdLib.Controller
         /// Gets the test system version.
         /// </summary>
         public string TestSystemVersion { get; private set; }
+        /// <summary>
+        /// Gets or sets the test details.
+        /// </summary>
+        public TestDetails TestDetails { get; protected set; }
+
+        /// <summary>
+        /// Gets the configuration manager that can be used to programatically interact with configuration objects.
+        /// </summary>
+        protected ConfigManager ConfigManager { get; private set; }
 
         //Constructor
         /// <summary>
@@ -63,8 +72,9 @@ namespace TsdLib.Controller
 #endif
             TestSystemName = databaseConnection.TestSystemName;
             TestSystemVersion = databaseConnection.TestSystemVersion;
+            TestDetails = new TestDetails();
 
-            ConfigManager manager = new ConfigManager<TStationConfig, TProductConfig, TTestConfig, Sequence>(databaseConnection);
+            ConfigManager = new ConfigManager<TStationConfig, TProductConfig, TTestConfig, Sequence>(databaseConnection);
 
             //set up view
             View = new TView
@@ -75,14 +85,14 @@ namespace TsdLib.Controller
 #else
                 Text = TestSystemName + " v." + TestSystemVersion,
 #endif
-                StationConfigList = manager.GetConfigGroup<TStationConfig>().GetList(),
-                ProductConfigList = manager.GetConfigGroup<TProductConfig>().GetList(),
-                TestConfigList = manager.GetConfigGroup<TTestConfig>().GetList(),
-                SequenceConfigList = manager.GetConfigGroup<Sequence>().GetList()
+                StationConfigList = ConfigManager.GetConfigGroup<TStationConfig>().GetList(),
+                ProductConfigList = ConfigManager.GetConfigGroup<TProductConfig>().GetList(),
+                TestConfigList = ConfigManager.GetConfigGroup<TTestConfig>().GetList(),
+                SequenceConfigList = ConfigManager.GetConfigGroup<Sequence>().GetList()
             };
 
             //subscribe to view events
-            View.ViewEditConfiguration += (s, o) => manager.Edit(devMode);
+            View.ViewEditConfiguration += (s, o) => ConfigManager.Edit(devMode);
             View.ExecuteTestSequence += ExecuteTestSequence;
             View.AbortTestSequence += (s, o) => _tokenSource.Cancel();
         }
@@ -93,7 +103,7 @@ namespace TsdLib.Controller
         /// </summary>
         /// <param name="sender">Object that raised the exception.</param>
         /// <param name="e">EventArgs containing the product, station, test and sequence configuration objects.</param>
-        protected async void ExecuteTestSequence(object sender, TestSequenceEventArgs e)
+        protected async virtual void ExecuteTestSequence(object sender, TestSequenceEventArgs e)
         {
             AppDomain sequenceDomain = null;
             try
@@ -132,15 +142,19 @@ namespace TsdLib.Controller
                         
                     }
 
+                    EventProxy<TestInfo> infoEventProxy = new EventProxy<TestInfo>();
+                    sequence.InfoEventProxy = infoEventProxy;
+                    infoEventProxy.Event += informationEventHandler;
+
                     EventProxy<MeasurementEventArgs> measurementEventProxy = new EventProxy<MeasurementEventArgs>();
                     sequence.MeasurementEventProxy = measurementEventProxy;
-
                     measurementEventProxy.Event += measurementEventHandler;
+
 
                     _tokenSource = new CancellationTokenSource();
                     _tokenSource.Token.Register(sequence.Abort);
 
-                    sequence.ExecuteSequence(stationConfig, productConfig, testConfig);
+                    sequence.ExecuteSequence(stationConfig, productConfig, testConfig, TestDetails);
                 });
 
 
@@ -165,8 +179,13 @@ namespace TsdLib.Controller
 
         void measurementEventHandler(object sender, MeasurementEventArgs e)
         {
-            Measurement measurement = e.Measurement;
+            MeasurementBase measurement = e.Measurement;
             View.AddMeasurement(measurement);
+        }
+
+        void informationEventHandler(object sender, TestInfo e)
+        {
+            View.AddInformation(e);
         }
     }
 }

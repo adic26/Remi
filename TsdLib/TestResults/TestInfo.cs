@@ -6,26 +6,27 @@ using System.Xml.Serialization;
 namespace TsdLib.TestResults
 {
     /// <summary>
-    /// A test condition or other information used to describe test conditions.
+    /// An informational entry in the test results collection.
     /// </summary>
     [Serializable]
-    public class MeasurementParameter : IXmlSerializable
+    public class TestInfo : IXmlSerializable
     {
         /// <summary>
-        /// Name of the parameter.
+        /// Name of the information entry.
         /// </summary>
-        public readonly string Name;
-        /// <summary>
-        /// Value of the parameter.
-        /// </summary>
-        public readonly object Value;
+        public string Name { get; private set; }
 
         /// <summary>
-        /// Initialize a new MeasurementParameter object with the specified name and value.
+        /// Value of the information entry.
+        /// </summary>
+        public object Value { get; private set; }
+
+        /// <summary>
+        /// Initialize a new TestInfo object with the specified name and value.
         /// </summary>
         /// <param name="name">Name of the parameter.</param>
         /// <param name="val">Value of the parameter.</param>
-        public MeasurementParameter(string name, object val)
+        public TestInfo(string name, object val)
         {
             Name = name;
             Value = val;
@@ -43,8 +44,8 @@ namespace TsdLib.TestResults
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter"/> stream to which the object is serialized.</param>
         public void WriteXml(XmlWriter writer)
         {
-            writer.WriteAttributeString("ParameterName", Name);
-            writer.WriteString(Value.ToString());
+            writer.WriteElementString("Name", Name);
+            writer.WriteElementString("Value", Value.ToString());
         }
 
         /// <summary>
@@ -53,7 +54,10 @@ namespace TsdLib.TestResults
         /// <param name="reader">The <see cref="T:System.Xml.XmlReader"/> stream from which the object is deserialized.</param>
         public void ReadXml(XmlReader reader)
         {
-            //TODO: implement
+            reader.ReadStartElement();
+            Name = reader.ReadElementContentAsString("Name", "");
+            Value = reader.ReadElementContentAsObject("Value", "");
+            reader.ReadEndElement();
         }
     }
 }

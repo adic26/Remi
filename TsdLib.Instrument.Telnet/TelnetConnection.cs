@@ -15,6 +15,9 @@ namespace TsdLib.Instrument.Telnet
         private string _rxBuffer;
 
         private readonly string[] _commandSeparators = { ";" };
+        /// <summary>
+        /// Gets an array of strings that are used to delimit commands placed on a single line.
+        /// </summary>
         protected override string[] CommandSeparators
         {
             get { return _commandSeparators; }

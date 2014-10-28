@@ -1,4 +1,5 @@
-﻿using System;
+﻿// ReSharper disable BitwiseOperatorOnEnumWithoutFlags
+using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -172,6 +173,7 @@ namespace TsdLib.CodeGenerator
             using (Stream schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TsdLib.CodeGenerator.TsdLib.Instruments.xsd"))
             {
                 Debug.Assert(schemaStream != null, "The XML schema: TsdLib.CodeGenerator.TsdLib.Instruments.xsd is missing from the TsdLib.dll");
+// ReSharper disable once AssignNullToNotNullAttribute
                 schema = XmlSchema.Read(schemaStream, null);
             }
             string tns = schema.TargetNamespace;
@@ -303,9 +305,6 @@ namespace TsdLib.CodeGenerator
     }
 
     #region Custom Instrument Code Member Classes
-    // ReSharper disable BitwiseOperatorOnEnumWithoutFlags
-
-    
 
     class CustomAttributeDeclaration : CodeAttributeDeclaration
     {
@@ -324,7 +323,7 @@ namespace TsdLib.CodeGenerator
 
             string response = (string)xElement.Attribute("Response");
             Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(response)));
-            //TODO: figure out how to handle newline characters
+            
             string command = (string)xElement.Attribute("Command");
             if (command != null)
                 Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(command)));
@@ -466,7 +465,7 @@ namespace TsdLib.CodeGenerator
         public Method(XElement methodElement)
         {
             Name = (string)methodElement.Attribute("Name");
-            Attributes = MemberAttributes.Public | MemberAttributes.Final;
+            Attributes = MemberAttributes.Public;
 
             //Required for VB code generation
             string interfaceImplementation = (string)methodElement.Attribute("Implements");
@@ -585,6 +584,6 @@ namespace TsdLib.CodeGenerator
                 Parameters.Insert(0, new CodePrimitiveExpression(int.Parse(byteCount)));
         }
     }
-    // ReSharper restore BitwiseOperatorOnEnumWithoutFlags
+
 #endregion
 }

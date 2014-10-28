@@ -66,6 +66,19 @@ namespace TsdLib.Configuration
             AllConfigItems.ListChanged += AllConfigItems_ListChanged;
         }
 
+        /// <summary>
+        /// Gets an instance of a configuration from the group.
+        /// </summary>
+        /// <param name="configName">Name of the configuration instance.</param>
+        /// <returns>The ConfigItem with a name matching the specified configName.</returns>
+        public T GetConfigItem(string configName)
+        {
+            T cfg = AllConfigItems.FirstOrDefault(c => c.Name == configName);
+            if (cfg == null)
+                throw new ConfigDoesNotExistException(typeof (T), configName);
+            return cfg;
+        }
+
         void AllConfigItems_ListChanged(object sender, ListChangedEventArgs e)
         {
             if (e.ListChangedType == ListChangedType.ItemAdded)
@@ -167,6 +180,13 @@ namespace TsdLib.Configuration
         /// <param name="configItem">A new configuration instance.</param>
         /// <param name="storeInDatabase">True to store configuration locally and on the database. False to store locally only.</param>
         void Add(T configItem, bool storeInDatabase = true);
+
+        /// <summary>
+        /// Gets an instance of a configuration from the group.
+        /// </summary>
+        /// <param name="configName">Name of the configuration instance.</param>
+        /// <returns>The ConfigItem with a name matching the specified configName.</returns>
+        T GetConfigItem(string configName);
     }
 
     /// <summary>
