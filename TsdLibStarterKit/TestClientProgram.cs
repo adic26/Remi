@@ -51,7 +51,7 @@ namespace $safeprojectname$
 
             bool devMode = args.Length > 0 && args[0] == "-d";
             bool localDomain = args.Length > 0 && args.Contains("-localDomain");
-            Controller c = new Controller(devMode, localDomain);
+            Controller c = new Controller(devMode, Application.ProductName, Application.ProductVersion, localDomain);
             
             if (c.View is Form)
                 Application.Run(c.View as Form);

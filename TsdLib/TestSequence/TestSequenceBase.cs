@@ -56,7 +56,7 @@ namespace TsdLib.TestSequence
         /// <summary>
         /// Gets or sets an EventProxy object that can be used to send measurement events across AppDomain boundaries.
         /// </summary>
-        public EventProxy<MeasurementEventArgs> MeasurementEventProxy { get; set; }
+        public EventProxy<MeasurementBase> MeasurementEventProxy { get; set; }
 
         /// <summary>
         /// Initializes the TestSequenceBase object.
@@ -80,7 +80,7 @@ namespace TsdLib.TestSequence
             {
                 IBindingList list = sender as IBindingList;
                 if (list != null && MeasurementEventProxy != null)
-                    MeasurementEventProxy.FireEvent(new MeasurementEventArgs((MeasurementBase)list[e.NewIndex]));
+                    MeasurementEventProxy.FireEvent((MeasurementBase)list[e.NewIndex]);
             };
 
             FactoryEvents.Connected += FactoryEvents_Connected;
@@ -120,6 +120,13 @@ namespace TsdLib.TestSequence
                 DateTime startTime = DateTime.Now;
                 Trace.WriteLine("Executing test sequence...");
 
+                Information.Add(new TestInfo("Test System Name", testDetails.TestSystemName));
+                Information.Add(new TestInfo("Test System Version", testDetails.TestSystemVersion));
+                Information.Add(new TestInfo("Tsd Framework Version", testDetails.TsdFrameworkVersion));
+                Information.Add(new TestInfo("Station Configuration", stationConfig.Name));
+                Information.Add(new TestInfo("Product Configuration", productConfig.Name));
+                Information.Add(new TestInfo("Test Configuration", testConfig.Name));
+
                 //Execute test
                 Execute(stationConfig, productConfig, testConfig);
 
@@ -128,21 +135,22 @@ namespace TsdLib.TestSequence
                 //Post-test
                 bool overallPass = Measurements.Any() && Measurements.All(m => m.Result == MeasurementResult.Pass);
 
-                TestSummary summary = new TestSummary(stationConfig.Name, productConfig.Name, testConfig.Name, overallPass ? "Pass" : "Fail", startTime, endTime);
+                TestSummary summary = new TestSummary(overallPass ? "Pass" : "Fail", startTime, endTime);
 
                 TestResultCollection testResults = new TestResultCollection(testDetails, Measurements, summary, Information);
 
-                DirectoryInfo resultsDirectory = SpecialFolders.GetResultsFolder(testConfig.TestSystemName);
+                DirectoryInfo resultsDirectory = SpecialFolders.GetResultsFolder(testDetails.TestSystemName);
 
-                testResults.Save(resultsDirectory);
-                //string measurementFile = testResults.Save(resultsDirectory);
-                //Process.Start(measurementFile);
+                string measurementFile = testResults.Save(resultsDirectory);
 
                 string formattedFileName = string.Format("{0}-{1}_", testDetails.JobNumber, testDetails.UnitNumber.ToString("D4"));
-                string csvResultsFile = Path.Combine(resultsDirectory.FullName, formattedFileName + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss") + ".xml");
-                File.WriteAllText(csvResultsFile, testResults.ToString(Environment.NewLine, ","));
-                //Process.Start(csvResultsFile);
+                string csvResultsFile = Path.Combine(resultsDirectory.FullName, formattedFileName + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss") + ".csv");
+                File.WriteAllText(csvResultsFile, testResults.ToString());
                 Trace.WriteLine("Test sequence completed.");
+                Trace.WriteLine("XML results saved to " + measurementFile);
+                Trace.WriteLine("CSV results saved to " + csvResultsFile);
+                //Process.Start(measurementFile);
+                //Process.Start(csvResultsFile);
             }
             catch (OperationCanceledException)
             {

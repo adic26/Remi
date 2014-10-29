@@ -1,5 +1,4 @@
-﻿using System.Windows.Forms;
-using TestClient.Configuration;
+﻿using TestClient.Configuration;
 using TsdLib.Configuration;
 using TsdLib.Controller;
 
@@ -14,8 +13,8 @@ namespace TestClient
 #endif
         public View TestClientView;
 
-        public Controller(bool devMode, bool localDomain = false)
-            : base(devMode, new DatabaseFolderConnection(@"C:\temp\TsdLibSettings", "TestClient", Application.ProductVersion, Released), localDomain)
+        public Controller(bool devMode, string testSystemName, string testSystemVersion, bool localDomain = false)
+            : base(devMode, testSystemName, testSystemVersion, new DatabaseFolderConnection(@"C:\temp\TsdLibSettings", testSystemName, testSystemVersion, Released), localDomain)
         {
             TestClientView = View as View;
         }

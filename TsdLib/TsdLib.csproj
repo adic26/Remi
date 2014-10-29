@@ -75,7 +75,6 @@
     </Compile>
     <Compile Include="Instrument\InstrumentAttributes.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="TestResults\MeasurementEventArgs.cs" />
     <Compile Include="TestResults\MeasurementImplementations.cs" />
     <Compile Include="TestResults\MeasurementParameter.cs" />
     <Compile Include="TestResults\MeasurmentResult.cs" />
@@ -115,6 +114,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestSequence\TestSequenceBase.cs" />
     <Compile Include="Utilities\Display.cs" />
+    <Compile Include="Utilities\StringFormatting.cs" />
     <Compile Include="View\IView.cs" />
     <Compile Include="View\MeasurementDataGridView.cs">
       <SubType>Component</SubType>

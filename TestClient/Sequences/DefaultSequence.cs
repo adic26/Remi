@@ -31,8 +31,8 @@ namespace TestClient.Sequences
                     ps.DummyConnection.StringToRead = random.NextDouble().ToString(CultureInfo.InvariantCulture);
 
                     MeasurementParameter measurementParameter = new MeasurementParameter("Voltage", voltageSetting);
-                    //Measurement measurement = Measurement.CreateMeasurement("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: measurementParameter);
-                    Measurement<double> measurement = new Measurement<double>("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: measurementParameter);
+                    MeasurementParameter measurementParameter2 = new MeasurementParameter("Temperature", 22.5);
+                    Measurement<double> measurement = new Measurement<double>("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: new []{ measurementParameter, measurementParameter2});
                     Measurements.Add(measurement);
                 }
             }

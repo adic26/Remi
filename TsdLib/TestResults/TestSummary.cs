@@ -3,6 +3,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using TsdLib.Utilities;
 
 namespace TsdLib.TestResults
 {
@@ -12,19 +13,6 @@ namespace TsdLib.TestResults
     [Serializable]
     public class TestSummary : IXmlSerializable
     {
-        /// <summary>
-        /// Gets the name of the station configuration used to perform the test.
-        /// </summary>
-        public string StationConfig { get; set; }
-        /// <summary>
-        /// Gets the name of the product configuration used to perform the test.
-        /// </summary>
-        public string ProductConfig { get; set; }
-        /// <summary>
-        /// Gets the name of the test configuration used to perform the test.
-        /// </summary>
-        public string TestConfig { get; set; }
-
         /// <summary>
         /// Gets the overall test result.
         /// </summary>
@@ -46,17 +34,11 @@ namespace TsdLib.TestResults
         /// <summary>
         /// Initialize a new TestSummary object.
         /// </summary>
-        /// <param name="stationConfig">Name of the station configuration used for the test.</param>
-        /// <param name="productConfig">Name of the product configuration used for the test.</param>
-        /// <param name="testConfig">Name of the test configuration used for the test.</param>
         /// <param name="finalResult">The overall pass/fail result of the test.</param>
         /// <param name="dateStarted">Date and time when the test was started.</param>
         /// <param name="dateCompleted">Date and time when the test was completed.</param>
-        public TestSummary(string stationConfig, string productConfig, string testConfig, string finalResult, DateTime dateStarted, DateTime dateCompleted)
+        public TestSummary(string finalResult, DateTime dateStarted, DateTime dateCompleted)
         {
-            StationConfig = stationConfig;
-            ProductConfig = productConfig;
-            TestConfig = testConfig;
             FinalResult = finalResult;
             DateStarted = dateStarted;
             DateCompleted = dateCompleted;
@@ -68,7 +50,7 @@ namespace TsdLib.TestResults
         /// <returns>A string containing all test results summary properties, delimited with Environment.NewLine and commas.</returns>
         public override string ToString()
         {
-            return ToString(Environment.NewLine, ",");
+            return this.ToCsv();
         }
 
         /// <summary>
@@ -79,15 +61,7 @@ namespace TsdLib.TestResults
         /// <returns>A string representation of the test summary details formatted with row and column delimiters.</returns>
         public string ToString(string rowSeparator, string columnSeparator)
         {
-            return string.Join(rowSeparator,
-                "Station Config" + columnSeparator + StationConfig,
-                "Product Config" + columnSeparator + ProductConfig,
-                "Test Config" + columnSeparator + TestConfig,
-                "Date Started" + columnSeparator + DateStarted,
-                "Date Completed" + columnSeparator + DateCompleted,
-                "Duration" + columnSeparator + Duration,
-                "Final Result" + columnSeparator + FinalResult
-                );
+            return this.ToCsv(rowSeparator, columnSeparator);
         }
 
         /// <summary>
@@ -114,7 +88,6 @@ namespace TsdLib.TestResults
         public void ReadXml(XmlReader reader)
         {
             reader.ReadStartElement();
-            StationConfig = ProductConfig = TestConfig = "";
             FinalResult = reader.ReadElementContentAsString("FinalResult", "");
             FinalResult = reader.ReadElementContentAsString("FinalResult", "");
             int[] dateStarted = reader.ReadElementContentAsString("DateStarted", "").Split('-').Select(Int32.Parse).ToArray();

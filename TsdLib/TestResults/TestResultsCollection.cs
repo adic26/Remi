@@ -135,10 +135,15 @@ namespace TsdLib.TestResults
         /// <returns>A string representation of the MeasurementCollection formatted with row and column delimiters.</returns>
         public string ToString(string rowSeparator, string columnSeparator)
         {
+            IEnumerable<string>[] parameterArrays = Measurements.Select(m => m.Parameters.Select(p => p.Name)).ToArray();
+            string parameterHeaders = parameterArrays.All(p => p.SequenceEqual(parameterArrays[0])) ? string.Join(columnSeparator, parameterArrays[0]) : "";
+
             return string.Join(rowSeparator,
-                Details != null ? "Test Details" + rowSeparator + Details : "",
-                Summary != null ? "Summary" + rowSeparator + Summary : "",
-                //Measurement.GetMeasurementCategories(columnSeparator),
+                Details != null ? "Test Details" + rowSeparator + Details.ToString(rowSeparator, columnSeparator) : "",
+                Information != null ? "Information" + rowSeparator + string.Join(rowSeparator, Information.Select(i => i.Name + columnSeparator + i.Value)) + rowSeparator : "",
+                Summary != null ? "Summary" + rowSeparator + Summary.ToString(rowSeparator, columnSeparator) : "",
+                "Measurements",
+                string.Join(columnSeparator, "Measurement Name","Measured Value","Units","Lower Limit","Upper Limit", "Result", parameterHeaders),
                 string.Join(rowSeparator, Measurements.Select(meas => meas.ToString(columnSeparator)))
                 );
         }

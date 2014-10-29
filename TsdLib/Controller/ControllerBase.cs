@@ -53,6 +53,53 @@ namespace TsdLib.Controller
         /// </summary>
         protected ConfigManager ConfigManager { get; private set; }
 
+        /// <summary>
+        /// Initialize a new system controller.
+        /// </summary>
+        /// <param name="devMode">True to enable Developer Mode - config can be modified but results are stored in the Analysis category.</param>
+        /// <param name="testSystemName">Name of the test system.</param>
+        /// <param name="testSystemVersion">Version of the test system.</param>
+        /// <param name="databaseConnection">An <see cref="DatabaseConnection"/> object to handle persistence with a database.</param>
+        /// <param name="localDomain">True to execute the test sequence in the local application domain. Only available in Debug configuration.</param>
+        protected ControllerBase(bool devMode, string testSystemName, string testSystemVersion, DatabaseConnection databaseConnection, bool localDomain = false)
+        {
+
+#if DEBUG
+            Trace.WriteLine("Using TsdLib debug assembly. Test results will only be stored as Analysis.");
+            _localDomain = localDomain;
+#else
+            if (localDomain)
+                Trace.WriteLine("Operating in release mode - ignoring localDomain flag. Test sequence will be executed in the remote application domain.");
+            _localDomain = false;
+#endif
+            TestSystemName = testSystemName;
+            TestSystemVersion = testSystemVersion;
+            TestDetails = new TestDetails(testSystemName, testSystemVersion, Assembly.GetExecutingAssembly().GetName().Version.ToString());
+
+            ConfigManager = new ConfigManager<TStationConfig, TProductConfig, TTestConfig, Sequence>(databaseConnection);
+
+            //set up view
+            View = new TView
+            {
+
+#if DEBUG
+                Text = TestSystemName + " v." + TestSystemVersion + "         DEBUG MODE",
+#else
+                Text = TestSystemName + " v." + TestSystemVersion,
+#endif
+                StationConfigList = ConfigManager.GetConfigGroup<TStationConfig>().GetList(),
+                ProductConfigList = ConfigManager.GetConfigGroup<TProductConfig>().GetList(),
+                TestConfigList = ConfigManager.GetConfigGroup<TTestConfig>().GetList(),
+                SequenceConfigList = ConfigManager.GetConfigGroup<Sequence>().GetList()
+            };
+
+            //subscribe to view events
+            View.ViewEditConfiguration += (s, o) => ConfigManager.Edit(devMode);
+            View.ExecuteTestSequence += ExecuteTestSequence;
+            View.AbortTestSequence += (s, o) => _tokenSource.Cancel();
+        }
+    
+
         //Constructor
         /// <summary>
         /// Initialize a new system controller.
@@ -60,6 +107,7 @@ namespace TsdLib.Controller
         /// <param name="devMode">True to enable Developer Mode - config can be modified but results are stored in the Analysis category.</param>
         /// <param name="databaseConnection">An <see cref="DatabaseConnection"/> object to handle persistence with a database.</param>
         /// <param name="localDomain">True to execute the test sequence in the local application domain. Only available in Debug configuration.</param>
+        [Obsolete("Use the constructor that takes testSystemName and testSystemVersion parameters")]
         protected ControllerBase(bool devMode, DatabaseConnection databaseConnection, bool localDomain = false)
         {
 #if DEBUG
@@ -72,7 +120,7 @@ namespace TsdLib.Controller
 #endif
             TestSystemName = databaseConnection.TestSystemName;
             TestSystemVersion = databaseConnection.TestSystemVersion;
-            TestDetails = new TestDetails();
+            TestDetails = new TestDetails(TestSystemName, TestSystemVersion, Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
             ConfigManager = new ConfigManager<TStationConfig, TProductConfig, TTestConfig, Sequence>(databaseConnection);
 
@@ -146,7 +194,7 @@ namespace TsdLib.Controller
                     sequence.InfoEventProxy = infoEventProxy;
                     infoEventProxy.Event += informationEventHandler;
 
-                    EventProxy<MeasurementEventArgs> measurementEventProxy = new EventProxy<MeasurementEventArgs>();
+                    EventProxy<MeasurementBase> measurementEventProxy = new EventProxy<MeasurementBase>();
                     sequence.MeasurementEventProxy = measurementEventProxy;
                     measurementEventProxy.Event += measurementEventHandler;
 
@@ -177,9 +225,8 @@ namespace TsdLib.Controller
             }
         }
 
-        void measurementEventHandler(object sender, MeasurementEventArgs e)
+        void measurementEventHandler(object sender, MeasurementBase measurement)
         {
-            MeasurementBase measurement = e.Measurement;
             View.AddMeasurement(measurement);
         }
 

@@ -40,6 +40,7 @@ namespace TsdLib.View
         /// </summary>
         /// <param name="info">TestInfo object to add.</param>
         void AddInformation(TestInfo info);
+
         /// <summary>
         /// Add a <see cref="TsdLib.TestResults.MeasurementBase"/> to the UI display.
         /// </summary>

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using TsdLib.Utilities;
 
 namespace TsdLib.Configuration
 {
@@ -14,12 +15,31 @@ namespace TsdLib.Configuration
     public class TestDetails : IXmlSerializable
     {
         /// <summary>
-        /// Gets the name of the test.
+        /// Gets the name of the test system.
         /// </summary>
         [Category("Test Details")]
-        [DisplayName("Test Name")]
+        [DisplayName("Test System Name")]
         [Description("Name of the test system")]
-        public string TestName { get; set; }
+        [ReadOnly(true)]
+        public string TestSystemName { get; set; }
+
+        /// <summary>
+        /// Gets the version of the test system.
+        /// </summary>
+        [Category("Test Details")]
+        [DisplayName("Test System Version")]
+        [Description("Version of the test system")]
+        [ReadOnly(true)]
+        public string TestSystemVersion { get; set; }
+
+        /// <summary>
+        /// Gets the version of the TSD Framework.
+        /// </summary>
+        [Category("Test Details")]
+        [DisplayName("TSD Framework Version")]
+        [Description("Version of the TSD Framework")]
+        [ReadOnly(true)]
+        public string TsdFrameworkVersion { get; set; }
 
         /// <summary>
         /// Gets the job/request number.
@@ -79,11 +99,22 @@ namespace TsdLib.Configuration
         public FunctionalType FunctionalType { get; set; }
 
         /// <summary>
+        /// Default constructor required for serialization.
+        /// </summary>
+        private TestDetails() { }
+
+        /// <summary>
         /// Initialize a new TestDetails object filled with empty strings.
         /// </summary>
-        public TestDetails()
+        /// <param name="testSystemName">Name of the test system.</param>
+        /// <param name="testSystemVersion">Version of the test system.</param>
+        /// <param name="tsdFrameworkVersion">Version of the TSD Framework.</param>
+        public TestDetails(string testSystemName, string testSystemVersion, string tsdFrameworkVersion)
         {
-            TestName = JobNumber = TestType = TestStage = BSN = string.Empty;
+            TestSystemName = testSystemName;
+            TestSystemVersion = testSystemVersion;
+            TsdFrameworkVersion = tsdFrameworkVersion;
+            JobNumber = TestType = TestStage = BSN = string.Empty;
             FunctionalType = FunctionalType.SFI;
             StationName = Environment.MachineName;
             UnitNumber = 0;
@@ -92,16 +123,18 @@ namespace TsdLib.Configuration
         /// <summary>
         /// Initialize a new TestDetails object.
         /// </summary>
-        /// <param name="testName">Name of the test system.</param>
+        /// <param name="testSystemName">Name of the test system.</param>
+        /// <param name="testSystemVersion">Version of the test system.</param>
         /// <param name="jobNumber">Request or job number used to track the testing.</param>
         /// <param name="unitNumber">Identifier for the DUT.</param>
         /// <param name="testType">Type of test being performed, eg. Hardware Test Case Manager test number.</param>
         /// <param name="testStage">Current stage of testing. Could be trial number, modifications performed or some other descriptor to identify what has been performed on the DUT.</param>
         /// <param name="bsn">OPTIONAL: BSN of the DUT.</param>
         /// <param name="functionalType">OPTIONAL: Type of OS image loaded on the DUT, eg. MFI or SFI.</param>
-        public TestDetails(string testName, string jobNumber, uint unitNumber, string testType, string testStage, string bsn = "", FunctionalType functionalType = FunctionalType.None)
+        public TestDetails(string testSystemName, string testSystemVersion, string jobNumber, uint unitNumber, string testType, string testStage, string bsn = "", FunctionalType functionalType = FunctionalType.None)
         {
-            TestName = testName;
+            TestSystemName = testSystemName;
+            TestSystemVersion = testSystemVersion;
             JobNumber = jobNumber;
             UnitNumber = unitNumber;
             TestType = testType;
@@ -117,7 +150,7 @@ namespace TsdLib.Configuration
         /// <returns>A string containing all test details properties, delimited with Environment.NewLine and commas.</returns>
         public override string ToString()
         {
-            return ToString(Environment.NewLine, ",");
+            return this.ToCsv();
         }
 
         /// <summary>
@@ -128,15 +161,7 @@ namespace TsdLib.Configuration
         /// <returns>A string representation of the test details formatted with row and column delimiters.</returns>
         public string ToString(string rowSeparator, string columnSeparator)
         {
-            return string.Join(rowSeparator,
-                "Test Name" + columnSeparator + TestName,
-                "Job Number" + columnSeparator + JobNumber,
-                "Unit Number" + columnSeparator + UnitNumber,
-                "Test Type" + columnSeparator + TestType,
-                "Station Name" + columnSeparator + StationName,
-                "Test Stage" + columnSeparator + TestStage,
-                "Functional Type" + columnSeparator + FunctionalType
-                );
+            return this.ToCsv(rowSeparator, columnSeparator);
         }
 
         /// <summary>
@@ -160,7 +185,7 @@ namespace TsdLib.Configuration
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter"/> stream to which the object is serialized.</param>
         public void WriteXml(XmlWriter writer)
         {
-            writer.WriteElementString("TestName", TestName);
+            writer.WriteElementString("TestName", TestSystemName);
             writer.WriteElementString("JobNumber", JobNumber);
             writer.WriteElementString("UnitNumber", UnitNumber.ToString(CultureInfo.InvariantCulture));
             writer.WriteElementString("TestType", TestType);
@@ -179,7 +204,7 @@ namespace TsdLib.Configuration
             //TODO: figure out optional elements
 
             reader.ReadStartElement();
-            TestName = reader.ReadElementContentAsString("TestName", "");
+            TestSystemName = reader.ReadElementContentAsString("TestName", "");
             JobNumber = reader.ReadElementContentAsString("JobNumber", "");
             UnitNumber = Convert.ToUInt32(reader.ReadElementContentAsString("UnitNumber", ""));
             TestType = reader.ReadElementContentAsString("TestType", "");

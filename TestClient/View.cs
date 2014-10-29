@@ -10,6 +10,7 @@ namespace TestClient
         public View()
         {
             InitializeComponent();
+            
         }
     }
 }
