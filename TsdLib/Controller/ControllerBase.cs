@@ -81,24 +81,22 @@ namespace TsdLib.Controller
             //set up view
             View = new TView
             {
-
-#if DEBUG
-                Text = TestSystemName + " v." + TestSystemVersion + "         DEBUG MODE",
-#else
                 Text = TestSystemName + " v." + TestSystemVersion,
-#endif
                 StationConfigList = ConfigManager.GetConfigGroup<TStationConfig>().GetList(),
                 ProductConfigList = ConfigManager.GetConfigGroup<TProductConfig>().GetList(),
                 TestConfigList = ConfigManager.GetConfigGroup<TTestConfig>().GetList(),
                 SequenceConfigList = ConfigManager.GetConfigGroup<Sequence>().GetList()
             };
 
+#if DEBUG
+            View.Text += "         DEBUG MODE";
+#endif
+
             //subscribe to view events
             View.ViewEditConfiguration += (s, o) => ConfigManager.Edit(devMode);
             View.ExecuteTestSequence += ExecuteTestSequence;
             View.AbortTestSequence += (s, o) => _tokenSource.Cancel();
         }
-    
 
         //Constructor
         /// <summary>
@@ -167,6 +165,8 @@ namespace TsdLib.Controller
 
                 Trace.WriteLine(string.Format("Using {0} application domain", _localDomain ? "local" : "remote"));
 
+                SynchronizationContext uiContext = SynchronizationContext.Current;
+
                 await Task.Run(() =>
                 {
                     TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence;
@@ -180,25 +180,27 @@ namespace TsdLib.Controller
                         string sequenceAssembly;
                         if (!Directory.Exists("Instruments"))
                             Directory.CreateDirectory("Instruments");
-                        using (Generator generator = new Generator(TestSystemName, Directory.EnumerateFiles("Instruments", "*.xml"), Language.CSharp))
+                        using (Generator generator = new Generator(TestSystemName, "Instruments", Language.CSharp))
                             sequenceAssembly = generator.GenerateTestSequenceAssembly(sequenceConfig.Name, sequenceConfig.SourceCode, sequenceConfig.AssemblyReferences);
 
                         sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
 
                         sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>) sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, TestSystemName + ".Sequences" + "." + sequenceConfig.Name);
                         sequence.AddTraceListener(View.Listener);
-                        
                     }
 
-                    EventProxy<TestInfo> infoEventProxy = new EventProxy<TestInfo>();
+                    EventProxy<TestInfo> infoEventProxy = new EventProxy<TestInfo>(uiContext);
                     sequence.InfoEventProxy = infoEventProxy;
                     infoEventProxy.Event += informationEventHandler;
 
-                    EventProxy<MeasurementBase> measurementEventProxy = new EventProxy<MeasurementBase>();
+                    EventProxy<MeasurementBase> measurementEventProxy = new EventProxy<MeasurementBase>(uiContext);
                     sequence.MeasurementEventProxy = measurementEventProxy;
                     measurementEventProxy.Event += measurementEventHandler;
 
-
+                    EventProxy<Data> dataEventProxy = new EventProxy<Data>(uiContext);
+                    sequence.DataEventProxy = dataEventProxy;
+                    dataEventProxy.Event += (s, data) => View.AddData(data);
+                    
                     _tokenSource = new CancellationTokenSource();
                     _tokenSource.Token.Register(sequence.Abort);
 

@@ -69,12 +69,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TsdLib\TsdLib.csproj">
-      <Project>{da39d49a-e06e-4cd9-b2a2-326057bdc41d}</Project>
-      <Name>TsdLib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Instruments\DummyPowerSupply.xml">
       <Generator>InstrumentClassGenerator</Generator>
       <LastGenOutput>DummyPowerSupply.cs</LastGenOutput>
@@ -83,15 +77,20 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Instruments\Helpers\" />
+    <ProjectReference Include="..\TsdLib\TsdLib.csproj">
+      <Project>{da39d49a-e06e-4cd9-b2a2-326057bdc41d}</Project>
+      <Name>TsdLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(TargetPath) -seq $(ProjectDir)Sequences true System.dll,System.Xml.dll,TsdLib.dll,TestClient.exe</PostBuildEvent>
+    <PostBuildEvent>$(TargetPath) -seq $(ProjectDir)Sequences true System.dll,System.Xml.dll,TsdLib.dll,TestClient.exe
+
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>rem nuget restore
+rem nuget update $(ProjectDir)packages.config -Source Tsd_Experimental</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

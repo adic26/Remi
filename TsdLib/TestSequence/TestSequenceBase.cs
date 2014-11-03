@@ -59,6 +59,16 @@ namespace TsdLib.TestSequence
         public EventProxy<MeasurementBase> MeasurementEventProxy { get; set; }
 
         /// <summary>
+        /// Gets the collection of general data captured during the test sequence.
+        /// </summary>
+        public BindingList<Data> Data { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets an EventProxy object that can be used to send data events across AppDomain boundaries.
+        /// </summary>
+        public EventProxy<Data> DataEventProxy { get; set; }
+
+        /// <summary>
         /// Initializes the TestSequenceBase object.
         /// </summary>
         protected TestSequenceBase()
@@ -81,6 +91,14 @@ namespace TsdLib.TestSequence
                 IBindingList list = sender as IBindingList;
                 if (list != null && MeasurementEventProxy != null)
                     MeasurementEventProxy.FireEvent((MeasurementBase)list[e.NewIndex]);
+            };
+
+            Data = new BindingList<Data>();
+            Data.ListChanged += (sender, e) =>
+            {
+                IBindingList list = sender as IBindingList;
+                if (list != null && DataEventProxy != null)
+                    DataEventProxy.FireEvent((Data)list[e.NewIndex]);
             };
 
             FactoryEvents.Connected += FactoryEvents_Connected;
@@ -120,9 +138,6 @@ namespace TsdLib.TestSequence
                 DateTime startTime = DateTime.Now;
                 Trace.WriteLine("Executing test sequence...");
 
-                Information.Add(new TestInfo("Test System Name", testDetails.TestSystemName));
-                Information.Add(new TestInfo("Test System Version", testDetails.TestSystemVersion));
-                Information.Add(new TestInfo("Tsd Framework Version", testDetails.TsdFrameworkVersion));
                 Information.Add(new TestInfo("Station Configuration", stationConfig.Name));
                 Information.Add(new TestInfo("Product Configuration", productConfig.Name));
                 Information.Add(new TestInfo("Test Configuration", testConfig.Name));
@@ -143,7 +158,7 @@ namespace TsdLib.TestSequence
 
                 string measurementFile = testResults.Save(resultsDirectory);
 
-                string formattedFileName = string.Format("{0}-{1}_", testDetails.JobNumber, testDetails.UnitNumber.ToString("D4"));
+                string formattedFileName = string.Format("{0}-{1}_", testDetails.JobNumber, testDetails.UnitNumber.ToString("D3"));
                 string csvResultsFile = Path.Combine(resultsDirectory.FullName, formattedFileName + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss") + ".csv");
                 File.WriteAllText(csvResultsFile, testResults.ToString());
                 Trace.WriteLine("Test sequence completed.");

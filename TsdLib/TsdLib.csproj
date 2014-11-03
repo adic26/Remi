@@ -40,6 +40,7 @@
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -75,6 +76,7 @@
     </Compile>
     <Compile Include="Instrument\InstrumentAttributes.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="TestResults\Data.cs" />
     <Compile Include="TestResults\MeasurementImplementations.cs" />
     <Compile Include="TestResults\MeasurementParameter.cs" />
     <Compile Include="TestResults\MeasurmentResult.cs" />
@@ -167,13 +169,10 @@ nuget pack $(ProjectPath) -Prop Configuration=$(ConfigurationName) -IncludeRefer
   <Target Name="BeforeBuild">
   </Target>
   -->
-  <!--<Target Name="AfterBuild">
+  <Target Name="AfterBuild">
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
       <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
     </GetAssemblyIdentity>
-    <Exec Command="del *.nupkg" WorkingDirectory="$(TargetDir)" />
-    <Exec Command="nuget pack $(ProjectPath) -Prop Configuration=$(ConfigurationName) -IncludeReferencedProjects" WorkingDirectory="$(TargetDir)" />
-    <Exec Condition="'$(Configuration)' == 'Debug'" Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages_Debug\" WorkingDirectory="$(TargetDir)" />
-    <Exec Condition="'$(Configuration)' == 'Release'" Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages\" WorkingDirectory="$(TargetDir)" />
-  </Target>-->
+    <Exec Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages_Experimental\" WorkingDirectory="$(TargetDir)" />
+  </Target>
 </Project>

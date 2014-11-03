@@ -32,7 +32,7 @@ namespace TestClient.Sequences
 
                     MeasurementParameter measurementParameter = new MeasurementParameter("Voltage", voltageSetting);
                     MeasurementParameter measurementParameter2 = new MeasurementParameter("Temperature", 22.5);
-                    Measurement<double> measurement = new Measurement<double>("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: new []{ measurementParameter, measurementParameter2});
+                    Measurement<double> measurement = new Measurement<double>("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: new[] { measurementParameter, measurementParameter2 });
                     Measurements.Add(measurement);
                 }
             }

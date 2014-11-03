@@ -79,18 +79,27 @@ namespace TsdLib.View
         /// Add a <see cref="TsdLib.TestResults.TestInfo"/> to the DataGridView.
         /// </summary>
         /// <param name="info">TestInfo object to add.</param>
-        public void AddInformation(TestInfo info)
+        public virtual void AddInformation(TestInfo info)
         {
-            //TODO: implement this
+            //TODO: implement AddInformation
         }
 
         /// <summary>
         /// Add a <see cref="TsdLib.TestResults.MeasurementBase"/> to the DataGridView.
         /// </summary>
         /// <param name="measurement">Measurement to add.</param>
-        public void AddMeasurement(MeasurementBase measurement)
+        public virtual void AddMeasurement(MeasurementBase measurement)
         {
             measurementDataGridView.AddMeasurement(measurement);
+        }
+
+        /// <summary>
+        /// Add a general data object to the UI. Override to perform specific operations based on the type of the internal data value.
+        /// </summary>
+        /// <param name="data">Data to add.</param>
+        public virtual void AddData(Data data)
+        {
+            Trace.WriteLine("Received data: " + data);
         }
 
         #endregion

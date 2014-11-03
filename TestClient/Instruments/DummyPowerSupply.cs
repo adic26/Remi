@@ -71,13 +71,29 @@ namespace TestClient.Instruments
         
         public virtual void SetVoltage(Double voltage)
         {
-            Connection.SendCommand("SET:VOLT {0}", -1, voltage);
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("SET:VOLT {0}", -1, voltage);
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
         }
         
         public virtual Double GetCurrent()
         {
-            Connection.SendCommand("GET:CURRENT?", -1);
-            return Connection.GetResponse<Double>();
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("GET:CURRENT?", -1);
+                return Connection.GetResponse<Double>();
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
         }
     }
     
@@ -137,13 +153,29 @@ namespace TestClient.Instruments
         
         public virtual void SetVoltage(Double voltage)
         {
-            Connection.SendCommand("SET:VOLT {0}", -1, voltage);
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("SET:VOLT {0}", -1, voltage);
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
         }
         
         public virtual Double GetCurrent()
         {
-            Connection.SendCommand("GET:CURRENT?", -1);
-            return Connection.GetResponse<Double>();
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("GET:CURRENT?", -1);
+                return Connection.GetResponse<Double>();
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
         }
     }
 }

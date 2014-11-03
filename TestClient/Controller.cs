@@ -17,6 +17,7 @@ namespace TestClient
             : base(devMode, testSystemName, testSystemVersion, new DatabaseFolderConnection(@"C:\temp\TsdLibSettings", testSystemName, testSystemVersion, Released), localDomain)
         {
             TestClientView = View as View;
+            
         }
     }
 }

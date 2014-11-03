@@ -7,11 +7,7 @@ New-ItemProperty -Path 'HKCU:\Software\Microsoft\VisualStudio\11.0_Config\Genera
 $RegAsm = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory() + 'RegAsm.exe'
 $Dlls = $toolsPath + '\*.dll'
 
-Write-Host $SourceFolder
-
 $DestinationFolder = "C:\ProgramData\TsdLib\CodeGenerator\" + $package.version
-
-Write-Host $DestinationFolder
 
 $Assembly = $DestinationFolder + '\TsdLib.InstrumentLibrary.dll'
 $Codebase = '/codebase'

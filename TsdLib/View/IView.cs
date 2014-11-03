@@ -35,6 +35,13 @@ namespace TsdLib.View
         /// <param name="state">State to set.</param>
         void SetState(State state);
 
+
+        /// <summary>
+        /// Add user-defined data to the UI display.
+        /// </summary>
+        /// <param name="data">Data object to add.</param>
+        void AddData(Data data);
+
         /// <summary>
         /// Add a <see cref="TsdLib.TestResults.TestInfo"/> to the UI display.
         /// </summary>

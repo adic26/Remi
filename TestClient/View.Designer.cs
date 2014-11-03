@@ -30,6 +30,7 @@ namespace TestClient
         /// </summary>
         private void InitializeComponent()
         {
+            this.panel_Controls.SuspendLayout();
             this.SuspendLayout();
             // 
             // View
@@ -38,11 +39,14 @@ namespace TestClient
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(831, 576);
             this.Name = "View";
+            this.panel_Controls.ResumeLayout(false);
+            this.panel_Controls.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
+
     }
 }

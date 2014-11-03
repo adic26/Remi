@@ -1,4 +1,5 @@
-﻿// ReSharper disable BitwiseOperatorOnEnumWithoutFlags
+﻿using System.Threading;
+// ReSharper disable BitwiseOperatorOnEnumWithoutFlags
 using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
@@ -38,6 +39,15 @@ namespace TsdLib.CodeGenerator
             if (!Directory.Exists(_tempPath))
                 Directory.CreateDirectory(_tempPath);
         }
+
+        /// <summary>
+        /// Initialize a new code generator.
+        /// </summary>
+        /// <param name="testSystemName">Name of the test system. Will be used to generate namespaces.</param>
+        /// <param name="instrumentFolder">Absolute or relative path to a folder containing the XML instrument definition files to compile into the assembly.</param>
+        /// <param name="language">Generate C# or Visual Basic code.</param>
+        public Generator(string testSystemName, string instrumentFolder, Language language)
+            : this(testSystemName, Directory.EnumerateFiles(instrumentFolder, "*.xml"), language) { }
 
         /// <summary>
         /// Generates an assembly from the specified XML instrument definition file(s) and test sequence source code file.
@@ -266,7 +276,7 @@ namespace TsdLib.CodeGenerator
                     ctor.Parameters.Add(new CodeParameterDeclarationExpression(connectionType + "Connection", "connection"));
                     ctor.BaseConstructorArgs.Add(new CodeVariableReferenceExpression("connection"));
 
-                    //Add factory field and methods
+                    //Add factory field and Connect methods
                     instrumentClass.Comments.Add(new CodeCommentStatement("ReSharper disable once FieldCanBeMadeReadOnly.Local"));
                     instrumentClass.Members.Add(new FactoryReference(connectionType));
                     instrumentClass.Members.Add(new ConnectMethod(instrumentClass.Name));
@@ -285,8 +295,7 @@ namespace TsdLib.CodeGenerator
                             instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "FirmwareVersion")));
 
                     //Add command methods
-                    foreach (
-                        XElement methodElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "Command"))
+                    foreach (XElement methodElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "Command"))
                         instrumentClass.Members.Add(new CommandMethod(methodElement));
 
                     //Add query methods
@@ -462,6 +471,10 @@ namespace TsdLib.CodeGenerator
 
     class Method : CodeMemberMethod
     {
+        protected CodeTryCatchFinallyStatement TryCatchFinally;
+        protected CodeTypeReferenceExpression MonitorReference;
+        protected CodeFieldReferenceExpression LockerReference;
+
         public Method(XElement methodElement)
         {
             Name = (string)methodElement.Attribute("Name");
@@ -479,7 +492,21 @@ namespace TsdLib.CodeGenerator
                 .Select(e => new CodeParameterDeclarationExpression((string)e.Attribute("Type"), (string)e.Attribute("Name")));
             Parameters.AddRange(parameters.ToArray());
 
-            Statements.Add(new SendCommandMethodInvoke(methodElement));
+            //Statements.Add(new SendCommandMethodInvoke(methodElement));
+
+
+            MonitorReference = new CodeTypeReferenceExpression(typeof(Monitor));
+            LockerReference = new CodeFieldReferenceExpression(new CodeVariableReferenceExpression("Connection"), "SyncRoot");
+            Statements.Add(new CodeMethodInvokeExpression(MonitorReference, "Enter", LockerReference));
+
+            TryCatchFinally = new CodeTryCatchFinallyStatement();
+
+
+            TryCatchFinally.TryStatements.Add(new SendCommandMethodInvoke(methodElement));
+
+            TryCatchFinally.FinallyStatements.Add(new CodeMethodInvokeExpression(MonitorReference, "Exit", LockerReference));
+            Statements.Add(TryCatchFinally);
+
         }
     }
 
@@ -500,13 +527,8 @@ namespace TsdLib.CodeGenerator
             string returnType = (string)queryMethodElement.Attribute("ReturnType");
             ReturnType = new CodeTypeReference(returnType);
 
-            //CodeMethodReturnStatement returnStatement = new CodeMethodReturnStatement(SendCommandMethodInvoke);
-            //string parser = (string)queryMethodElement.Attribute("RegEx") ?? ".*";
-            //SendCommandMethodInvoke.Parameters.Insert(1, new CodePrimitiveExpression(parser));
-            //Statements.Add(returnStatement);
-
             CodeMethodReturnStatement returnStatement = new CodeMethodReturnStatement(new GetResponseTypedMethodInvoke(queryMethodElement));
-            Statements.Add(returnStatement);
+            TryCatchFinally.TryStatements.Add(returnStatement);
         }
     }
 
@@ -518,7 +540,7 @@ namespace TsdLib.CodeGenerator
             ReturnType = new CodeTypeReference(typeof(byte[]));
 
             CodeMethodReturnStatement returnStatement = new CodeMethodReturnStatement(new GetResponseBytesMethodInvoke(byteQueryMethodElement));
-            Statements.Add(returnStatement);
+            TryCatchFinally.TryStatements.Add(returnStatement);
         }
     }
 

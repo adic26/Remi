@@ -49,7 +49,7 @@ namespace TsdLib.TestResults
         /// <summary>
         /// Gets the information captured during the test.
         /// </summary>
-        public IEnumerable<TestInfo> Information { get; set; }
+        public List<TestInfo> Information { get; set; }
 
         /// <summary>
         /// Gets the measurements captued during the test.
@@ -70,7 +70,11 @@ namespace TsdLib.TestResults
             Details = details;
             Measurements = measurements;
             Summary = summary;
-            Information = information ?? new List<TestInfo>();
+            Information = information != null ? information.ToList() : new List<TestInfo>();
+            if (!string.IsNullOrWhiteSpace(details.TsdFrameworkVersion))
+                Information.Insert(0, new TestInfo("TSD Framework Version", details.TsdFrameworkVersion));
+            if (!string.IsNullOrWhiteSpace(details.TestSystemVersion))
+                Information.Insert(0, new TestInfo("Test System Version", details.TestSystemVersion));
         }
 
 
@@ -135,6 +139,7 @@ namespace TsdLib.TestResults
         /// <returns>A string representation of the MeasurementCollection formatted with row and column delimiters.</returns>
         public string ToString(string rowSeparator, string columnSeparator)
         {
+            //TODO: add checking for empty arrays
             IEnumerable<string>[] parameterArrays = Measurements.Select(m => m.Parameters.Select(p => p.Name)).ToArray();
             string parameterHeaders = parameterArrays.All(p => p.SequenceEqual(parameterArrays[0])) ? string.Join(columnSeparator, parameterArrays[0]) : "";
 
@@ -173,11 +178,10 @@ namespace TsdLib.TestResults
         {
             writer.WriteStartElement("Header");
             Details.WriteXml(writer);
-            writer.WriteElementString("Duration", Summary.Duration.ToString("g").Split('.')[0]);
-            writer.WriteElementString("DateCompleted", Summary.DateCompleted.ToString("yyyy-MM-dd-hh-mm-ss"));
             writer.WriteEndElement();
 
             writer.WriteStartElement("Information");
+            
             foreach (TestInfo testInfo in Information)
             {
                 writer.WriteStartElement("Info");

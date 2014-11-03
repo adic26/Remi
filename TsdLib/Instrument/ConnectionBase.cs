@@ -13,7 +13,10 @@ namespace TsdLib.Instrument
     /// </summary>
     public abstract class ConnectionBase : IDisposable
     {
-        private readonly object _locker;
+        /// <summary>
+        /// Synchronization object used to lock the connection for thread-safety.
+        /// </summary>
+        public readonly object SyncRoot;
         /// <summary>
         /// Gets or sets the default delay (in ms) to wait before sending each command.
         /// </summary>
@@ -35,7 +38,7 @@ namespace TsdLib.Instrument
         /// <param name="defaultDelay">Default delay (in ms) to wait before sending each command.</param>
         protected ConnectionBase(string address, int defaultDelay = 0)
         {
-            _locker = new object();
+            SyncRoot = new object();
             Address = address;
             DefaultDelay = defaultDelay;
             Description = GetType().Name + " on " + Address;
@@ -107,7 +110,7 @@ namespace TsdLib.Instrument
                 Debug.WriteLine("Waiting " + localDelay + "ms before sending");
             Thread.Sleep(localDelay);
                 
-            lock (_locker)
+            lock (SyncRoot)
             {
                 string fullCommand = string.Format(command, args);
 
@@ -140,7 +143,7 @@ namespace TsdLib.Instrument
 
             string parsedResponse = "";
 
-            lock (_locker)
+            lock (SyncRoot)
             {
                 try
                 {
@@ -195,7 +198,7 @@ namespace TsdLib.Instrument
                 Debug.WriteLine("Waiting " + localDelay + "ms before receiving byte response");
             Thread.Sleep(localDelay);
 
-            lock (_locker)
+            lock (SyncRoot)
             {
                 List<byte> resp = new List<byte>();
                 while (resp.LastOrDefault() != terminationCharacter && resp.Count < byteCount)

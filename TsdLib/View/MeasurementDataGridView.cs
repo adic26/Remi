@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using TsdLib.TestResults;
@@ -16,25 +17,19 @@ namespace TsdLib.View
         /// <param name="measurement">Measurement to add.</param>
         public void AddMeasurement(MeasurementBase measurement)
         {
-            string[] measurementObjects = measurement.ToString(",").Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);
+            //measurement has 6 plottable properties, plus variable number of parameters
 
-            Action addColumns = () =>
+            while (ColumnCount - 6 < measurement.Parameters.Length)
             {
-                for (int i = 1; i <= measurementObjects.Length - ColumnCount; i++)
-                    Columns.Add("Parameter_" + i, "Parameter_" + i);
-            };
-            Action addRow = () => Rows.Add(measurementObjects.Select(obj => (object)obj).ToArray());
+                string columnNumber = (ColumnCount - 5).ToString(CultureInfo.InvariantCulture);
+                Columns.Add("Parameter_" + columnNumber, "Parameter " + columnNumber);
+            }
 
-            if (InvokeRequired)
-            {
-                Invoke(addColumns);
-                Invoke(addRow);
-            }
-            else
-            {
-                addRow();
-                addColumns();
-            }
+            List<object> newRowObject = new List<object> { measurement.MeasurementName, measurement.MeasuredValue, measurement.Units, measurement.LowerLimit, measurement.UpperLimit, measurement.Result.ToString() };
+
+            newRowObject.AddRange(measurement.Parameters.Select(mp => mp.Name + "=" + mp.Value));
+
+            Rows.Add(newRowObject.ToArray());
         }
     }
 }
