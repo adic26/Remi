@@ -18,12 +18,13 @@ namespace TsdLib
         /// <summary>
         /// Fires the event.
         /// </summary>
+        /// <param name="sender">The object where the event was raised.</param>
         /// <param name="eventAgrs">EventArgs object to attach to the event.</param>
-        public void FireEvent(T eventAgrs)
+        public void FireEvent(object sender, T eventAgrs)
         {//TODO: make thread-safe for UI
             EventHandler<T> handler = Event;
             if (handler != null)
-                _context.Post(s => handler(this, eventAgrs), null);
+                _context.Post(s => handler(sender, eventAgrs), null);
         }
 
         /// <summary>

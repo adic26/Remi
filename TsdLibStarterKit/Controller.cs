@@ -1,7 +1,7 @@
-﻿using System.Windows.Forms;
+﻿using System.CodeDom.Compiler;
+using $safeprojectname$.Configuration;
 using TsdLib.Configuration;
 using TsdLib.Controller;
-using $safeprojectname$.Configuration;
 
 namespace $safeprojectname$
 {
@@ -13,12 +13,10 @@ namespace $safeprojectname$
         private const bool Released = true;
 #endif
 
-        public View $safeprojectname$View;
-
-        public Controller(bool devMode, bool localDomain = false)
-            : base(devMode, new DatabaseFolderConnection(@"C:\temp\TsdLibSettings", "$safeprojectname$", Application.ProductVersion, Released), localDomain)
+        public Controller(bool devMode, string testSystemName, string testSystemVersion, bool localDomain, ICodeParser instrumentParser)
+            : base(devMode, testSystemName, testSystemVersion, new DatabaseFolderConnection(@"C:\temp\TsdLibSettings", testSystemName, testSystemVersion, Released), localDomain, instrumentParser)
         {
-            $safeprojectname$View = base.View as View;
+
         }
     }
 }

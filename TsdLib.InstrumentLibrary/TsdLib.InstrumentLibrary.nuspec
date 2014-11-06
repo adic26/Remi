@@ -16,9 +16,8 @@
     <!--<tags>Tag1 Tag2</tags>-->
   </metadata>
   <files>
-    <file src="tools\*.*" target="tools"></file>
-    <file src="..\TsdLib\bin\$configuration$\TsdLib.dll" target="tools"/>
-    <file src="..\TsdLib\CodeGenerator\TsdLib.Instruments.xsd" target="content"/>
+    <file src="tools\*.*" target="tools"/>
+    <file src="TsdLib.Instruments.xsd" target="content"/>
     <file src="readme.txt" target=""/>
   </files>
 </package>

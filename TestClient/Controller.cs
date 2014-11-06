@@ -1,4 +1,5 @@
-﻿using TestClient.Configuration;
+﻿using System.CodeDom.Compiler;
+using TestClient.Configuration;
 using TsdLib.Configuration;
 using TsdLib.Controller;
 
@@ -11,12 +12,9 @@ namespace TestClient
 #else
         private const bool Released = true;
 #endif
-        public View TestClientView;
-
-        public Controller(bool devMode, string testSystemName, string testSystemVersion, bool localDomain = false)
-            : base(devMode, testSystemName, testSystemVersion, new DatabaseFolderConnection(@"C:\temp\TsdLibSettings", testSystemName, testSystemVersion, Released), localDomain)
+        public Controller(bool devMode, string testSystemName, string testSystemVersion, bool localDomain, ICodeParser instrumentParser)
+            : base(devMode, testSystemName, testSystemVersion, new DatabaseFolderConnection(@"C:\temp\TsdLibSettings", testSystemName, testSystemVersion, Released), localDomain, instrumentParser)
         {
-            TestClientView = View as View;
             
         }
     }

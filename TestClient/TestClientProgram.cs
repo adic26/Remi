@@ -1,9 +1,11 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using TsdLib.CodeGenerator;
 using TsdLib.Configuration;
 
 namespace TestClient
@@ -15,7 +17,7 @@ namespace TestClient
 #else
         private const bool Released = true;
 #endif
-
+        
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -23,20 +25,16 @@ namespace TestClient
         private static void Main(string[] args)
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
+            List<string> argsList = args.ToList();
 
-            //TODO: move to separate application
             if (args.Contains("-seq"))
             {
                 IConfigGroup<Sequence> sequences = new ConfigManager(new DatabaseFolderConnection(@"C:\temp\TsdLibSettings", "TestClient", Application.ProductVersion, Released)).GetConfigGroup<Sequence>();
 
-                //string sequenceFolder = @"C:\Users\jmckee\Source\Repos\TsdLib\TestClient\Sequences";
-                //bool storeInDatabase = true;
-
-                List<string> argsList = args.ToList();
                 int seqArgIndex = argsList.IndexOf("-seq");
                 string sequenceFolder = argsList[seqArgIndex + 1];
                 bool storeInDatabase = bool.Parse(argsList[seqArgIndex + 2]);
-                List<string> assemblyReferences = argsList.Count > seqArgIndex + 3 ? argsList[seqArgIndex + 3].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList() : new List<string>();
+                List<string> assemblyReferences = new List<string>{"System.dll","System.Xml.dll","TsdLib.dll","TestClient.exe"};
 
                 foreach (Sequence sequence in sequences)
                 {
@@ -55,14 +53,18 @@ namespace TestClient
 
             bool devMode = args.Length > 0 && args.Contains("-d");
             bool localDomain = args.Length > 0 && args.Contains("-localDomain");
-            //TODO: pass command line args to override ProductName and ProductVersion
-            Controller c = new Controller(devMode, Application.ProductName, Application.ProductVersion, localDomain);
 
-            if (c.View is Form)
-                Application.Run(c.View as Form);
+            string testSystemName = args.Contains("-testSystemName") ? argsList[argsList.IndexOf("-testSystemName") + 1] : Application.ProductName;
+            string testSystemVersion = args.Contains("-testSystemVersion") ? argsList[argsList.IndexOf("-testSystemVersion") + 1] : Application.ProductVersion;
+#if INSTRUMENT_LIBRARY
+            ICodeParser instrumentParser = new TsdLib.InstrumentLibrary.InstrumentParser(Application.ProductName, Language.CSharp.ToString());
+#else
+            ICodeParser instrumentParser = new BasicCodeParser();
+#endif
+            Controller c = new Controller(devMode, testSystemName, testSystemVersion, localDomain, instrumentParser);
+
+            Application.Run(c.View);
             
-            //TODO: figure out how to launch non-form view
-
             Console.WriteLine("Done");
         }
     }

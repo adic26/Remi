@@ -33,6 +33,8 @@ namespace TsdLib.Configuration
             panel_SelectControls.Enabled = true;
             panel_EditControls.Enabled = false;
             propertyGrid_Settings.Enabled = editable;
+            comboBox_TestSystemName.SelectedValueChanged += comboBox_TestSystemName_SelectedValueChanged;
+            comboBox_TestSystemVersion.SelectedValueChanged += comboBox_TestSystemVersion_SelectedValueChanged;
         }
 
         //For Client app

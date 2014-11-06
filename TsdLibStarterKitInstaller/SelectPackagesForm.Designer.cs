@@ -29,14 +29,17 @@
         private void InitializeComponent()
         {
             this.listView_Packages = new System.Windows.Forms.ListView();
-            this.button_OK = new System.Windows.Forms.Button();
             this.columnHeader_PackageName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader_PackageVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader_Description = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.button_OK = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listView_Packages
             // 
+            this.listView_Packages.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listView_Packages.CheckBoxes = true;
             this.listView_Packages.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader_PackageName,
@@ -44,10 +47,25 @@
             this.columnHeader_Description});
             this.listView_Packages.Location = new System.Drawing.Point(12, 12);
             this.listView_Packages.Name = "listView_Packages";
-            this.listView_Packages.Size = new System.Drawing.Size(695, 236);
+            this.listView_Packages.Size = new System.Drawing.Size(745, 236);
             this.listView_Packages.TabIndex = 0;
             this.listView_Packages.UseCompatibleStateImageBehavior = false;
             this.listView_Packages.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader_PackageName
+            // 
+            this.columnHeader_PackageName.Text = "Package Name";
+            this.columnHeader_PackageName.Width = 185;
+            // 
+            // columnHeader_PackageVersion
+            // 
+            this.columnHeader_PackageVersion.Text = "Package Version";
+            this.columnHeader_PackageVersion.Width = 134;
+            // 
+            // columnHeader_Description
+            // 
+            this.columnHeader_Description.Text = "Description";
+            this.columnHeader_Description.Width = 422;
             // 
             // button_OK
             // 
@@ -60,27 +78,12 @@
             this.button_OK.UseVisualStyleBackColor = true;
             this.button_OK.Click += new System.EventHandler(this.button_OK_Click);
             // 
-            // columnHeader_PackageName
-            // 
-            this.columnHeader_PackageName.Text = "Package Name";
-            this.columnHeader_PackageName.Width = 122;
-            // 
-            // columnHeader_PackageVersion
-            // 
-            this.columnHeader_PackageVersion.Text = "Package Version";
-            this.columnHeader_PackageVersion.Width = 134;
-            // 
-            // columnHeader_Description
-            // 
-            this.columnHeader_Description.Text = "Description";
-            this.columnHeader_Description.Width = 422;
-            // 
             // SelectPackagesForm
             // 
             this.AcceptButton = this.button_OK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(719, 296);
+            this.ClientSize = new System.Drawing.Size(769, 296);
             this.ControlBox = false;
             this.Controls.Add(this.button_OK);
             this.Controls.Add(this.listView_Packages);

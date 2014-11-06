@@ -13,7 +13,7 @@
     <description>$description$</description>
     <!--<releaseNotes>Summary of changes made in this release of the package.</releaseNotes>-->
     <copyright>Copyright BlackBerry 2014</copyright>
-    <!--<tags>Tag1 Tag2</tags>-->
+    <!--<tags>required</tags>--> <!--Can't inspect tags on netwrok share repository-->
   </metadata>
   <files>
     <file src="tools\*.*" target="tools"></file>

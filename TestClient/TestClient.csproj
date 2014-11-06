@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -72,11 +72,14 @@
     <Content Include="Instruments\DummyPowerSupply.xml">
       <Generator>InstrumentClassGenerator</Generator>
       <LastGenOutput>DummyPowerSupply.cs</LastGenOutput>
-      <CustomToolNamespace>TestClient</CustomToolNamespace>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TsdLib.InstrumentLibrary\TsdLib.InstrumentLibrary.csproj">
+      <Project>{80c459f9-6a11-4bcc-b453-151bcf954e4f}</Project>
+      <Name>TsdLib.InstrumentLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TsdLib\TsdLib.csproj">
       <Project>{da39d49a-e06e-4cd9-b2a2-326057bdc41d}</Project>
       <Name>TsdLib</Name>
@@ -84,7 +87,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(TargetPath) -seq $(ProjectDir)Sequences true System.dll,System.Xml.dll,TsdLib.dll,TestClient.exe
+    <PostBuildEvent>$(TargetPath) -seq $(ProjectDir)Sequences true
 
 </PostBuildEvent>
   </PropertyGroup>

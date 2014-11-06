@@ -7,8 +7,8 @@ namespace TsdLibStarterKitInstaller
 {
     public partial class SelectPackagesForm : Form
     {
-        private readonly List<IPackage> _packages;
-        public List<IPackage> SelectedPackages { get; private set; }
+        private readonly List<IPackage> _packages; 
+        public HashSet<IPackage> SelectedPackages { get; private set; }
 
         public SelectPackagesForm(IEnumerable<IPackage> packages)
         {
@@ -26,9 +26,9 @@ namespace TsdLibStarterKitInstaller
 
         private void button_OK_Click(object sender, System.EventArgs e)
         {
-            SelectedPackages = new List<IPackage>();
+            SelectedPackages = new HashSet<IPackage>();
             foreach (int checkedIndex in listView_Packages.CheckedItems.Cast<ListViewItem>().Select(i => i.Index))
-                 SelectedPackages.Add(_packages.ElementAt(checkedIndex));
+                SelectedPackages.Add(_packages.ElementAt(checkedIndex));
             Close();
         }
     }

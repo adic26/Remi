@@ -22,6 +22,9 @@
         <ProjectItem ReplaceParameters="true" TargetFileName="StationConfig.cs">StationConfig.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="TestConfig.cs">TestConfig.cs</ProjectItem>
       </Folder>
+      <Folder Name="Instruments" TargetFolderName="Instruments">
+        <ProjectItem ReplaceParameters="true" TargetFileName="ExampleDummyPowerSupply.cs">ExampleDummyPowerSupply.cs</ProjectItem>
+      </Folder>
       <Folder Name="Sequences" TargetFolderName="Sequences">
         <ProjectItem ReplaceParameters="true" TargetFileName="DefaultSequence.cs">DefaultSequence.cs</ProjectItem>
       </Folder>
@@ -37,7 +40,7 @@
   </WizardExtension>
   <WizardData>
     <w:Root>
-      <w:ServerLocation Path="\\fsg52ykf\ReliabilityTSD\TsdLib" />
+      <w:ServerLocation Path="\\fsg52ykf\ReliabilityTSD\TsdLib\Packages" />
     </w:Root>
   </WizardData>
 </VSTemplate>

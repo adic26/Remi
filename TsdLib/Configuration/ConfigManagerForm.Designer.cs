@@ -54,7 +54,6 @@
             this.comboBox_TestSystemName.Name = "comboBox_TestSystemName";
             this.comboBox_TestSystemName.Size = new System.Drawing.Size(187, 21);
             this.comboBox_TestSystemName.TabIndex = 7;
-            this.comboBox_TestSystemName.SelectedValueChanged += new System.EventHandler(this.comboBox_TestSystemName_SelectedValueChanged);
             // 
             // label2
             // 
@@ -73,7 +72,6 @@
             this.comboBox_TestSystemVersion.Name = "comboBox_TestSystemVersion";
             this.comboBox_TestSystemVersion.Size = new System.Drawing.Size(187, 21);
             this.comboBox_TestSystemVersion.TabIndex = 9;
-            this.comboBox_TestSystemVersion.SelectedValueChanged += new System.EventHandler(this.comboBox_TestSystemVersion_SelectedValueChanged);
             // 
             // panel_SelectControls
             // 

@@ -35,8 +35,6 @@ namespace TsdLibStarterKitInstaller
                         container.ComposeParts(this);
                 }
 
-
-
                 XmlSchema schema;
                 
                 using (Stream schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TsdLibStarterKitInstaller.WizardData.xsd"))
@@ -69,7 +67,7 @@ namespace TsdLibStarterKitInstaller
 
         public void ProjectFinishedGenerating(Project project)
         {
-            string packageLocation = Path.Combine(_serverLocation, "Packages");
+            string packageLocation = _serverLocation;
 
             if (NuGetPackageInstaller == null)
             {
@@ -79,6 +77,8 @@ namespace TsdLibStarterKitInstaller
 
             IPackageRepository repository = PackageRepositoryFactory.Default.CreateRepository(packageLocation);
                 
+            //If using OData repository, use the IPackage.IsLatestVersion property - should also try reading tags
+
             IQueryable<IPackage> packages = repository.GetPackages()
                 .GroupBy(p => p.Id)
                 .Select(g => g.OrderBy(p => p.Version)

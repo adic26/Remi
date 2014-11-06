@@ -82,7 +82,7 @@ namespace TsdLib.TestSequence
             {
                 IBindingList list = sender as IBindingList;
                 if (list != null && InfoEventProxy != null)
-                    InfoEventProxy.FireEvent((TestInfo)list[e.NewIndex]);
+                    InfoEventProxy.FireEvent(this, (TestInfo)list[e.NewIndex]);
             };
 
             Measurements = new BindingList<MeasurementBase>();
@@ -90,7 +90,7 @@ namespace TsdLib.TestSequence
             {
                 IBindingList list = sender as IBindingList;
                 if (list != null && MeasurementEventProxy != null)
-                    MeasurementEventProxy.FireEvent((MeasurementBase)list[e.NewIndex]);
+                    MeasurementEventProxy.FireEvent(this, (MeasurementBase)list[e.NewIndex]);
             };
 
             Data = new BindingList<Data>();
@@ -98,7 +98,7 @@ namespace TsdLib.TestSequence
             {
                 IBindingList list = sender as IBindingList;
                 if (list != null && DataEventProxy != null)
-                    DataEventProxy.FireEvent((Data)list[e.NewIndex]);
+                    DataEventProxy.FireEvent(this, (Data)list[e.NewIndex]);
             };
 
             FactoryEvents.Connected += FactoryEvents_Connected;
