@@ -44,10 +44,6 @@
   <ItemGroup>
     <Compile Include="Controller.cs" />
     <Compile Include="Configuration\ProductConfig.cs" />
-    <Compile Include="Instruments\DummyPowerSupply.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DummyPowerSupply.xml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\StationConfig.cs" />
     <Compile Include="TestClientProgram.cs" />
