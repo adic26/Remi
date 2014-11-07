@@ -50,6 +50,7 @@
     <Compile Include="InstrumentClassGenerator.cs" />
     <Content Include="Instruments\Helpers\IBlackBerryWlan.cs.pp" />
     <Compile Include="InstrumentLibraryExceptions.cs" />
+    <Compile Include="InstrumentParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="TsdLib.Instruments.xsd">
       <SubType>Designer</SubType>

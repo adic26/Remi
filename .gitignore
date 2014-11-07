@@ -6,6 +6,7 @@
 *.user
 *.sln.docstates
 TsdLib.InstrumentLibrary/Instruments/*.cs
+TestClient/Instruments/*.cs
 
 # Build results
 
