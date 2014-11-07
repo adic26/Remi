@@ -135,6 +135,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.propertyGrid_Settings.Location = new System.Drawing.Point(6, 48);
             this.propertyGrid_Settings.Name = "propertyGrid_Settings";
+            this.propertyGrid_Settings.PropertySort = System.Windows.Forms.PropertySort.NoSort;
             this.propertyGrid_Settings.Size = new System.Drawing.Size(388, 420);
             this.propertyGrid_Settings.TabIndex = 0;
             // 
