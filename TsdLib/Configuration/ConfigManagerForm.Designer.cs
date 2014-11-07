@@ -89,6 +89,7 @@
             // 
             // label4
             // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(253, 7);
             this.label4.Name = "label4";
@@ -98,6 +99,7 @@
             // 
             // comboBox_ConfigType
             // 
+            this.comboBox_ConfigType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox_ConfigType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_ConfigType.FormattingEnabled = true;
             this.comboBox_ConfigType.Location = new System.Drawing.Point(256, 23);
@@ -128,6 +130,9 @@
             // 
             // propertyGrid_Settings
             // 
+            this.propertyGrid_Settings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.propertyGrid_Settings.Location = new System.Drawing.Point(6, 48);
             this.propertyGrid_Settings.Name = "propertyGrid_Settings";
             this.propertyGrid_Settings.Size = new System.Drawing.Size(388, 420);
@@ -135,6 +140,7 @@
             // 
             // button_CreateNew
             // 
+            this.button_CreateNew.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button_CreateNew.Location = new System.Drawing.Point(256, 17);
             this.button_CreateNew.Name = "button_CreateNew";
             this.button_CreateNew.Size = new System.Drawing.Size(138, 23);
@@ -164,6 +170,7 @@
             // 
             // button_OK
             // 
+            this.button_OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.button_OK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.button_OK.Location = new System.Drawing.Point(9, 590);
             this.button_OK.Name = "button_OK";
@@ -174,6 +181,7 @@
             // 
             // button_Cancel
             // 
+            this.button_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.button_Cancel.Location = new System.Drawing.Point(282, 590);
             this.button_Cancel.Name = "button_Cancel";
@@ -188,7 +196,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.button_Cancel;
             this.ClientSize = new System.Drawing.Size(412, 639);
-            this.ControlBox = false;
             this.Controls.Add(this.button_Cancel);
             this.Controls.Add(this.button_OK);
             this.Controls.Add(this.panel_EditControls);
