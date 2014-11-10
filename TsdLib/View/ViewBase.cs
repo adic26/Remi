@@ -65,9 +65,9 @@ namespace TsdLib.View
                     button_ExecuteTestSequence.Enabled = true;
                     button_AbortTestSequence.Enabled = false;
                     panel_Controls.Enabled = true;
-                    textBox_Status.Clear();
                     break;
                 case State.TestInProgress:
+                    textBox_Status.Clear();
                     measurementDataGridView.Rows.Clear();
                     button_ExecuteTestSequence.Enabled = false;
                     button_AbortTestSequence.Enabled = true;
