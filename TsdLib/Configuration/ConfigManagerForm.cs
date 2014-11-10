@@ -111,17 +111,19 @@ namespace TsdLib.Configuration
 
             ConfigItem newCfgItem = sourcecg.Clone();
 
-            using (ConfigItemCreate getName = new ConfigItemCreate())
+            using (ConfigItemCreateForm form = new ConfigItemCreateForm())
             {
-                getName.ShowDialog();
-                newCfgItem.Name = getName.ConfigItemName;
-                newCfgItem.StoreInDatabase = getName.StoreInDatabase;
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    newCfgItem.Name = form.ConfigItemName;
+                    newCfgItem.StoreInDatabase = form.StoreInDatabase;
+                    IConfigGroup configs = (IConfigGroup)comboBox_ConfigType.SelectedItem;
+                    configs.GetList().Add(newCfgItem);
+                    comboBox_ConfigItem.SelectedIndex = comboBox_ConfigItem.Items.Count - 1;
+                }
             }
 
-            IConfigGroup configs = (IConfigGroup)comboBox_ConfigType.SelectedItem;
-            configs.GetList().Add(newCfgItem);
 
-            comboBox_ConfigItem.SelectedIndex = comboBox_ConfigItem.Items.Count - 1;
         }
     }
 }

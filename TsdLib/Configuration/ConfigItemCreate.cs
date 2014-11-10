@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace TsdLib.Configuration
 {
-    partial class ConfigItemCreate : Form
+    partial class ConfigItemCreateForm : Form
     {
         public string ConfigItemName
         {
@@ -15,13 +15,13 @@ namespace TsdLib.Configuration
             get { return radioButton_StoreInDatabase.Checked; }
         }
 
-        public ConfigItemCreate()
+        public ConfigItemCreateForm()
         {
             InitializeComponent();
             button_Ok.Enabled = false;
         }
 
-        public ConfigItemCreate(bool storeInDatabase)
+        public ConfigItemCreateForm(bool storeInDatabase)
             : this()
         {
             radioButton_StoreInDatabase.Checked = storeInDatabase;
