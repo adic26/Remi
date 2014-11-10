@@ -88,6 +88,7 @@ namespace TsdLib.Configuration
         [Category("Test Details")]
         [DisplayName("BSN")]
         [Description("BSN of the DUT.")]
+        [Browsable(false)]
         public string BSN { get; set; }
 
         /// <summary>
