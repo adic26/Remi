@@ -151,18 +151,16 @@ namespace TsdLib.TestSequence
                 bool overallPass = Measurements.Any() && Measurements.All(m => m.Result == MeasurementResult.Pass);
 
                 TestSummary summary = new TestSummary(overallPass ? "Pass" : "Fail", startTime, endTime);
-
+                
                 TestResultCollection testResults = new TestResultCollection(testDetails, Measurements, summary, Information);
 
                 DirectoryInfo resultsDirectory = SpecialFolders.GetResultsFolder(testDetails.TestSystemName);
 
-                string measurementFile = testResults.Save(resultsDirectory);
-
-                string formattedFileName = string.Format("{0}-{1}_", testDetails.JobNumber, testDetails.UnitNumber.ToString("D3"));
-                string csvResultsFile = Path.Combine(resultsDirectory.FullName, formattedFileName + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss") + ".csv");
-                File.WriteAllText(csvResultsFile, testResults.ToString());
+                string xmlResultsFile = testResults.Save(resultsDirectory);
+                string csvResultsFile = testResults.SaveCsv(resultsDirectory);
+                
                 Trace.WriteLine("Test sequence completed.");
-                Trace.WriteLine("XML results saved to " + measurementFile);
+                Trace.WriteLine("XML results saved to " + xmlResultsFile);
                 Trace.WriteLine("CSV results saved to " + csvResultsFile);
                 //Process.Start(measurementFile);
                 //Process.Start(csvResultsFile);

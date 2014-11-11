@@ -44,6 +44,11 @@
   <ItemGroup>
     <Compile Include="Controller.cs" />
     <Compile Include="Configuration\ProductConfig.cs" />
+    <Compile Include="Instruments\Helpers\DummyPowerSupply.cs" />
+    <Compile Include="Instruments\PowerSupply.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PowerSupply.xml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\StationConfig.cs" />
     <Compile Include="TestClientProgram.cs" />
@@ -65,13 +70,17 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Instruments\DummyPowerSupply.xml">
+    <Content Include="Instruments\PowerSupply.xml">
       <Generator>InstrumentClassGenerator</Generator>
-      <LastGenOutput>DummyPowerSupply.cs</LastGenOutput>
+      <LastGenOutput>PowerSupply.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj">
+      <Project>{a9ab58d9-08ea-43cc-ab6a-9e934bdd3c7b}</Project>
+      <Name>TsdLib.Instrument.Visa</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TsdLib.InstrumentLibrary\TsdLib.InstrumentLibrary.csproj">
       <Project>{80c459f9-6a11-4bcc-b453-151bcf954e4f}</Project>
       <Name>TsdLib.InstrumentLibrary</Name>

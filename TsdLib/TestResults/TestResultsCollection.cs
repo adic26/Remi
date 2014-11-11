@@ -100,7 +100,7 @@ namespace TsdLib.TestResults
         }
 
         /// <summary>
-        /// Save the test results to an xml file in the specified directory.
+        /// Save the test results to an xml file in the specified directory. Useful for uploading to database.
         /// </summary>
         /// <param name="directory">A <see cref="System.IO.DirectoryInfo"/> object representing the directory to save the test results file to.</param>
         /// <returns>The absolute path to the xml file generated.</returns>
@@ -109,15 +109,37 @@ namespace TsdLib.TestResults
             if (!directory.Exists)
                 directory.Create();
 
-            string jobNumber = string.IsNullOrWhiteSpace(Details.JobNumber) ? "jobNum" : Details.JobNumber;
+            string jobNumber = string.IsNullOrWhiteSpace(Details.JobNumber) ? "" : Details.JobNumber + "-";
 
-            string unitNumber = Details.UnitNumber.ToString("D3");
+            string unitNumber = Details.UnitNumber == 0 ? "" : Details.UnitNumber.ToString("D3") + "-";
             string timeStamp = Summary.DateStarted.ToString("yyyy-MM-dd_hh-mm-ss");
 
-            string fileName = Path.Combine(directory.FullName, jobNumber + "-" + unitNumber + "-" + timeStamp + ".xml");
+            string fileName = Path.Combine(directory.FullName, jobNumber + unitNumber + timeStamp + ".xml");
 
             using (Stream s = File.Create(fileName))
                 _serializer.Serialize(s, this);
+
+            return fileName;
+        }
+
+        /// <summary>
+        /// Save the test results to a csv file in the specified directory. Useful for viewing results locally.
+        /// </summary>
+        /// <param name="directory">A <see cref="System.IO.DirectoryInfo"/> object representing the directory to save the test results file to.</param>
+        /// <returns>The absolute path to the csv file generated.</returns>
+        public string SaveCsv(DirectoryInfo directory)
+        {
+            if (!directory.Exists)
+                directory.Create();
+
+            string jobNumber = string.IsNullOrWhiteSpace(Details.JobNumber) ? "" : Details.JobNumber + "-";
+
+            string unitNumber = Details.UnitNumber == 0 ? "" : Details.UnitNumber.ToString("D3") + "-";
+            string timeStamp = Summary.DateStarted.ToString("yyyy-MM-dd_hh-mm-ss");
+
+            string fileName = Path.Combine(directory.FullName, jobNumber + unitNumber + timeStamp + ".csv");
+
+            File.WriteAllText(fileName, ToString());
 
             return fileName;
         }
