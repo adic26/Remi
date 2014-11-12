@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing.Design;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 
 namespace TsdLib.Configuration
 {
@@ -14,7 +17,7 @@ namespace TsdLib.Configuration
     /// Base class for a specific instance of a configuration. Multiple ConfigItems can be added to a ConfigGroup to form a selectable list used for parameterizing test sequences.
     /// </summary>
     [Serializable]
-    public class ConfigItem
+    public class ConfigItem// : IComponent
     {
         /// <summary>
         /// Gets or sets the name of the configuration item.
@@ -33,8 +36,7 @@ namespace TsdLib.Configuration
         /// <summary>
         /// Gets the name of the test system that the configuration item is used for.
         /// </summary>
-        [ReadOnly(true)]
-        [Category("Description")]
+        [Browsable(false)]
         public string TestSystemName { get; set; }
 
         /// <summary>
@@ -79,6 +81,43 @@ namespace TsdLib.Configuration
         {
             return Name;
         }
+
+        /// <summary>
+        /// Save the configuration item.
+        /// </summary>
+        [Browsable(true)]
+        public void Save()
+        {
+            IConfigGroup group = ConfigManager.ConfigGroups.FirstOrDefault(cfg => cfg.ConfigType == GetType().Name);
+            if (group != null)
+                group.Save();
+            else
+                Debug.WriteLine("Error saving configuration. Could not find ConfigGroup in the ConfigManager.ConfigGroups list");
+        }
+
+        #region IComponent implementation
+
+        //[Browsable(false)]
+        //[XmlIgnore]
+        //public ISite Site
+        //{
+        //    // return our "site" which connects back to us to expose our tagged methods
+        //    get { return new DesignerVerbSite(this); }
+        //    set { throw new NotImplementedException(); }
+        //}
+
+        ///// <summary>
+        ///// Event that is fired when the ConfigItem is disposed.
+        ///// </summary>
+        //public event EventHandler Disposed;
+
+        //public void Dispose()
+        //{
+        //    if (Disposed != null)
+        //        Disposed(this, EventArgs.Empty);
+        //}
+
+        #endregion
     }
 
     /// <summary>
@@ -163,6 +202,7 @@ namespace TsdLib.Configuration
             get { return _name; }
             set
             {
+                //TODO: replace spaces and invalid characters
                 _name = value;
                 if (!string.IsNullOrWhiteSpace(SourceCode))
                     SourceCode = Regex.Replace(SourceCode, @"(?<=class )\w+", value);

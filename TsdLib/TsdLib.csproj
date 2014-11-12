@@ -68,6 +68,7 @@
     <Compile Include="Configuration\ConfigManagerForm.Designer.cs">
       <DependentUpon>ConfigManagerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Configuration\DesignerVerbSite.cs" />
     <Compile Include="Configuration\FilePath.cs" />
     <Compile Include="Configuration\TestDetails.cs" />
     <Compile Include="Configuration\TestDetailsEditor.cs">

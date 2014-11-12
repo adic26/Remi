@@ -57,6 +57,7 @@ namespace TsdLib.Configuration
 
                     foreach (SettingsProperty settingProperty in properties)
                     {
+                        settingProperty.ThrowOnErrorDeserializing = settingProperty.ThrowOnErrorSerializing = true;
                         string configType = settingProperty.PropertyType.GetGenericArguments()[0].Name;
                         Debug.WriteLine("Pulling " + configType + " from database.");
                         string valueFromDb = databaseConnection.ReadStringFromDatabase(configType + ".xml");
@@ -100,8 +101,11 @@ namespace TsdLib.Configuration
                 // ReSharper disable once NotAccessedVariable - used for reading the PropertyValue to set the IsDirty flag
                 object dummy;
                 foreach (SettingsPropertyValue settingsPropertyValue in values)
+                {
                     // ReSharper disable once RedundantAssignment
                     dummy = settingsPropertyValue.PropertyValue;
+                    settingsPropertyValue.Property.ThrowOnErrorDeserializing = settingsPropertyValue.Property.ThrowOnErrorSerializing = true;
+                }
 
                 base.SetPropertyValues(context, values);
 

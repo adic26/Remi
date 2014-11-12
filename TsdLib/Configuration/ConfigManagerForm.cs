@@ -15,6 +15,11 @@ namespace TsdLib.Configuration
         private readonly string _settingsLocation;
 
         /// <summary>
+        /// Gets a collection of IConfigGroup objects that have been modified.
+        /// </summary>
+        public HashSet<IConfigGroup> ModifiedConfigGroups { get; private set; }
+
+        /// <summary>
         /// Initialize a new <see cref="TsdLib.Configuration.ConfigManagerForm"/> to view or edit the configuration at a specified location.
         /// </summary>
         /// <param name="settingsLocation">Path to the folder or network share containing the configuration to view or edit.</param>
@@ -49,6 +54,8 @@ namespace TsdLib.Configuration
         {
             InitializeComponent();
 
+            ModifiedConfigGroups = new HashSet<IConfigGroup>();
+
             comboBox_TestSystemName.Enabled = false;
             comboBox_TestSystemName.DataSource = new List<string> {testSystemName};
             comboBox_TestSystemVersion.Enabled = false;
@@ -58,6 +65,15 @@ namespace TsdLib.Configuration
             comboBox_ConfigType.DataSource = configGroups;
             
             propertyGrid_Settings.Enabled = editable;
+
+            propertyGrid_Settings.CommandsVisibleIfAvailable = true;
+            propertyGrid_Settings.PropertyValueChanged += propertyGrid_Settings_PropertyValueChanged;
+        }
+
+        void propertyGrid_Settings_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            ModifiedConfigGroups.Add((IConfigGroup)comboBox_ConfigType.SelectedItem);
+
         }
 
         private void comboBox_TestSystemName_SelectedValueChanged(object sender, EventArgs e)
@@ -93,8 +109,6 @@ namespace TsdLib.Configuration
             if (list.Count == 0)
                 throw new EmptyConfigGroupException(configGroup);
 
-            propertyGrid_Settings.SelectedObject = list[0];
-
             panel_EditControls.Enabled = true;
             button_CreateNew.Enabled = true;
             button_OK.Enabled = true;
@@ -122,8 +136,6 @@ namespace TsdLib.Configuration
                     comboBox_ConfigItem.SelectedIndex = comboBox_ConfigItem.Items.Count - 1;
                 }
             }
-
-
         }
     }
 }
