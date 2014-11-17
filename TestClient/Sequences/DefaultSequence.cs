@@ -1,4 +1,5 @@
 
+using System;
 using System.Threading;
 using TestClient.Configuration;
 using TestClient.Instruments;
@@ -17,6 +18,8 @@ namespace TestClient.Sequences
             //Debugger.Break();
 
             PowerSupply ps = new DummyPowerSupply("addr");
+
+            Thread.Sleep(TimeSpan.FromMinutes(8));
 
             for (int i = 0; i < testConfig.LoopIterations; i++)
             {

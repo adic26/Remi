@@ -88,7 +88,7 @@
     <Compile Include="TestResults\TestResultsExceptions.cs" />
     <Compile Include="TestResults\TestResultsCollection.cs" />
     <Compile Include="TestResults\TestResultsHeader.cs" />
-    <Compile Include="Common\EventProxy.cs" />
+    <Compile Include="Remoting\EventProxy.cs" />
     <Compile Include="Common\States.cs" />
     <Compile Include="Common\DatabaseConnection.cs" />
     <Compile Include="TestResults\MeasurementBase.cs" />

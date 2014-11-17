@@ -13,6 +13,15 @@ namespace TsdLib.View
         readonly TextBoxBase _textBox;
         readonly Action<string> _textBoxAppend;
 
+        /// <summary>
+        /// Returns null to ensure that the remote object's lifetime is as long as the hosting AppDomain.
+        /// </summary>
+        /// <returns>Null, which corresponds to an unlimited lease time.</returns>
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
+
         private readonly StringBuilder _buffer;
 
         /// <summary>

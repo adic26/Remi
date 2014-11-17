@@ -13,25 +13,47 @@
         <a href="http://www.microsoft.com/en-us/download/confirmation.aspx?id=30668">http://www.microsoft.com/en-us/download/confirmation.aspx?id=30668</a></p>
     <p>
         &nbsp;</p>
+    <p>
+        Sancastle Help File Builder is requried for the TsdLib.Documentation project</p>
+    <p>
+        <a href="http://shfb.codeplex.com/downloads/get/852059">http://shfb.codeplex.com/downloads/get/852059</a></p>
+    <p>
+        &nbsp;</p>
+    <p>
+        &nbsp;</p>
 
     <p>
-        Instrument&nbsp; files are not compiled as part of the build process - the xml source files are copied to the output directory where they can be picked up by the code generator and dynamically compiled into a separate Application Domain where the test sequence will execute.</p>
+        Instruments at Design-Time (or if the -localDomain switch is used to launch the application):</p>
     <p>
-        There is a pre-build event to transform the instrument xml files into the .NET class file, but this is just to show the developer what the generated instrument classes look like.</p>
+        The instrument xml definitions must be converted into classes using the InstrumentClassGenerator custom tool (right-click the xml file and select Properties, then enter InstrumentClassGenerator into the Custom Tool property). Generated classes must have the Build Action property set to Compile (this will be set by default when they are converted from xml). The instrument classes will be compiled into the main application assembly. Using the -localDomain switch prevents run-time modification of instrument definitions - definitions are baked into the application at design-time.</p>
+    <p>
+        &nbsp;</p>
+    <p>
+        Instrument at Run-Time:</p>
+    <p>
+        The instrument xml definitions must have the Copy To Output Directory property set to either Copy If Newer or Copy Always. They will then be copied to the Instruments folder in the output directory, where they will be picked up by the run-time compiler and built into the dynamic sequence assembly when the test sequence is executed.</p>
+    <p>
+        &nbsp;</p>
+    <p>
+        Test Sequence Design-Time/Run-Time Synchronization</p>
+    <p>
+        The test sequence classes located in the Sequences folder are synchronized with the Sequence configuration files in a post-build event. This allows any design-time changes to the sequence classes to be automatically pushed to the run-time configuration objects. Also, if any new sequences are added at run-time, they will be parsed into C# code files and added to the design-time Sequences folder. Modifying a sequence at run-time DOES NOT overwrite or update existing design-time classes in the Sequences folder.</p>
+    <p>
+        &nbsp;</p>
+    <p>
+        Sequences normal operation (using separate AppDomain):</p>
+    <p>
+        Sequence objects are dynamically compiled using the source code contained in the Sequence configuration objects.</p>
+    <p>
+        &nbsp;</p>
+    <p>
+        Sequences when the -localDomain switch is used to launch the application:</p>
+    <p>
+        Sequences are compiled into the main application assembly at design-time. Using the -localDomain switch prevents run-time modification of test sequences - sequences are baked into the application at design-time.</p>
     <p>
         &nbsp;</p>
     <p>
         &nbsp;</p>
-    <p>
-        Sequence files are not compiled as part of the build process. There is a post-build event to upload the contents of the sequence files to the database as Sequence config items. This makes the design-time sequences available in the run-time sequence selector.</p>
-    <p>
-        &nbsp;</p>
-    <p>
-        &nbsp;</p>
-    <p>
-        We should compile sequence files (and probably instruments too) to make sure the code will build (no syntac errors, missing dependencies) - but will put them into a different namespace so they won&#39;t clash with the dynamically generated types in the temp assembly. NEED TO CHANGE THE NAMESPACE OF DYNAMICALLY COMPILED TYPES.</p>
-    <p>
-        Design time will be TestClient.Sequences but code generator will generate TestClient.Sequences.Dynamic</p>
-
+    
 </body>
 </html>

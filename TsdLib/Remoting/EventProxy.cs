@@ -12,6 +12,15 @@ namespace TsdLib
         private readonly SynchronizationContext _context;
 
         /// <summary>
+        /// Returns null to ensure that the remote object's lifetime is as long as the hosting AppDomain.
+        /// </summary>
+        /// <returns>Null, which corresponds to an unlimited lease time.</returns>
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
+
+        /// <summary>
         /// Exposes the event to attach handlers.
         /// </summary>
         public event EventHandler<T> Event;

@@ -23,6 +23,15 @@ namespace TsdLib.TestSequence
         where TTestConfig : TestConfigCommon
     {
         /// <summary>
+        /// Returns null to ensure that the remote object's lifetime is as long as the hosting AppDomain.
+        /// </summary>
+        /// <returns>Null, which corresponds to an unlimited lease time.</returns>
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
+
+        /// <summary>
         /// Client application overrides this method to define test steps.
         /// </summary>
         /// <param name="stationConfig">Station config instance containing station-specific configuration.</param>
@@ -120,6 +129,7 @@ namespace TsdLib.TestSequence
         /// <param name="listener">TraceListener to add to the Trace Listeners collection.</param>
         public void AddTraceListener(TraceListener listener)
         {
+            
             Trace.Listeners.Add(listener);
         }
 
