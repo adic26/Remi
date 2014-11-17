@@ -75,6 +75,8 @@
             // 
             // panel_SelectControls
             // 
+            this.panel_SelectControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel_SelectControls.Controls.Add(this.label4);
             this.panel_SelectControls.Controls.Add(this.comboBox_ConfigType);
             this.panel_SelectControls.Controls.Add(this.label3);
@@ -119,6 +121,9 @@
             // 
             // panel_EditControls
             // 
+            this.panel_EditControls.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel_EditControls.Controls.Add(this.propertyGrid_Settings);
             this.panel_EditControls.Controls.Add(this.button_CreateNew);
             this.panel_EditControls.Controls.Add(this.label5);
