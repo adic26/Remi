@@ -9,7 +9,7 @@
     <ModelNumber Message="cat /pps/services/hw_info/inventory" RegEx="(?&lt;=Board_Type::).*(?=\r\nBoot_Devices)"/>
     <SerialNumber Message="cat /pps/system/nvram/deviceinfo" RegEx="(?&lt;=BSN::).*(?=\r\nBTMAC)"/>
     <FirmwareVersion Message="cat /pps/services/deviceproperties" RegEx="(?&lt;=scmbundle::).*(?=\r\nscmbundle0)"/>
-
+    
     <!--IBlackBerryWlan-->
     <Command Name="EnablePlt" Message="echo fw_pltenable::1>>/pps/services/wifi/escreen"/>
     <Command Name="DisableRx" Message="wl_bcm4334 pkteng_stop rx"/>
@@ -22,7 +22,10 @@
     <Command Name="StartRx" Message="wl_bcm4334 pkteng_start 10:20:30:40:50:60 rx"/>
     <Command Name="ResetCounters" Message="wl_bcm4334 reset_cnts"/>
     <Command Name="StartCounters" Message="wl_bcm4334 counters"/>
-    <Query Name="IsEnabled" Message="wl_bcm4334 isup" ReturnType="Int32" />
     
+    <Query Name="IsEnabled" Message="wl_bcm4334 isup" ReturnType="Int32" />
+
+    <!--General BlackBerry methods-->
+    <Query Name="GetImei" Message="cat /pps/system/nvram/deviceinfo" RegEx="(?&lt;=IMEI::).*(?=\r\nInProduction)" ReturnType="String" />
   </Instrument>
 </Instruments>

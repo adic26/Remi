@@ -48,6 +48,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InstrumentClassGenerator.cs" />
+    <Content Include="Instruments\BlackBerry.xml">
+      <Generator>InstrumentClassGenerator</Generator>
+      <LastGenOutput>BCM4334.cs</LastGenOutput>
+    </Content>
     <Content Include="Instruments\Helpers\IBlackBerryWlan.cs.pp" />
     <Compile Include="InstrumentLibraryExceptions.cs" />
     <Compile Include="InstrumentParser.cs" />
@@ -65,10 +69,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Instruments\BCM4334.xml">
-      <Generator>InstrumentClassGenerator</Generator>
-      <LastGenOutput>BCM4334.cs</LastGenOutput>
-    </Content>
     <Content Include="Instruments\DummyPowerSupply.xml">
       <Generator>InstrumentClassGenerator</Generator>
       <LastGenOutput>DummyPowerSupply.cs</LastGenOutput>
