@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Reflection;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -9,7 +10,7 @@ using TsdLib.Utilities;
 namespace TsdLib.Configuration
 {
     /// <summary>
-    /// Contains header information about the test.
+    /// Contains metadata describing the test request.
     /// </summary>
     [Serializable]
     public class TestDetails : IXmlSerializable
@@ -31,6 +32,12 @@ namespace TsdLib.Configuration
         [Description("Version of the test system")]
         [ReadOnly(true)]
         public string TestSystemVersion { get; set; }
+
+        /// <summary>
+        /// Gets the operating mode of the test system (ie. Development, Engineering or Production).
+        /// </summary>
+        [Browsable(false)]
+        public string TestSystemMode { get; set; }
 
         /// <summary>
         /// Gets the version of the TSD Framework.
@@ -109,12 +116,13 @@ namespace TsdLib.Configuration
         /// </summary>
         /// <param name="testSystemName">Name of the test system.</param>
         /// <param name="testSystemVersion">Version of the test system.</param>
-        /// <param name="tsdFrameworkVersion">Version of the TSD Framework.</param>
-        public TestDetails(string testSystemName, string testSystemVersion, string tsdFrameworkVersion)
+        /// <param name="testSystemMode">The operating mode of the test system (ie. Development, Engineering or Production).</param>
+        public TestDetails(string testSystemName, string testSystemVersion, string testSystemMode)
         {
             TestSystemName = testSystemName;
             TestSystemVersion = testSystemVersion;
-            TsdFrameworkVersion = tsdFrameworkVersion;
+            TestSystemMode = testSystemMode;
+            TsdFrameworkVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             JobNumber = TestType = TestStage = BSN = string.Empty;
             FunctionalType = FunctionalType.SFI;
             StationName = Environment.MachineName;
@@ -126,16 +134,19 @@ namespace TsdLib.Configuration
         /// </summary>
         /// <param name="testSystemName">Name of the test system.</param>
         /// <param name="testSystemVersion">Version of the test system.</param>
+        /// <param name="testSystemMode">The operating mode of the test system (ie. Development, Engineering or Production).</param>
         /// <param name="jobNumber">Request or job number used to track the testing.</param>
         /// <param name="unitNumber">Identifier for the DUT.</param>
         /// <param name="testType">Type of test being performed, eg. Hardware Test Case Manager test number.</param>
         /// <param name="testStage">Current stage of testing. Could be trial number, modifications performed or some other descriptor to identify what has been performed on the DUT.</param>
         /// <param name="bsn">OPTIONAL: BSN of the DUT.</param>
         /// <param name="functionalType">OPTIONAL: Type of OS image loaded on the DUT, eg. MFI or SFI.</param>
-        public TestDetails(string testSystemName, string testSystemVersion, string jobNumber, uint unitNumber, string testType, string testStage, string bsn = "", FunctionalType functionalType = FunctionalType.None)
+        public TestDetails(string testSystemName, string testSystemVersion, string testSystemMode, string jobNumber, uint unitNumber, string testType, string testStage, string bsn = "", FunctionalType functionalType = FunctionalType.None)
         {
             TestSystemName = testSystemName;
             TestSystemVersion = testSystemVersion;
+            TestSystemMode = testSystemMode;
+            TsdFrameworkVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             JobNumber = jobNumber;
             UnitNumber = unitNumber;
             TestType = testType;

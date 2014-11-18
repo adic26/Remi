@@ -22,9 +22,10 @@ namespace TsdLib.Configuration
         /// <summary>
         /// Initialize a new ConfigManager instance to manage the configuration for a specified test system.
         /// </summary>
-        /// <param name="databaseConnection">An <see cref="DatabaseConnection"/> object to handle persistence with a database.</param>
-        public ConfigManager(DatabaseConnection databaseConnection)
-            : base(databaseConnection)
+        /// <param name="testDetails">A <see cref="TestDetails"/> object containing metadata describing the test request.</param>
+        /// <param name="databaseConnection">An <see cref="IDatabaseConnection"/> object to handle persistence with a database.</param>
+        public ConfigManager(TestDetails testDetails, IDatabaseConnection databaseConnection)
+            : base(testDetails, databaseConnection)
         {
             GetConfigGroup<TStationConfig>();
             GetConfigGroup<TProductConfig>();
@@ -41,25 +42,26 @@ namespace TsdLib.Configuration
         private static bool _firstRun = true;
         internal static List<IConfigGroup> ConfigGroups = new List<IConfigGroup>();
 
-        internal string TestSystemName;
-        internal string TestSystemVersion;
+        private readonly TestDetails _testDetails;
 
-        private readonly DatabaseConnection _databaseConnection;
+        private readonly IDatabaseConnection _databaseConnection;
 
         /// <summary>
         /// Initialize a new ConfigManager instance to manage the configuration for a specified test system.
         /// </summary>
-        /// <param name="databaseConnection">An <see cref="DatabaseConnection"/> object to handle persistence with a database.</param>
-        public ConfigManager(DatabaseConnection databaseConnection)
+        /// <param name="testDetails">A <see cref="TestDetails"/> object containing metadata describing the test request.</param>
+        /// <param name="databaseConnection">An <see cref="IDatabaseConnection"/> object to handle persistence with a database.</param>
+        public ConfigManager(TestDetails testDetails, IDatabaseConnection databaseConnection)
         {
-            TestSystemName = databaseConnection.TestSystemName;
-            TestSystemVersion = databaseConnection.TestSystemVersion;
+            _testDetails = testDetails;
             _databaseConnection = databaseConnection;
 
             //upload assembly to database to support stand-alone app reflection
             if (_firstRun)
             {
-                databaseConnection.UploadFileToDatabase(Assembly.GetEntryAssembly().Location, "ClientAssembly", true);
+                IDatabaseFileConnection fileConnection = databaseConnection as IDatabaseFileConnection;
+                if (fileConnection != null)
+                    fileConnection.UploadFileToDatabase(testDetails.TestSystemName, testDetails.TestSystemVersion, testDetails.TestSystemMode, Assembly.GetEntryAssembly().Location, true);
                 _firstRun = false;
             }
         }
@@ -75,7 +77,7 @@ namespace TsdLib.Configuration
             IConfigGroup cfgGrp = ConfigGroups.FirstOrDefault(cfg => cfg.ConfigType == typeof (T).Name);
             if (cfgGrp == null)
             {
-                cfgGrp = (IConfigGroup<T>)Activator.CreateInstance(typeof(ConfigGroup<T>), _databaseConnection);
+                cfgGrp = (IConfigGroup<T>)Activator.CreateInstance( typeof(ConfigGroup<T>), _testDetails, _databaseConnection);
                 ConfigGroups.Add(cfgGrp);
             }
             return cfgGrp as IConfigGroup<T>;
@@ -87,7 +89,7 @@ namespace TsdLib.Configuration
         /// <param name="editable">True to make configuration parameters writable; False to make configuration parameters read-only.</param>
         public void Edit(bool editable)
         {
-            using (ConfigManagerForm form = new ConfigManagerForm(ConfigGroups, TestSystemName, TestSystemVersion, editable))
+            using (ConfigManagerForm form = new ConfigManagerForm(ConfigGroups, _testDetails.TestSystemName, _testDetails.TestSystemVersion, editable))
             {
                 form.ShowDialog();
 
@@ -99,7 +101,7 @@ namespace TsdLib.Configuration
                     else
                         for (int i = 0; i < ConfigGroups.Count; i++)
                             if (form.ModifiedConfigGroups.Contains(ConfigGroups[i]))
-                                ConfigGroups[i] = (IConfigGroup)Activator.CreateInstance(ConfigGroups[i].GetType(), _databaseConnection);
+                                ConfigGroups[i] = (IConfigGroup)Activator.CreateInstance(ConfigGroups[i].GetType(), _testDetails, _databaseConnection);
                 }
             }
         }

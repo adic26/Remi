@@ -24,9 +24,8 @@ namespace TestClient.Configuration
         /// </summary>
         /// <param name="name">Name of the configuration instance.</param>
         /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
-        /// <param name="testSystemName">Name of the test system the config item is used for.</param>
-        public ProductConfig(string name, bool storeInDatabase, string testSystemName)
-            : base(name, storeInDatabase, testSystemName)
+        public ProductConfig(string name, bool storeInDatabase)
+            : base(name, storeInDatabase)
         {
             SettlingTime = 500;
         }

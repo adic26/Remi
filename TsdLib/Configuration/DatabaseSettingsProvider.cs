@@ -53,14 +53,15 @@ namespace TsdLib.Configuration
                 {
                     SettingsPropertyValueCollection configFromDb = new SettingsPropertyValueCollection();
 
-                    DatabaseConnection databaseConnection = (DatabaseConnection) context["DatabaseConnection"];
+                    TestDetails testDetails = (TestDetails) context["TestDetails"];
+                    IDatabaseConnection databaseConnection = (IDatabaseConnection) context["IDatabaseConnection"];
 
                     foreach (SettingsProperty settingProperty in properties)
                     {
                         settingProperty.ThrowOnErrorDeserializing = settingProperty.ThrowOnErrorSerializing = true;
                         string configType = settingProperty.PropertyType.GetGenericArguments()[0].Name;
                         Debug.WriteLine("Pulling " + configType + " from database.");
-                        string valueFromDb = databaseConnection.ReadStringFromDatabase(configType + ".xml");
+                        string valueFromDb = databaseConnection.ReadStringFromDatabase(testDetails.TestSystemName, testDetails.TestSystemVersion, testDetails.TestSystemMode, configType + ".xml");
 
                         SettingsPropertyValue settingValue = new SettingsPropertyValue(settingProperty)
                         {
@@ -109,7 +110,8 @@ namespace TsdLib.Configuration
 
                 base.SetPropertyValues(context, values);
 
-                DatabaseConnection databaseConnection = (DatabaseConnection)context["DatabaseConnection"];
+                TestDetails testDetails = (TestDetails)context["TestDetails"];
+                IDatabaseConnection databaseConnection = (IDatabaseConnection)context["IDatabaseConnection"];
 
                 try
                 {
@@ -118,8 +120,8 @@ namespace TsdLib.Configuration
                         string configType = settingValue.Property.PropertyType.GetGenericArguments()[0].Name;
 
                         Debug.WriteLine("Pushing " + configType + " to database.");
-                        
-                        databaseConnection.WriteStringToDatabase((string) settingValue.SerializedValue, configType + ".xml");
+
+                        databaseConnection.WriteStringToDatabase(testDetails.TestSystemName, testDetails.TestSystemVersion, testDetails.TestSystemMode, configType + ".xml", (string)settingValue.SerializedValue);
                     }
                 }
                 catch (Exception ex)

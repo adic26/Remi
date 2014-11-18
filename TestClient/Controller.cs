@@ -1,5 +1,6 @@
 ﻿using System.CodeDom.Compiler;
 using TestClient.Configuration;
+using TsdLib;
 using TsdLib.Configuration;
 using TsdLib.Controller;
 
@@ -7,13 +8,8 @@ namespace TestClient
 {
     public class Controller : ControllerBase<View, StationConfig, ProductConfig, TestConfig>
     {
-#if DEBUG
-        private const bool Released = false;
-#else
-        private const bool Released = true;
-#endif
-        public Controller(bool devMode, string testSystemName, string testSystemVersion, bool localDomain, ICodeParser instrumentParser)
-            : base(devMode, testSystemName, testSystemVersion, new DatabaseFolderConnection(@"C:\temp\TsdLibSettings", testSystemName, testSystemVersion, Released), localDomain, instrumentParser)
+        public Controller(TestDetails testDetails, IDatabaseConnection databaseConnection, ICodeParser instrumentParser, bool localDomain)
+            : base(testDetails, databaseConnection, instrumentParser, localDomain)
         {
             
         }

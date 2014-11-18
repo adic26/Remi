@@ -29,9 +29,10 @@ namespace TsdLib.Configuration
 
         BindingList<T> AllConfigItems { get; set; }
 
-        public ConfigGroup(DatabaseConnection databaseConnection)
+        public ConfigGroup(TestDetails testDetails, IDatabaseConnection databaseConnection)
         {
-            Context.Add("DatabaseConnection", databaseConnection);
+            Context.Add("TestDetails", testDetails);
+            Context.Add("IDatabaseConnection", databaseConnection);
 
             Synchronized(this);
             
@@ -44,14 +45,11 @@ namespace TsdLib.Configuration
             //Add a default config if these is no config available
             if (ConfigItems.Count == 0 && LocalConfigItems.Count == 0)
             {
-                //T newConfig = new T
-                //{
-                //    Name = "Default" + typeof(T).Name,
-                //    StoreInDatabase = true,
-                //    TestSystemName = databaseConnection.TestSystemName
-                //};
-
-                T newConfig = (T) Activator.CreateInstance(typeof (T), "Default" + typeof (T).Name, true, databaseConnection.TestSystemName);
+                //T newConfig;
+                //if (typeof(T) == typeof(Sequence))
+                //    newConfig = (T)Activator.CreateInstance(typeof(T), "Default" + typeof(T).Name, true, testDetails.TestSystemName);
+                //else
+                T newConfig = (T) Activator.CreateInstance(typeof (T), "Default" + typeof (T).Name, true);
 
                 ConfigItems.Add(newConfig);
                 Save();

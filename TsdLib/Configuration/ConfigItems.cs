@@ -6,10 +6,10 @@ using System.Drawing.Design;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
-using System.Xml.Serialization;
 
 namespace TsdLib.Configuration
 {
@@ -34,12 +34,6 @@ namespace TsdLib.Configuration
         public bool StoreInDatabase { get; set; }
 
         /// <summary>
-        /// Gets the name of the test system that the configuration item is used for.
-        /// </summary>
-        [Browsable(false)]
-        public string TestSystemName { get; set; }
-
-        /// <summary>
         /// Initialize a new configuration instance from persisted settings.
         /// </summary>
         public ConfigItem() { }
@@ -49,13 +43,11 @@ namespace TsdLib.Configuration
         /// </summary>
         /// <param name="name">Name of the configuration instance..</param>
         /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
-        /// <param name="testSystemName">Name of the test system the config item is used for.</param>
-        public ConfigItem(string name, bool storeInDatabase, string testSystemName)
+        public ConfigItem(string name, bool storeInDatabase)
         {
 // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             Name = name;
             StoreInDatabase = storeInDatabase;
-            TestSystemName = testSystemName;
         }
 
         /// <summary>
@@ -137,9 +129,8 @@ namespace TsdLib.Configuration
         /// </summary>
         /// <param name="name">Name of the configuration instance.</param>
         /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
-        /// <param name="testSystemName">Name of the test system the config item is used for.</param>
-        public StationConfigCommon(string name, bool storeInDatabase, string testSystemName)
-            : base(name, storeInDatabase, testSystemName) { }
+        public StationConfigCommon(string name, bool storeInDatabase)
+            : base(name, storeInDatabase) { }
     }
 
     /// <summary>
@@ -159,9 +150,8 @@ namespace TsdLib.Configuration
         /// </summary>
         /// <param name="name">Name of the configuration instance.</param>
         /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
-        /// <param name="testSystemName">Name of the test system the config item is used for.</param>
-        public ProductConfigCommon(string name, bool storeInDatabase, string testSystemName)
-            : base(name, storeInDatabase, testSystemName) { }
+        public ProductConfigCommon(string name, bool storeInDatabase)
+            : base(name, storeInDatabase) { }
     }
 
     /// <summary>
@@ -181,9 +171,8 @@ namespace TsdLib.Configuration
         /// </summary>
         /// <param name="name">Name of the configuration instance.</param>
         /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
-        /// <param name="testSystemName">Name of the test system the config item is used for.</param>
-        public TestConfigCommon(string name, bool storeInDatabase, string testSystemName)
-            : base(name, storeInDatabase, testSystemName) { }
+        public TestConfigCommon(string name, bool storeInDatabase)
+            : base(name, storeInDatabase) { }
     }
 
     /// <summary>
@@ -238,10 +227,11 @@ namespace TsdLib.Configuration
         /// </summary>
         /// <param name="name">Name of the configuration instance.</param>
         /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
-        /// <param name="testSystemName">Name of the test system the config item is used for.</param>
-        public Sequence(string name, bool storeInDatabase, string testSystemName)
-            : base(name, storeInDatabase, testSystemName)
+        public Sequence(string name, bool storeInDatabase)
+            : base(name, storeInDatabase)
         {
+            string testSystemName = Assembly.GetEntryAssembly().GetName().Name;
+
             SourceCode =
 @"
 using System.Diagnostics;
@@ -271,65 +261,14 @@ namespace " + testSystemName + ".Sequences" + Environment.NewLine +
         /// <param name="csFile">C# code file containing the complete test sequence class.</param>
         /// <param name="storeInDatabase">True to store configuration locally and on the database. False to store locally only.</param>
         /// <param name="assemblyReferences">Zero or more assemblies that are referenced by the test sequence class.</param>
-        /// <param name="testSystemName">Name of the test system the config item is used for.</param>
-        public Sequence(string csFile, bool storeInDatabase, string testSystemName, IEnumerable<string> assemblyReferences)
-            : base(Path.GetFileNameWithoutExtension(csFile), storeInDatabase, testSystemName)
+        public Sequence(string csFile, bool storeInDatabase, IEnumerable<string> assemblyReferences)
+            : base(Path.GetFileNameWithoutExtension(csFile), storeInDatabase)
         {
             SourceCode = File.ReadAllText(csFile);
             AssemblyReferences = new HashSet<string>(assemblyReferences);
             Name = Regex.Match(SourceCode, @"(?<=class )\w+").Value;
             StoreInDatabase = storeInDatabase;
-            TestSystemName = testSystemName;
         }
-
-        //private string writeSourceCode()
-        //{
-        //    //TODO: move to property initializer instead of constructor - this must run AFTER field initializers
-        //    string stationConfigType = ConfigManager.ConfigGroups
-        //        .Select(c => c.BaseConfigType)
-        //        .FirstOrDefault(bc => bc == "StationConfigCommon") ?? "StationConfigCommon";
-
-        //    string productConfigType = ConfigManager.ConfigGroups
-        //        .Select(c => c.BaseConfigType)
-        //        .FirstOrDefault(bc => bc == "ProductConfigCommon") ?? "ProductConfigCommon";
-
-        //    string testConfigType = ConfigManager.ConfigGroups
-        //        .Select(c => c.BaseConfigType)
-        //        .FirstOrDefault(bc => bc == "TestConfigCommon") ?? "TestConfigCommon";
-
-        //    try
-        //    {
-        //        CodeNamespace cns = new CodeNamespace();
-
-        //        cns.Imports.AddRange(UsingDirectives.Select(s => new CodeNamespaceImport(s)).ToArray());
-
-        //        cns.Name = TestSystemName + ".Sequences";
-
-        //        CodeTypeDeclaration sequenceClass = new CodeTypeDeclaration(TestSystemName);
-        //        CodeTypeReference sequenceBaseReference = new CodeTypeReference("TestSequenceBase", new CodeTypeReference(stationConfigType), new CodeTypeReference(productConfigType), new CodeTypeReference(testConfigType));
-        //        sequenceClass.BaseTypes.Add(sequenceBaseReference);
-
-        //        CodeMemberMethod executeMethod = new CodeMemberMethod { Name = "Execute" };
-        //        executeMethod.Parameters.AddRange(new[] { new CodeParameterDeclarationExpression(stationConfigType, "stationConfig"), new CodeParameterDeclarationExpression(productConfigType, "productConfig"), new CodeParameterDeclarationExpression(testConfigType, "testConfig") });
-        //        executeMethod.Statements.Add(new CodeSnippetStatement(SequenceCode));
-
-        //        sequenceClass.Members.Add(executeMethod);
-
-        //        cns.Types.Add(sequenceClass);
-
-        //        using (StringWriter writer = new StringWriter(new StringBuilder()))
-        //        {
-        //            using (CSharpCodeProvider provider = new CSharpCodeProvider())
-        //                provider.GenerateCodeFromNamespace(cns, writer, new CodeGeneratorOptions { BracingStyle = "C" });
-        //            return writer.ToString();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return "ERROR: " + ex.GetType().Name + Environment.NewLine + ex.Message;
-        //    }
-            
-        //}
     }
 
     internal class HashSetConverter : TypeConverter

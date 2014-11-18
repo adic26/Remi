@@ -34,6 +34,7 @@ namespace TsdLib.Controller
         private CancellationTokenSource _tokenSource;
         private readonly bool _devMode;
         private readonly bool _localDomain;
+        private readonly TestDetails _testDetails;
         private readonly ICodeParser _instrumentParser;
 
         //Public properties
@@ -41,18 +42,7 @@ namespace TsdLib.Controller
         /// Gets a reference to the user interface.
         /// </summary>
         public TView View { get; private set; }
-        /// <summary>
-        /// Gets the name of the test system. Also used as the client's namespace.
-        /// </summary>
-        public string TestSystemName { get; private set; }
-        /// <summary>
-        /// Gets the test system version.
-        /// </summary>
-        public string TestSystemVersion { get; private set; }
-        /// <summary>
-        /// Gets or sets the test details.
-        /// </summary>
-        public TestDetails TestDetails { get; protected set; }
+
 
         /// <summary>
         /// Gets the configuration manager that can be used to programatically interact with configuration objects.
@@ -63,35 +53,33 @@ namespace TsdLib.Controller
         /// <summary>
         /// Initialize a new system controller.
         /// </summary>
-        /// <param name="devMode">True to enable Developer Mode - config can be modified but results are stored in the Analysis category.</param>
-        /// <param name="testSystemName">Name of the test system.</param>
-        /// <param name="testSystemVersion">Version of the test system.</param>
-        /// <param name="databaseConnection">An <see cref="DatabaseConnection"/> object to handle persistence with a database.</param>
-        /// <param name="localDomain">True to execute the test sequence in the local application domain. Only available in Debug configuration.</param>
+        /// <param name="testDetails">A <see cref="_testDetails"/> object containing metadata describing the test request.</param>
+        /// <param name="databaseConnection">An <see cref="IDatabaseConnection"/> object to handle persistence with a database.</param>
         /// <param name="instrumentParser">An <see cref="System.CodeDom.Compiler.ICodeParser"/> object to generate source code from instrument xml definition files.</param>
-        protected ControllerBase(bool devMode, string testSystemName, string testSystemVersion, DatabaseConnection databaseConnection, bool localDomain, ICodeParser instrumentParser)
+        /// <param name="localDomain">True to execute the test sequence in the local application domain. Only available in Debug configuration.</param>
+        protected ControllerBase(TestDetails testDetails, IDatabaseConnection databaseConnection, ICodeParser instrumentParser, bool localDomain)
         {
-            _devMode = devMode;
-            _instrumentParser = instrumentParser;
 
 #if DEBUG
             Trace.WriteLine("Using TsdLib debug assembly. Test results will only be stored as Analysis.");
             _localDomain = localDomain;
 #else
             if (localDomain)
-                Trace.WriteLine("Operating in release mode - ignoring localDomain flag. Test sequence will be executed in the remote application domain.");
+                Trace.WriteLine("Operating in release mode - ignoring localDomain command-line switch. Test sequence will be executed in the remote application domain.");
             _localDomain = false;
 #endif
-            TestSystemName = testSystemName;
-            TestSystemVersion = testSystemVersion;
-            TestDetails = new TestDetails(testSystemName, testSystemVersion, Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
-            ConfigManager = new ConfigManager<TStationConfig, TProductConfig, TTestConfig, Sequence>(databaseConnection);
+            //TODO: currently using Debug/Release - update TsdLib to use Dev,Eng,Prod approach
+            _devMode = testDetails.TestSystemMode == "Debug";
+            _testDetails = testDetails;
+            _instrumentParser = instrumentParser;
+
+            ConfigManager = new ConfigManager<TStationConfig, TProductConfig, TTestConfig, Sequence>(testDetails, databaseConnection);
 
             //set up view
             View = new TView
             {
-                Text = TestSystemName + " v." + TestSystemVersion,
+                Text = testDetails.TestSystemName + " v." + testDetails.TestSystemVersion,
                 StationConfigList = ConfigManager.GetConfigGroup<TStationConfig>().GetList(),
                 ProductConfigList = ConfigManager.GetConfigGroup<TProductConfig>().GetList(),
                 TestConfigList = ConfigManager.GetConfigGroup<TTestConfig>().GetList(),
@@ -147,7 +135,7 @@ namespace TsdLib.Controller
                     TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence;
                     if (_localDomain)
                     {
-                        Type sequenceType = Assembly.GetEntryAssembly().GetType(TestSystemName + ".Sequences" + "." + sequenceConfig.Name);
+                        Type sequenceType = Assembly.GetEntryAssembly().GetType(_testDetails.TestSystemName + ".Sequences" + "." + sequenceConfig.Name);
                         sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>) Activator.CreateInstance(sequenceType);
                     }
                     else
@@ -166,7 +154,7 @@ namespace TsdLib.Controller
 
                         sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
 
-                        sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>) sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, TestSystemName + ".Sequences" + "." + sequenceConfig.Name);
+                        sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>) sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, _testDetails.TestSystemName + ".Sequences" + "." + sequenceConfig.Name);
                         sequence.AddTraceListener(View.Listener);
                     }
 
@@ -185,7 +173,7 @@ namespace TsdLib.Controller
                     _tokenSource = new CancellationTokenSource();
                     _tokenSource.Token.Register(sequence.Abort);
 
-                    sequence.ExecuteSequence(stationConfig, productConfig, testConfig, TestDetails);
+                    sequence.ExecuteSequence(stationConfig, productConfig, testConfig, _testDetails);
                 });
 
 
