@@ -90,13 +90,13 @@ namespace TsdLib.Configuration
         public string StationName { get; set; }
 
         /// <summary>
-        /// Gets the BSN of the DUT.
+        /// Gets the BSN of the DUT. Always returns 1234567890, since the BSN is automatically captured during test sequence and added to <see cref="TsdLib.TestResults.TestResultCollection.Information"/>.
         /// </summary>
-        [Category("Test Details")]
-        [DisplayName("BSN")]
-        [Description("BSN of the DUT.")]
         [Browsable(false)]
-        public string BSN { get; set; }
+        public string BSN
+        {
+            get { return "1234567890"; }
+        }
 
         /// <summary>
         /// Gets the functional type (SFI: 1/MFI: 2/Acc: 3)
@@ -123,7 +123,7 @@ namespace TsdLib.Configuration
             TestSystemVersion = testSystemVersion;
             TestSystemMode = testSystemMode;
             TsdFrameworkVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            JobNumber = TestType = TestStage = BSN = string.Empty;
+            JobNumber = TestType = TestStage =  string.Empty;
             FunctionalType = FunctionalType.SFI;
             StationName = Environment.MachineName;
             UnitNumber = 0;
@@ -139,9 +139,8 @@ namespace TsdLib.Configuration
         /// <param name="unitNumber">Identifier for the DUT.</param>
         /// <param name="testType">Type of test being performed, eg. Hardware Test Case Manager test number.</param>
         /// <param name="testStage">Current stage of testing. Could be trial number, modifications performed or some other descriptor to identify what has been performed on the DUT.</param>
-        /// <param name="bsn">OPTIONAL: BSN of the DUT.</param>
         /// <param name="functionalType">OPTIONAL: Type of OS image loaded on the DUT, eg. MFI or SFI.</param>
-        public TestDetails(string testSystemName, string testSystemVersion, string testSystemMode, string jobNumber, uint unitNumber, string testType, string testStage, string bsn = "", FunctionalType functionalType = FunctionalType.None)
+        public TestDetails(string testSystemName, string testSystemVersion, string testSystemMode, string jobNumber, uint unitNumber, string testType, string testStage, FunctionalType functionalType = FunctionalType.None)
         {
             TestSystemName = testSystemName;
             TestSystemVersion = testSystemVersion;
@@ -152,7 +151,6 @@ namespace TsdLib.Configuration
             TestType = testType;
             TestStage = testStage;
             StationName = Environment.MachineName;
-            BSN = bsn;
             FunctionalType = functionalType;
         }
 
@@ -222,7 +220,6 @@ namespace TsdLib.Configuration
             TestType = reader.ReadElementContentAsString("TestType", "");
             TestStage = reader.ReadElementContentAsString("TestStage", "");
             StationName = reader.ReadElementContentAsString("StationName", "");
-            BSN = reader.ReadElementContentAsString("BSN", "");
             FunctionalType = (FunctionalType)Enum.Parse(typeof (FunctionalType), reader.ReadElementContentAsString("FunctionalType", ""));
             reader.ReadEndElement();
         }

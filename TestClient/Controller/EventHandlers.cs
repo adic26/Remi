@@ -11,13 +11,15 @@ namespace TestClient
         public EventHandlers(IView view)
             : base(view) { }
 
+#if REMICONTROL
         protected override void TestComplete(object sender, TestResultCollection testResults)
         {
             base.TestComplete(sender, testResults);
 
             string dataLoggerXmlFile = testResults.Save(new DirectoryInfo(@"C:\TestResults"));
             Trace.WriteLine("XML results saved to " + dataLoggerXmlFile + " for database upload");
-            REMIControl.DAL.Results.UploadXML(dataLoggerXmlFile);
+            DBControl.DAL.Results.UploadXML(dataLoggerXmlFile);
         }
+#endif
     }
 }

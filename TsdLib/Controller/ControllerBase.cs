@@ -153,7 +153,7 @@ namespace TsdLib.Controller
                     if (_localDomain)
                     {
                         controllerProxy = (TEventHandlers)Activator.CreateInstance(typeof(TEventHandlers), BindingFlags.CreateInstance, null, new object[] { View }, CultureInfo.CurrentCulture);
-                        Type sequenceType = Assembly.GetEntryAssembly().GetType(Details.TestSystemName + ".Sequences" + "." + sequenceConfig.Name);
+                        Type sequenceType = Assembly.GetEntryAssembly().GetType(Assembly.GetEntryAssembly().GetName().Name + ".Sequences" + "." + sequenceConfig.Name);
                         sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>) Activator.CreateInstance(sequenceType);
                     }
                     else
@@ -173,7 +173,7 @@ namespace TsdLib.Controller
                         sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
 
 
-                        sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>) sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, Details.TestSystemName + ".Sequences" + "." + sequenceConfig.Name);
+                        sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, Assembly.GetEntryAssembly().GetName().Name + ".Sequences" + "." + sequenceConfig.Name);
 
                         controllerProxy = (TEventHandlers) sequenceDomain.CreateInstanceFromAndUnwrap(Assembly.GetEntryAssembly().CodeBase, typeof (TEventHandlers).FullName, false, BindingFlags.CreateInstance, null, new object[]{ View}, CultureInfo.CurrentCulture, null);
                         

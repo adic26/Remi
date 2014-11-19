@@ -31,10 +31,10 @@ namespace TestClient
             {
                 try
                 {
-                    using (REMIControl.Forms.Request remiForm = new REMIControl.Forms.Request())
+                    using (DBControl.Forms.Request remiForm = new DBControl.Forms.Request())
                         if (remiForm.ShowDialog() == DialogResult.OK)
                         {
-                            REMIControl.remiAPI.ScanReturnData batchInformation = remiForm.RemiData[0];
+                            DBControl.remiAPI.ScanReturnData batchInformation = remiForm.RemiData[0];
                             Details.TestSystemName = batchInformation.SelectedTestName;
                             string[] qraNumber = batchInformation.QRANumber.Split('-');
                             Details.JobNumber = String.Join("-", qraNumber, 0, qraNumber.Length - 1);
@@ -49,7 +49,7 @@ namespace TestClient
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("REMIControl Exception: " + ex.Message);
+                    MessageBox.Show(ex.ToString(), ex.GetType().Name);
                 }
             }
             else

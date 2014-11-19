@@ -35,8 +35,13 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="REMIControl">
-      <HintPath>..\packages\REMIControl.3.3.5435.23444\lib\net40\REMIControl.dll</HintPath>
+    <Reference Include="DBControl, Version=4.0.5436.28228, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>\\fsg52ykf\ReliabilityTSD\DLL\REMI\Control\Latest\test\DBControl.dll</HintPath>
+    </Reference>
+    <Reference Include="DBControl.XmlSerializers, Version=4.0.5436.28228, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>\\fsg52ykf\ReliabilityTSD\DLL\REMI\Control\Latest\test\DBControl.XmlSerializers.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
