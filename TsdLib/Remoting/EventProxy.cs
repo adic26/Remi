@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Threading;
+using TsdLib.Configuration;
+using TsdLib.Controller;
+using TsdLib.View;
 
 namespace TsdLib
 {
@@ -30,8 +33,9 @@ namespace TsdLib
         /// <param name="sender">The object where the event was raised.</param>
         /// <param name="eventAgrs">EventArgs object to attach to the event.</param>
         public void FireEvent(object sender, T eventAgrs)
-        {//TODO: make thread-safe for UI
+        {
             EventHandler<T> handler = Event;
+            
             if (handler != null)
                 if (_context != null)
                     _context.Post(s => handler(sender, eventAgrs), null);
@@ -40,19 +44,10 @@ namespace TsdLib
         }
 
         /// <summary>
-        /// Initialize a new EventProxy.
+        /// Initialize a new EventProxy, optionally specifying which thread the event handlers will be executed on.
         /// </summary>
-        public EventProxy()
-        {
-
-        }
-    
-
-        /// <summary>
-        /// Initialize a new EventProxy, specifying which thread the event handlers will be executed on.
-        /// </summary>
-        /// <param name="context"><see cref="System.Threading.SynchronizationContext"/> on which to fire the event.</param>
-        public EventProxy(SynchronizationContext context)
+        /// <param name="context">OPTIONAL: A <see cref="System.Threading.SynchronizationContext"/> on which to fire the event.</param>
+        public EventProxy(SynchronizationContext context = null)
         {
             _context = context;
         }

@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
 using System.Windows.Forms;
 using TestClient.Configuration;
 using TsdLib;
 using TsdLib.CodeGenerator;
 using TsdLib.Configuration;
 using TsdLib.Controller;
-using TsdLib.TestResults;
 
 namespace TestClient
 {
-    public class Controller : ControllerBase<View, StationConfig, ProductConfig, TestConfig>
+    public class Controller : ControllerBase<View, StationConfig, ProductConfig, TestConfig, EventHandlers>
     {
 #if INSTRUMENT_LIBRARY
         public Controller(TestDetails testDetails, IDatabaseConnection databaseConnection, bool localDomain)
@@ -57,16 +54,6 @@ namespace TestClient
             }
             else
                 base.EditTestDetails(sender, false);
-        }
-
-        protected override void TestComplete(object sender, TestResultCollection testResults)
-        {
-            base.TestComplete(sender, testResults);
-            
-            string dataLoggerXmlFile = testResults.Save(new DirectoryInfo(@"C:\TestResults"));
-            Trace.WriteLine("XML results saved to " + dataLoggerXmlFile + " for database upload");
-            REMIControl.DAL.Results.UploadXML(dataLoggerXmlFile);
-
         }
 #endif
     }

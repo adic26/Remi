@@ -208,9 +208,7 @@ namespace TsdLib.TestSequence
                 _cts.Dispose();
                 FactoryEvents.Connected -= FactoryEvents_Connected;
                 foreach (IInstrument instrument in _instruments)
-                {
                     instrument.Dispose();
-                }
             }
         }
     }
