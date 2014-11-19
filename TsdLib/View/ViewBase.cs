@@ -118,6 +118,18 @@ namespace TsdLib.View
         }
 
         /// <summary>
+        /// Event fired when requesting to edit the test details.
+        /// </summary>
+        public event EventHandler<bool> EditTestDetails;
+        private void button_EditTestDetails_Click(object sender, EventArgs e)
+        {
+            bool fromDb = checkBox_GetDetailsFromDatabase.Checked;
+            checkBox_GetDetailsFromDatabase.Checked = false;
+            if (EditTestDetails != null)
+                EditTestDetails(this, fromDb);
+        }
+
+        /// <summary>
         /// Event fired when requesting to execute the Test Sequence.
         /// </summary>
         public event EventHandler<TestSequenceEventArgs> ExecuteTestSequence;

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using TsdLib.CodeGenerator;
 using TsdLib.Configuration;
 
 namespace TestClient
@@ -18,6 +16,9 @@ namespace TestClient
         [STAThread]
         private static void Main(string[] args)
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
 #if DEBUG
             const string assemblyMode = "Debug";
 #else
@@ -32,12 +33,9 @@ namespace TestClient
             string testSystemMode = args.Contains("-testSystemMode") ? argsList[argsList.IndexOf("-testSystemMode") + 1] : assemblyMode;
             bool localDomain = args.Length > 0 && args.Contains("-localDomain");
 
-#if REMICONTROL
-            //TODO: launch RemiControl form and populate TestDetails from form.ScanReturnData
-#else
             TestDetails testDetails = new TestDetails(testSystemName, testSystemVersion, testSystemMode);
+
             DatabaseFolderConnection databaseFolderConnection = new DatabaseFolderConnection(@"C:\temp\TsdLibSettings");
-#endif
 
             if (args.Contains("-seq"))
             {
@@ -46,7 +44,7 @@ namespace TestClient
                 int seqArgIndex = argsList.IndexOf("-seq");
                 string sequenceFolder = argsList[seqArgIndex + 1];
                 bool storeInDatabase = bool.Parse(argsList[seqArgIndex + 2]);
-                List<string> assemblyReferences = new List<string>{"System.dll","System.Xml.dll","TsdLib.dll",testSystemName + ".exe"};
+                List<string> assemblyReferences = new List<string> { "System.dll", "System.Xml.dll", "TsdLib.dll", testSystemName + ".exe" };
 
                 foreach (Sequence sequence in sequences)
                 {
@@ -60,15 +58,7 @@ namespace TestClient
                 return;
             }
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
-#if INSTRUMENT_LIBRARY
-            ICodeParser instrumentParser = new TsdLib.InstrumentLibrary.InstrumentParser(Application.ProductName, Language.CSharp.ToString());
-#else
-            ICodeParser instrumentParser = new BasicCodeParser();
-#endif
-            Controller c = new Controller(testDetails, databaseFolderConnection, instrumentParser, localDomain);
+            Controller c = new Controller(testDetails, databaseFolderConnection, localDomain);
 
             Application.Run(c.View);
             

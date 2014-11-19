@@ -46,6 +46,8 @@ namespace TsdLib.View
             this.label_SequenceConfig = new System.Windows.Forms.Label();
             this.button_ViewEditConfiguration = new System.Windows.Forms.Button();
             this.panel_Controls = new System.Windows.Forms.Panel();
+            this.button_EditTestDetails = new System.Windows.Forms.Button();
+            this.checkBox_GetDetailsFromDatabase = new System.Windows.Forms.CheckBox();
             this.measurementDataGridView = new TsdLib.View.MeasurementDataGridView();
             this.MeasurementName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MeasuredValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -178,9 +180,9 @@ namespace TsdLib.View
             // 
             // button_ViewEditConfiguration
             // 
-            this.button_ViewEditConfiguration.Location = new System.Drawing.Point(251, 76);
+            this.button_ViewEditConfiguration.Location = new System.Drawing.Point(223, 69);
             this.button_ViewEditConfiguration.Name = "button_ViewEditConfiguration";
-            this.button_ViewEditConfiguration.Size = new System.Drawing.Size(150, 47);
+            this.button_ViewEditConfiguration.Size = new System.Drawing.Size(133, 47);
             this.button_ViewEditConfiguration.TabIndex = 21;
             this.button_ViewEditConfiguration.Text = "View/Edit Configuration";
             this.button_ViewEditConfiguration.UseVisualStyleBackColor = true;
@@ -188,6 +190,8 @@ namespace TsdLib.View
             // 
             // panel_Controls
             // 
+            this.panel_Controls.Controls.Add(this.checkBox_GetDetailsFromDatabase);
+            this.panel_Controls.Controls.Add(this.button_EditTestDetails);
             this.panel_Controls.Controls.Add(this.button_ViewEditConfiguration);
             this.panel_Controls.Controls.Add(this.label_SequenceConfig);
             this.panel_Controls.Controls.Add(this.comboBox_SequenceConfig);
@@ -199,8 +203,30 @@ namespace TsdLib.View
             this.panel_Controls.Controls.Add(this.comboBox_StationConfig);
             this.panel_Controls.Location = new System.Drawing.Point(4, 2);
             this.panel_Controls.Name = "panel_Controls";
-            this.panel_Controls.Size = new System.Drawing.Size(416, 171);
+            this.panel_Controls.Size = new System.Drawing.Size(542, 171);
             this.panel_Controls.TabIndex = 22;
+            // 
+            // button_EditTestDetails
+            // 
+            this.button_EditTestDetails.Location = new System.Drawing.Point(392, 69);
+            this.button_EditTestDetails.Name = "button_EditTestDetails";
+            this.button_EditTestDetails.Size = new System.Drawing.Size(133, 47);
+            this.button_EditTestDetails.TabIndex = 22;
+            this.button_EditTestDetails.Text = "Edit Test Details";
+            this.button_EditTestDetails.UseVisualStyleBackColor = true;
+            this.button_EditTestDetails.Click += new System.EventHandler(this.button_EditTestDetails_Click);
+            // 
+            // checkBox_GetDetailsFromDatabase
+            // 
+            this.checkBox_GetDetailsFromDatabase.AutoSize = true;
+            this.checkBox_GetDetailsFromDatabase.Checked = true;
+            this.checkBox_GetDetailsFromDatabase.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_GetDetailsFromDatabase.Location = new System.Drawing.Point(400, 122);
+            this.checkBox_GetDetailsFromDatabase.Name = "checkBox_GetDetailsFromDatabase";
+            this.checkBox_GetDetailsFromDatabase.Size = new System.Drawing.Size(115, 17);
+            this.checkBox_GetDetailsFromDatabase.TabIndex = 23;
+            this.checkBox_GetDetailsFromDatabase.Text = "Get from Database";
+            this.checkBox_GetDetailsFromDatabase.UseVisualStyleBackColor = true;
             // 
             // measurementDataGridView
             // 
@@ -365,5 +391,13 @@ namespace TsdLib.View
         /// Request to view or modify the test configuration.
         /// </summary>
         protected System.Windows.Forms.Button button_ViewEditConfiguration;
+        /// <summary>
+        /// Request to edit the test details.
+        /// </summary>
+        protected System.Windows.Forms.Button button_EditTestDetails;
+        /// <summary>
+        /// Switch to control EditTestDetails behaviour.
+        /// </summary>
+        protected System.Windows.Forms.CheckBox checkBox_GetDetailsFromDatabase;
     }
 }

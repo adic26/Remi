@@ -33,11 +33,23 @@ namespace TsdLib
         {//TODO: make thread-safe for UI
             EventHandler<T> handler = Event;
             if (handler != null)
-                _context.Post(s => handler(sender, eventAgrs), null);
+                if (_context != null)
+                    _context.Post(s => handler(sender, eventAgrs), null);
+                else
+                    handler(sender, eventAgrs);
         }
 
         /// <summary>
         /// Initialize a new EventProxy.
+        /// </summary>
+        public EventProxy()
+        {
+
+        }
+    
+
+        /// <summary>
+        /// Initialize a new EventProxy, specifying which thread the event handlers will be executed on.
         /// </summary>
         /// <param name="context"><see cref="System.Threading.SynchronizationContext"/> on which to fire the event.</param>
         public EventProxy(SynchronizationContext context)

@@ -17,7 +17,7 @@ namespace TsdLib.TestResults
     /// </summary>
     [Serializable]
     [XmlRoot(ElementName = "TestResults", Namespace = "TsdLib.ResultsFile.xsd")]
-    public class TestResultCollection : IXmlSerializable
+    public class TestResultCollection : MarshalByRefObject, IXmlSerializable
     {
         static XmlSerializer _serializer = new XmlSerializer(typeof(TestResultCollection));
         static IFormatter _formatter = new BinaryFormatter();
