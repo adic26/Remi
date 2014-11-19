@@ -3,6 +3,7 @@ using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -24,11 +25,13 @@ namespace TsdLib.Controller
     /// <typeparam name="TStationConfig">System-specific type of station config.</typeparam>
     /// <typeparam name="TProductConfig">System-specific type of product config.</typeparam>
     /// <typeparam name="TTestConfig">System-specific type of test config.</typeparam>
-    public abstract class ControllerBase<TView, TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject
+    /// <typeparam name="TEventHandlers">System-specific type of event handler proxy.</typeparam>
+    public abstract class ControllerBase<TView, TStationConfig, TProductConfig, TTestConfig, TEventHandlers>
         where TView : IView, new()
         where TStationConfig : StationConfigCommon, new()
         where TProductConfig : ProductConfigCommon, new()
         where TTestConfig : TestConfigCommon, new()
+        where TEventHandlers : EventHandlersBase
     {
         //Private fields
         private CancellationTokenSource _tokenSource;
@@ -60,6 +63,8 @@ namespace TsdLib.Controller
         /// <param name="localDomain">True to execute the test sequence in the local application domain. Only available in Debug configuration.</param>
         protected ControllerBase(TestDetails testDetails, IDatabaseConnection configConnection, ICodeParser instrumentParser, bool localDomain)
         {
+            Thread.CurrentThread.Name = "UI Thread";
+
             //TODO: currently using Debug/Release - update TsdLib to use Dev,Eng,Prod approach
             _devMode = testDetails.TestSystemMode == "Debug";
             Details = testDetails;
@@ -142,9 +147,12 @@ namespace TsdLib.Controller
                 //TODO: should we remove the await?
                 await Task.Run(() =>
                 {
+                    Thread.CurrentThread.Name = "Sequence Thread";
                     TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence;
+                    TEventHandlers controllerProxy;
                     if (_localDomain)
                     {
+                        controllerProxy = (TEventHandlers)Activator.CreateInstance(typeof(TEventHandlers), BindingFlags.CreateInstance, null, new object[] { View }, CultureInfo.CurrentCulture);
                         Type sequenceType = Assembly.GetEntryAssembly().GetType(Details.TestSystemName + ".Sequences" + "." + sequenceConfig.Name);
                         sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>) Activator.CreateInstance(sequenceType);
                     }
@@ -164,30 +172,34 @@ namespace TsdLib.Controller
 
                         sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
 
+
                         sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>) sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, Details.TestSystemName + ".Sequences" + "." + sequenceConfig.Name);
+
+                        controllerProxy = (TEventHandlers) sequenceDomain.CreateInstanceFromAndUnwrap(Assembly.GetEntryAssembly().CodeBase, typeof (TEventHandlers).FullName, false, BindingFlags.CreateInstance, null, new object[]{ View}, CultureInfo.CurrentCulture, null);
+                        
                         sequence.AddTraceListener(View.Listener);
                     }
 
                     //Set up View-handled events
                     EventProxy<TestInfo> infoEventProxy = new EventProxy<TestInfo>(uiContext);
                     sequence.InfoEventProxy = infoEventProxy;
-                    infoEventProxy.Event += InfoAdded;
+                    infoEventProxy.Event += controllerProxy.InfoAdded;
 
                     EventProxy<MeasurementBase> measurementEventProxy = new EventProxy<MeasurementBase>(uiContext);
                     sequence.MeasurementEventProxy = measurementEventProxy;
-                    measurementEventProxy.Event += MeasurementAdded;
+                    measurementEventProxy.Event += controllerProxy.MeasurementAdded;
 
-                    sequence.MeasurementPlainEvent += MeasurementAddedPlain;
+                    //sequence.MeasurementPlainEvent += MeasurementAddedPlain;
 
                     EventProxy<Data> dataEventProxy = new EventProxy<Data>(uiContext);
                     sequence.DataEventProxy = dataEventProxy;
-                    dataEventProxy.Event += DataAdded;
+                    dataEventProxy.Event += controllerProxy.DataAdded;
 
 
                     //Set up Controller-handled events
                     EventProxy<TestResultCollection> testCompleteEventProxy = new EventProxy<TestResultCollection>();
                     sequence.TestCompleteEventProxy = testCompleteEventProxy;
-                    testCompleteEventProxy.Event += TestComplete;
+                    testCompleteEventProxy.Event += controllerProxy.TestComplete;
 
                     _tokenSource = new CancellationTokenSource();
                     _tokenSource.Token.Register(sequence.Abort);
@@ -212,64 +224,8 @@ namespace TsdLib.Controller
                 View.SetState(State.ReadyToTest);
                 if (sequenceDomain != null)
                     AppDomain.Unload(sequenceDomain);
+                //TODO: dispose the sequence - but make sure all events on the UI thread are finished
             }
-        }
-
-        /// <summary>
-        /// Default handler for the <see cref="TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}.InfoEventProxy"/>. Calls <see cref="IView.AddInformation"/>.
-        /// </summary>
-        /// <param name="sender">The <see cref="TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}"/> where the information was captured.</param>
-        /// <param name="testInfo">The <see cref="TestInfo"/> that was captured.</param>
-        protected virtual void InfoAdded(object sender, TestInfo testInfo)
-        {
-            View.AddInformation(testInfo);
-        }
-
-        /// <summary>
-        /// Default handler for the <see cref="TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}.MeasurementEventProxy"/>. Calls <see cref="IView.AddMeasurement"/>.
-        /// </summary>
-        /// <param name="sender">The <see cref="TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}"/> where the measurement was captured.</param>
-        /// <param name="measurementBase">The <see cref="MeasurementBase"/> that was captured.</param>
-        protected virtual void MeasurementAdded(object sender, MeasurementBase measurementBase)
-        {
-            View.AddMeasurement(measurementBase);
-        }
-
-        /// <summary>
-        /// Default handler for the <see cref="TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}.MeasurementEventProxy"/>. Calls <see cref="IView.AddMeasurement"/>.
-        /// </summary>
-        /// <param name="sender">The <see cref="TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}"/> where the measurement was captured.</param>
-        /// <param name="measurementBase">The <see cref="MeasurementBase"/> that was captured.</param>
-        protected virtual void MeasurementAddedPlain(object sender, MeasurementBase measurementBase)
-        {
-            View.AddMeasurement(measurementBase);
-        }
-
-        /// <summary>
-        /// Default handler for the <see cref="TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}.DataEventProxy"/>. Calls <see cref="IView.AddData"/>.
-        /// </summary>
-        /// <param name="sender">The <see cref="TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}"/> where the measurement was captured.</param>
-        /// <param name="data">The <see cref="Data"/> that was captured.</param>
-        protected virtual void DataAdded(object sender, Data data)
-        {
-            View.AddData(data);
-        }
-
-        /// <summary>
-        /// Default handler for the <see cref="TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}.TestCompleteEventProxy"/>. Saves the test results as xml and csv to the TsdLib.SpecialFolders location.
-        /// </summary>
-        /// <param name="sender">The <see cref="TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}"/> where the test was performed.</param>
-        /// <param name="testResults">The <see cref="TestResultCollection"/> that was captured.</param>
-        protected virtual void TestComplete(object sender, TestResultCollection testResults)
-        {
-            DirectoryInfo resultsDirectory = SpecialFolders.GetResultsFolder(testResults.Details.TestSystemName);
-
-            string xmlResultsFile = testResults.Save(resultsDirectory);
-            string csvResultsFile = testResults.SaveCsv(resultsDirectory);
-
-            Trace.WriteLine("Test sequence completed.");
-            Trace.WriteLine("XML results saved to " + xmlResultsFile);
-            Trace.WriteLine("CSV results saved to " + csvResultsFile);
         }
 
         /// <summary>

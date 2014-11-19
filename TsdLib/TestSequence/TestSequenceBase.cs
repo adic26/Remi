@@ -81,8 +81,6 @@ namespace TsdLib.TestSequence
         /// </summary>
         public EventProxy<TestResultCollection> TestCompleteEventProxy { get; set; }
 
-        public event EventHandler<MeasurementBase> MeasurementPlainEvent;
-
         /// <summary>
         /// Initializes the TestSequenceBase object.
         /// </summary>
@@ -210,9 +208,7 @@ namespace TsdLib.TestSequence
                 _cts.Dispose();
                 FactoryEvents.Connected -= FactoryEvents_Connected;
                 foreach (IInstrument instrument in _instruments)
-                {
                     instrument.Dispose();
-                }
             }
         }
     }
