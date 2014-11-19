@@ -67,13 +67,13 @@ namespace TsdLib.Configuration
             propertyGrid_Settings.Enabled = editable;
 
             propertyGrid_Settings.CommandsVisibleIfAvailable = true;
-            propertyGrid_Settings.PropertyValueChanged += propertyGrid_Settings_PropertyValueChanged;
+            //propertyGrid_Settings.PropertyValueChanged += propertyGrid_Settings_PropertyValueChanged; //doesn't fire when collections are modified
+            propertyGrid_Settings.Leave += propertyGrid_Settings_Leave;
         }
 
-        void propertyGrid_Settings_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        private void propertyGrid_Settings_Leave(object sender, EventArgs e)
         {
             ModifiedConfigGroups.Add((IConfigGroup)comboBox_ConfigType.SelectedItem);
-
         }
 
         private void comboBox_TestSystemName_SelectedValueChanged(object sender, EventArgs e)
