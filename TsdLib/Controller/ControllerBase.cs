@@ -24,7 +24,7 @@ namespace TsdLib.Controller
     /// <typeparam name="TStationConfig">System-specific type of station config.</typeparam>
     /// <typeparam name="TProductConfig">System-specific type of product config.</typeparam>
     /// <typeparam name="TTestConfig">System-specific type of test config.</typeparam>
-    public abstract class ControllerBase<TView, TStationConfig, TProductConfig, TTestConfig>
+    public abstract class ControllerBase<TView, TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject
         where TView : IView, new()
         where TStationConfig : StationConfigCommon, new()
         where TProductConfig : ProductConfigCommon, new()
@@ -177,6 +177,8 @@ namespace TsdLib.Controller
                     sequence.MeasurementEventProxy = measurementEventProxy;
                     measurementEventProxy.Event += MeasurementAdded;
 
+                    sequence.MeasurementPlainEvent += MeasurementAddedPlain;
+
                     EventProxy<Data> dataEventProxy = new EventProxy<Data>(uiContext);
                     sequence.DataEventProxy = dataEventProxy;
                     dataEventProxy.Event += DataAdded;
@@ -229,6 +231,16 @@ namespace TsdLib.Controller
         /// <param name="sender">The <see cref="TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}"/> where the measurement was captured.</param>
         /// <param name="measurementBase">The <see cref="MeasurementBase"/> that was captured.</param>
         protected virtual void MeasurementAdded(object sender, MeasurementBase measurementBase)
+        {
+            View.AddMeasurement(measurementBase);
+        }
+
+        /// <summary>
+        /// Default handler for the <see cref="TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}.MeasurementEventProxy"/>. Calls <see cref="IView.AddMeasurement"/>.
+        /// </summary>
+        /// <param name="sender">The <see cref="TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}"/> where the measurement was captured.</param>
+        /// <param name="measurementBase">The <see cref="MeasurementBase"/> that was captured.</param>
+        protected virtual void MeasurementAddedPlain(object sender, MeasurementBase measurementBase)
         {
             View.AddMeasurement(measurementBase);
         }
