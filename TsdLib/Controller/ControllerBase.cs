@@ -60,6 +60,8 @@ namespace TsdLib.Controller
         /// <param name="localDomain">True to execute the test sequence in the local application domain. Only available in Debug configuration.</param>
         protected ControllerBase(TestDetails testDetails, IDatabaseConnection configConnection, ICodeParser instrumentParser, bool localDomain)
         {
+            Thread.CurrentThread.Name = "UI Thread";
+
             //TODO: currently using Debug/Release - update TsdLib to use Dev,Eng,Prod approach
             _devMode = testDetails.TestSystemMode == "Debug";
             Details = testDetails;
@@ -142,6 +144,7 @@ namespace TsdLib.Controller
                 //TODO: should we remove the await?
                 await Task.Run(() =>
                 {
+                    Thread.CurrentThread.Name = "Sequence Thread";
                     TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence;
                     if (_localDomain)
                     {
@@ -191,7 +194,7 @@ namespace TsdLib.Controller
                     _tokenSource.Token.Register(sequence.Abort);
 
                     sequence.ExecuteSequence(stationConfig, productConfig, testConfig, Details);
-                });
+                }, _tokenSource.Token);
 
 
             }
