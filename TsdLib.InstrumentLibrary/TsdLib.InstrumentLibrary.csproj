@@ -55,10 +55,6 @@
     <Content Include="Instruments\Helpers\IBlackBerryWlan.cs.pp" />
     <Compile Include="InstrumentLibraryExceptions.cs" />
     <Compile Include="InstrumentParser.cs" />
-    <Compile Include="Instruments\BCM4334.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>BlackBerry.xml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="TsdLib.Instruments.xsd">
       <SubType>Designer</SubType>
