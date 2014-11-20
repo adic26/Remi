@@ -26,9 +26,9 @@ namespace TestClient.Sequences
                     ps.SetVoltage(voltageSetting);
                     Thread.Sleep(productConfig.SettlingTime);
                     
-                    MeasurementParameter measurementParameter = new MeasurementParameter("Voltage", voltageSetting);
-                    MeasurementParameter measurementParameter2 = new MeasurementParameter("Temperature", 22.5);
-                    Measurement<double> measurement = new Measurement<double>("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: new[] { measurementParameter, measurementParameter2 });
+                    MeasurementParameter measurementParameter = new MeasurementParameter("Voltage" + i + voltageSetting, voltageSetting);
+                    MeasurementParameter measurementParameter2 = new MeasurementParameter("Temperature" + i + voltageSetting, 22.5);
+                    Measurement<double> measurement = new Measurement<double>("Current" + i + voltageSetting, ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: new[] { measurementParameter, measurementParameter2 });
                     Measurements.Add(measurement);
                 }
             }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using TsdLib.Configuration;
@@ -76,6 +75,11 @@ namespace TsdLib.TestSequence
         /// Gets or sets an EventProxy object that can be used to send data events across AppDomain boundaries.
         /// </summary>
         public EventProxy<Data> DataEventProxy { get; set; }
+
+        /// <summary>
+        /// Gets or sets an EventProxy object that can be used to notify the system when the test sequence is complete.
+        /// </summary>
+        public EventProxy<TestResultCollection> TestCompleteEventProxy { get; set; }
 
         /// <summary>
         /// Initializes the TestSequenceBase object.
@@ -164,16 +168,7 @@ namespace TsdLib.TestSequence
                 
                 TestResultCollection testResults = new TestResultCollection(testDetails, Measurements, summary, Information);
 
-                DirectoryInfo resultsDirectory = SpecialFolders.GetResultsFolder(testDetails.TestSystemName);
-
-                string xmlResultsFile = testResults.Save(resultsDirectory);
-                string csvResultsFile = testResults.SaveCsv(resultsDirectory);
-                
-                Trace.WriteLine("Test sequence completed.");
-                Trace.WriteLine("XML results saved to " + xmlResultsFile);
-                Trace.WriteLine("CSV results saved to " + csvResultsFile);
-                //Process.Start(measurementFile);
-                //Process.Start(csvResultsFile);
+                TestCompleteEventProxy.FireEvent(this, testResults);
             }
             catch (OperationCanceledException)
             {
@@ -213,9 +208,7 @@ namespace TsdLib.TestSequence
                 _cts.Dispose();
                 FactoryEvents.Connected -= FactoryEvents_Connected;
                 foreach (IInstrument instrument in _instruments)
-                {
                     instrument.Dispose();
-                }
             }
         }
     }

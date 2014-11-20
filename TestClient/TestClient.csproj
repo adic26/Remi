@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;REMICONTROL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -35,6 +35,14 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DBControl, Version=4.0.5436.28228, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>\\fsg52ykf\ReliabilityTSD\DLL\REMI\Control\Latest\test\DBControl.dll</HintPath>
+    </Reference>
+    <Reference Include="DBControl.XmlSerializers, Version=4.0.5436.28228, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>\\fsg52ykf\ReliabilityTSD\DLL\REMI\Control\Latest\test\DBControl.XmlSerializers.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -42,8 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controller.cs" />
+    <Compile Include="Controller\Controller.cs" />
     <Compile Include="Configuration\ProductConfig.cs" />
+    <Compile Include="Controller\EventHandlers.cs" />
     <Compile Include="Instruments\Helpers\DummyPowerSupply.cs" />
     <Compile Include="Instruments\PowerSupply.cs">
       <AutoGen>True</AutoGen>
@@ -63,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="View.resx">

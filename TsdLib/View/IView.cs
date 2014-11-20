@@ -16,6 +16,11 @@ namespace TsdLib.View
         TraceListener Listener { get; }
 
         /// <summary>
+        /// Event fired when requesting to edit the test details.
+        /// </summary>
+        event EventHandler<bool> EditTestDetails;
+
+        /// <summary>
         /// Event fired when requesting to view or modify the test system configuration.
         /// </summary>
         event EventHandler ViewEditConfiguration;
