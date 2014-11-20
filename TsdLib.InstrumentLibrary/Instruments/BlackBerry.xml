@@ -1,31 +1,49 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Instruments xmlns="TsdLib.Instruments.xsd">
-  <Instrument Name="BlackBerry" ConnectionType="Telnet" CommandDelay="200" Interfaces="IBlackBerryWlan">
-    
+  <Instrument Name="BCM4334" ConnectionType="Telnet" CommandDelay="200" Interfaces="IBlackBerryWlan" InitCommands="echo fw_pltenable::1>>/pps/services/wifi/escreen">
+
     <!--Discovery-->
     <IdQuery Response="BlackBerry Device"/>
-    
+
     <!--Identification-->
     <ModelNumber Message="cat /pps/services/hw_info/inventory" RegEx="(?&lt;=Board_Type::).*(?=\r\nBoot_Devices)"/>
     <SerialNumber Message="cat /pps/system/nvram/deviceinfo" RegEx="(?&lt;=BSN::).*(?=\r\nBTMAC)"/>
     <FirmwareVersion Message="cat /pps/services/deviceproperties" RegEx="(?&lt;=scmbundle::).*(?=\r\nscmbundle0)"/>
-    
-    <!--IBlackBerryWlan-->
-    <Command Name="EnablePlt" Message="echo fw_pltenable::1>>/pps/services/wifi/escreen"/>
-    <Command Name="DisableRx" Message="wl_bcm4334 pkteng_stop rx"/>
-    <Command Name="DisableMpc" Message="wl_bcm4334 mpc 0" />
-    <!--For 4339 <Command Name="DisableWatchdog" Message="wl_bcm4334 phy_watchdog 0" />-->
-    <Command Name="Enable" Message="wl_bcm4334 up" />
-    <Command Name="SetBand" Message="wl_bcm4334 band {0}"> <Parameter Name="band" Type="String"/> </Command>
-    <Command Name="SetChannel" Message="wl_bcm4334 channel {0}"> <Parameter Name="channel" Type="Int32"/> </Command>
-    <Command Name="SetRate" Message="wl_bcm4334 rate {0}"> <Parameter Name="rate" Type="Int32"/> </Command>
-    <Command Name="StartRx" Message="wl_bcm4334 pkteng_start 10:20:30:40:50:60 rx"/>
-    <Command Name="ResetCounters" Message="wl_bcm4334 reset_cnts"/>
-    <Command Name="StartCounters" Message="wl_bcm4334 counters"/>
-    
-    <Query Name="IsEnabled" Message="wl_bcm4334 isup" ReturnType="Int32" />
 
-    <!--General BlackBerry methods-->
+    <!--IBlackBerryWlan-->
+    <Command Name="SetBand" Message="wl_bcm4334 band {0}">
+      <Parameter Name="band" Type="String"/>
+    </Command>
+    <Command Name="SetChannel" Message="wl_bcm4334 channel {0}">
+      <Parameter Name="channel" Type="Int32"/>
+    </Command>
+    <Command Name="SetFrequency" Message="wl_bcm4334 band {0};wl_bcm4334 channel {1}" >
+      <Parameter Name="band" Type="String"/>
+      <Parameter Name="channel" Type="Int32"/>
+    </Command>
+    <Command Name="SetRate" Message="wl_bcm4334 rate {0}">
+      <Parameter Name="rate" Type="Double"/>
+    </Command>
+    <Command Name="SetUplinkPower" Message="wl_bcm4334 txpwr1 {0}">
+      <Parameter Name="powerLevel" Type="Double"/>
+    </Command>
+    <Command Name="StartTx" Message="wl_bcm4334 pkteng_start 00:11:22:33:44:55 tx 1000 1024 0"/>
+    <Command Name="StartRx" Message="wl_bcm4334 pkteng_start 00:00:00:C0:FF:EE rxwithack"/>
+    <Command Name="ResetCounter" Message="wl_bcm4334 reset_cnts"/>
+
+
+
+    <!--IBlackBerryWlan-->
+    <Query Name="SetCountry" Message="wl_bcm4334 country {0};wl_bcm4334 country" ReturnType="String">
+      <Parameter Name="countryCode" Type="String"/>
+    </Query>
+    <Query Name="InitializeWlanRx" Message="wl_bcm4334 pkteng_stop rx;wl_bcm4334 mpc 0;wl_bcm4334 up;wl_bcm4334 isup" ReturnType="Boolean" />
+    <Query Name="InitializeWlanTx" Message="wl_bcm4334 pkteng_stop tx;wl_bcm4334 down;wl_bcm4334 mpc 0;wl_bcm4334 up;wl_bcm4334 isup" ReturnType="Boolean" />
+    <Query Name="IsEnabled" Message="wl_bcm4334 isup" ReturnType="Int32" />
+    <Query Name="GetRxFrameCount" Message="wl_bcm4334 counters" RegEx="(?&lt;=rxdfrmmcast )\d+" ReturnType="Int32"/>
+
+    <!--General-->
     <Query Name="GetImei" Message="cat /pps/system/nvram/deviceinfo" RegEx="(?&lt;=IMEI::).*(?=\r\nInProduction)" ReturnType="String" />
+    
   </Instrument>
 </Instruments>
