@@ -33,9 +33,18 @@ namespace TestClient
             string testSystemMode = args.Contains("-testSystemMode") ? argsList[argsList.IndexOf("-testSystemMode") + 1] : assemblyMode;
             bool localDomain = args.Length > 0 && args.Contains("-localDomain");
 
+            string settingsLocation;
+            if (args.Contains("-settingsLocation"))
+            {
+                int settingsLocationArgIndex = argsList.IndexOf("-settingsLocation");
+                settingsLocation = argsList[settingsLocationArgIndex + 1];
+            }
+            else
+                settingsLocation = @"C:\temp\TsdLibSettings";
+
             TestDetails testDetails = new TestDetails(testSystemName, testSystemVersion, testSystemMode);
 
-            DatabaseFolderConnection databaseFolderConnection = new DatabaseFolderConnection(@"C:\temp\TsdLibSettings");
+            DatabaseFolderConnection databaseFolderConnection = new DatabaseFolderConnection(settingsLocation);
 
             if (args.Contains("-seq"))
             {
