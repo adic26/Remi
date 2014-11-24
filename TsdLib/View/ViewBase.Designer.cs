@@ -46,8 +46,8 @@ namespace TsdLib.View
             this.label_SequenceConfig = new System.Windows.Forms.Label();
             this.button_ViewEditConfiguration = new System.Windows.Forms.Button();
             this.panel_Controls = new System.Windows.Forms.Panel();
-            this.button_EditTestDetails = new System.Windows.Forms.Button();
             this.checkBox_GetDetailsFromDatabase = new System.Windows.Forms.CheckBox();
+            this.button_EditTestDetails = new System.Windows.Forms.Button();
             this.measurementDataGridView = new TsdLib.View.MeasurementDataGridView();
             this.MeasurementName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MeasuredValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -61,9 +61,13 @@ namespace TsdLib.View
             // 
             // textBox_Status
             // 
+            this.textBox_Status.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox_Status.Location = new System.Drawing.Point(12, 437);
             this.textBox_Status.Multiline = true;
             this.textBox_Status.Name = "textBox_Status";
+            this.textBox_Status.ReadOnly = true;
             this.textBox_Status.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox_Status.Size = new System.Drawing.Size(804, 127);
             this.textBox_Status.TabIndex = 0;
@@ -88,6 +92,7 @@ namespace TsdLib.View
             // 
             // button_ExecuteTestSequence
             // 
+            this.button_ExecuteTestSequence.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button_ExecuteTestSequence.Location = new System.Drawing.Point(636, 31);
             this.button_ExecuteTestSequence.Name = "button_ExecuteTestSequence";
             this.button_ExecuteTestSequence.Size = new System.Drawing.Size(180, 47);
@@ -98,6 +103,7 @@ namespace TsdLib.View
             // 
             // button_AbortTestSequence
             // 
+            this.button_AbortTestSequence.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button_AbortTestSequence.Location = new System.Drawing.Point(637, 127);
             this.button_AbortTestSequence.Name = "button_AbortTestSequence";
             this.button_AbortTestSequence.Size = new System.Drawing.Size(179, 47);
@@ -206,16 +212,6 @@ namespace TsdLib.View
             this.panel_Controls.Size = new System.Drawing.Size(542, 171);
             this.panel_Controls.TabIndex = 22;
             // 
-            // button_EditTestDetails
-            // 
-            this.button_EditTestDetails.Location = new System.Drawing.Point(392, 69);
-            this.button_EditTestDetails.Name = "button_EditTestDetails";
-            this.button_EditTestDetails.Size = new System.Drawing.Size(133, 47);
-            this.button_EditTestDetails.TabIndex = 22;
-            this.button_EditTestDetails.Text = "Edit Test Details";
-            this.button_EditTestDetails.UseVisualStyleBackColor = true;
-            this.button_EditTestDetails.Click += new System.EventHandler(this.button_EditTestDetails_Click);
-            // 
             // checkBox_GetDetailsFromDatabase
             // 
             this.checkBox_GetDetailsFromDatabase.AutoSize = true;
@@ -228,10 +224,22 @@ namespace TsdLib.View
             this.checkBox_GetDetailsFromDatabase.Text = "Get from Database";
             this.checkBox_GetDetailsFromDatabase.UseVisualStyleBackColor = true;
             // 
+            // button_EditTestDetails
+            // 
+            this.button_EditTestDetails.Location = new System.Drawing.Point(392, 69);
+            this.button_EditTestDetails.Name = "button_EditTestDetails";
+            this.button_EditTestDetails.Size = new System.Drawing.Size(133, 47);
+            this.button_EditTestDetails.TabIndex = 22;
+            this.button_EditTestDetails.Text = "Edit Test Details";
+            this.button_EditTestDetails.UseVisualStyleBackColor = true;
+            this.button_EditTestDetails.Click += new System.EventHandler(this.button_EditTestDetails_Click);
+            // 
             // measurementDataGridView
             // 
             this.measurementDataGridView.AllowUserToAddRows = false;
             this.measurementDataGridView.AllowUserToDeleteRows = false;
+            this.measurementDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.measurementDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.measurementDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.measurementDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {

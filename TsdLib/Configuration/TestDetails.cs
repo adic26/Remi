@@ -16,6 +16,15 @@ namespace TsdLib.Configuration
     public class TestDetails : IXmlSerializable
     {
         /// <summary>
+        /// Gets the name of the test being performed.
+        /// </summary>
+        [Category("Test Details")]
+        [DisplayName("Test System Name")]
+        [Description("Name of the test being performed")]
+        [Browsable(false)]
+        public string TestName { get; set; }
+
+        /// <summary>
         /// Gets the name of the test system.
         /// </summary>
         [Category("Test Details")]
@@ -69,7 +78,7 @@ namespace TsdLib.Configuration
         /// </summary>
         [Category("Test Details")]
         [DisplayName("Test Type")]
-        [Description("Type of test being performed, eg. Hardware Test Case Manager test number.")]
+        [Description("Type of test being performed, eg. T077 Other.")]
         public string TestType { get; set; }
 
         /// <summary>
@@ -77,7 +86,7 @@ namespace TsdLib.Configuration
         /// </summary>
         [Category("Test Details")]
         [DisplayName("Test Stage")]
-        [Description("Current stage of testing. Could be trial number, modifications performed or some other descriptor to identify what has been performed on the DUT.")]
+        [Description("Current stage of testing, eg. Analysis, Baseline, etc.")]
         public string TestStage { get; set; }
 
         /// <summary>
@@ -123,7 +132,9 @@ namespace TsdLib.Configuration
             TestSystemVersion = testSystemVersion;
             TestSystemMode = testSystemMode;
             TsdFrameworkVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            JobNumber = TestType = TestStage =  string.Empty;
+            JobNumber = "QRA-XX-TEST";
+            TestType = "T077 Other";
+            TestStage = "Baseline";
             FunctionalType = FunctionalType.SFI;
             StationName = Environment.MachineName;
             UnitNumber = 0;
