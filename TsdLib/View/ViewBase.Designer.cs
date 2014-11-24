@@ -48,6 +48,10 @@ namespace TsdLib.View
             this.panel_Controls = new System.Windows.Forms.Panel();
             this.checkBox_GetDetailsFromDatabase = new System.Windows.Forms.CheckBox();
             this.button_EditTestDetails = new System.Windows.Forms.Button();
+            this.dataGridView_Information = new System.Windows.Forms.DataGridView();
+            this.label_Information = new System.Windows.Forms.Label();
+            this.Column_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column_Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.measurementDataGridView = new TsdLib.View.MeasurementDataGridView();
             this.MeasurementName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MeasuredValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -56,6 +60,7 @@ namespace TsdLib.View
             this.UpperLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Result = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel_Controls.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Information)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -64,18 +69,18 @@ namespace TsdLib.View
             this.textBox_Status.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox_Status.Location = new System.Drawing.Point(12, 437);
+            this.textBox_Status.Location = new System.Drawing.Point(12, 614);
             this.textBox_Status.Multiline = true;
             this.textBox_Status.Name = "textBox_Status";
             this.textBox_Status.ReadOnly = true;
             this.textBox_Status.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox_Status.Size = new System.Drawing.Size(804, 127);
+            this.textBox_Status.Size = new System.Drawing.Size(804, 149);
             this.textBox_Status.TabIndex = 0;
             // 
             // label_Status
             // 
             this.label_Status.AutoSize = true;
-            this.label_Status.Location = new System.Drawing.Point(12, 421);
+            this.label_Status.Location = new System.Drawing.Point(9, 598);
             this.label_Status.Name = "label_Status";
             this.label_Status.Size = new System.Drawing.Size(37, 13);
             this.label_Status.TabIndex = 1;
@@ -84,7 +89,7 @@ namespace TsdLib.View
             // label_Measurements
             // 
             this.label_Measurements.AutoSize = true;
-            this.label_Measurements.Location = new System.Drawing.Point(12, 189);
+            this.label_Measurements.Location = new System.Drawing.Point(12, 339);
             this.label_Measurements.Name = "label_Measurements";
             this.label_Measurements.Size = new System.Drawing.Size(76, 13);
             this.label_Measurements.TabIndex = 3;
@@ -234,6 +239,47 @@ namespace TsdLib.View
             this.button_EditTestDetails.UseVisualStyleBackColor = true;
             this.button_EditTestDetails.Click += new System.EventHandler(this.button_EditTestDetails_Click);
             // 
+            // dataGridView_Information
+            // 
+            this.dataGridView_Information.AllowUserToAddRows = false;
+            this.dataGridView_Information.AllowUserToDeleteRows = false;
+            this.dataGridView_Information.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView_Information.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView_Information.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column_Name,
+            this.Column_Value});
+            this.dataGridView_Information.Location = new System.Drawing.Point(12, 211);
+            this.dataGridView_Information.Name = "dataGridView_Information";
+            this.dataGridView_Information.ReadOnly = true;
+            this.dataGridView_Information.RowHeadersVisible = false;
+            this.dataGridView_Information.Size = new System.Drawing.Size(804, 109);
+            this.dataGridView_Information.TabIndex = 23;
+            // 
+            // label1
+            // 
+            this.label_Information.AutoSize = true;
+            this.label_Information.Location = new System.Drawing.Point(12, 195);
+            this.label_Information.Name = "label1";
+            this.label_Information.Size = new System.Drawing.Size(59, 13);
+            this.label_Information.TabIndex = 24;
+            this.label_Information.Text = "Information";
+            // 
+            // Column_Name
+            // 
+            this.Column_Name.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Column_Name.FillWeight = 60F;
+            this.Column_Name.HeaderText = "Name";
+            this.Column_Name.Name = "Column_Name";
+            this.Column_Name.ReadOnly = true;
+            // 
+            // Column_Value
+            // 
+            this.Column_Value.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Column_Value.HeaderText = "Value";
+            this.Column_Value.Name = "Column_Value";
+            this.Column_Value.ReadOnly = true;
+            // 
             // measurementDataGridView
             // 
             this.measurementDataGridView.AllowUserToAddRows = false;
@@ -249,11 +295,11 @@ namespace TsdLib.View
             this.LowerLimit,
             this.UpperLimit,
             this.Result});
-            this.measurementDataGridView.Location = new System.Drawing.Point(12, 205);
+            this.measurementDataGridView.Location = new System.Drawing.Point(12, 357);
             this.measurementDataGridView.Name = "measurementDataGridView";
             this.measurementDataGridView.ReadOnly = true;
             this.measurementDataGridView.RowHeadersVisible = false;
-            this.measurementDataGridView.Size = new System.Drawing.Size(804, 197);
+            this.measurementDataGridView.Size = new System.Drawing.Size(804, 221);
             this.measurementDataGridView.TabIndex = 6;
             // 
             // MeasurementName
@@ -308,8 +354,9 @@ namespace TsdLib.View
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(833, 576);
+            this.ClientSize = new System.Drawing.Size(833, 775);
+            this.Controls.Add(this.label_Information);
+            this.Controls.Add(this.dataGridView_Information);
             this.Controls.Add(this.panel_Controls);
             this.Controls.Add(this.measurementDataGridView);
             this.Controls.Add(this.button_AbortTestSequence);
@@ -321,6 +368,7 @@ namespace TsdLib.View
             this.Text = "TsdLib Generic Test System";
             this.panel_Controls.ResumeLayout(false);
             this.panel_Controls.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Information)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -407,5 +455,15 @@ namespace TsdLib.View
         /// Switch to control EditTestDetails behaviour.
         /// </summary>
         protected System.Windows.Forms.CheckBox checkBox_GetDetailsFromDatabase;
+        /// <summary>
+        /// Information label.
+        /// </summary>
+        protected System.Windows.Forms.Label label_Information;
+        /// <summary>
+        /// Displays information as it is generated by the test sequence.
+        /// </summary>
+        protected System.Windows.Forms.DataGridView dataGridView_Information;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_Name;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_Value;
     }
 }

@@ -68,6 +68,7 @@ namespace TsdLib.View
                     break;
                 case State.TestInProgress:
                     textBox_Status.Clear();
+                    dataGridView_Information.Rows.Clear();
                     measurementDataGridView.Rows.Clear();
                     button_ExecuteTestSequence.Enabled = false;
                     button_AbortTestSequence.Enabled = true;
@@ -82,7 +83,7 @@ namespace TsdLib.View
         /// <param name="info">TestInfo object to add.</param>
         public virtual void AddInformation(TestInfo info)
         {
-            //TODO: implement AddInformation
+            dataGridView_Information.Rows.Add(info.Name, info.Value);
         }
 
         /// <summary>

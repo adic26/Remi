@@ -1,6 +1,5 @@
 ﻿using System;
 using System.CodeDom;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -33,13 +32,16 @@ namespace TsdLib.Controller
         where TTestConfig : TestConfigCommon, new()
         where TEventHandlers : EventHandlersBase
     {
-        //Private fields
+        #region Private fields
+
         private CancellationTokenSource _tokenSource;
         private readonly bool _devMode;
         private readonly bool _localDomain;
-        private readonly ICodeParser _instrumentParser;
 
-        //Public and protected properties
+        #endregion
+
+        #region Public and protected properties
+
         /// <summary>
         /// Gets a reference to the user interface.
         /// </summary>
@@ -53,22 +55,23 @@ namespace TsdLib.Controller
         /// </summary>
         protected TestDetails Details { get; set; }
 
-        //Constructor
+        #endregion
+
+        #region Constructor
+
         /// <summary>
         /// Initialize a new system controller.
         /// </summary>
         /// <param name="testDetails">A <see cref="Details"/> object containing metadata describing the test request.</param>
         /// <param name="configConnection">An <see cref="IDatabaseConnection"/> object to handle configuration persistence with a database.</param>
-        /// <param name="instrumentParser">An <see cref="System.CodeDom.Compiler.ICodeParser"/> object to generate source code from instrument xml definition files.</param>
         /// <param name="localDomain">True to execute the test sequence in the local application domain. Only available in Debug configuration.</param>
-        protected ControllerBase(TestDetails testDetails, IDatabaseConnection configConnection, ICodeParser instrumentParser, bool localDomain)
+        protected ControllerBase(TestDetails testDetails, IDatabaseConnection configConnection, bool localDomain)
         {
             Thread.CurrentThread.Name = "UI Thread";
 
             //TODO: currently using Debug/Release - update TsdLib to use Dev,Eng,Prod approach
             _devMode = testDetails.TestSystemMode == "Debug";
             Details = testDetails;
-            _instrumentParser = instrumentParser;
 
             ConfigManager = new ConfigManager<TStationConfig, TProductConfig, TTestConfig, Sequence>(testDetails, configConnection);
 
@@ -100,7 +103,10 @@ namespace TsdLib.Controller
             View.AbortTestSequence += AbortTestSequence;
         }
 
-        //Event Handlers
+        #endregion
+
+        #region View Event Handlers
+
         /// <summary>
         /// Default handler for the ViewBase.ViewEditConfiguration event.
         /// </summary>
@@ -126,7 +132,7 @@ namespace TsdLib.Controller
         /// </summary>
         /// <param name="sender">Object that raised the exception. Should be a reference to the Execute Test Sequence button.</param>
         /// <param name="e">EventArgs containing the product, station, test and sequence configuration objects.</param>
-        protected async virtual void ExecuteTestSequence(object sender, TestSequenceEventArgs e)
+        protected virtual void ExecuteTestSequence(object sender, TestSequenceEventArgs e)
         {
             AppDomain sequenceDomain = null;
             try
@@ -144,63 +150,57 @@ namespace TsdLib.Controller
 
                 SynchronizationContext uiContext = SynchronizationContext.Current;
 
-                //TODO: should we remove the await?
-                await Task.Run(() =>
+                Task t = Task.Run(() =>
                 {
                     Thread.CurrentThread.Name = "Sequence Thread";
                     TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> sequence;
-                    TEventHandlers controllerProxy;
+                    TEventHandlers eventHandlers;
                     if (_localDomain)
                     {
-                        controllerProxy = (TEventHandlers)Activator.CreateInstance(typeof(TEventHandlers), BindingFlags.CreateInstance, null, new object[] { View }, CultureInfo.CurrentCulture);
+                        eventHandlers = (TEventHandlers)Activator.CreateInstance(typeof(TEventHandlers), BindingFlags.CreateInstance, null, new object[] { View }, CultureInfo.CurrentCulture);
                         Type sequenceType = Assembly.GetEntryAssembly().GetType(Assembly.GetEntryAssembly().GetName().Name + ".Sequences" + "." + sequenceConfig.Name);
                         sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>) Activator.CreateInstance(sequenceType);
                     }
                     else
                     {
-                        List<CodeCompileUnit> codeCompileUnits = new List<CodeCompileUnit>();
+                        List<CodeCompileUnit> codeCompileUnits = new List<CodeCompileUnit>
+                        {new BasicCodeParser(sequenceConfig.AssemblyReferences.ToArray()).Parse(new StringReader(sequenceConfig.SourceCode))};
 
-                        if (!Directory.Exists("Instruments"))
-                            Directory.CreateDirectory("Instruments");
-
-                        if (!(_instrumentParser is BasicCodeParser))
-                            codeCompileUnits.AddRange(Directory.GetFiles("Instruments", "*.xml").Select(xmlFile => _instrumentParser.Parse(new StreamReader(xmlFile))));
-                        codeCompileUnits.Add(new BasicCodeParser(sequenceConfig.AssemblyReferences.ToArray()).Parse(new StringReader(sequenceConfig.SourceCode)));
+                        IEnumerable<CodeCompileUnit> additionalCodeCompileUnits = GenerateCodeCompileUnits();
 
                         DynamicCompiler generator = new DynamicCompiler(Language.CSharp);
-                        string sequenceAssembly = generator.Compile(codeCompileUnits.ToArray());
+                        string sequenceAssembly = generator.Compile(codeCompileUnits.Concat(additionalCodeCompileUnits));
 
                         sequenceDomain = AppDomain.CreateDomain("SequenceDomain");
 
-
                         sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, Assembly.GetEntryAssembly().GetName().Name + ".Sequences" + "." + sequenceConfig.Name);
 
-                        controllerProxy = (TEventHandlers) sequenceDomain.CreateInstanceFromAndUnwrap(Assembly.GetEntryAssembly().CodeBase, typeof (TEventHandlers).FullName, false, BindingFlags.CreateInstance, null, new object[]{ View}, CultureInfo.CurrentCulture, null);
+                        eventHandlers = (TEventHandlers) sequenceDomain.CreateInstanceFromAndUnwrap(Assembly.GetEntryAssembly().CodeBase, typeof (TEventHandlers).FullName, false, BindingFlags.CreateInstance, null, new object[]{ View}, CultureInfo.CurrentCulture, null);
                         
                         sequence.AddTraceListener(View.Listener);
                     }
 
-                    //Set up View-handled events
                     //TODO: To handle events in other app domain: invesitgate AppDomain.DoCallBack instead of using the controller proxy
-                    EventProxy<TestInfo> infoEventProxy = new EventProxy<TestInfo>(uiContext);
+                    EventProxy<TestInfo> infoEventProxy = new EventProxy<TestInfo>();
                     sequence.InfoEventProxy = infoEventProxy;
-                    infoEventProxy.Event += controllerProxy.InfoAdded;
+                    infoEventProxy.Attach(eventHandlers.InfoAdded, uiContext);
 
-                    EventProxy<MeasurementBase> measurementEventProxy = new EventProxy<MeasurementBase>(uiContext);
+                    EventProxy<MeasurementBase> measurementEventProxy = new EventProxy<MeasurementBase>();
                     sequence.MeasurementEventProxy = measurementEventProxy;
-                    measurementEventProxy.Event += controllerProxy.MeasurementAdded;
+                    measurementEventProxy.Attach(eventHandlers.MeasurementAdded, uiContext);
 
-                    //sequence.MeasurementPlainEvent += MeasurementAddedPlain;
-
-                    EventProxy<Data> dataEventProxy = new EventProxy<Data>(uiContext);
+                    EventProxy<Data> dataEventProxy = new EventProxy<Data>();
                     sequence.DataEventProxy = dataEventProxy;
-                    dataEventProxy.Event += controllerProxy.DataAdded;
+                    dataEventProxy.Attach(eventHandlers.DataAdded, uiContext);
 
-
-                    //Set up Controller-handled events
                     EventProxy<TestResultCollection> testCompleteEventProxy = new EventProxy<TestResultCollection>();
                     sequence.TestCompleteEventProxy = testCompleteEventProxy;
-                    testCompleteEventProxy.Event += controllerProxy.TestComplete;
+                    testCompleteEventProxy.Attach((s, o) => View.SetState(State.ReadyToTest), uiContext);
+                    testCompleteEventProxy.Attach(eventHandlers.TestComplete);
+
+                    EventProxy<bool> testCancelledEventProxy = new EventProxy<bool>();
+                    sequence.TestCancelledEventProxy = testCancelledEventProxy;
+                    testCancelledEventProxy.Attach(eventHandlers.TestCancelled, uiContext);
 
                     _tokenSource = new CancellationTokenSource();
                     _tokenSource.Token.Register(sequence.Abort);
@@ -208,7 +208,7 @@ namespace TsdLib.Controller
                     sequence.ExecuteSequence(stationConfig, productConfig, testConfig, Details);
                 });
 
-
+                t.ContinueWith(task => View.SetState(State.ReadyToTest), TaskContinuationOptions.NotOnRanToCompletion);
             }
             catch (TsdLibException ex)
             {
@@ -222,7 +222,6 @@ namespace TsdLib.Controller
             }
             finally
             {
-                View.SetState(State.ReadyToTest);
                 if (sequenceDomain != null)
                     AppDomain.Unload(sequenceDomain);
                 //TODO: dispose the sequence - but make sure all events on the UI thread are finished
@@ -238,5 +237,21 @@ namespace TsdLib.Controller
         {
             _tokenSource.Cancel();
         }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Generates a sequence of <see cref="CodeCompileUnit"/> objects to be dynamically compiled for the test sequence. Not used when the -localDomain command-line switch is used.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual IEnumerable<CodeCompileUnit> GenerateCodeCompileUnits()
+        {
+            return new CodeCompileUnit[0];
+        }
+
+        #endregion
+
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using TsdLib.TestResults;
 using TsdLib.View;
 
@@ -12,7 +11,10 @@ namespace TsdLib.Controller
     /// </summary>
     public class EventHandlersBase : MarshalByRefObject
     {
-        protected readonly IView ViewProxy;
+        /// <summary>
+        /// Gets a reference to the View object, representing the user interface.
+        /// </summary>
+        protected IView ViewProxy { get; private set; }
 
         /// <summary>
         /// Initialize a new 
@@ -68,6 +70,16 @@ namespace TsdLib.Controller
             Trace.WriteLine("Test sequence completed.");
             Trace.WriteLine("XML results saved to " + xmlResultsFile);
             Trace.WriteLine("CSV results saved to " + csvResultsFile);
+        }
+
+        /// <summary>
+        /// Default handler for the <see cref="TsdLib.TestSequence.TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}.TestCancelledEventProxy"/>. Sets the UI state to <see cref="State.ReadyToTest"/>.
+        /// </summary>
+        /// <param name="sender">The <see cref="TsdLib.TestSequence.TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}"/> where the test was performed.</param>
+        /// <param name="error">True if the test sequence was cancelled due to an error.</param>
+        protected internal void TestCancelled(object sender, bool error)
+        {
+            ViewProxy.SetState(State.ReadyToTest);
         }
 
         /// <summary>

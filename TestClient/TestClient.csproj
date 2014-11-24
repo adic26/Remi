@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;REMICONTROL</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;simREMICONTROL;INSTRUMENT_LIBRARY</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -45,6 +45,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -75,11 +76,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="View.resx">
-      <DependentUpon>View.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Instruments\PowerSupply.xml">
       <Generator>InstrumentClassGenerator</Generator>
       <LastGenOutput>PowerSupply.cs</LastGenOutput>
@@ -87,6 +83,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TsdLib.Instrument.Telnet\TsdLib.Instrument.Telnet.csproj">
+      <Project>{fbcd8cc2-a747-4979-9507-ae356d466e5a}</Project>
+      <Name>TsdLib.Instrument.Telnet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj">
       <Project>{a9ab58d9-08ea-43cc-ab6a-9e934bdd3c7b}</Project>
       <Name>TsdLib.Instrument.Visa</Name>

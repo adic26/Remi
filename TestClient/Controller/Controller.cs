@@ -1,4 +1,9 @@
 ﻿using System;
+using System.CodeDom;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using TestClient.Configuration;
 using TsdLib;
@@ -10,24 +15,34 @@ namespace TestClient
 {
     public class Controller : ControllerBase<View, StationConfig, ProductConfig, TestConfig, EventHandlers>
     {
-#if INSTRUMENT_LIBRARY
+
         public Controller(TestDetails testDetails, IDatabaseConnection databaseConnection, bool localDomain)
-            : base(testDetails, databaseConnection, new TsdLib.InstrumentLibrary.InstrumentParser(testDetails.TestSystemName, Language.CSharp.ToString()), localDomain)
+            : base(testDetails, databaseConnection, localDomain)
         {
 
         }
-#else
-        public Controller(TestDetails testDetails, IDatabaseConnection databaseConnection, bool localDomain)
-            : base(testDetails, databaseConnection, new BasicCodeParser(), localDomain)
-        {
 
+
+#if INSTRUMENT_LIBRARY
+        protected override IEnumerable<CodeCompileUnit> GenerateCodeCompileUnits()
+        {
+            TsdLib.InstrumentLibrary.InstrumentParser instrumentParser = new TsdLib.InstrumentLibrary.InstrumentParser(Details.TestSystemName, Language.CSharp.ToString());
+
+            if (!Directory.Exists("Instruments"))
+                return new CodeCompileUnit[0];
+
+            IEnumerable<CodeCompileUnit> codeCompileUnits = 
+                Directory.GetFiles("Instruments", "*.xml")
+                .Select(xmlFile => instrumentParser.Parse(new StreamReader(xmlFile)));
+
+            return codeCompileUnits;
         }
 #endif
 
 #if REMICONTROL
-        protected override void EditTestDetails(object sender, bool e)
+        protected override void EditTestDetails(object sender, bool getFromDatabase)
         {
-            if (e)
+            if (getFromDatabase)
             {
                 try
                 {

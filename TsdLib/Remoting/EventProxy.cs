@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using TsdLib.Configuration;
 using TsdLib.Controller;
@@ -12,7 +13,7 @@ namespace TsdLib
     /// <typeparam name="T">Type of EventArgs to assign to the event.</typeparam>
     public class EventProxy<T> : MarshalByRefObject
     {
-        private readonly SynchronizationContext _context;
+        private readonly Dictionary<EventHandler<T>, SynchronizationContext> _handlers;
 
         /// <summary>
         /// Returns null to ensure that the remote object's lifetime is as long as the hosting AppDomain.
@@ -24,9 +25,15 @@ namespace TsdLib
         }
 
         /// <summary>
-        /// Exposes the event to attach handlers.
+        /// Attach the specified handler to an event.
         /// </summary>
-        public event EventHandler<T> Event;
+        /// <param name="handler">EventHandler delegate to be called when the event is fired.</param>
+        /// <param name="context">OPTIONAL: A <see cref="System.Threading.SynchronizationContext"/> on which to fire the event.</param>
+        public void Attach(EventHandler<T> handler, SynchronizationContext context = null)
+        {
+            _handlers.Add(handler, context);
+        }
+
         /// <summary>
         /// Fires the event.
         /// </summary>
@@ -34,22 +41,24 @@ namespace TsdLib
         /// <param name="eventAgrs">EventArgs object to attach to the event.</param>
         public void FireEvent(object sender, T eventAgrs)
         {
-            EventHandler<T> handler = Event;
-            
-            if (handler != null)
-                if (_context != null)
-                    _context.Post(s => handler(sender, eventAgrs), null);
-                else
-                    handler(sender, eventAgrs);
+            foreach (var handlerPair in _handlers)
+            {
+                EventHandler<T> handler = handlerPair.Key;
+
+                if (handler != null)
+                    if (handlerPair.Value != null)
+                        handlerPair.Value.Post(s => handler(sender, eventAgrs), null);
+                    else
+                        handler(sender, eventAgrs);
+            }
         }
 
         /// <summary>
-        /// Initialize a new EventProxy, optionally specifying which thread the event handlers will be executed on.
+        /// Initialize a new EventProxy.
         /// </summary>
-        /// <param name="context">OPTIONAL: A <see cref="System.Threading.SynchronizationContext"/> on which to fire the event.</param>
-        public EventProxy(SynchronizationContext context = null)
+        public EventProxy()
         {
-            _context = context;
+            _handlers = new Dictionary<EventHandler<T>, SynchronizationContext>();
         }
     }
 }

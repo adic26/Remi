@@ -82,6 +82,11 @@ namespace TsdLib.TestSequence
         public EventProxy<TestResultCollection> TestCompleteEventProxy { get; set; }
 
         /// <summary>
+        /// Gets or sets an EventProxy object that can be used to notify the system when the test sequence has been cancelled.
+        /// </summary>
+        public EventProxy<bool> TestCancelledEventProxy { get; set; }
+
+        /// <summary>
         /// Initializes the TestSequenceBase object.
         /// </summary>
         protected TestSequenceBase()
@@ -155,6 +160,7 @@ namespace TsdLib.TestSequence
                 Information.Add(new TestInfo("Station Configuration", stationConfig.Name));
                 Information.Add(new TestInfo("Product Configuration", productConfig.Name));
                 Information.Add(new TestInfo("Test Configuration", testConfig.Name));
+                Information.Add(new TestInfo("Sequence", GetType().Name));
 
                 //Execute test
                 Execute(stationConfig, productConfig, testConfig);
@@ -173,6 +179,7 @@ namespace TsdLib.TestSequence
             catch (OperationCanceledException)
             {
                 Trace.WriteLine("Test sequence was cancelled by user.");
+                TestCancelledEventProxy.FireEvent(this, false);
             }
             catch (Exception ex)
             {

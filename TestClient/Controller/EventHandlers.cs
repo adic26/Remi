@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using TsdLib.Controller;
 using TsdLib.TestResults;
 using TsdLib.View;
@@ -19,6 +20,17 @@ namespace TestClient
             string dataLoggerXmlFile = testResults.Save(new DirectoryInfo(@"C:\TestResults"));
             Trace.WriteLine("XML results saved to " + dataLoggerXmlFile + " for database upload");
             DBControl.DAL.Results.UploadXML(dataLoggerXmlFile);
+        }
+#endif
+
+#if simREMICONTROL
+        protected override void TestComplete(object sender, TestResultCollection testResults)
+        {
+            base.TestComplete(sender, testResults);
+
+            Trace.WriteLine("Simulating database upload");
+            Thread.Sleep(10000);
+            Trace.WriteLine("Done uploading");
         }
 #endif
     }

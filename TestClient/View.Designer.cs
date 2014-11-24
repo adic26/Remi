@@ -1,8 +1,6 @@
-﻿using TsdLib.View;
-
-namespace TestClient
+﻿namespace TestClient
 {
-    public partial class View
+    partial class View
     {
         /// <summary>
         /// Required designer variable.
@@ -30,23 +28,11 @@ namespace TestClient
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel_Controls.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // View
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(831, 576);
-            this.Name = "View";
-            this.panel_Controls.ResumeLayout(false);
-            this.panel_Controls.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            this.Text = "View";
         }
 
         #endregion
-
     }
 }
