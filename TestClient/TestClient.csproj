@@ -53,7 +53,7 @@
   <ItemGroup>
     <Compile Include="Controller\Controller.cs" />
     <Compile Include="Configuration\ProductConfig.cs" />
-    <Compile Include="Controller\EventHandlers.cs" />
+    <Compile Include="Controller\SequenceEventHandlers.cs" />
     <Compile Include="Instruments\Helpers\DummyPowerSupply.cs" />
     <Compile Include="Instruments\PowerSupply.cs">
       <AutoGen>True</AutoGen>

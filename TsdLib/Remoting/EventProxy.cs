@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using TsdLib.Configuration;
-using TsdLib.Controller;
-using TsdLib.View;
 
 namespace TsdLib
 {

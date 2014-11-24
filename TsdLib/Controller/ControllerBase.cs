@@ -30,7 +30,7 @@ namespace TsdLib.Controller
         where TStationConfig : StationConfigCommon, new()
         where TProductConfig : ProductConfigCommon, new()
         where TTestConfig : TestConfigCommon, new()
-        where TEventHandlers : EventHandlersBase
+        where TEventHandlers : SequenceEventHandlersBase
     {
         #region Private fields
 
@@ -105,7 +105,7 @@ namespace TsdLib.Controller
 
         #endregion
 
-        #region View Event Handlers
+        #region Virtual Methods
 
         /// <summary>
         /// Default handler for the ViewBase.ViewEditConfiguration event.
@@ -237,10 +237,6 @@ namespace TsdLib.Controller
         {
             _tokenSource.Cancel();
         }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         /// Generates a sequence of <see cref="CodeCompileUnit"/> objects to be dynamically compiled for the test sequence. Not used when the -localDomain command-line switch is used.

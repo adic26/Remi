@@ -25,10 +25,14 @@ namespace TestClient.Sequences
                     Token.ThrowIfCancellationRequested();
                     ps.SetVoltage(voltageSetting);
                     Thread.Sleep(productConfig.SettlingTime);
-                    
-                    MeasurementParameter measurementParameter = new MeasurementParameter("Voltage", voltageSetting);
-                    MeasurementParameter measurementParameter2 = new MeasurementParameter("Temperature", 22.5);
-                    Measurement<double> measurement = new Measurement<double>("Current_" + i, ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: new[] { measurementParameter, measurementParameter2 });
+
+                    MeasurementParameter[] measurementParameters =
+                    {
+                        new MeasurementParameter("Loop Iteration", i), 
+                        new MeasurementParameter("Voltage", voltageSetting),
+                        new MeasurementParameter("Temperature", 22.5)
+                    };
+                    Measurement<double> measurement = new Measurement<double>("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: measurementParameters);
                     Measurements.Add(measurement);
                 }
             }

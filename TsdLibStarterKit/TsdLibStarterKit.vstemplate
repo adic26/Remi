@@ -16,14 +16,17 @@
     <Project TargetFileName="$safeprojectname$.csproj" File="TestClient.csproj" ReplaceParameters="true">
       <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="App.config">App.config</ProjectItem>
-      <ProjectItem ReplaceParameters="true" TargetFileName="Controller.cs">Controller.cs</ProjectItem>
+      <Folder Name="Controller" TargetFolderName="Controller">
+        <ProjectItem ReplaceParameters="true" TargetFileName="Controller.cs">Controller.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="SequenceEventHandlers.cs">SequenceEventHandlers.cs</ProjectItem>
+      </Folder>
       <Folder Name="Configuration" TargetFolderName="Configuration">
         <ProjectItem ReplaceParameters="true" TargetFileName="ProductConfig.cs">ProductConfig.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="StationConfig.cs">StationConfig.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="TestConfig.cs">TestConfig.cs</ProjectItem>
       </Folder>
       <Folder Name="Instruments" TargetFolderName="Instruments">
-        <ProjectItem ReplaceParameters="true" TargetFileName="ExampleDummyPowerSupply.cs">ExampleDummyPowerSupply.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="ExamplePowerSupply.cs">ExamplePowerSupply.cs</ProjectItem>
       </Folder>
       <Folder Name="Sequences" TargetFolderName="Sequences">
         <ProjectItem ReplaceParameters="true" TargetFileName="DefaultSequence.cs">DefaultSequence.cs</ProjectItem>

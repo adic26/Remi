@@ -9,7 +9,7 @@ namespace TsdLib.Controller
     /// <summary>
     /// Encapsulates the <see cref="Controller"/> event handlers, allowing them to be executed in a secondary AppDomain.
     /// </summary>
-    public class EventHandlersBase : MarshalByRefObject
+    public class SequenceEventHandlersBase : MarshalByRefObject
     {
         /// <summary>
         /// Gets a reference to the View object, representing the user interface.
@@ -20,7 +20,7 @@ namespace TsdLib.Controller
         /// Initialize a new 
         /// </summary>
         /// <param name="view">An instance of <see cref="IView"/> to direct UI events to.</param>
-        public EventHandlersBase(IView view)
+        public SequenceEventHandlersBase(IView view)
         {
             ViewProxy = view;
         }

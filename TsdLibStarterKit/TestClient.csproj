@@ -48,9 +48,10 @@
     <Compile Include="Configuration\ProductConfig.cs" />
     <Compile Include="Configuration\StationConfig.cs" />
     <Compile Include="Configuration\TestConfig.cs" />
-    <Compile Include="Instruments\ExampleDummyPowerSupply.cs" />
+    <Compile Include="Instruments\ExamplePowerSupply.cs" />
     <Compile Include="Sequences\DefaultSequence.cs" />
-    <Compile Include="Controller.cs" />
+    <Compile Include="Controller\Controller.cs" />
+    <Compile Include="Controller\SequenceEventHandlers.cs" />
     <Compile Include="$safeprojectname$Program.cs" />
     <Compile Include="View.cs">
       <SubType>Form</SubType>

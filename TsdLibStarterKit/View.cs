@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Design;
-using TsdLib.View;
+﻿using TsdLib.View;
 
 namespace $safeprojectname$
 {

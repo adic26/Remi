@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using TestClient.Configuration;
+using $safeprojectname$.Configuration;
 using TsdLib;
 using TsdLib.CodeGenerator;
 using TsdLib.Configuration;
 using TsdLib.Controller;
 
-namespace TestClient
+namespace $safeprojectname$
 {
     public class Controller : ControllerBase<View, StationConfig, ProductConfig, TestConfig, SequenceEventHandlers>
     {
@@ -57,11 +57,11 @@ namespace TestClient
                 }
                 catch (NullReferenceException)
                 {
-                    MessageBox.Show("REMIControl Exception: No tests have been registered for this PC in Remi.");
+                    Trace.WriteLine("REMIControl Exception: No tests have been registered for this PC in Remi.");
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.ToString(), ex.GetType().Name);
+                    Trace.WriteLine(ex.ToString(), ex.GetType().Name);
                 }
             }
             else

@@ -1,7 +1,6 @@
 
-using System;
-using System.Globalization;
 using System.Threading;
+using TsdLib.Instrument.Dummy;
 using $safeprojectname$.Configuration;
 using $safeprojectname$.Instruments;
 using TsdLib.TestResults;
@@ -18,8 +17,7 @@ namespace $safeprojectname$.Sequences
             //Use the System.Diagnostics.Debugger.Break() method to insert breakpoints.
             //System.Diagnostics.Debugger.Break();
 
-            Random random = new Random();
-            ExampleDummyPowerSupply ps = ExampleDummyPowerSupply.Connect();
+            ExamplePowerSupply ps = ExamplePowerSupply.Connect("dummy_addr");
 
             for (int i = 0; i < testConfig.LoopIterations; i++)
             {
@@ -28,10 +26,14 @@ namespace $safeprojectname$.Sequences
                     Token.ThrowIfCancellationRequested();
                     ps.SetVoltage(voltageSetting);
                     Thread.Sleep(productConfig.SettlingTime);
-                    ps.DummyConnection.StringToRead = random.NextDouble().ToString(CultureInfo.InvariantCulture);
-                    MeasurementParameter measurementParameter = new MeasurementParameter("Voltage", voltageSetting);
-                    MeasurementParameter measurementParameter2 = new MeasurementParameter("Temperature", 22.5);
-                    Measurement<double> measurement = new Measurement<double>("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: new[] { measurementParameter, measurementParameter2 });
+
+                    MeasurementParameter[] measurementParameters =
+                    {
+                        new MeasurementParameter("Loop Iteration", i), 
+                        new MeasurementParameter("Voltage", voltageSetting),
+                        new MeasurementParameter("Temperature", 22.5)
+                    };
+                    Measurement<double> measurement = new Measurement<double>("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: measurementParameters);
                     Measurements.Add(measurement);
                 }
             }

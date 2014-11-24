@@ -1,15 +1,14 @@
 ﻿using System.Diagnostics;
-using System.IO;
 using System.Threading;
 using TsdLib.Controller;
 using TsdLib.TestResults;
 using TsdLib.View;
 
-namespace TestClient
+namespace $safeprojectname$
 {
-    public class EventHandlers : EventHandlersBase
+    public class SequenceEventHandlers : SequenceEventHandlersBase
     {
-        public EventHandlers(IView view)
+        public SequenceEventHandlers(IView view)
             : base(view) { }
 
 #if REMICONTROL

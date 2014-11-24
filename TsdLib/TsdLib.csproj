@@ -77,7 +77,7 @@
     <Compile Include="Configuration\TestDetailsEditor.Designer.cs">
       <DependentUpon>TestDetailsEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controller\EventHandlersBase.cs" />
+    <Compile Include="Controller\SequenceEventHandlersBase.cs" />
     <Compile Include="Instrument\InstrumentAttributes.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="TestResults\Data.cs" />

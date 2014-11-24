@@ -4,4 +4,5 @@
 	 Initialize-Chocolatey
 	 Uninstall-Package chocolatey
 	 choco install NuGet.CommandLine
+	 #TODO: remove .nuget solution folder
  }
