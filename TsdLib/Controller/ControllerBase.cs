@@ -181,6 +181,7 @@ namespace TsdLib.Controller
                     }
 
                     //Set up View-handled events
+                    //TODO: To handle events in other app domain: invesitgate AppDomain.DoCallBack instead of using the controller proxy
                     EventProxy<TestInfo> infoEventProxy = new EventProxy<TestInfo>(uiContext);
                     sequence.InfoEventProxy = infoEventProxy;
                     infoEventProxy.Event += controllerProxy.InfoAdded;

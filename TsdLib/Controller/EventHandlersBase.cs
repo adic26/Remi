@@ -12,7 +12,7 @@ namespace TsdLib.Controller
     /// </summary>
     public class EventHandlersBase : MarshalByRefObject
     {
-        private readonly IView _view;
+        protected readonly IView ViewProxy;
 
         /// <summary>
         /// Initialize a new 
@@ -20,7 +20,7 @@ namespace TsdLib.Controller
         /// <param name="view">An instance of <see cref="IView"/> to direct UI events to.</param>
         public EventHandlersBase(IView view)
         {
-            _view = view;
+            ViewProxy = view;
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace TsdLib.Controller
         /// <param name="testInfo">The <see cref="TestInfo"/> that was captured.</param>
         protected internal virtual void InfoAdded(object sender, TestInfo testInfo)
         {
-            _view.AddInformation(testInfo);
+            ViewProxy.AddInformation(testInfo);
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace TsdLib.Controller
         /// <param name="measurementBase">The <see cref="MeasurementBase"/> that was captured.</param>
         protected internal virtual void MeasurementAdded(object sender, MeasurementBase measurementBase)
         {
-            _view.AddMeasurement(measurementBase);
+            ViewProxy.AddMeasurement(measurementBase);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace TsdLib.Controller
         /// <param name="data">The <see cref="Data"/> that was captured.</param>
         protected internal virtual void DataAdded(object sender, Data data)
         {
-            _view.AddData(data);
+            ViewProxy.AddData(data);
         }
 
         /// <summary>

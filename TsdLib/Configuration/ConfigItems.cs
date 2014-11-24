@@ -34,9 +34,18 @@ namespace TsdLib.Configuration
         public bool StoreInDatabase { get; set; }
 
         /// <summary>
+        /// Returns true if the config item is an auto-generated default item.
+        /// </summary>
+        [Browsable(false)]
+        public bool IsDefault { get; set; }
+
+        /// <summary>
         /// Initialize a new configuration instance from persisted settings.
         /// </summary>
-        public ConfigItem() { }
+        public ConfigItem()
+        {
+            IsDefault = false;
+        }
 
         /// <summary>
         /// Initialize a new ConfigItem with the specified parameters.
@@ -48,6 +57,7 @@ namespace TsdLib.Configuration
 // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             Name = name;
             StoreInDatabase = storeInDatabase;
+            IsDefault = true;
         }
 
         /// <summary>

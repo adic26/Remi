@@ -55,7 +55,7 @@ namespace TestClient
                 bool storeInDatabase = bool.Parse(argsList[seqArgIndex + 2]);
                 List<string> assemblyReferences = new List<string> { "System.dll", "System.Xml.dll", "TsdLib.dll", testSystemName + ".exe" };
 
-                foreach (Sequence sequence in sequences)
+                foreach (Sequence sequence in sequences.Where(seq => !seq.IsDefault))
                 {
                     string vsFile = Path.Combine(sequenceFolder, sequence.Name + ".cs");
                     if (!File.Exists(vsFile))
