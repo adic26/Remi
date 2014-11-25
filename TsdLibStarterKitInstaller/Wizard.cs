@@ -22,6 +22,8 @@ namespace TsdLibStarterKitInstaller
     {
         [Import]
         internal IVsPackageInstaller NuGetPackageInstaller { get; set; }
+
+        private IEnumerable<string> _packageRepositories; 
         private string _serverLocation;
 
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
@@ -34,7 +36,7 @@ namespace TsdLibStarterKitInstaller
                     using (CompositionContainer container = new CompositionContainer(componentModel.DefaultExportProvider))
                         container.ComposeParts(this);
                 }
-
+                
                 XmlSchema schema;
                 
                 using (Stream schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TsdLibStarterKitInstaller.WizardData.xsd"))
@@ -55,8 +57,11 @@ namespace TsdLibStarterKitInstaller
                 wizardRootElement.Validate(schemaObject, schemaSet, (o, e) => Debug.Fail("TsdLibStarterKit.vstemplate could not be validated against schema: TsdLib.WizardData.xsd."));
 
 // ReSharper disable once PossibleNullReferenceException - doc is validated against schema
-                _serverLocation = wizardRootElement.Element(ns + "ServerLocation")
+                _serverLocation = wizardRootElement.Element(ns + "NuGetPackageRepository")
                     .Attribute("Path").Value;
+
+                _packageRepositories = wizardRootElement.Elements(ns + "NuGetPackageRepository")
+                    .Select(e => e.Attribute("Path").Value);
             }
             catch (Exception ex)
             {
@@ -67,28 +72,10 @@ namespace TsdLibStarterKitInstaller
 
         public void ProjectFinishedGenerating(Project project)
         {
-            string packageLocation = _serverLocation;
-
             if (NuGetPackageInstaller == null)
             {
-                MessageBox.Show("NuGet Package Manager not available. Please add packages manually from the location: " + packageLocation);
+                MessageBox.Show("NuGet Package Manager not available. Please add packages manually from the following locations: " + string.Join(Environment.NewLine, _packageRepositories));
                 return;
-            }
-
-            IPackageRepository repository = PackageRepositoryFactory.Default.CreateRepository(packageLocation);
-                
-            //If using OData repository, use the IPackage.IsLatestVersion property - should also try reading tags
-
-            IQueryable<IPackage> packages = repository.GetPackages()
-                .GroupBy(p => p.Id)
-                .Select(g => g.OrderBy(p => p.Version)
-                    .Last());
-
-            using (SelectPackagesForm form = new SelectPackagesForm(packages))
-            {
-                form.ShowDialog();
-                foreach (IPackage selectedPackage in form.SelectedPackages)
-                    NuGetPackageInstaller.InstallPackage(repository, project, selectedPackage.Id, selectedPackage.Version.ToString(), false, false);
             }
 
             string nugetConfigPath = Path.Combine(
@@ -97,16 +84,45 @@ namespace TsdLibStarterKitInstaller
                 "nuget.config");
 
             XDocument nugetConfig = XDocument.Load(nugetConfigPath);
-
-            XElement tsdPackageSourcElement = new XElement("add", new XAttribute("key", "Tsd"), new XAttribute("value", repository.Source));
-
             XElement configurationElement = nugetConfig.Root;
-            if (configurationElement == null)
-                throw new WizardBackoutException("Could not install NuGet package source. Invalid nuget.config file.");
+            if (configurationElement == null) return;
             XElement packageSourcesElement = configurationElement.Element("packageSources");
             if (packageSourcesElement == null)
-                configurationElement.Add(new XElement("packageSources", tsdPackageSourcElement));
-            else
+            {
+                packageSourcesElement = new XElement("packageSources");
+                configurationElement.Add(packageSourcesElement);
+            }
+
+
+            foreach (string repoName in _packageRepositories)
+            {
+                //If using OData repository, use the IPackage.IsLatestVersion property - should also try reading tags
+
+                IPackageRepository repo = PackageRepositoryFactory.Default.CreateRepository(repoName);
+
+                XElement tsdPackageSourceElement = new XElement("add", new XAttribute("key", "Tsd"), new XAttribute("value", repo.Source));
+
+                if (packageSourcesElement.Elements().First(e => e.Attribute("value").Value == repo.Source) == null)
+                {
+                    packageSourcesElement.Add(tsdPackageSourceElement);
+                    nugetConfig.Save(nugetConfigPath);
+                }
+
+                IQueryable<IPackage> packages = repo.GetPackages()
+                    .GroupBy(p => p.Id)
+                    .Select(g => g.OrderBy(p => p.Version)
+                    .Last());
+
+                using (SelectPackagesForm form = new SelectPackagesForm(packages))
+                {
+                    form.ShowDialog();
+                    foreach (IPackage selectedPackage in form.SelectedPackages)
+                        NuGetPackageInstaller.InstallPackage(repo, project, selectedPackage.Id, selectedPackage.Version.ToString(), false, false);
+                }
+            }
+            
+
+            if (configurationElement != null)
             {
                 if (packageSourcesElement.Elements("add").All(e => e.Attribute("key").Value != "Tsd"))
                 {

@@ -11,12 +11,12 @@
     </xs:annotation>
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="ServerLocation" type="ServerLocationElement" minOccurs="1" maxOccurs="1" />
+        <xs:element name="NuGetPackageRepository" type="NuGetPackageRepositoryElement" minOccurs="1" maxOccurs="unbounded" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   
-  <xs:complexType name="ServerLocationElement">
+  <xs:complexType name="NuGetPackageRepositoryElement">
     <xs:annotation>
       <xs:documentation>Specifies the location of the server containing the VSIX installer.</xs:documentation>
     </xs:annotation>
