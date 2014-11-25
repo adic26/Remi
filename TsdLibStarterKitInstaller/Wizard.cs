@@ -23,8 +23,7 @@ namespace TsdLibStarterKitInstaller
         [Import]
         internal IVsPackageInstaller NuGetPackageInstaller { get; set; }
 
-        private IEnumerable<string> _packageRepositories; 
-        private string _serverLocation;
+        private Dictionary<string,string> _packageRepositories; 
 
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
         {
@@ -56,12 +55,8 @@ namespace TsdLibStarterKitInstaller
 
                 wizardRootElement.Validate(schemaObject, schemaSet, (o, e) => Debug.Fail("TsdLibStarterKit.vstemplate could not be validated against schema: TsdLib.WizardData.xsd."));
 
-// ReSharper disable once PossibleNullReferenceException - doc is validated against schema
-                _serverLocation = wizardRootElement.Element(ns + "NuGetPackageRepository")
-                    .Attribute("Path").Value;
-
                 _packageRepositories = wizardRootElement.Elements(ns + "NuGetPackageRepository")
-                    .Select(e => e.Attribute("Path").Value);
+                    .ToDictionary(e => e.Attribute("Name").Value, e => e.Attribute("Path").Value);
             }
             catch (Exception ex)
             {
@@ -78,6 +73,28 @@ namespace TsdLibStarterKitInstaller
                 return;
             }
 
+            foreach (var repoKvp in _packageRepositories)
+            {
+                //If using OData repository, use the IPackage.IsLatestVersion property - should also try reading tags
+
+                IPackageRepository repo = PackageRepositoryFactory.Default.CreateRepository(repoKvp.Value);
+
+
+                IQueryable<IPackage> packages = repo.GetPackages()
+                    .GroupBy(p => p.Id)
+                    .Select(g => g.OrderBy(p => p.Version)
+                    .Last());
+
+                using (SelectPackagesForm form = new SelectPackagesForm(repoKvp.Key, packages))
+                {
+                    form.ShowDialog();
+                    foreach (IPackage selectedPackage in form.SelectedPackages)
+                        NuGetPackageInstaller.InstallPackage(repo, project, selectedPackage.Id, selectedPackage.Version.ToString(), false, false);
+                }
+            }
+
+
+            //Add package sources to NuGet.Config
             string nugetConfigPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 "NuGet",
@@ -93,44 +110,11 @@ namespace TsdLibStarterKitInstaller
                 configurationElement.Add(packageSourcesElement);
             }
 
+            foreach (var repoKvp in _packageRepositories)
+                if (!packageSourcesElement.Elements("add").Any(e => e.Attribute("key") != null && e.Attribute("key").Value == repoKvp.Key))
+                    packageSourcesElement.Add( new XElement("add", new XAttribute("key", repoKvp.Key), new XAttribute("value", repoKvp.Value)));
 
-            foreach (string repoName in _packageRepositories)
-            {
-                //If using OData repository, use the IPackage.IsLatestVersion property - should also try reading tags
-
-                IPackageRepository repo = PackageRepositoryFactory.Default.CreateRepository(repoName);
-
-                XElement tsdPackageSourceElement = new XElement("add", new XAttribute("key", "Tsd"), new XAttribute("value", repo.Source));
-
-                if (packageSourcesElement.Elements().First(e => e.Attribute("value").Value == repo.Source) == null)
-                {
-                    packageSourcesElement.Add(tsdPackageSourceElement);
-                    nugetConfig.Save(nugetConfigPath);
-                }
-
-                IQueryable<IPackage> packages = repo.GetPackages()
-                    .GroupBy(p => p.Id)
-                    .Select(g => g.OrderBy(p => p.Version)
-                    .Last());
-
-                using (SelectPackagesForm form = new SelectPackagesForm(packages))
-                {
-                    form.ShowDialog();
-                    foreach (IPackage selectedPackage in form.SelectedPackages)
-                        NuGetPackageInstaller.InstallPackage(repo, project, selectedPackage.Id, selectedPackage.Version.ToString(), false, false);
-                }
-            }
-            
-
-            if (configurationElement != null)
-            {
-                if (packageSourcesElement.Elements("add").All(e => e.Attribute("key").Value != "Tsd"))
-                {
-                    packageSourcesElement.Add(tsdPackageSourcElement);
-                    nugetConfig.Save(nugetConfigPath);
-                }
-            }
-
+            nugetConfig.Save(nugetConfigPath);
         }
 
         #region Not implemented

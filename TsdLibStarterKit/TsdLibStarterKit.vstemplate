@@ -43,8 +43,8 @@
   </WizardExtension>
   <WizardData>
     <w:Root>
-      <w:NuGetPackageRepository Path="\\fsg52ykf\ReliabilityTSD\TsdLib\Packages" />
-      <w:NuGetPackageRepository Path="\\fsg52ykf\ReliabilityTSD\DLL\REMI\Control\Latest\Packages" />
+      <w:NuGetPackageRepository Name="Tsd" Path="\\fsg52ykf\ReliabilityTSD\TsdLib\Packages" />
+      <w:NuGetPackageRepository Name="DBControl" Path="\\fsg52ykf\ReliabilityTSD\DLL\REMI\Control\Latest\Packages" />
     </w:Root>
   </WizardData>
 </VSTemplate>

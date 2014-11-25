@@ -20,6 +20,7 @@
     <xs:annotation>
       <xs:documentation>Specifies the location of the server containing the VSIX installer.</xs:documentation>
     </xs:annotation>
+    <xs:attribute name="Name" />
     <xs:attribute name="Path" />
   </xs:complexType>
 </xs:schema>
