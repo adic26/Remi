@@ -1,8 +1,8 @@
 ﻿using TsdLib.View;
 
-namespace $safeprojectname$
+namespace $safeprojectname$.View
 {
-    public partial class View
+    public partial class $safeprojectname$View
     {
         /// <summary>
         /// Required designer variable.
@@ -32,12 +32,12 @@ namespace $safeprojectname$
         {
             this.SuspendLayout();
             // 
-            // View
+            // $safeprojectname$View
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(539, 576);
-            this.Name = "View";
+            this.Name = "$safeprojectname$View";
             this.ResumeLayout(false);
             this.PerformLayout();
 

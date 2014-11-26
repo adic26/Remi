@@ -31,10 +31,12 @@
       <Folder Name="Sequences" TargetFolderName="Sequences">
         <ProjectItem ReplaceParameters="true" TargetFileName="DefaultSequence.cs">DefaultSequence.cs</ProjectItem>
       </Folder>
+      <Folder Name="View" TargetFolderName="View">
+        <ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$View.cs">TestClientView.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$View.Designer.cs">TestClientView.Designer.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$View.resx">TestClientView.resx</ProjectItem>
+      </Folder>
       <ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$Program.cs">TestClientProgram.cs</ProjectItem>
-      <ProjectItem ReplaceParameters="true" TargetFileName="View.cs">View.cs</ProjectItem>
-      <ProjectItem ReplaceParameters="true" TargetFileName="View.Designer.cs">View.Designer.cs</ProjectItem>
-      <ProjectItem ReplaceParameters="true" TargetFileName="View.resx">View.resx</ProjectItem>
     </Project>
   </TemplateContent>
   <WizardExtension>

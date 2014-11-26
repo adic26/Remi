@@ -6,6 +6,7 @@ namespace TsdLib.TestResults
     /// <summary>
     /// Provides test results and publishing information to handlers of the <see cref="TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}.TestCompleteEventProxy"/> event
     /// </summary>
+    [Serializable]
     public class TestCompleteEventArgs : EventArgs
     {
         /// <summary>

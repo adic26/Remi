@@ -50,10 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <VSTemplate Include="TsdLibStarterKit.vstemplate" />
-    <Content Include="View.Designer.cs">
-      <DependentUpon>View.cs</DependentUpon>
+    <Content Include="View\TestClientView.Designer.cs">
+      <DependentUpon>TestClientView.cs</DependentUpon>
     </Content>
-    <Content Include="View.cs" />
+    <Content Include="View\TestClientView.cs" />
     <Content Include="TestClientProgram.cs" />
     <Content Include="Sequences\DefaultSequence.cs" />
     <Content Include="Configuration\TestConfig.cs" />
@@ -69,8 +69,8 @@
     <None Include="TsdLibStarterKit.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="View.resx">
-      <DependentUpon>View.cs</DependentUpon>
+    <Content Include="View\TestClientView.resx">
+      <DependentUpon>TestClientView.cs</DependentUpon>
     </Content>
   </ItemGroup>
   <ItemGroup>

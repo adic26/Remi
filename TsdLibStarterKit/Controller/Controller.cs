@@ -1,12 +1,13 @@
 ﻿using System.Linq;
 using $safeprojectname$.Configuration;
+using $safeprojectname$.View;
 using TsdLib;
 using TsdLib.Configuration;
 using TsdLib.Controller;
 
 namespace $safeprojectname$
 {
-    public class Controller : ControllerBase<View, StationConfig, ProductConfig, TestConfig, SequenceEventHandlers>
+    public class Controller : ControllerBase<$safeprojectname$View, StationConfig, ProductConfig, TestConfig, SequenceEventHandlers>
     {
 
         public Controller(TestDetails testDetails, IDatabaseConnection databaseConnection, bool localDomain)

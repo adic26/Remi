@@ -53,7 +53,7 @@ namespace TestClient
                 }
                 catch (System.Exception ex)
                 {
-                    Trace.WriteLine("REMIControl Exception: " + ex.ToString(), ex.GetType().Name);
+                    System.Diagnostics.Trace.WriteLine("REMIControl Exception: " + ex.ToString(), ex.GetType().Name);
                 }
             }
             else
