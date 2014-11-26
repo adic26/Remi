@@ -135,6 +135,7 @@ namespace TsdLib.Configuration
         /// <summary>
         /// Not implemented.
         /// </summary>
+        /// <param name="verb">Not implemented.</param>
         public void AddVerb(DesignerVerb verb)
         {
             throw new NotImplementedException();

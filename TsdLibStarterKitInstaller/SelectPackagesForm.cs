@@ -14,7 +14,7 @@ namespace TsdLibStarterKitInstaller
         {
             InitializeComponent();
 
-            Text = "NuGet Repository: " + repoName;
+            Text = "Select Packages from NuGet Repository: " + repoName;
             _packages = new List<IPackage>(packages);
 
             listView_Packages.Items.AddRange(_packages.Select(p => new ListViewItem(new[] 

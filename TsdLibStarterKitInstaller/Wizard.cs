@@ -73,12 +73,18 @@ namespace TsdLibStarterKitInstaller
                 return;
             }
 
+            Settings nugetSettings = new Settings(new PhysicalFileSystem(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NuGet")));
+            nugetSettings.SetValue("packageRestore", "enabled", "True");
+            nugetSettings.SetValue("packageRestore", "automatic", "True");
+            nugetSettings.SetValues("packageSources", _packageRepositories.ToList());
+            nugetSettings.GetValues("activePackageSource", false);
+            nugetSettings.DeleteValue("activePackageSource", nugetSettings.GetValues("activePackageSource", false).First().Key);
+            nugetSettings.SetValue("activePackageSource", _packageRepositories.First().Key, _packageRepositories.First().Value);
+
             foreach (var repoKvp in _packageRepositories)
             {
                 //If using OData repository, use the IPackage.IsLatestVersion property - should also try reading tags
-
                 IPackageRepository repo = PackageRepositoryFactory.Default.CreateRepository(repoKvp.Value);
-
 
                 IQueryable<IPackage> packages = repo.GetPackages()
                     .GroupBy(p => p.Id)
@@ -92,29 +98,6 @@ namespace TsdLibStarterKitInstaller
                         NuGetPackageInstaller.InstallPackage(repo, project, selectedPackage.Id, selectedPackage.Version.ToString(), false, false);
                 }
             }
-
-
-            //Add package sources to NuGet.Config
-            string nugetConfigPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "NuGet",
-                "nuget.config");
-
-            XDocument nugetConfig = XDocument.Load(nugetConfigPath);
-            XElement configurationElement = nugetConfig.Root;
-            if (configurationElement == null) return;
-            XElement packageSourcesElement = configurationElement.Element("packageSources");
-            if (packageSourcesElement == null)
-            {
-                packageSourcesElement = new XElement("packageSources");
-                configurationElement.Add(packageSourcesElement);
-            }
-
-            foreach (var repoKvp in _packageRepositories)
-                if (!packageSourcesElement.Elements("add").Any(e => e.Attribute("key") != null && e.Attribute("key").Value == repoKvp.Key))
-                    packageSourcesElement.Add( new XElement("add", new XAttribute("key", repoKvp.Key), new XAttribute("value", repoKvp.Value)));
-
-            nugetConfig.Save(nugetConfigPath);
         }
 
         #region Not implemented

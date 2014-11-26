@@ -241,7 +241,7 @@ namespace TsdLib.Controller
         /// <summary>
         /// Generates a sequence of <see cref="CodeCompileUnit"/> objects to be dynamically compiled for the test sequence. Not used when the -localDomain command-line switch is used.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A sequence of <see cref="CodeCompileUnit"/> objects.</returns>
         protected virtual IEnumerable<CodeCompileUnit> GenerateCodeCompileUnits()
         {
             return new CodeCompileUnit[0];
