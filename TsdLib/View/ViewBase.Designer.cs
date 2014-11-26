@@ -46,12 +46,12 @@ namespace TsdLib.View
             this.label_SequenceConfig = new System.Windows.Forms.Label();
             this.button_ViewEditConfiguration = new System.Windows.Forms.Button();
             this.panel_Controls = new System.Windows.Forms.Panel();
-            this.checkBox_GetDetailsFromDatabase = new System.Windows.Forms.CheckBox();
+            this.checkBox_DetailsFromDatabase = new System.Windows.Forms.CheckBox();
             this.button_EditTestDetails = new System.Windows.Forms.Button();
             this.dataGridView_Information = new System.Windows.Forms.DataGridView();
-            this.label_Information = new System.Windows.Forms.Label();
             this.Column_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column_Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.label_Information = new System.Windows.Forms.Label();
             this.measurementDataGridView = new TsdLib.View.MeasurementDataGridView();
             this.MeasurementName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MeasuredValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -59,6 +59,7 @@ namespace TsdLib.View
             this.LowerLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UpperLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Result = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.checkBox_ResultsToDatabase = new System.Windows.Forms.CheckBox();
             this.panel_Controls.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Information)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.measurementDataGridView)).BeginInit();
@@ -156,7 +157,7 @@ namespace TsdLib.View
             // label_TestConfig
             // 
             this.label_TestConfig.AutoSize = true;
-            this.label_TestConfig.Location = new System.Drawing.Point(8, 93);
+            this.label_TestConfig.Location = new System.Drawing.Point(8, 132);
             this.label_TestConfig.Name = "label_TestConfig";
             this.label_TestConfig.Size = new System.Drawing.Size(61, 13);
             this.label_TestConfig.TabIndex = 16;
@@ -166,7 +167,7 @@ namespace TsdLib.View
             // 
             this.comboBox_TestConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_TestConfig.FormattingEnabled = true;
-            this.comboBox_TestConfig.Location = new System.Drawing.Point(11, 109);
+            this.comboBox_TestConfig.Location = new System.Drawing.Point(11, 148);
             this.comboBox_TestConfig.Name = "comboBox_TestConfig";
             this.comboBox_TestConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_TestConfig.TabIndex = 17;
@@ -175,7 +176,7 @@ namespace TsdLib.View
             // 
             this.comboBox_SequenceConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_SequenceConfig.FormattingEnabled = true;
-            this.comboBox_SequenceConfig.Location = new System.Drawing.Point(11, 149);
+            this.comboBox_SequenceConfig.Location = new System.Drawing.Point(11, 108);
             this.comboBox_SequenceConfig.Name = "comboBox_SequenceConfig";
             this.comboBox_SequenceConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_SequenceConfig.TabIndex = 19;
@@ -183,7 +184,7 @@ namespace TsdLib.View
             // label_SequenceConfig
             // 
             this.label_SequenceConfig.AutoSize = true;
-            this.label_SequenceConfig.Location = new System.Drawing.Point(8, 133);
+            this.label_SequenceConfig.Location = new System.Drawing.Point(8, 92);
             this.label_SequenceConfig.Name = "label_SequenceConfig";
             this.label_SequenceConfig.Size = new System.Drawing.Size(56, 13);
             this.label_SequenceConfig.TabIndex = 20;
@@ -201,7 +202,8 @@ namespace TsdLib.View
             // 
             // panel_Controls
             // 
-            this.panel_Controls.Controls.Add(this.checkBox_GetDetailsFromDatabase);
+            this.panel_Controls.Controls.Add(this.checkBox_ResultsToDatabase);
+            this.panel_Controls.Controls.Add(this.checkBox_DetailsFromDatabase);
             this.panel_Controls.Controls.Add(this.button_EditTestDetails);
             this.panel_Controls.Controls.Add(this.button_ViewEditConfiguration);
             this.panel_Controls.Controls.Add(this.label_SequenceConfig);
@@ -217,17 +219,17 @@ namespace TsdLib.View
             this.panel_Controls.Size = new System.Drawing.Size(542, 171);
             this.panel_Controls.TabIndex = 22;
             // 
-            // checkBox_GetDetailsFromDatabase
+            // checkBox_DetailsFromDatabase
             // 
-            this.checkBox_GetDetailsFromDatabase.AutoSize = true;
-            this.checkBox_GetDetailsFromDatabase.Checked = true;
-            this.checkBox_GetDetailsFromDatabase.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_GetDetailsFromDatabase.Location = new System.Drawing.Point(400, 122);
-            this.checkBox_GetDetailsFromDatabase.Name = "checkBox_GetDetailsFromDatabase";
-            this.checkBox_GetDetailsFromDatabase.Size = new System.Drawing.Size(115, 17);
-            this.checkBox_GetDetailsFromDatabase.TabIndex = 23;
-            this.checkBox_GetDetailsFromDatabase.Text = "Get from Database";
-            this.checkBox_GetDetailsFromDatabase.UseVisualStyleBackColor = true;
+            this.checkBox_DetailsFromDatabase.AutoSize = true;
+            this.checkBox_DetailsFromDatabase.Checked = true;
+            this.checkBox_DetailsFromDatabase.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_DetailsFromDatabase.Location = new System.Drawing.Point(395, 122);
+            this.checkBox_DetailsFromDatabase.Name = "checkBox_DetailsFromDatabase";
+            this.checkBox_DetailsFromDatabase.Size = new System.Drawing.Size(130, 17);
+            this.checkBox_DetailsFromDatabase.TabIndex = 23;
+            this.checkBox_DetailsFromDatabase.Text = "Details from Database";
+            this.checkBox_DetailsFromDatabase.UseVisualStyleBackColor = true;
             // 
             // button_EditTestDetails
             // 
@@ -256,15 +258,6 @@ namespace TsdLib.View
             this.dataGridView_Information.Size = new System.Drawing.Size(804, 109);
             this.dataGridView_Information.TabIndex = 23;
             // 
-            // label1
-            // 
-            this.label_Information.AutoSize = true;
-            this.label_Information.Location = new System.Drawing.Point(12, 195);
-            this.label_Information.Name = "label1";
-            this.label_Information.Size = new System.Drawing.Size(59, 13);
-            this.label_Information.TabIndex = 24;
-            this.label_Information.Text = "Information";
-            // 
             // Column_Name
             // 
             this.Column_Name.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
@@ -279,6 +272,15 @@ namespace TsdLib.View
             this.Column_Value.HeaderText = "Value";
             this.Column_Value.Name = "Column_Value";
             this.Column_Value.ReadOnly = true;
+            // 
+            // label_Information
+            // 
+            this.label_Information.AutoSize = true;
+            this.label_Information.Location = new System.Drawing.Point(12, 195);
+            this.label_Information.Name = "label_Information";
+            this.label_Information.Size = new System.Drawing.Size(59, 13);
+            this.label_Information.TabIndex = 24;
+            this.label_Information.Text = "Information";
             // 
             // measurementDataGridView
             // 
@@ -349,6 +351,18 @@ namespace TsdLib.View
             this.Result.HeaderText = "Result";
             this.Result.Name = "Result";
             this.Result.ReadOnly = true;
+            // 
+            // checkBox_ResultsToDatabase
+            // 
+            this.checkBox_ResultsToDatabase.AutoSize = true;
+            this.checkBox_ResultsToDatabase.Checked = true;
+            this.checkBox_ResultsToDatabase.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_ResultsToDatabase.Location = new System.Drawing.Point(396, 145);
+            this.checkBox_ResultsToDatabase.Name = "checkBox_ResultsToDatabase";
+            this.checkBox_ResultsToDatabase.Size = new System.Drawing.Size(122, 17);
+            this.checkBox_ResultsToDatabase.TabIndex = 24;
+            this.checkBox_ResultsToDatabase.Text = "Results to Database";
+            this.checkBox_ResultsToDatabase.UseVisualStyleBackColor = true;
             // 
             // ViewBase
             // 
@@ -454,7 +468,7 @@ namespace TsdLib.View
         /// <summary>
         /// Switch to control EditTestDetails behaviour.
         /// </summary>
-        protected System.Windows.Forms.CheckBox checkBox_GetDetailsFromDatabase;
+        protected System.Windows.Forms.CheckBox checkBox_DetailsFromDatabase;
         /// <summary>
         /// Information label.
         /// </summary>
@@ -465,5 +479,9 @@ namespace TsdLib.View
         protected System.Windows.Forms.DataGridView dataGridView_Information;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_Name;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_Value;
+        /// <summary>
+        /// Switch to control database result upload bahaviour.
+        /// </summary>
+        protected System.Windows.Forms.CheckBox checkBox_ResultsToDatabase;
     }
 }

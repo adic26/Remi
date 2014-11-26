@@ -128,7 +128,7 @@ namespace TsdLib.Controller
         }
 
         /// <summary>
-        /// Default handler for the ViewBase.ExecuteTestSequence event.
+        /// Default handler for the ViewBase.ExecuteTestSequence event. Overload <see cref="SequenceEventHandlersBase"/> methods to customize behaviour.
         /// </summary>
         /// <param name="sender">Object that raised the exception. Should be a reference to the Execute Test Sequence button.</param>
         /// <param name="e">EventArgs containing the product, station, test and sequence configuration objects.</param>
@@ -143,6 +143,7 @@ namespace TsdLib.Controller
                 TProductConfig productConfig = (TProductConfig) e.ProductConfig;
                 TTestConfig testConfig = (TTestConfig) e.TestConfig;
                 Sequence sequenceConfig = (Sequence) e.SequenceConfig;
+                bool publishResults = e.PublishResults;
 
                 _tokenSource = new CancellationTokenSource();
 
@@ -193,7 +194,7 @@ namespace TsdLib.Controller
                     sequence.DataEventProxy = dataEventProxy;
                     dataEventProxy.Attach(eventHandlers.DataAdded, uiContext);
 
-                    EventProxy<TestResultCollection> testCompleteEventProxy = new EventProxy<TestResultCollection>();
+                    EventProxy<TestCompleteEventArgs> testCompleteEventProxy = new EventProxy<TestCompleteEventArgs>();
                     sequence.TestCompleteEventProxy = testCompleteEventProxy;
                     testCompleteEventProxy.Attach((s, o) => View.SetState(State.ReadyToTest), uiContext);
                     testCompleteEventProxy.Attach(eventHandlers.TestComplete);
@@ -205,7 +206,7 @@ namespace TsdLib.Controller
                     _tokenSource = new CancellationTokenSource();
                     _tokenSource.Token.Register(sequence.Abort);
 
-                    sequence.ExecuteSequence(stationConfig, productConfig, testConfig, Details);
+                    sequence.ExecuteSequence(stationConfig, productConfig, testConfig, Details, publishResults);
                 });
 
                 t.ContinueWith(task => View.SetState(State.ReadyToTest), TaskContinuationOptions.NotOnRanToCompletion);

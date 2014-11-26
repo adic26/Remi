@@ -84,6 +84,7 @@
     <Compile Include="TestResults\MeasurementImplementations.cs" />
     <Compile Include="TestResults\MeasurementParameter.cs" />
     <Compile Include="TestResults\MeasurmentResult.cs" />
+    <Compile Include="TestResults\TestCompleteEventArgs.cs" />
     <Compile Include="TestResults\TestInfo.cs" />
     <Compile Include="TestResults\TestSummary.cs" />
     <Compile Include="TestResults\TestResultsExceptions.cs" />

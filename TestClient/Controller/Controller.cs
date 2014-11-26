@@ -1,4 +1,5 @@
-﻿using System.CodeDom;
+﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace TestClient
                 try
                 {
                     using (DBControl.Forms.Request remiForm = new DBControl.Forms.Request())
-                        if (remiForm.ShowDialog() == DialogResult.OK)
+                        if (remiForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                         {
                             DBControl.remiAPI.ScanReturnData batchInformation = remiForm.RemiData[0];
                             Details.TestSystemName = batchInformation.SelectedTestName;
@@ -57,11 +58,11 @@ namespace TestClient
                 }
                 catch (NullReferenceException)
                 {
-                    MessageBox.Show("REMIControl Exception: No tests have been registered for this PC in Remi.");
+                    System.Windows.Forms.MessageBox.Show("REMIControl Exception: No tests have been registered for this PC in Remi.");
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.ToString(), ex.GetType().Name);
+                    System.Windows.Forms.MessageBox.Show(ex.ToString(), ex.GetType().Name);
                 }
             }
             else

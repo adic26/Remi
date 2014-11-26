@@ -79,7 +79,7 @@ namespace TsdLib.TestSequence
         /// <summary>
         /// Gets or sets an EventProxy object that can be used to notify the system when the test sequence is complete.
         /// </summary>
-        public EventProxy<TestResultCollection> TestCompleteEventProxy { get; set; }
+        public EventProxy<TestCompleteEventArgs> TestCompleteEventProxy { get; set; }
 
         /// <summary>
         /// Gets or sets an EventProxy object that can be used to notify the system when the test sequence has been cancelled.
@@ -149,7 +149,8 @@ namespace TsdLib.TestSequence
         /// <param name="productConfig">Product config instance containing product-specific configuration.</param>
         /// <param name="testConfig">Test config instance containing test-specific configuration.</param>
         /// <param name="testDetails">Details about the test request or job.</param>
-        public void ExecuteSequence(TStationConfig stationConfig, TProductConfig productConfig, TTestConfig testConfig, TestDetails testDetails)
+        /// <param name="publishResults">True to publish test results to a database.</param>
+        public void ExecuteSequence(TStationConfig stationConfig, TProductConfig productConfig, TTestConfig testConfig, TestDetails testDetails, bool publishResults)
         {
             try
             {
@@ -174,7 +175,7 @@ namespace TsdLib.TestSequence
                 
                 TestResultCollection testResults = new TestResultCollection(testDetails, Measurements, summary, Information);
 
-                TestCompleteEventProxy.FireEvent(this, testResults);
+                TestCompleteEventProxy.FireEvent(this, new TestCompleteEventArgs(testResults, publishResults));
             }
             catch (OperationCanceledException)
             {
