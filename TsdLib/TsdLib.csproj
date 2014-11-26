@@ -81,9 +81,11 @@
     <Compile Include="Instrument\InstrumentAttributes.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="TestResults\Data.cs" />
-    <Compile Include="TestResults\MeasurementImplementations.cs" />
-    <Compile Include="TestResults\MeasurementParameter.cs" />
-    <Compile Include="TestResults\MeasurmentResult.cs" />
+    <Compile Include="TestResults\Measurements\BoolMeasurement.cs" />
+    <Compile Include="TestResults\Measurements\MeasurementParameter.cs" />
+    <Compile Include="TestResults\Measurements\MeasurementWithoutResult.cs" />
+    <Compile Include="TestResults\Measurements\Measurement{T}.cs" />
+    <Compile Include="TestResults\Measurements\MeasurmentResult.cs" />
     <Compile Include="TestResults\TestCompleteEventArgs.cs" />
     <Compile Include="TestResults\TestInfo.cs" />
     <Compile Include="TestResults\TestSummary.cs" />
@@ -93,7 +95,7 @@
     <Compile Include="Remoting\EventProxy.cs" />
     <Compile Include="Common\States.cs" />
     <Compile Include="Common\IDatabaseConnection.cs" />
-    <Compile Include="TestResults\MeasurementBase.cs" />
+    <Compile Include="TestResults\Measurements\MeasurementBase.cs" />
     <Compile Include="Common\SpecialFolders.cs" />
     <Compile Include="TestSequence\AssemblyReferenceAttribute.cs" />
     <Compile Include="TestSequence\TestSequenceException.cs" />
