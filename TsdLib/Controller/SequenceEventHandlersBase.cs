@@ -59,13 +59,13 @@ namespace TsdLib.Controller
         /// Default handler for the <see cref="TsdLib.TestSequence.TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}.TestCompleteEventProxy"/>. Saves the test results as xml and csv to the TsdLib.SpecialFolders location.
         /// </summary>
         /// <param name="sender">The <see cref="TsdLib.TestSequence.TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}"/> where the test was performed.</param>
-        /// <param name="testResults">The <see cref="TestResultCollection"/> that was captured.</param>
-        protected internal virtual void TestComplete(object sender, TestResultCollection testResults)
+        /// <param name="eventArgs">The <see cref="TestResultCollection"/> that was captured, along with the information required to upload the results to a database.</param>
+        protected internal virtual void TestComplete(object sender, TestCompleteEventArgs eventArgs)
         {
-            DirectoryInfo resultsDirectory = SpecialFolders.GetResultsFolder(testResults.Details.TestSystemName);
+            DirectoryInfo resultsDirectory = SpecialFolders.GetResultsFolder(eventArgs.TestResults.Details.TestSystemName);
 
-            string xmlResultsFile = testResults.Save(resultsDirectory);
-            string csvResultsFile = testResults.SaveCsv(resultsDirectory);
+            string xmlResultsFile = eventArgs.TestResults.Save(resultsDirectory);
+            string csvResultsFile = eventArgs.TestResults.SaveCsv(resultsDirectory);
 
             Trace.WriteLine("Test sequence completed.");
             Trace.WriteLine("XML results saved to " + xmlResultsFile);

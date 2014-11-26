@@ -104,6 +104,10 @@ namespace TsdLib.View
         /// Sequence Config object to pass to the Test Sequence.
         /// </summary>
         public object SequenceConfig { get; private set; }
+        /// <summary>
+        /// True if Test Sequence results will be published to a database.
+        /// </summary>
+        public bool PublishResults { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the TestSequenceEventArgs class.
@@ -112,12 +116,14 @@ namespace TsdLib.View
         /// <param name="productConfig">Product Config object to pass to the Test Sequence.</param>
         /// <param name="testConfig">Test Config object to pass to the Test Sequence.</param>
         /// <param name="sequenceConfig">Sequence Config object to pass to the Test Sequence.</param>
-        public TestSequenceEventArgs(object stationConfig, object productConfig, object testConfig, object sequenceConfig)
+        /// <param name="publishResults">True to publish Test Sequence results to a database.</param>
+        public TestSequenceEventArgs(object stationConfig, object productConfig, object testConfig, object sequenceConfig, bool publishResults)
         {
             StationConfig = stationConfig;
             ProductConfig = productConfig;
             TestConfig = testConfig;
             SequenceConfig = sequenceConfig;
+            PublishResults = publishResults;
         }
     }
 }

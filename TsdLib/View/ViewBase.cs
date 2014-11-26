@@ -124,10 +124,8 @@ namespace TsdLib.View
         public event EventHandler<bool> EditTestDetails;
         private void button_EditTestDetails_Click(object sender, EventArgs e)
         {
-            bool fromDb = checkBox_GetDetailsFromDatabase.Checked;
-            checkBox_GetDetailsFromDatabase.Checked = false;
             if (EditTestDetails != null)
-                EditTestDetails(this, fromDb);
+                EditTestDetails(this, checkBox_DetailsFromDatabase.Checked);
         }
 
         /// <summary>
@@ -137,8 +135,14 @@ namespace TsdLib.View
         private void button_ExecuteTestSequence_Click(object sender, EventArgs e)
         {
             if (ExecuteTestSequence != null)
-                ExecuteTestSequence(this,
-                    new TestSequenceEventArgs(comboBox_StationConfig.SelectedItem, comboBox_ProductConfig.SelectedItem, comboBox_TestConfig.SelectedItem, comboBox_SequenceConfig.SelectedItem));
+                ExecuteTestSequence(
+                    this,
+                    new TestSequenceEventArgs(
+                        comboBox_StationConfig.SelectedItem,
+                        comboBox_ProductConfig.SelectedItem,
+                        comboBox_TestConfig.SelectedItem,
+                        comboBox_SequenceConfig.SelectedItem,
+                        checkBox_ResultsToDatabase.Checked));
         }
 
         /// <summary>
