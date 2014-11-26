@@ -1,11 +1,6 @@
-﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using TestClient.Configuration;
 using TsdLib;
-using TsdLib.CodeGenerator;
 using TsdLib.Configuration;
 using TsdLib.Controller;
 
@@ -22,16 +17,16 @@ namespace TestClient
 
 
 #if INSTRUMENT_LIBRARY
-        protected override IEnumerable<CodeCompileUnit> GenerateCodeCompileUnits()
+        protected override System.Collections.Generic.IEnumerable<System.CodeDom.CodeCompileUnit> GenerateCodeCompileUnits()
         {
-            TsdLib.InstrumentLibrary.InstrumentParser instrumentParser = new TsdLib.InstrumentLibrary.InstrumentParser(Details.TestSystemName, Language.CSharp.ToString());
+            TsdLib.InstrumentLibrary.InstrumentParser instrumentParser = new TsdLib.InstrumentLibrary.InstrumentParser(Details.TestSystemName, TsdLib.CodeGenerator.Language.CSharp.ToString());
 
-            if (!Directory.Exists("Instruments"))
-                return new CodeCompileUnit[0];
+            if (!System.IO.Directory.Exists("Instruments"))
+                return new System.CodeDom.CodeCompileUnit[0];
 
-            IEnumerable<CodeCompileUnit> codeCompileUnits = 
-                Directory.GetFiles("Instruments", "*.xml")
-                .Select(xmlFile => instrumentParser.Parse(new StreamReader(xmlFile)));
+            System.Collections.Generic.IEnumerable<System.CodeDom.CodeCompileUnit> codeCompileUnits =
+                System.IO.Directory.GetFiles("Instruments", "*.xml")
+                .Select(xmlFile => instrumentParser.Parse(new System.IO.StreamReader(xmlFile)));
 
             return codeCompileUnits;
         }
@@ -50,19 +45,15 @@ namespace TestClient
                             DBControl.remiAPI.ScanReturnData batchInformation = remiForm.RemiData[0];
                             Details.TestSystemName = batchInformation.SelectedTestName;
                             string[] qraNumber = batchInformation.QRANumber.Split('-');
-                            Details.JobNumber = String.Join("-", qraNumber, 0, qraNumber.Length - 1);
+                            Details.JobNumber = string.Join("-", qraNumber, 0, qraNumber.Length - 1);
                             Details.TestStage = batchInformation.TestStageName;
                             Details.TestType = batchInformation.JobName;
                             Details.UnitNumber = (uint)batchInformation.UnitNumber;
                         }
                 }
-                catch (NullReferenceException)
+                catch (System.Exception ex)
                 {
-                    System.Windows.Forms.MessageBox.Show("REMIControl Exception: No tests have been registered for this PC in Remi.");
-                }
-                catch (Exception ex)
-                {
-                    System.Windows.Forms.MessageBox.Show(ex.ToString(), ex.GetType().Name);
+                    Trace.WriteLine("REMIControl Exception: " + ex.ToString(), ex.GetType().Name);
                 }
             }
             else
