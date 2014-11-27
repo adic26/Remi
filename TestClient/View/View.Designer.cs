@@ -1,6 +1,6 @@
-﻿namespace TestClient
+﻿namespace TestClient.View
 {
-    partial class View
+    partial class TestClientView
     {
         /// <summary>
         /// Required designer variable.

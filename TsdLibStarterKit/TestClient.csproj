@@ -51,21 +51,20 @@
     <Compile Include="Instruments\ExamplePowerSupply.cs" />
     <Compile Include="Sequences\DefaultSequence.cs" />
     <Compile Include="Controller\Controller.cs" />
-    <Compile Include="Controller\SequenceEventHandlers.cs" />
     <Compile Include="$safeprojectname$Program.cs" />
-    <Compile Include="View.cs">
+    <Compile Include="View\$safeprojectname$View.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View.Designer.cs">
-      <DependentUpon>View.cs</DependentUpon>
+    <Compile Include="View\$safeprojectname$View.Designer.cs">
+      <DependentUpon>$safeprojectname$View.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="View.resx">
-      <DependentUpon>View.cs</DependentUpon>
+    <EmbeddedResource Include="View\$safeprojectname$View.resx">
+      <DependentUpon>$safeprojectname$View.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

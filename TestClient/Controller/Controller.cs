@@ -1,12 +1,16 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using TestClient.Configuration;
+using TestClient.View;
 using TsdLib;
 using TsdLib.Configuration;
 using TsdLib.Controller;
+using TsdLib.TestResults;
+using TsdLib.View;
 
 namespace TestClient
 {
-    public class Controller : ControllerBase<View, StationConfig, ProductConfig, TestConfig, SequenceEventHandlers>
+    public class Controller : ControllerBase<TestClientView, StationConfig, ProductConfig, TestConfig, SequenceEventHandlers>
     {
 
         public Controller(TestDetails testDetails, IDatabaseConnection databaseConnection, bool localDomain)
@@ -53,11 +57,46 @@ namespace TestClient
                 }
                 catch (System.Exception ex)
                 {
-                    Trace.WriteLine("REMIControl Exception: " + ex.ToString(), ex.GetType().Name);
+                    System.Diagnostics.Trace.WriteLine("REMIControl Exception: " + ex.ToString(), ex.GetType().Name);
                 }
             }
             else
                 base.EditTestDetails(sender, false);
+        }
+#endif
+    }
+
+    public class SequenceEventHandlers : SequenceEventHandlersBase
+    {
+        public SequenceEventHandlers(IView view)
+            : base(view) { }
+
+#if REMICONTROL
+        protected override void TestComplete(object sender, TestCompleteEventArgs eventArgs)
+        {
+            base.TestComplete(sender, eventArgs);
+
+            if (eventArgs.PublishResults)
+            {
+                string dataLoggerXmlFile = eventArgs.TestResults.Save(new System.IO.DirectoryInfo(@"C:\TestResults"));
+                Trace.WriteLine("Uploading results to database...");
+                DBControl.DAL.Results.UploadXML(dataLoggerXmlFile);
+                Trace.WriteLine("Upload complete. Results can be viewed at " + eventArgs.TestResults.Details.JobNumber);
+            }
+        }
+#endif
+
+#if simREMICONTROL
+        protected override void TestComplete(object sender, TestCompleteEventArgs eventArgs)
+        {
+            base.TestComplete(sender, eventArgs);
+
+            if (eventArgs.PublishResults)
+            {
+                Trace.WriteLine("Simulating database upload");
+                System.Threading.Thread.Sleep(10000);
+                Trace.WriteLine("Done uploading");
+            }
         }
 #endif
     }
