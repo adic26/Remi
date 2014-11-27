@@ -8,6 +8,9 @@ namespace TsdLib.TestResults
     [Serializable]
     public class MeasurementWithoutResult : MeasurementBase
     {
+        /// <summary>
+        /// Always returns <see cref="MeasurementResult.Undefined"/>.
+        /// </summary>
         public override MeasurementResult Result
         {
             get { return MeasurementResult.Undefined; }
