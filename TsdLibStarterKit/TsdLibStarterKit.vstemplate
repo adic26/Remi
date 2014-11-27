@@ -18,7 +18,6 @@
       <ProjectItem ReplaceParameters="true" TargetFileName="App.config">App.config</ProjectItem>
       <Folder Name="Controller" TargetFolderName="Controller">
         <ProjectItem ReplaceParameters="true" TargetFileName="Controller.cs">Controller.cs</ProjectItem>
-        <ProjectItem ReplaceParameters="true" TargetFileName="SequenceEventHandlers.cs">SequenceEventHandlers.cs</ProjectItem>
       </Folder>
       <Folder Name="Configuration" TargetFolderName="Configuration">
         <ProjectItem ReplaceParameters="true" TargetFileName="ProductConfig.cs">ProductConfig.cs</ProjectItem>
@@ -50,4 +49,4 @@
     </w:Root>
   </WizardData>
 </VSTemplate>
-    <!--\\fsg52ykf\ReliabilityTSD\TsdLib-->
+    

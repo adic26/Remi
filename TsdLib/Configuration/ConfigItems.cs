@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 
 namespace TsdLib.Configuration
 {
@@ -99,6 +100,9 @@ namespace TsdLib.Configuration
 
         #region IComponent implementation
 
+        ///// <summary>
+        ///// Gets the <see cref="ISite"/> of the <see cref="IComponent"/>
+        ///// </summary>
         //[Browsable(false)]
         //[XmlIgnore]
         //public ISite Site
@@ -109,10 +113,13 @@ namespace TsdLib.Configuration
         //}
 
         ///// <summary>
-        ///// Event that is fired when the ConfigItem is disposed.
+        ///// Event that is fired when the <see cref="IComponent"/> is disposed.
         ///// </summary>
         //public event EventHandler Disposed;
 
+        ///// <summary>
+        ///// Dispose the <see cref="IComponent"/>.
+        ///// </summary>
         //public void Dispose()
         //{
         //    if (Disposed != null)
