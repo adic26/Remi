@@ -139,7 +139,7 @@ namespace TsdLib.TestResults
 
             string fileName = Path.Combine(directory.FullName, jobNumber + unitNumber + timeStamp + ".csv");
 
-            File.WriteAllText(fileName, ToString());
+            File.WriteAllText(fileName, ToString(Environment.NewLine, ","));
 
             return fileName;
         }
@@ -161,9 +161,8 @@ namespace TsdLib.TestResults
         /// <returns>A string representation of the MeasurementCollection formatted with row and column delimiters.</returns>
         public string ToString(string rowSeparator, string columnSeparator)
         {
-            //TODO: add checking for empty arrays
             IEnumerable<string>[] parameterArrays = Measurements.Select(m => m.Parameters.Select(p => p.Name)).ToArray();
-            string parameterHeaders = parameterArrays.All(p => p.SequenceEqual(parameterArrays[0])) ? string.Join(columnSeparator, parameterArrays[0]) : "";
+            string parameterHeaders = !parameterArrays.Any() ? "" : parameterArrays.All(p => p.SequenceEqual(parameterArrays[0])) ? string.Join(columnSeparator, parameterArrays[0]) : "";
 
             return string.Join(rowSeparator,
                 Details != null ? "Test Details" + rowSeparator + Details.ToString(rowSeparator, columnSeparator) : "",

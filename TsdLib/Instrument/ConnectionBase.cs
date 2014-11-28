@@ -157,7 +157,13 @@ namespace TsdLib.Instrument
                     Debug.WriteLine("Received response from: " + Description + ": " + response);
 
                     Match match = Regex.Match(response, regex, RegexOptions.Singleline);
-                    parsedResponse = match.Success ? match.Value : response;
+                    if (!match.Success)
+                    {
+                        Trace.WriteLine("RegEx match was unsuccessful. Returning full response.");
+                        parsedResponse = response;
+                    }
+                    else
+                        parsedResponse = match.Value;
 
                     if (parsedResponse != response)
                         Debug.WriteLine("RegEx pattern: " + regex + "  Parsed response: " + parsedResponse);
