@@ -1,4 +1,5 @@
 
+using System.Diagnostics;
 using System.Threading;
 using TestClient.Configuration;
 using TestClient.Instruments;
@@ -14,10 +15,14 @@ namespace TestClient.Sequences
             //TODO: Create test sequence. This is the step-by-step sequence of instrument and/or DUT commands and measurements
 
             //Use the System.Diagnostics.Debugger.Break() method to insert breakpoints.
-            //Debugger.Break();
+            Debugger.Break();
 
+            
+            BlackBerryBattery bbb = BlackBerryBattery.Connect();
+            Measurements.Add(new Measurement<string>("IMEI", bbb.GetImei(), "imei", "asdf", "asdf"));
+
+            /*
             PowerSupply ps = new DummyPowerSupply("addr");
-
             for (int i = 0; i < testConfig.LoopIterations; i++)
             {
                 foreach (double voltageSetting in testConfig.VoltageSettings)
@@ -35,7 +40,7 @@ namespace TestClient.Sequences
                     Measurement<double> measurement = new Measurement<double>("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: measurementParameters);
                     Measurements.Add(measurement);
                 }
-            }
+            }*/
         }
     }
 }

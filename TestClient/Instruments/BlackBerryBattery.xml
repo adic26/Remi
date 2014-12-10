@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Instruments xmlns="TsdLib.Instruments.xsd">
+  <Instrument Name="BlackBerryBattery" ConnectionType="Ssh" CommandDelay="200" InitCommands="echo fw_pltenable::1>>/pps/services/wifi/escreen">
+    <!--Discovery-->
+    <IdQuery Response="BlackBerry Device"/>
+    
+    <!--Identification-->
+    <ModelNumber Message="cat /pps/services/hw_info/inventory" RegEx="(?&lt;=Board_Type::).*(?=\r\nBoot_Devices)"/>
+    <SerialNumber Message="cat /pps/system/nvram/deviceinfo" RegEx="(?&lt;=BSN::).*(?=\r\nBTMAC)"/>
+    <FirmwareVersion Message="cat /pps/services/deviceproperties" RegEx="(?&lt;=scmbundle::).*(?=\r\nscmbundle0)"/>
+    
+    <!--General-->
+    <Query Name="GetImei" Message="cat /pps/system/nvram/deviceinfo" RegEx="(?&lt;=IMEI::).*(?=InProduction)" ReturnType="String" />
+    <Query Name="BatteryStatus" Message="cat /pps/system/BattMgr/status" ReturnType="String"/>
+  </Instrument>
+</Instruments>

@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;simREMICONTROL;INSTRUMENT_LIBRARY</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;INSTRUMENT_LIBRARY;REMICONTROL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -27,7 +27,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;INSTRUMENT_LIBRARY;simREMICONTROL</DefineConstants>
+    <DefineConstants>TRACE;INSTRUMENT_LIBRARY;simREMICONTROL;REMICONTROL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -35,9 +35,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DBControl, Version=4.0.5436.28228, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>\\fsg52ykf\ReliabilityTSD\DLL\REMI\Control\Latest\test\DBControl.dll</HintPath>
+    <Reference Include="DBControl">
+      <HintPath>..\packages\DBControl.4.3.5451.20971\lib\net45\DBControl.dll</HintPath>
     </Reference>
     <Reference Include="DBControl.XmlSerializers, Version=4.0.5436.28228, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -53,10 +52,16 @@
   <ItemGroup>
     <Compile Include="Controller\Controller.cs" />
     <Compile Include="Configuration\ProductConfig.cs" />
+    <Compile Include="Instruments\BlackBerryBattery.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BlackBerryBattery.xml</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Instruments\Helpers\DummyPowerSupply.cs" />
     <Compile Include="Instruments\PowerSupply.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>PowerSupply.xml</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\StationConfig.cs" />
@@ -71,10 +76,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Instruments\BlackBerryBattery.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Generator>InstrumentClassGenerator</Generator>
+      <LastGenOutput>BlackBerryBattery.cs</LastGenOutput>
+    </Content>
     <Content Include="Instruments\PowerSupply.xml">
       <Generator>InstrumentClassGenerator</Generator>
       <LastGenOutput>PowerSupply.cs</LastGenOutput>
@@ -82,6 +94,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TsdLib.Instrument.Ssh\TsdLib.Instrument.Ssh.csproj">
+      <Project>{ec3f1676-015f-4191-9e66-84a2db1ea945}</Project>
+      <Name>TsdLib.Instrument.Ssh</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TsdLib.Instrument.Telnet\TsdLib.Instrument.Telnet.csproj">
       <Project>{fbcd8cc2-a747-4979-9507-ae356d466e5a}</Project>
       <Name>TsdLib.Instrument.Telnet</Name>

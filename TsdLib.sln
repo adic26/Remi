@@ -53,6 +53,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InstrumentLibrary", "Instru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.InstrumentLibrary", "TsdLib.InstrumentLibrary\TsdLib.InstrumentLibrary.csproj", "{80C459F9-6A11-4BCC-B453-151BCF954E4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Instrument.Ssh", "TsdLib.Instrument.Ssh\TsdLib.Instrument.Ssh.csproj", "{EC3F1676-015F-4191-9E66-84A2DB1EA945}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,6 +100,10 @@ Global
 		{80C459F9-6A11-4BCC-B453-151BCF954E4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80C459F9-6A11-4BCC-B453-151BCF954E4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80C459F9-6A11-4BCC-B453-151BCF954E4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC3F1676-015F-4191-9E66-84A2DB1EA945}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC3F1676-015F-4191-9E66-84A2DB1EA945}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC3F1676-015F-4191-9E66-84A2DB1EA945}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC3F1676-015F-4191-9E66-84A2DB1EA945}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
