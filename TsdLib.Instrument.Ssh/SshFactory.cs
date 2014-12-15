@@ -25,6 +25,13 @@ namespace TsdLib.Instrument.Ssh
         {
             return ConnectionUtility.GetDeviceAddresses();
         }
+        /// <summary>
+        /// Will try to connect to either a BB10 or Avengers device, depending on whether or not a BB10 device is detected
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="defaultDelay"></param>
+        /// <param name="attributes"></param>
+        /// <returns>Connection</returns>
         protected override SshConnection CreateConnection(string address, int defaultDelay, params ConnectionSettingAttribute[] attributes)
         {
             try
@@ -40,12 +47,19 @@ namespace TsdLib.Instrument.Ssh
                 return null;
             }
         }
-
+        /// <summary>
+        /// Connectes to an Avengers Device
+        /// </summary>
+        /// <returns>The Connection</returns>
         private SshConnection AvengersConnect()
         {
             return new AvengersSshConn();
         }
-
+        /// <summary>
+        /// Connects to a BB10 Device
+        /// </summary>
+        /// <param name="address">IP address of the device</param>
+        /// <returns>The Connection</returns>
         private SshConnection BbConnect(string address)
         {
             var exceptions = new List<Exception>();
@@ -62,6 +76,12 @@ namespace TsdLib.Instrument.Ssh
             }
             return null;
         }
+        /// <summary>
+        /// Gets the identifier from a particular connection. NOTE: if it is an Avengers device, will return "Avenger"
+        /// </summary>
+        /// <param name="connection">The Connection</param>
+        /// <param name="idAttribute"></param>
+        /// <returns></returns>
         protected override string GetInstrumentIdentifier(SshConnection connection, IdQueryAttribute idAttribute)
         {
             if (connection is AvengersSshConn)
