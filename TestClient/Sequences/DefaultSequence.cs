@@ -17,7 +17,8 @@ namespace TestClient.Sequences
             //Use the System.Diagnostics.Debugger.Break() method to insert breakpoints.
             Debugger.Break();
 
-            
+            //Avenger avg = Avenger.Connect();
+
             BlackBerryBattery bbb = BlackBerryBattery.Connect();
             Measurements.Add(new Measurement<string>("IMEI", bbb.GetImei(), "imei", "asdf", "asdf"));
 

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using RootDevice.Utilities;
+using Managed.Adb;
 
 namespace TsdLib.Instrument.Ssh
 {
@@ -12,10 +14,12 @@ namespace TsdLib.Instrument.Ssh
     {
         public int numRetries = 2;
 
-        private KeyValuePair<string, string> _rtasCredentials = new KeyValuePair<string, string>(
+        private KeyValuePair<string, string> _rtasCredentials = 
+            new KeyValuePair<string, string>(
             "r8_rel_lab",
             "r8r3liability");
-        private string devicePass = null;
+
+        public string devicePass { private get; set; }
 
         protected override IEnumerable<string> SearchForInstruments()
         {
@@ -23,17 +27,35 @@ namespace TsdLib.Instrument.Ssh
         }
         protected override SshConnection CreateConnection(string address, int defaultDelay, params ConnectionSettingAttribute[] attributes)
         {
-            if (!ConnectionUtility.GetDeviceResponse(address).Contains("BlackBerry Device"))
+            try
+            {
+                if (ConnectionUtility.GetDeviceResponse(address).Contains("BlackBerry Device"))
+                    return BbConnect(address);
+                else
+                    return AvengersConnect();
+            }
+            catch (Exception ex)
+            { 
+                Trace.WriteLine(ex.Message);
                 return null;
+            }
+        }
 
+        private SshConnection AvengersConnect()
+        {
+            return new AvengersSshConn();
+        }
+
+        private SshConnection BbConnect(string address)
+        {
             var exceptions = new List<Exception>();
             for (int i = numRetries; i > 0; i--)
             {
                 try
                 {
-                    return new SshConnection(_rtasCredentials.Key, _rtasCredentials.Value, address, devicePass);
+                    return new QnxSshConn(_rtasCredentials.Key, _rtasCredentials.Value, address, devicePass);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     exceptions.Add(e);
                 }
@@ -42,6 +64,8 @@ namespace TsdLib.Instrument.Ssh
         }
         protected override string GetInstrumentIdentifier(SshConnection connection, IdQueryAttribute idAttribute)
         {
+            if (connection is AvengersSshConn)
+                return "Avenger";
             string identifier =
                 (from ni in NetworkInterface.GetAllNetworkInterfaces()
                  from ip in ni.GetIPProperties().DhcpServerAddresses
