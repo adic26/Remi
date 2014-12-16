@@ -14,16 +14,19 @@ namespace TsdLib.Instrument.Ssh
     {
         public int numRetries = 2;
 
+        public string devicePass { private get; set; }
+
         private KeyValuePair<string, string> _rtasCredentials = 
             new KeyValuePair<string, string>(
             "r8_rel_lab",
             "r8r3liability");
-
-        public string devicePass { private get; set; }
+        private List<Device> Devices;
 
         protected override IEnumerable<string> SearchForInstruments()
         {
-            return ConnectionUtility.GetDeviceAddresses();
+            Devices = new List<Device>(AdbHelper.Instance.GetDevices(AndroidDebugBridge.SocketAddress));
+
+            return ConnectionUtility.GetDeviceAddresses().Concat(GetSerialNumbers(Devices));
         }
         /// <summary>
         /// Will try to connect to either a BB10 or Avengers device, depending on whether or not a BB10 device is detected
@@ -36,24 +39,20 @@ namespace TsdLib.Instrument.Ssh
         {
             try
             {
+                IEnumerable<Device> matches = Devices.Where(device => device.SerialNumber == address);
+                if (matches.Any())
+                {
+                    Devices.Remove(matches.First());
+                    return new AvengersSshConn(matches.First());
+                }
                 if (ConnectionUtility.GetDeviceResponse(address).Contains("BlackBerry Device"))
                     return BbConnect(address);
-                else
-                    return AvengersConnect();
             }
             catch (Exception ex)
             { 
                 Trace.WriteLine(ex.Message);
-                return null;
             }
-        }
-        /// <summary>
-        /// Connectes to an Avengers Device
-        /// </summary>
-        /// <returns>The Connection</returns>
-        private SshConnection AvengersConnect()
-        {
-            return new AvengersSshConn();
+            return null;
         }
         /// <summary>
         /// Connects to a BB10 Device
@@ -97,6 +96,16 @@ namespace TsdLib.Instrument.Ssh
                 throw new Exception("Could not locate instrument with address " + connection.Address);
 
             return identifier;
+        }
+        /// <summary>
+        /// Yields the serial numbers of each device connected
+        /// </summary>
+        /// <param name="devices"></param>
+        /// <returns></returns>
+        private static IEnumerable<string> GetSerialNumbers(IEnumerable<Device> devices)
+        {
+            foreach (var device in devices)
+                yield return device.SerialNumber;
         }
     }
 }

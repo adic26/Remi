@@ -14,7 +14,7 @@ namespace TsdLib.Instrument.Ssh
     /// </summary>
     class AvengersSshConn : SshConnection
     {
-        private Device DUT;
+        public Device DUT;
         private StreamOutputReceiver OutputReceiver;
 
         public override bool IsConnected { get { return (DUT != null); } }
@@ -28,8 +28,17 @@ namespace TsdLib.Instrument.Ssh
 
             if (!devices.Any())
                 throw new Exception("No Avengers Devices Found");
-
+            
             DUT = devices[0];
+            OutputReceiver = StreamOutputReceiver.Instance;
+        }
+
+        internal AvengersSshConn(Device device) : base(device.SerialNumber)
+        {
+            if (device == null)
+                throw new ArgumentNullException("device parameter cannot be null");
+
+            DUT = device;
             OutputReceiver = StreamOutputReceiver.Instance;
         }
 
