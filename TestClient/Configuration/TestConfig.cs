@@ -9,23 +9,17 @@ namespace TestClient.Configuration
     public class TestConfig : TestConfigCommon
     {
         [Category("Severity")]
+        [Description("How severe the test conditions are")]
         public int LoopIterations { get; set; }
 
         [Category("Power")]
+        [Description("A list of voltage settings to use on the DUT")]
         public List<double> VoltageSettings { get; set; }
 
         /// <summary>
-        /// Initialize a new TestConfig configuration instance from persisted settings.
+        /// Initialize the configuration properties to default values. Do not use a default constructor, as it can interfere with deserialization.
         /// </summary>
-        public TestConfig() { }
-
-        /// <summary>
-        /// Initialize a new TestConfig instance.
-        /// </summary>
-        /// <param name="name">Name of the configuration instance.</param>
-        /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
-        public TestConfig(string name, bool storeInDatabase)
-            : base(name, storeInDatabase)
+        public override void InitializeDefaultValues()
         {
             LoopIterations = 5;
 

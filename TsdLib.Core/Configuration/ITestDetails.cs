@@ -1,0 +1,25 @@
+﻿using System;
+using System.Xml.Serialization;
+
+namespace TsdLib.Configuration
+{
+    public interface ITestDetails : IXmlSerializable
+    {
+        event EventHandler<string> TestSystemIdentityChanged;
+        string TestSystemName { get; set; }
+        string SafeTestSystemName { get; }
+        Version TestSystemVersion { get; set; }
+        OperatingMode TestSystemMode { get; set; }
+        Version TsdFrameworkVersion { get; set; }
+        string JobNumber { get; set; }
+        uint UnitNumber { get; set; }
+        string TestType { get; set; }
+        string TestStage { get; set; }
+        string StationName { get; set; }
+        string BSN { get; }
+        FunctionalType FunctionalType { get; set; }
+
+        void Edit();
+        string ToString(string rowSeparator, string columnSeparator);
+    }
+}

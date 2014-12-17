@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TsdLibStarterKitInstaller")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Installer for the TsdLibStarterKit, which provides project templates for designing test systems based on the TsdLib framework.")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else

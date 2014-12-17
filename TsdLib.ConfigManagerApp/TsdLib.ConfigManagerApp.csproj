@@ -53,9 +53,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TsdLib\TsdLib.csproj">
-      <Project>{da39d49a-e06e-4cd9-b2a2-326057bdc41d}</Project>
-      <Name>TsdLib</Name>
+    <ProjectReference Include="..\TsdLib.Configuration\TsdLib.Configuration.csproj">
+      <Project>{2B62F43F-8670-4F88-B7BC-C9723D6FE8E7}</Project>
+      <Name>TsdLib.Configuration</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

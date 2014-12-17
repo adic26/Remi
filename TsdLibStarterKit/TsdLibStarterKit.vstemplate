@@ -28,7 +28,7 @@
         <ProjectItem ReplaceParameters="true" TargetFileName="ExamplePowerSupply.cs">ExamplePowerSupply.cs</ProjectItem>
       </Folder>
       <Folder Name="Sequences" TargetFolderName="Sequences">
-        <ProjectItem ReplaceParameters="true" TargetFileName="DefaultSequence.cs">DefaultSequence.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="DummySequence.cs">DummySequence.cs</ProjectItem>
       </Folder>
       <Folder Name="View" TargetFolderName="View">
         <ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$View.cs">TestClientView.cs</ProjectItem>

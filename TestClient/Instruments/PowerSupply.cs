@@ -8,25 +8,20 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using TsdLib.Instrument.Dummy;
+
 namespace TestClient.Instruments
 {
     using System;
     using TsdLib.Instrument;
-    using TsdLib.Instrument.Dummy;
-    using TsdLib.Instrument.Visa;
-    
-    
+
+
     // ReSharper disable once FieldCanBeMadeReadOnly.Local
-    [IdQuery("MyInstrument, Model 12345", "*IDN?\\n")]
-    public class PowerSupply : InstrumentBase<VisaConnection>
+    [IdQuery("MyInstrument, Model 12345")]
+    public class PowerSupply : InstrumentBase<DummyConnection>
     {
         
-        static VisaFactory _factory = new VisaFactory();
-        
-        internal PowerSupply(VisaConnection connection) : 
-                base(connection)
-        {
-        }
+        static DummyFactory _factory = new DummyFactory();
         
         internal PowerSupply(DummyConnection connection) : 
                 base(connection)
@@ -37,7 +32,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "*IDN?\\n";
+                return "*IDN?";
             }
         }
         
@@ -45,7 +40,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "*IDN?\\n";
+                return "*IDN?";
             }
         }
         
@@ -53,7 +48,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "*IDN?\\n";
+                return "*IDN?";
             }
         }
         
@@ -65,6 +60,80 @@ namespace TestClient.Instruments
         public static PowerSupply Connect(string address)
         {
             return _factory.GetInstrument<PowerSupply>(address);
+        }
+        
+        public virtual void SetVoltage(Double voltage)
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("SET:VOLT {0}", -1, voltage);
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
+        public virtual Double GetCurrent()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("GET:CURRENT?", -1);
+                return Connection.GetResponse<Double>();
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+    }
+    
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
+    [IdQuery("MyInstrument, Model 12345")]
+    public class DummyPowerSupply2 : InstrumentBase<DummyConnection>
+    {
+        
+        static DummyFactory _factory = new DummyFactory();
+        
+        internal DummyPowerSupply2(DummyConnection connection) : 
+                base(connection)
+        {
+        }
+        
+        protected override string ModelNumberMessage
+        {
+            get
+            {
+                return "*IDN?";
+            }
+        }
+        
+        protected override string SerialNumberMessage
+        {
+            get
+            {
+                return "*IDN?";
+            }
+        }
+        
+        protected override string FirmwareVersionMessage
+        {
+            get
+            {
+                return "*IDN?";
+            }
+        }
+        
+        public static DummyPowerSupply2 Connect()
+        {
+            return _factory.GetInstrument<DummyPowerSupply2>();
+        }
+        
+        public static DummyPowerSupply2 Connect(string address)
+        {
+            return _factory.GetInstrument<DummyPowerSupply2>(address);
         }
         
         public virtual void SetVoltage(Double voltage)

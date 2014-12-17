@@ -19,18 +19,21 @@ namespace TestClient
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+
+
 #if DEBUG
-            const string assemblyMode = "Debug";
+            const OperatingMode defaultMode = OperatingMode.Engineering;
 #else
-            const string assemblyMode = "Release";
+            const OperatingMode defaultMode = OperatingMode.Production;
 #endif
 
             Trace.Listeners.Add(new ConsoleTraceListener());
             List<string> argsList = args.ToList();
 
             string testSystemName = args.Contains("-testSystemName") ? argsList[argsList.IndexOf("-testSystemName") + 1] : Application.ProductName;
-            string testSystemVersion = args.Contains("-testSystemVersion") ? argsList[argsList.IndexOf("-testSystemVersion") + 1] : Application.ProductVersion;
-            string testSystemMode = args.Contains("-testSystemMode") ? argsList[argsList.IndexOf("-testSystemMode") + 1] : assemblyMode;
+            string testSystemVersionString = args.Contains("-testSystemVersion") ? argsList[argsList.IndexOf("-testSystemVersion") + 1] : Application.ProductVersion;
+            Version testSystemVersion = new Version(testSystemVersionString);
+            OperatingMode testSystemMode = args.Contains("-testSystemMode") ? (OperatingMode)Enum.Parse(typeof(OperatingMode), argsList[argsList.IndexOf("-testSystemMode") + 1]) : defaultMode;
             bool localDomain = args.Length > 0 && args.Contains("-localDomain");
 
             string settingsLocation;
@@ -44,30 +47,33 @@ namespace TestClient
 
             TestDetails testDetails = new TestDetails(testSystemName, testSystemVersion, testSystemMode);
 
-            DatabaseFolderConnection databaseFolderConnection = new DatabaseFolderConnection(settingsLocation);
+            IConfigConnection sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation));
 
             if (args.Contains("-seq"))
             {
-                IConfigGroup<Sequence> sequences = new ConfigManager(testDetails, databaseFolderConnection).GetConfigGroup<Sequence>();
+                ConfigManager<Sequence> sequenceConfigManager = new ConfigManager<Sequence>(testDetails, sharedConfigConnection);
 
                 int seqArgIndex = argsList.IndexOf("-seq");
                 string sequenceFolder = argsList[seqArgIndex + 1];
                 bool storeInDatabase = bool.Parse(argsList[seqArgIndex + 2]);
                 List<string> assemblyReferences = new List<string> { "System.dll", "System.Xml.dll", "TsdLib.dll", testSystemName + ".exe" };
 
-                foreach (Sequence sequence in sequences.Where(seq => !seq.IsDefault))
+                foreach (Sequence sequence in sequenceConfigManager.GetConfigGroup().Where(seq => !seq.IsDefault))
                 {
                     string vsFile = Path.Combine(sequenceFolder, sequence.Name + ".cs");
                     if (!File.Exists(vsFile))
                         File.WriteAllText(vsFile, sequence.SourceCode);
                 }
                 foreach (string seqFile in Directory.EnumerateFiles(sequenceFolder))
-                    sequences.Add(new Sequence(seqFile, storeInDatabase, assemblyReferences));
-                sequences.Save();
+                {
+                    Trace.WriteLine("Found" + seqFile);
+                    sequenceConfigManager.Add(new Sequence(seqFile, storeInDatabase, assemblyReferences));
+                }
+                sequenceConfigManager.Save();
                 return;
             }
 
-            Controller c = new Controller(testDetails, databaseFolderConnection, localDomain);
+            Controller c = new Controller(testDetails, sharedConfigConnection, localDomain);
 
             Application.Run(c.View);
             

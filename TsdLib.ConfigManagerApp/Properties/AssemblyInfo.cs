@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TsdLib.ConfigManagerApp")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Stand-alone application for viewing/modifying shared configuration for any test system using the TsdLib.Configuration library.")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else

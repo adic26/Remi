@@ -27,7 +27,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;INSTRUMENT_LIBRARY;simREMICONTROL</DefineConstants>
+    <DefineConstants>TRACE;INSTRUMENT_LIBRARY;simREMICONTROL;REMICONTROL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -35,13 +35,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DBControl, Version=4.0.5436.28228, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="DBControl, Version=4.3.5451.20971, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>\\fsg52ykf\ReliabilityTSD\DLL\REMI\Control\Latest\test\DBControl.dll</HintPath>
-    </Reference>
-    <Reference Include="DBControl.XmlSerializers, Version=4.0.5436.28228, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>\\fsg52ykf\ReliabilityTSD\DLL\REMI\Control\Latest\test\DBControl.XmlSerializers.dll</HintPath>
+      <HintPath>..\packages\DBControl.4.3.5451.20971\lib\net45\DBControl.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -53,26 +49,58 @@
   <ItemGroup>
     <Compile Include="Controller\Controller.cs" />
     <Compile Include="Configuration\ProductConfig.cs" />
-    <Compile Include="Instruments\Helpers\DummyPowerSupply.cs" />
     <Compile Include="Instruments\PowerSupply.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>PowerSupply.xml</DependentUpon>
+    </Compile>
+    <Compile Include="Instruments\Helpers\DummyPowerSupply.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\StationConfig.cs" />
     <Compile Include="TestClientProgram.cs" />
     <Compile Include="Configuration\TestConfig.cs" />
-    <Compile Include="Sequences\DefaultSequence.cs" />
-    <Compile Include="View\View.cs">
+    <Compile Include="Sequences\DummySequence.cs" />
+    <Compile Include="View\TestClientView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\View.Designer.cs">
-      <DependentUpon>View.cs</DependentUpon>
+    <Compile Include="View\TestClientView.Designer.cs">
+      <DependentUpon>TestClientView.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TsdLib.Configuration\TsdLib.Configuration.csproj">
+      <Project>{2B62F43F-8670-4F88-B7BC-C9723D6FE8E7}</Project>
+      <Name>TsdLib.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Core\TsdLib.Core.csproj">
+      <Project>{512BEDDC-2B71-42F0-9C1B-6D37497F5DA7}</Project>
+      <Name>TsdLib.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.InstrumentLibrary\TsdLib.InstrumentLibrary.csproj">
+      <Project>{80c459f9-6a11-4bcc-b453-151bcf954e4f}</Project>
+      <Name>TsdLib.InstrumentLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instrument\TsdLib.Instrument.csproj">
+      <Project>{421092EB-A692-46A8-A66B-247C94C16421}</Project>
+      <Name>TsdLib.Instrument</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Measurements\TsdLib.Measurements.csproj">
+      <Project>{183FCB65-FF95-4BDA-8B9C-C93CE029E9CC}</Project>
+      <Name>TsdLib.Measurements</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.TestSystem\TsdLib.TestSystem.csproj">
+      <Project>{3451FB26-8900-4E01-A46C-D00A9E0BBC2B}</Project>
+      <Name>TsdLib.TestSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.UI\TsdLib.UI.csproj">
+      <Project>{F4735655-3CC1-446B-B90B-7A193A1BDABB}</Project>
+      <Name>TsdLib.UI</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Instruments\PowerSupply.xml">
@@ -82,32 +110,18 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TsdLib.Instrument.Telnet\TsdLib.Instrument.Telnet.csproj">
-      <Project>{fbcd8cc2-a747-4979-9507-ae356d466e5a}</Project>
-      <Name>TsdLib.Instrument.Telnet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj">
-      <Project>{a9ab58d9-08ea-43cc-ab6a-9e934bdd3c7b}</Project>
-      <Name>TsdLib.Instrument.Visa</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.InstrumentLibrary\TsdLib.InstrumentLibrary.csproj">
-      <Project>{80c459f9-6a11-4bcc-b453-151bcf954e4f}</Project>
-      <Name>TsdLib.InstrumentLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib\TsdLib.csproj">
-      <Project>{da39d49a-e06e-4cd9-b2a2-326057bdc41d}</Project>
-      <Name>TsdLib</Name>
-    </ProjectReference>
+    <EmbeddedResource Include="View\TestClientView.resx">
+      <DependentUpon>TestClientView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(TargetPath) -seq $(ProjectDir)Sequences true
+    <PostBuildEvent>$(TargetPath) -seq $(ProjectDir)Sequences true -testSystemMode Developer 
 
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>rem nuget restore
-rem nuget update $(ProjectDir)packages.config -Source Tsd_Experimental</PreBuildEvent>
+    <PreBuildEvent>rmdir /S /Q $(TargetDir)Instruments</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

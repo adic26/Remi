@@ -20,9 +20,9 @@ namespace $safeprojectname$
             Application.SetCompatibleTextRenderingDefault(false);
 
 #if DEBUG
-            const string assemblyMode = "Debug";
+            const OperatingMode defaultMode = OperatingMode.Engineering;
 #else
-            const string assemblyMode = "Release";
+            const OperatingMode defaultMode = OperatingMode.Production;
 #endif
 
             Trace.Listeners.Add(new ConsoleTraceListener());
@@ -30,7 +30,7 @@ namespace $safeprojectname$
 
             string testSystemName = args.Contains("-testSystemName") ? argsList[argsList.IndexOf("-testSystemName") + 1] : Application.ProductName;
             string testSystemVersion = args.Contains("-testSystemVersion") ? argsList[argsList.IndexOf("-testSystemVersion") + 1] : Application.ProductVersion;
-            string testSystemMode = args.Contains("-testSystemMode") ? argsList[argsList.IndexOf("-testSystemMode") + 1] : assemblyMode;
+            OperatingMode testSystemMode = args.Contains("-testSystemMode") ? (OperatingMode)Enum.Parse(typeof(OperatingMode), argsList[argsList.IndexOf("-testSystemMode") + 1]) : defaultMode;
             bool localDomain = args.Length > 0 && args.Contains("-localDomain");
 
             string settingsLocation;
@@ -48,7 +48,7 @@ namespace $safeprojectname$
 
             if (args.Contains("-seq"))
             {
-                IConfigGroup<Sequence> sequences = new ConfigManager(testDetails, databaseFolderConnection).GetConfigGroup<Sequence>();
+                IConfigGroup<Sequence> sequences = new ConfigManager(testDetails, databaseFolderConnection).GetConfigGroup<Sequence>(testDetails);
 
                 int seqArgIndex = argsList.IndexOf("-seq");
                 string sequenceFolder = argsList[seqArgIndex + 1];
@@ -62,7 +62,7 @@ namespace $safeprojectname$
                         File.WriteAllText(vsFile, sequence.SourceCode);
                 }
                 foreach (string seqFile in Directory.EnumerateFiles(sequenceFolder))
-                    sequences.Add(new Sequence(seqFile, storeInDatabase, assemblyReferences));
+                    sequences.Add(new Sequence(seqFile, storeInDatabase, assemblyReferences, testSystemName));
                 sequences.Save();
                 return;
             }

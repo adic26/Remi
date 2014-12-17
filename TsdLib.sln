@@ -9,18 +9,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		Git_Integration_Tips.html = Git_Integration_Tips.html
-		PublishNugetDebug.bat = PublishNugetDebug.bat
-		PublishNugetRelease.bat = PublishNugetRelease.bat
+		NuGetPostBuild.bat = NuGetPostBuild.bat
+		NuGetPublishDebug.bat = NuGetPublishDebug.bat
+		NuGetPublishRelease.bat = NuGetPublishRelease.bat
 		TsdLib_Architecture.vsdx = TsdLib_Architecture.vsdx
 		TsdLib_Developers_Guide.html = TsdLib_Developers_Guide.html
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib", "TsdLib\TsdLib.csproj", "{DA39D49A-E06E-4CD9-B2A2-326057BDC41D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient", "TestClient\TestClient.csproj", "{7FAF514E-EFC9-40FB-B367-4E2F844547BC}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2A2F878D-9E16-4E3A-B226-F2E5FE2B2965} = {2A2F878D-9E16-4E3A-B226-F2E5FE2B2965}
-		{DA39D49A-E06E-4CD9-B2A2-326057BDC41D} = {DA39D49A-E06E-4CD9-B2A2-326057BDC41D}
 		{FBCD8CC2-A747-4979-9507-AE356D466E5A} = {FBCD8CC2-A747-4979-9507-AE356D466E5A}
 		{A9AB58D9-08EA-43CC-AB6A-9E934BDD3C7B} = {A9AB58D9-08EA-43CC-AB6A-9E934BDD3C7B}
 		{80C459F9-6A11-4BCC-B453-151BCF954E4F} = {80C459F9-6A11-4BCC-B453-151BCF954E4F}
@@ -38,7 +36,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLibStarterKitInstaller",
 	ProjectSection(ProjectDependencies) = postProject
 		{F2A44688-E60E-47BB-AB58-21C4F06C9ABB} = {F2A44688-E60E-47BB-AB58-21C4F06C9ABB}
 		{2A2F878D-9E16-4E3A-B226-F2E5FE2B2965} = {2A2F878D-9E16-4E3A-B226-F2E5FE2B2965}
-		{DA39D49A-E06E-4CD9-B2A2-326057BDC41D} = {DA39D49A-E06E-4CD9-B2A2-326057BDC41D}
 		{FBCD8CC2-A747-4979-9507-AE356D466E5A} = {FBCD8CC2-A747-4979-9507-AE356D466E5A}
 		{A9AB58D9-08EA-43CC-AB6A-9E934BDD3C7B} = {A9AB58D9-08EA-43CC-AB6A-9E934BDD3C7B}
 		{80C459F9-6A11-4BCC-B453-151BCF954E4F} = {80C459F9-6A11-4BCC-B453-151BCF954E4F}
@@ -46,12 +43,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLibStarterKitInstaller",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.ConfigManagerApp", "TsdLib.ConfigManagerApp\TsdLib.ConfigManagerApp.csproj", "{A3B07997-F603-4BE4-B32F-2DCA36629BD3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InstrumentLibrary", "InstrumentLibrary", "{CF0B0AAA-F2F3-4576-AE6B-11E4BD94F9B9}"
-	ProjectSection(SolutionItems) = preProject
-		DummyPowerSupply.xml = DummyPowerSupply.xml
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.InstrumentLibrary", "TsdLib.InstrumentLibrary\TsdLib.InstrumentLibrary.csproj", "{80C459F9-6A11-4BCC-B453-151BCF954E4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.UI", "TsdLib.UI\TsdLib.UI.csproj", "{F4735655-3CC1-446B-B90B-7A193A1BDABB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Core", "TsdLib.Core\TsdLib.Core.csproj", "{512BEDDC-2B71-42F0-9C1B-6D37497F5DA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.TestSystem", "TsdLib.TestSystem\TsdLib.TestSystem.csproj", "{3451FB26-8900-4E01-A46C-D00A9E0BBC2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Measurements", "TsdLib.Measurements\TsdLib.Measurements.csproj", "{183FCB65-FF95-4BDA-8B9C-C93CE029E9CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Instrument", "TsdLib.Instrument\TsdLib.Instrument.csproj", "{421092EB-A692-46A8-A66B-247C94C16421}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Configuration", "TsdLib.Configuration\TsdLib.Configuration.csproj", "{2B62F43F-8670-4F88-B7BC-C9723D6FE8E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,10 +71,6 @@ Global
 		{FBCD8CC2-A747-4979-9507-AE356D466E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBCD8CC2-A747-4979-9507-AE356D466E5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBCD8CC2-A747-4979-9507-AE356D466E5A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA39D49A-E06E-4CD9-B2A2-326057BDC41D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA39D49A-E06E-4CD9-B2A2-326057BDC41D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA39D49A-E06E-4CD9-B2A2-326057BDC41D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA39D49A-E06E-4CD9-B2A2-326057BDC41D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7FAF514E-EFC9-40FB-B367-4E2F844547BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7FAF514E-EFC9-40FB-B367-4E2F844547BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FAF514E-EFC9-40FB-B367-4E2F844547BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -98,6 +98,30 @@ Global
 		{80C459F9-6A11-4BCC-B453-151BCF954E4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80C459F9-6A11-4BCC-B453-151BCF954E4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80C459F9-6A11-4BCC-B453-151BCF954E4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4735655-3CC1-446B-B90B-7A193A1BDABB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4735655-3CC1-446B-B90B-7A193A1BDABB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4735655-3CC1-446B-B90B-7A193A1BDABB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4735655-3CC1-446B-B90B-7A193A1BDABB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{512BEDDC-2B71-42F0-9C1B-6D37497F5DA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{512BEDDC-2B71-42F0-9C1B-6D37497F5DA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{512BEDDC-2B71-42F0-9C1B-6D37497F5DA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{512BEDDC-2B71-42F0-9C1B-6D37497F5DA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3451FB26-8900-4E01-A46C-D00A9E0BBC2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3451FB26-8900-4E01-A46C-D00A9E0BBC2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3451FB26-8900-4E01-A46C-D00A9E0BBC2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3451FB26-8900-4E01-A46C-D00A9E0BBC2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{183FCB65-FF95-4BDA-8B9C-C93CE029E9CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{183FCB65-FF95-4BDA-8B9C-C93CE029E9CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{183FCB65-FF95-4BDA-8B9C-C93CE029E9CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{183FCB65-FF95-4BDA-8B9C-C93CE029E9CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{421092EB-A692-46A8-A66B-247C94C16421}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{421092EB-A692-46A8-A66B-247C94C16421}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{421092EB-A692-46A8-A66B-247C94C16421}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{421092EB-A692-46A8-A66B-247C94C16421}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B62F43F-8670-4F88-B7BC-C9723D6FE8E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B62F43F-8670-4F88-B7BC-C9723D6FE8E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B62F43F-8670-4F88-B7BC-C9723D6FE8E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B62F43F-8670-4F88-B7BC-C9723D6FE8E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

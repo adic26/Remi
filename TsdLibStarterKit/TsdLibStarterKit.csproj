@@ -55,7 +55,7 @@
     </Content>
     <Content Include="View\TestClientView.cs" />
     <Content Include="TestClientProgram.cs" />
-    <Content Include="Sequences\DefaultSequence.cs" />
+    <Content Include="Sequences\DummySequence.cs" />
     <Content Include="Configuration\TestConfig.cs" />
     <Content Include="Configuration\StationConfig.cs" />
     <Content Include="Configuration\ProductConfig.cs" />

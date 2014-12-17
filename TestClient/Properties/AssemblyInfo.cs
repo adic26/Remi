@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TestClient")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A sample test system application built on the TsdLib framework.")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else

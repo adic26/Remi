@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <StartArguments>-d</StartArguments>
+    <StartArguments>-testSystemMode Developer</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -31,7 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <StartArguments>-d</StartArguments>
+    <StartArguments>-testSystemMode Developer</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -49,7 +49,7 @@
     <Compile Include="Configuration\StationConfig.cs" />
     <Compile Include="Configuration\TestConfig.cs" />
     <Compile Include="Instruments\ExamplePowerSupply.cs" />
-    <Compile Include="Sequences\DefaultSequence.cs" />
+    <Compile Include="Sequences\DummySequence.cs" />
     <Compile Include="Controller\Controller.cs" />
     <Compile Include="$safeprojectname$Program.cs" />
     <Compile Include="View\$safeprojectname$View.cs">
@@ -69,11 +69,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(TargetPath)" -seq "$(ProjectDir)Sequences" true</PostBuildEvent>
+    <PostBuildEvent>"$(TargetPath)" -seq "$(ProjectDir)Sequences" true -testSystemMode Developer</PostBuildEvent>
   </PropertyGroup>
-  <!--<PropertyGroup>
-    <PreBuildEvent>$(SolutionDir)TsdLib.CodeGeneratorApp\bin\$(ConfigurationName)\TsdLib.CodeGeneratorApp.exe $(ProjectName) $(ProjectDir)Instruments $(ProjectDir)Instruments CSharp</PreBuildEvent>
-  </PropertyGroup>-->
+  <PropertyGroup>
+    <PreBuildEvent>rmdir /S /Q $(TargetDir)Instruments</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
