@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Reflection;
 using TsdLib.Configuration;
 
 namespace $safeprojectname$.Configuration

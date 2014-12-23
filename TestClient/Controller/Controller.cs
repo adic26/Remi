@@ -75,9 +75,9 @@ namespace TestClient
                 base.EditTestDetails(sender, false);
         }
 
-        protected override void PublishResults(TsdLib.TestResults.TestResultCollection results)
+        protected override void PublishResults(TsdLib.Measurements.ITestResults results)
         {
-            string dataLoggerXmlFile = results.Save(new System.IO.DirectoryInfo(@"C:\TestResults"));
+            string dataLoggerXmlFile = results.SaveXml(new System.IO.DirectoryInfo(@"C:\TestResults"));
             System.Diagnostics.Trace.WriteLine("Uploading results to database...");
             DBControl.DAL.Results.UploadXML(dataLoggerXmlFile);
             System.Diagnostics.Trace.WriteLine("Upload complete. Results can be viewed at " + results.Details.JobNumber);

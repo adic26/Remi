@@ -14,7 +14,7 @@ namespace $safeprojectname$.Sequences
             //Use the System.Diagnostics.Debugger.Break() method to insert breakpoints.
             //System.Diagnostics.Debugger.Break();
 
-            DummyPowerSupply ps = new DummyPowerSupply("addr");
+            ExamplePowerSupply ps = ExamplePowerSupply.Connect("addr");
 
             for (int i = 0; i < testConfig.LoopIterations; i++)
             {
