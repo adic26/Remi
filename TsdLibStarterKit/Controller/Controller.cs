@@ -3,13 +3,15 @@ using $safeprojectname$.Configuration;
 using $safeprojectname$.View;
 using TsdLib;
 using TsdLib.Configuration;
-using TsdLib.Controller;
+using TsdLib.Measurements;
+using TsdLib.TestSystem.CodeGenerator;
+using TsdLib.TestSystem.Controller;
 
 namespace $safeprojectname$
 {
     public class Controller : ControllerBase<$safeprojectname$View, StationConfig, ProductConfig, TestConfig>
     {
-        public Controller(TestDetails testDetails, IDatabaseConnection databaseConnection, bool localDomain)
+        public Controller(TestDetails testDetails, IConfigConnection databaseConnection, bool localDomain)
             : base(testDetails, databaseConnection, localDomain)
         {
 #if REMICONTROL
@@ -18,6 +20,7 @@ namespace $safeprojectname$
 #if simREMICONTROL
             _webServiceInstantiateTask = System.Threading.Tasks.Task.Run(() => DBControl.Helpers.Helper.InstantiateWebServices());
 #endif
+
         }
 
 #if INSTRUMENT_LIBRARY
@@ -29,10 +32,10 @@ namespace $safeprojectname$
                 return new System.CodeDom.CodeCompileUnit[0];
 
             string[] instrumentXmlFiles = System.IO.Directory.GetFiles("Instruments", "*.xml");
-            TsdLib.InstrumentLibrary.InstrumentParser instrumentXmlParser = new TsdLib.InstrumentLibrary.InstrumentParser(Details.TestSystemName, TsdLib.CodeGenerator.Language.CSharp.ToString());
+            TsdLib.InstrumentLibrary.InstrumentParser instrumentXmlParser = new TsdLib.InstrumentLibrary.InstrumentParser(Details.TestSystemName, Language.CSharp.ToString());
             codeCompileUnits.AddRange(instrumentXmlFiles.Select(xmlFile => instrumentXmlParser.Parse(new System.IO.StreamReader(xmlFile))));
 
-            TsdLib.CodeGenerator.BasicCodeParser instrumentHelperParser = new TsdLib.CodeGenerator.BasicCodeParser();
+            BasicCodeParser instrumentHelperParser = new BasicCodeParser();
             string[] instrumentHelperCsFiles = System.IO.Directory.GetFiles(@"Instruments\Helpers", "*.cs");
             string[] instrumentHelperVbFiles = System.IO.Directory.GetFiles(@"Instruments\Helpers", "*.vb");
             codeCompileUnits.AddRange(instrumentHelperCsFiles.Concat(instrumentHelperVbFiles).Select(xmlFile => instrumentHelperParser.Parse(new System.IO.StreamReader(xmlFile))));
@@ -106,19 +109,20 @@ namespace $safeprojectname$
                 }
                 catch (System.Exception ex)
                 {
-                    System.Diagnostics.Trace.WriteLine("DBControl Exception: " + ex.ToString());
+                    System.Diagnostics.Trace.WriteLine("DBControl Exception: " + ex);
                 }
             }
             else
                 base.EditTestDetails(sender, false);
         }
 
-        protected override void PublishResults(TsdLib.TestResults.TestResultCollection results)
+        protected override void PublishResults(ITestResults results)
         {
             System.Diagnostics.Trace.WriteLine("Simulating database upload");
             System.Threading.Thread.Sleep(10000);
             System.Diagnostics.Trace.WriteLine("Done uploading");
         }
 #endif
+
     }
 }

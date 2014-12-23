@@ -1,4 +1,4 @@
-﻿using TsdLib.View;
+﻿using TsdLib.UI.Forms;
 
 namespace $safeprojectname$.View
 {

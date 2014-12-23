@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace TsdLib.Configuration
 {
@@ -24,7 +23,7 @@ namespace TsdLib.Configuration
         /// </summary>
         string ConfigTypeName { get; }
 
-        IList GetList(bool reload);
+        IConfigManager Reload();
     }
 
 }

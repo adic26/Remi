@@ -9,11 +9,11 @@ namespace TsdLib
     /// </summary>
     public static class SpecialFolders
     {
-        private static StreamWriter _errorLogs;
+        private static FileInfo _errorLogs;
         /// <summary>
         /// Gets the folder where error logs are stored.
         /// </summary>
-        public static StreamWriter ErrorLogs
+        public static FileInfo ErrorLogs
         {
             get
             {
@@ -23,7 +23,7 @@ namespace TsdLib
                         .CreateSubdirectory("ErrorLogs")
                         .CreateSubdirectory(DateTime.Now.ToString("MMM_dd_yyyy"));
 
-                    _errorLogs = new StreamWriter(Path.Combine(directory.FullName, Assembly.GetEntryAssembly().GetName().Name + ".txt"), false);
+                    _errorLogs = new FileInfo(Path.Combine(directory.FullName, Assembly.GetEntryAssembly().GetName().Name + ".txt"));
                 }
                 return _errorLogs;
             }

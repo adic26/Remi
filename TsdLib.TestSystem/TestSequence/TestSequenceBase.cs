@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using TsdLib.Configuration;
 using TsdLib.Instrument;
@@ -18,101 +16,80 @@ namespace TsdLib.TestSystem.TestSequence
     /// <typeparam name="TStationConfig">Type of Station Config used in the derived class.</typeparam>
     /// <typeparam name="TProductConfig">Type of Product Config used in the derived class.</typeparam>
     /// <typeparam name="TTestConfig">Type of Test Config used in the derived class.</typeparam>
-    public abstract class TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject, IDisposable
+    public abstract class TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject, ITestSequence
         where TStationConfig : StationConfigCommon
         where TProductConfig : ProductConfigCommon
         where TTestConfig : TestConfigCommon
     {
-        public SynchronizationContext UIContext { get; set; }
-
-        protected void AddInformation(params TestInfo[] info)
-        {
-            SendOrPostCallback addInfo = state => { foreach (TestInfo i in info) _testInfo.Add(i); };
-            if (UIContext != null)
-                UIContext.Post(addInfo, null);
-            else
-                addInfo.Invoke(null);
-        }
-        protected void AddMeasurement(params MeasurementBase[] meas)
-        {
-            SendOrPostCallback addMeasurements = state => { foreach (MeasurementBase m in meas) _measurements.Add(m); };
-            if (UIContext != null)
-                UIContext.Post(addMeasurements, null);
-            else
-                addMeasurements.Invoke(null);
-        }
-        protected void AddData(params object[] data)
-        {
-            SendOrPostCallback addData = state => { foreach (object d in data) _data.Add(d); };
-            if (UIContext != null)
-                UIContext.Post(addData, null);
-            else
-                addData.Invoke(null);
-        }
-
         private readonly List<IInstrument> _instruments;
-        private readonly CancellationTokenSource _cts;
+
+        public bool CancelledByUser
+        {
+            get { return UserCancellationTokenSource.Token.IsCancellationRequested; }
+        }
+
+        public bool CancelledByError
+        {
+            get { return ErrorCancellationTokenSource.Token.IsCancellationRequested; }
+        }
+
+        public Exception Error { get; private set; }
+
+        private CancellationTokenSource UserCancellationTokenSource { get; set; }
+
+        private CancellationTokenSource ErrorCancellationTokenSource { get; set; }
+
+        private CancellationTokenSource linked { get; set; }
 
         /// <summary>
-        /// Gets a CancellationToken that can be used to cancel a test sequence in progress.
+        /// Override to perform any initialization or connection setup befoer the test begins.
         /// </summary>
-        protected CancellationToken Token { get { return _cts.Token; } }
-
-        /// <summary>
-        /// Adds configuration information to the <see cref="_testInfo"/> collection.
-        /// Override to perform any initialization or connection setup befoer the test begins, but make sure to call base.ExecutePreTest in the overriding method.
-        /// </summary>
+        /// <param name="token">A cancellation token used to support cooperative cancellation. Should periodically call <see cref="CancellationToken.ThrowIfCancellationRequested"/>.</param>
         /// <param name="stationConfig">Station config instance containing station-specific configuration.</param>
         /// <param name="productConfig">Product config instance containing product-specific configuration.</param>
-        /// <param name="testConfigs">One or more test config instances containing test-specific configuration.</param>
-        protected virtual void ExecutePreTest(TStationConfig stationConfig, TProductConfig productConfig, params TTestConfig[] testConfigs)
+        protected virtual void ExecutePreTest(CancellationToken token, TStationConfig stationConfig, TProductConfig productConfig)
         {
-            AddInformation(new TestInfo("Station Configuration", stationConfig.Name));
-            AddInformation(new TestInfo("Product Configuration", productConfig.Name));
-            foreach (TTestConfig testConfig in testConfigs)
-                AddInformation(new TestInfo("Test Configuration", testConfig.Name));
-            AddInformation(new TestInfo("Sequence", GetType().Name));
+            token.ThrowIfCancellationRequested();
+
         }
         /// <summary>
         /// Calls Dispose() on all instruments that were obtained using the static Connect method.
         /// Override to perform any custom teardown or disconnection after the test is complete, but make sure to call base.ExecutePostTest in the overriding method.
         /// </summary>
+        /// <param name="token">A cancellation token used to support cooperative cancellation. Should periodically call <see cref="CancellationToken.ThrowIfCancellationRequested"/>.</param>
         /// <param name="stationConfig">Station config instance containing station-specific configuration.</param>
         /// <param name="productConfig">Product config instance containing product-specific configuration.</param>
-        /// <param name="testConfigs">One or more test config instances containing test-specific configuration.</param>
-        protected virtual void ExecutePostTest(TStationConfig stationConfig, TProductConfig productConfig, params TTestConfig[] testConfigs)
+        protected virtual void ExecutePostTest(CancellationToken token, TStationConfig stationConfig, TProductConfig productConfig)
         {
             foreach (IInstrument instrument in _instruments)
+            {
+                token.ThrowIfCancellationRequested();
                 instrument.Dispose();
+            }
         }
         /// <summary>
         /// Client application overrides this method to define test steps.
         /// </summary>
+        /// <param name="token">A cancellation token used to support cooperative cancellation. Should periodically call <see cref="CancellationToken.ThrowIfCancellationRequested"/>.</param>
         /// <param name="stationConfig">Station config instance containing station-specific configuration.</param>
         /// <param name="productConfig">Product config instance containing product-specific configuration.</param>
-        /// <param name="testConfigs">One or more test config instances containing test-specific configuration.</param>
-        protected abstract void ExecuteTest(TStationConfig stationConfig, TProductConfig productConfig, params TTestConfig[] testConfigs);
+        /// <param name="testConfig">Test config instance containing test-specific configuration.</param>
+        protected abstract void ExecuteTest(CancellationToken token, TStationConfig stationConfig, TProductConfig productConfig, TTestConfig testConfig);
 
         /// <summary>
         /// Gets the collection of information captured during the test sequence.
         /// </summary>
-        public readonly BindingList<TestInfo> _testInfo;
-
-        public ReadOnlyObservableCollection<TestInfo> TestInfo { get; private set; }
+        public readonly BindingList<TestInfo> TestInfo;
 
         /// <summary>
         /// Gets the collection of measurements captured during the test sequence.
         /// </summary>
-        public readonly BindingList<MeasurementBase> _measurements;
-
-        public ReadOnlyObservableCollection<MeasurementBase> Measurements { get; private set; }
+        public readonly BindingList<MeasurementBase> Measurements;
 
         /// <summary>
         /// Gets the collection of general data captured during the test sequence.
         /// </summary>
-        public readonly BindingList<object> _data;
-        public ReadOnlyObservableCollection<object> Data { get; private set; }
-
+        public readonly BindingList<object> Data;
 
         /// <summary>
         /// Gets or sets an EventProxy object that can be used to send information events across AppDomain boundaries.
@@ -134,36 +111,37 @@ namespace TsdLib.TestSystem.TestSequence
         /// </summary>
         protected TestSequenceBase()
         {
-            _cts = new CancellationTokenSource();
+            UserCancellationTokenSource = new CancellationTokenSource();
+            ErrorCancellationTokenSource = new CancellationTokenSource();
+            linked = CancellationTokenSource.CreateLinkedTokenSource(UserCancellationTokenSource.Token, ErrorCancellationTokenSource.Token);
+
+            //UserCancellationTokenSource = cancellationTokenSource;
 
             _instruments = new List<IInstrument>();
 
-            _testInfo = new BindingList<TestInfo>();
-            TestInfo = new ReadOnlyObservableCollection<TestInfo>(new ObservableCollection<TestInfo>(_testInfo));
-            //_information.ListChanged += (sender, e) =>
-            //{
-            //    IBindingList list = sender as IBindingList;
-            //    if (list != null && InfoEventProxy != null)
-            //        InfoEventProxy.FireEvent(this, (TestInfo) list[e.NewIndex]);
-            //};
-            
-            _measurements = new BindingList<MeasurementBase>();
-            Measurements = new ReadOnlyObservableCollection<MeasurementBase>(new ObservableCollection<MeasurementBase>(_measurements));
-            //_measurements.ListChanged += (sender, e) =>
-            //{
-            //    IBindingList list = sender as IBindingList;
-            //    if (list != null && MeasurementEventProxy != null)
-            //        MeasurementEventProxy.FireEvent(this, (MeasurementBase)list[e.NewIndex]);
-            //};
+            TestInfo = new BindingList<TestInfo>();
+            TestInfo.ListChanged += (sender, e) =>
+            {
+                IBindingList list = sender as IBindingList;
+                if (list != null && InfoEventProxy != null)
+                    InfoEventProxy.FireEvent(this, (TestInfo)list[e.NewIndex]);
+            };
 
-            _data = new BindingList<object>();
-            Data = new ReadOnlyObservableCollection<object>(new ObservableCollection<object>(_data));
-            //_data.ListChanged += (sender, e) =>
-            //{
-            //    IBindingList list = sender as IBindingList;
-            //    if (list != null && DataEventProxy != null)
-            //        DataEventProxy.FireEvent(this, list[e.NewIndex]);
-            //};
+            Measurements = new BindingList<MeasurementBase>();
+            Measurements.ListChanged += (sender, e) =>
+            {
+                IBindingList list = sender as IBindingList;
+                if (list != null && MeasurementEventProxy != null)
+                    MeasurementEventProxy.FireEvent(this, (MeasurementBase)list[e.NewIndex]);
+            };
+
+            Data = new BindingList<object>();
+            Data.ListChanged += (sender, e) =>
+            {
+                IBindingList list = sender as IBindingList;
+                if (list != null && DataEventProxy != null)
+                    DataEventProxy.FireEvent(this, list[e.NewIndex]);
+            };
 
             InstrumentEvents.Connected += FactoryEvents_Connected;
         }
@@ -172,10 +150,10 @@ namespace TsdLib.TestSystem.TestSequence
         {
             _instruments.Add(e);
             string instrumentType = e.GetType().Name;
-            _testInfo.Add(new TestInfo(instrumentType + " Description", e.Description));
-            _testInfo.Add(new TestInfo(instrumentType + " Model Number", e.ModelNumber));
-            _testInfo.Add(new TestInfo(instrumentType + " Serial Number", e.SerialNumber));
-            _testInfo.Add(new TestInfo(instrumentType + " Firmware Version", e.FirmwareVersion));
+            TestInfo.Add(new TestInfo(instrumentType + " Description", e.Description));
+            TestInfo.Add(new TestInfo(instrumentType + " Model Number", e.ModelNumber));
+            TestInfo.Add(new TestInfo(instrumentType + " Serial Number", e.SerialNumber));
+            TestInfo.Add(new TestInfo(instrumentType + " Firmware Version", e.FirmwareVersion));
         }
 
         /// <summary>
@@ -184,50 +162,48 @@ namespace TsdLib.TestSystem.TestSequence
         /// <param name="listener">TraceListener to add to the Trace Listeners collection.</param>
         public void AddTraceListener(TraceListener listener)
         {
-            
             Trace.Listeners.Add(listener);
         }
 
         /// <summary>
         /// Start execution of the test sequence with the specified configuration objects.
         /// </summary>
+        /// <param name="testDetails">Details about the test request or job.</param>
         /// <param name="stationConfig">Station config instance containing station-specific configuration.</param>
         /// <param name="productConfig">Product config instance containing product-specific configuration.</param>
-        /// <param name="testConfig">Test config instance containing test-specific configuration.</param>
-        /// <param name="testDetails">Details about the test request or job.</param>
+        /// <param name="testConfigs">Zero or more test config instances containing test-specific configuration.</param>
         /// <returns>A <see cref="TestResultCollection"/> containing the test results.</returns>
-        public ITestResults ExecuteSequence(TStationConfig stationConfig, TProductConfig productConfig, TTestConfig testConfig, TestDetails testDetails)
+        public void ExecuteSequence(TestDetails testDetails, TStationConfig stationConfig, TProductConfig productConfig, params TTestConfig[] testConfigs)
         {
-            DateTime startTime = DateTime.Now;
-            Trace.WriteLine("Starting pre-test at " + startTime);
+            try
+            {
+                TestInfo.Add(new TestInfo("Station Configuration", stationConfig.Name));
+                TestInfo.Add(new TestInfo("Product Configuration", productConfig.Name));
+                foreach (TTestConfig testConfig in testConfigs)
+                    TestInfo.Add(new TestInfo("Test Configuration", testConfig.Name));
+                TestInfo.Add(new TestInfo("Sequence", GetType().Name));
 
-            ExecutePreTest(stationConfig, productConfig, testConfig);
+                Trace.WriteLine("Starting pre-test at " + DateTime.Now);
 
-            Trace.WriteLine("Starting main-test at ." + DateTime.Now);
+                ExecutePreTest(linked.Token, stationConfig, productConfig);
 
-            ExecuteTest(stationConfig, productConfig, testConfig);
+                foreach (TTestConfig testConfig in testConfigs)
+                {
+                    Trace.WriteLine(string.Format("Starting {0} at {1}.", testConfig.Name, DateTime.Now));
+                    ExecuteTest(linked.Token, stationConfig, productConfig, testConfig);
+                }
 
-            Trace.WriteLine("Starting post-test at ." + DateTime.Now);
+                Trace.WriteLine("Starting post-test at ." + DateTime.Now);
 
-            ExecutePostTest(stationConfig, productConfig, testConfig);
+                ExecutePostTest(linked.Token, stationConfig, productConfig);
 
-            DateTime endTime = DateTime.Now;
-
-            Trace.WriteLine("Completed test sequence at " + endTime);
-
-            bool overallPass = _measurements.Any() && _measurements.All(m => m.Result == MeasurementResult.Pass);
-
-            ITestResults testResults = MeasurementsFactory.CreateTestResults(testDetails, _measurements, overallPass ? "Pass" : "Fail", startTime, endTime, _testInfo);
-
-            return testResults;
-        }
-
-        /// <summary>
-        /// Abort the currently executing test sequence.
-        /// </summary>
-        public void Abort()
-        {
-            _cts.Cancel();
+                Trace.WriteLine("Completed test sequence at " + DateTime.Now);
+            }
+            catch (Exception ex)
+            {
+                Error = ex;
+                throw;
+            }
         }
 
         /// <summary>
@@ -247,7 +223,6 @@ namespace TsdLib.TestSystem.TestSequence
         {
             if (disposing)
             {
-                _cts.Dispose();
                 InstrumentEvents.Connected -= FactoryEvents_Connected;
             }
         }
@@ -259,6 +234,17 @@ namespace TsdLib.TestSystem.TestSequence
         public override object InitializeLifetimeService()
         {
             return null;
+        }
+
+        public void Abort(Exception error = null)
+        {
+            if (error == null)
+                UserCancellationTokenSource.Cancel();
+            else
+            {
+                Error = error;
+                ErrorCancellationTokenSource.Cancel();
+            }
         }
     }
 }

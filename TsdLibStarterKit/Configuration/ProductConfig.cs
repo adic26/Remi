@@ -18,7 +18,7 @@ namespace $safeprojectname$.Configuration
         /// <summary>
         /// Initialize the configuration properties to default values. Do not use a default constructor, as it can interfere with deserialization.
         /// </summary>
-        public override void Init()
+        public override void InitializeDefaultValues()
         {
             SettlingTime = 500;
         }

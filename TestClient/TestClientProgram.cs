@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using TsdLib.Configuration;
 
@@ -18,8 +19,6 @@ namespace TestClient
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-
 
 #if DEBUG
             const OperatingMode defaultMode = OperatingMode.Engineering;
@@ -48,7 +47,7 @@ namespace TestClient
             TestDetails testDetails = new TestDetails(testSystemName, testSystemVersion, testSystemMode);
 
             IConfigConnection sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation));
-
+            
             if (args.Contains("-seq"))
             {
                 ConfigManager<Sequence> sequenceConfigManager = new ConfigManager<Sequence>(testDetails, sharedConfigConnection);
@@ -56,7 +55,9 @@ namespace TestClient
                 int seqArgIndex = argsList.IndexOf("-seq");
                 string sequenceFolder = argsList[seqArgIndex + 1];
                 bool storeInDatabase = bool.Parse(argsList[seqArgIndex + 2]);
-                List<string> assemblyReferences = new List<string> { "System.dll", "System.Xml.dll", "TsdLib.dll", testSystemName + ".exe" };
+                HashSet<string> assemblyReferences = new HashSet<string>(AppDomain.CurrentDomain.GetAssemblies().Select(asy => Path.GetFileName(asy.GetName().CodeBase)), StringComparer.InvariantCultureIgnoreCase) { Path.GetFileName(Assembly.GetEntryAssembly().GetName().CodeBase) };
+                foreach (string fileName in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll").Select(Path.GetFileName))
+                    assemblyReferences.Add(fileName);
 
                 foreach (Sequence sequence in sequenceConfigManager.GetConfigGroup().Where(seq => !seq.IsDefault))
                 {
@@ -75,7 +76,7 @@ namespace TestClient
 
             Controller c = new Controller(testDetails, sharedConfigConnection, localDomain);
 
-            Application.Run(c.View);
+            Application.Run(c.UI);
             
             Console.WriteLine("Done");
         }

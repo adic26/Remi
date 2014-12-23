@@ -44,32 +44,37 @@ namespace $safeprojectname$
 
             TestDetails testDetails = new TestDetails(testSystemName, testSystemVersion, testSystemMode);
 
-            DatabaseFolderConnection databaseFolderConnection = new DatabaseFolderConnection(settingsLocation);
+            IConfigConnection sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation));
 
             if (args.Contains("-seq"))
             {
-                IConfigGroup<Sequence> sequences = new ConfigManager(testDetails, databaseFolderConnection).GetConfigGroup<Sequence>(testDetails);
+                ConfigManager<Sequence> sequenceConfigManager = new ConfigManager<Sequence>(testDetails, sharedConfigConnection);
 
                 int seqArgIndex = argsList.IndexOf("-seq");
                 string sequenceFolder = argsList[seqArgIndex + 1];
                 bool storeInDatabase = bool.Parse(argsList[seqArgIndex + 2]);
-                List<string> assemblyReferences = new List<string> { "System.dll", "System.Xml.dll", "TsdLib.dll", testSystemName + ".exe" };
+                HashSet<string> assemblyReferences = new HashSet<string>(AppDomain.CurrentDomain.GetAssemblies().Select(asy => Path.GetFileName(asy.GetName().CodeBase)), StringComparer.InvariantCultureIgnoreCase) { Path.GetFileName(Assembly.GetEntryAssembly().GetName().CodeBase) };
+                foreach (string fileName in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll").Select(Path.GetFileName))
+                    assemblyReferences.Add(fileName);
 
-                foreach (Sequence sequence in sequences.Where(seq => !seq.IsDefault))
+                foreach (Sequence sequence in sequenceConfigManager.GetConfigGroup().Where(seq => !seq.IsDefault))
                 {
                     string vsFile = Path.Combine(sequenceFolder, sequence.Name + ".cs");
                     if (!File.Exists(vsFile))
                         File.WriteAllText(vsFile, sequence.SourceCode);
                 }
                 foreach (string seqFile in Directory.EnumerateFiles(sequenceFolder))
-                    sequences.Add(new Sequence(seqFile, storeInDatabase, assemblyReferences, testSystemName));
-                sequences.Save();
+                {
+                    Trace.WriteLine("Found" + seqFile);
+                    sequenceConfigManager.Add(new Sequence(seqFile, storeInDatabase, assemblyReferences));
+                }
+                sequenceConfigManager.Save();
                 return;
             }
 
-            Controller c = new Controller(testDetails, databaseFolderConnection, localDomain);
+            Controller c = new Controller(testDetails, sharedConfigConnection, localDomain);
 
-            Application.Run(c.View);
+            Application.Run(c.UI);
             
             Console.WriteLine("Done");
         }

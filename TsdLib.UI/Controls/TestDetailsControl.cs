@@ -1,0 +1,22 @@
+﻿using System;
+
+namespace TsdLib.UI.Controls
+{
+    public partial class TestDetailsControl : TestDetailsControlBase
+    {
+        public override void SetState(State state)
+        {
+            Enabled = state.HasFlag(State.ReadyToTest);
+        }
+
+        public TestDetailsControl()
+        {
+            InitializeComponent();
+        }
+
+        private void button_EditTestDetails_Click(object sender, EventArgs e)
+        {
+            OnEditTestDetails(checkBox_DetailsFromDatabase.Checked);
+        }
+    }
+}

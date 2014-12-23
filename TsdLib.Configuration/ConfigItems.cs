@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing.Design;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -22,6 +23,8 @@ namespace TsdLib.Configuration
         /// <summary>
         /// Initialize the configuration properties to default values.
         /// </summary>
+        [Browsable(true)]
+        [Description("Initialize configuration values to their defaults")]
         public abstract void InitializeDefaultValues();
 
         internal ITestDetails Details { get; set; }
@@ -85,6 +88,36 @@ namespace TsdLib.Configuration
         {
             return Name;
         }
+
+        #region IComponent implementation
+
+        /// <summary>
+        /// Gets the <see cref="ISite"/> of the <see cref="IComponent"/>
+        /// </summary>
+        [Browsable(false)]
+        [XmlIgnore]
+        public ISite Site
+        {
+            // return our "site" which connects back to us to expose our tagged methods
+            get { return new DesignerVerbSite(this); }
+            set { throw new NotImplementedException(); }
+        }
+
+        /// <summary>
+        /// Event that is fired when the <see cref="IComponent"/> is disposed.
+        /// </summary>
+        public event EventHandler Disposed;
+
+        /// <summary>
+        /// Dispose the <see cref="IComponent"/>.
+        /// </summary>
+        public void Dispose()
+        {
+            if (Disposed != null)
+                Disposed(this, EventArgs.Empty);
+        }
+
+        #endregion
     }
 
     /// <summary>
@@ -170,7 +203,7 @@ namespace {0}.Sequences
 ",
                 assemblyName);
 
-            AssemblyReferences = new HashSet<string>(new[] { "System.dll", "System.Xml.dll", "TsdLib.dll", assemblyName + ".exe" });
+            AssemblyReferences = new HashSet<string>(AppDomain.CurrentDomain.GetAssemblies().Select(asy => Path.GetFileName(asy.GetName().CodeBase))) { Path.GetFileName(Assembly.GetEntryAssembly().GetName().CodeBase) };
         }
 
         /// <summary>

@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace TsdLib.Configuration
 {
-
-
     /// <summary>
     /// Encapsulates configuration data of a specified type and provides methods to save and retieve.
     /// </summary>
@@ -37,6 +36,7 @@ namespace TsdLib.Configuration
         private readonly IConfigConnection _sharedConfigConnection;
         private readonly XmlSerializer _serializer;
 
+        private readonly BindingSource _bindingSource;
         private BindingList<T> _configs;
 
         /// <summary>
@@ -47,11 +47,11 @@ namespace TsdLib.Configuration
         public ConfigManager(TestDetails testDetails, IConfigConnection sharedConfigConnection)
         {
             _testDetails = testDetails;
-            //_localConfigConnection = new FileSystemConnection(SpecialFolders.Configuration_old);
             _localConfigConnection = new FileSystemConnection(SpecialFolders.Configuration);
             _sharedConfigConnection = sharedConfigConnection;
             _serializer = new XmlSerializer(typeof(BindingList<T>));
             _configs = new BindingList<T>();
+            _bindingSource = new BindingSource{DataSource = _configs};
         }
 
         /// <summary>
@@ -177,17 +177,13 @@ namespace TsdLib.Configuration
                 Add(cfg);
         }
 
-        IList IListSource.GetList()
+        public IConfigManager Reload()
         {
-            return GetConfigGroup();
+            _bindingSource.DataSource = GetConfigGroup(true);
+            return this;
         }
 
-        public IList GetList(bool reload)
-        {
-            return GetConfigGroup(reload);
-        }
-
-        bool IListSource.ContainsListCollection { get { return false; } }
+        #region Equality Comparer
 
         private class ConfigXmlEqualityComparer : IEqualityComparer<XElement>
         {
@@ -219,5 +215,21 @@ namespace TsdLib.Configuration
                 return name.GetHashCode();
             }
         }
+
+        #endregion
+
+        #region IListSource Implementation
+
+        public IList GetList()
+        {
+            return _bindingSource;
+        }
+
+        public bool ContainsListCollection
+        {
+            get { return false; }
+        }
+
+        #endregion
     }
 }

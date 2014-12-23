@@ -13,7 +13,7 @@ namespace TsdLib
     {
         static void LogException(TsdLibException ex, string additional = "")
         {
-            using (StreamWriter stream = SpecialFolders.ErrorLogs)
+            using (StreamWriter stream = new StreamWriter(SpecialFolders.ErrorLogs.FullName, true))
                 stream.WriteLine(ex + additional);
         }
 

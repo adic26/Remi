@@ -1,6 +1,6 @@
 ﻿using System;
 using TsdLib.Measurements;
-using TsdLib.UI;
+using TsdLib.UI.Forms;
 
 namespace TsdLib.TestSystem.Controller
 {
@@ -8,6 +8,7 @@ namespace TsdLib.TestSystem.Controller
     /// Encapsulates the <see cref="Controller"/> event handlers, allowing them to be executed in a remote AppDomain.
     /// These event handlers will be executed on the UI thread.
     /// </summary>
+    //[Serializable]
     internal class ControllerProxy : MarshalByRefObject
     {
         /// <summary>
@@ -15,39 +16,58 @@ namespace TsdLib.TestSystem.Controller
         /// </summary>
         public IView ViewProxy { get; private set; }
 
+        public ITestSequence TestSequence { get; private set;}
+
         /// <summary>
         /// Initialize a new 
         /// </summary>
         /// <param name="view">An instance of <see cref="IView"/> that will be used to handle UI events.</param>
-        public ControllerProxy(IView view)
+        /// <param name="testSequence">Reference to the test sequence.</param>
+        public ControllerProxy(IView view, ITestSequence testSequence)
         {
             ViewProxy = view;
+            TestSequence = testSequence;
         }
 
         /// <summary>
-        /// Default handler for the <see cref="TestSequence.TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}.InfoEventProxy"/>. Calls <see cref="IView.AddInformation"/>.
+        /// Default handler for the <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}.InfoEventProxy"/>. Calls <see cref="TsdLib.UI.Controls.TestInfoDisplayControlBase.AddTestInfo"/>.
         /// </summary>
-        /// <param name="sender">The <see cref="TestSequence.TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}"/> where the information was captured.</param>
+        /// <param name="sender">The <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}"/> where the information was captured.</param>
         /// <param name="testInfo">The <see cref="TestInfo"/> that was captured.</param>
         public void InfoAdded(object sender, TestInfo testInfo)
         {
-            ViewProxy.AddInformation(testInfo);
+            try
+            {
+                ViewProxy.TestInfoDisplayControl.AddTestInfo(testInfo);
+
+            }
+            catch (Exception ex)
+            {
+                TestSequence.Abort(ex);
+            }
         }
 
         /// <summary>
-        /// Default handler for the <see cref="TestSequence.TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}.MeasurementEventProxy"/>. Calls <see cref="IView.AddMeasurement"/>.
+        /// Default handler for the <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}.MeasurementEventProxy"/>. Calls <see cref="IView.AddMeasurement"/>.
         /// </summary>
-        /// <param name="sender">The <see cref="TestSequence.TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}"/> where the measurement was captured.</param>
+        /// <param name="sender">The <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}"/> where the measurement was captured.</param>
         /// <param name="measurementBase">The <see cref="MeasurementBase"/> that was captured.</param>
         public void MeasurementAdded(object sender, MeasurementBase measurementBase)
         {
-            ViewProxy.AddMeasurement(measurementBase);
+            try
+            {
+                ViewProxy.MeasurementDisplayControl.AddMeasurement(measurementBase);
+            }
+            catch (Exception ex)
+            {
+                TestSequence.Abort(ex);
+            }
         }
 
         /// <summary>
-        /// Default handler for the <see cref="TestSequence.TestSequenceBase{TStationConfig, TProductConfig, TTestConfig}.DataEventProxy"/>. Calls <see cref="IView.AddData"/>.
+        /// Default handler for the <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}.DataEventProxy"/>. Calls <see cref="IView.AddData"/>.
         /// </summary>
-        /// <param name="sender">The <see cref="TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}"/> where the measurement was captured.</param>
+        /// <param name="sender">The <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}"/> where the measurement was captured.</param>
         /// <param name="data">The data that was captured.</param>
         public void DataAdded(object sender, object data)
         {

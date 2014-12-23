@@ -1,0 +1,43 @@
+﻿using System.Windows.Forms;
+using TsdLib.Measurements;
+
+namespace TsdLib.UI.Controls
+{
+    public partial class MeasurementDataGridViewControl : MeasurementDisplayControlBase
+    {
+        public MeasurementDataGridViewControl()
+        {
+            InitializeComponent();
+        }
+
+        public override void AddMeasurement(MeasurementBase measurement)
+        {
+            int newRowIndex = dataGridView.Rows.Add();
+
+            dataGridView.Rows[newRowIndex].Cells["Column_MeasurementName"].Value = measurement.MeasurementName;
+            dataGridView.Rows[newRowIndex].Cells["Column_MeasuredValue"].Value = measurement.MeasuredValue;
+            dataGridView.Rows[newRowIndex].Cells["Column_Units"].Value = measurement.Units;
+            dataGridView.Rows[newRowIndex].Cells["Column_LowerLimit"].Value = measurement.LowerLimit;
+            dataGridView.Rows[newRowIndex].Cells["Column_UpperLimit"].Value = measurement.UpperLimit;
+            dataGridView.Rows[newRowIndex].Cells["Column_Result"].Value = measurement.Result;
+
+            foreach (MeasurementParameter measurementParameter in measurement.Parameters)
+            {
+                string parameterColumnName = "Column_" + measurementParameter.Name.Replace(" ", "");
+                if (!dataGridView.Columns.Contains(parameterColumnName))
+                {
+                    dataGridView.Columns.Add(new DataGridViewTextBoxColumn
+                    {
+                        Name = parameterColumnName,
+                        HeaderText = measurementParameter.Name,
+                        AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                        FillWeight = 150
+                    });
+
+                }
+                dataGridView.Rows[newRowIndex].Cells[parameterColumnName].Value = measurementParameter.Value;
+            }
+
+        }
+    }
+}

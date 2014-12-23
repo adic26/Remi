@@ -38,14 +38,6 @@ namespace TsdLib.Measurements
         }
 
         /// <summary>
-        /// Gets the name of the test system.
-        /// </summary>
-        public string TestSystemName
-        {
-            get { return Details.TestSystemName; }
-        }
-
-        /// <summary>
         /// Gets the test detail metadata.
         /// </summary>
         public ITestDetails Details { get; set; }

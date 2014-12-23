@@ -7,7 +7,6 @@ namespace TsdLib.Measurements
 {
     public interface ITestResults : IXmlSerializable
     {
-        string TestSystemName { get; }
         ITestDetails Details { get; }
         ITestSummary Summary { get; }
         List<TestInfo> TestInfo { get; }
