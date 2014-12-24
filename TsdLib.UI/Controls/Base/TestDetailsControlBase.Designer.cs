@@ -1,6 +1,6 @@
-﻿namespace TsdLib.UI.Controls
+﻿namespace TsdLib.UI.Controls.Base
 {
-    partial class TsdLibControl
+    partial class TestDetailsControlBase
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,16 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // TsdLibControl
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "TsdLibControl";
-            this.Size = new System.Drawing.Size(306, 177);
-            this.ResumeLayout(false);
-
         }
 
         #endregion

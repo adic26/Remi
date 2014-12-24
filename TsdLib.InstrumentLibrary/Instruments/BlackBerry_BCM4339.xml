@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Instruments xmlns="TsdLib.Instruments.xsd">
+  <Instrument Name="BCM4334" ConnectionType="Telnet" CommandDelay="200" Interfaces="IBlackBerryWlan" InitCommands="echo fw_pltenable::1>>/pps/services/wifi/escreen">
+
+    <!--Discovery-->
+    <IdQuery Response="BlackBerry Device"/>
+
+    <!--Identification-->
+    <ModelNumber Message="cat /pps/services/hw_info/inventory" RegEx="(?&lt;=Board_Type::).*(?=\r\nBoot_Devices)"/>
+    <SerialNumber Message="cat /pps/system/nvram/deviceinfo" RegEx="(?&lt;=BSN::).*(?=\r\nBTMAC)"/>
+    <FirmwareVersion Message="cat /pps/services/deviceproperties" RegEx="(?&lt;=scmbundle::).*(?=\r\nscmbundle0)"/>
+
+    <Command Name="DisableBcm0" Message="ifconfig bcm0 down">
+      </Command>
+    <Command Name="EnableBcm0" Message="ifconfig bcm0 up">
+      </Command>
+    <Command Name="StopTxPacketEngine" Message="wl_bcm_dhd pkteng_stop tx">
+      </Command>
+    <Command Name="StopRxPacketEngine" Message="wl_bcm_dhd pkteng_stop rx">
+    </Command>
+    <Command Name="DisableAdapter" Message="wl_bcm_dhd down">
+      </Command>
+    <Command Name="DisableMinimumPowerControl" Message="wl_bcm_dhd mpc 0">
+      </Command>
+    <Command Name="DisableWatchdog" Message="wl_bcm_dhd phy_watchdog 0">
+      </Command>
+    <Command Name="EnableAdapter" Message="wl_bcm_dhd up">
+      </Command>
+    <Command Name="SetCountryCode" Message="wl_bcm_dhd country {0}">
+      <Parameter Name="countryCode" Type="String"/>
+    </Command>
+    <Command Name="SetBand" Message="wl_bcm_dhd band {0}">
+      <Parameter Name="band_try_auto" Type="String"/>
+    </Command>
+
+    <Command Name="SetRate" Message="wl_bcm_dhd {0}g_rate -{1} {2} -b {3}">
+      <Parameter Name="band" Type="Int32"/> <!--2,5-->
+      <Parameter Name="rateType" Type="String"/> <!--r, h, v-->
+      <Parameter Name="rate" Type="Double"/>
+      <Parameter Name="bandwidth" Type="Int32"/>
+    </Command>
+    <Command Name="SetChannel" Message="wl_bcm_dhd chanspec {0}/{1}">
+      <Parameter Name="channel" Type="Int32"/>
+      <Parameter Name="bandwidth" Type="Int32"/>
+    </Command>
+    <Command Name="EnableForceCal" Message="wl_bcm_dhd phy_forcecal 1">
+      </Command>
+    <Command Name="EnableScanSuppress" Message="wl_bcm_dhd scansuppress 1">
+      </Command>
+    <Command Name="EnableClosedLoopPowerControl" Message="wl_bcm_dhd phy_txpwrctrl 1">
+      </Command>
+    <Command Name="SetTxPowerDefault" Message="wl_bcm_dhd txpwr1 -1">
+      </Command>
+    <Command Name="SetTxPower" Message="wl_bcm_dhd txpwr1 -d {0}">
+      <Parameter Name="pwoerLevel" Type="Double"/>
+    </Command>
+    <Command Name="SetTxPowerOverrideLimits" Message="wl_bcm_dhd txpwr1 -d {0} -o">
+      <Parameter Name="pwoerLevel" Type="Double"/>
+    </Command>
+    <Command Name="StartTxPacketEngine" Message="wl_bcm_dhd pkteng_start 00:11:22:33:44:55 tx 100 1024 0">
+      </Command>
+    <Command Name="StartRxPacketEngine" Message="wl_bcm_dhd pkteng_start 00:00:00:C0:FF:EE rxwithack">
+      </Command>
+    <Command Name="ResetCounter" Message="wl_bcm_dhd reset_cnts">
+      </Command>
+
+    <Query Name="GetCountryCode" Message="wl_bcm_dhd country" ReturnType="String">
+    </Query>
+    <Query Name="GetActivecal" Message="wl_bcm_dhd phy_activecal" ReturnType="Boolean">
+    </Query>
+    <Query Name="IsEnabled" Message="wl_bcm_dhd isup" ReturnType="Boolean">
+    </Query>
+    <Query Name="GetRxFrameCount" Message="wl_bcm_dhd counters" RegEx="(?&lt;=rxdfrmmcast )\d+" ReturnType="Int32">
+    </Query>
+
+  </Instrument>
+</Instruments>

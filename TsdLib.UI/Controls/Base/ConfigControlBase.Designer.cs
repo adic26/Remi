@@ -1,6 +1,6 @@
-﻿namespace TsdLib.UI.Controls
+﻿namespace TsdLib.UI.Controls.Base
 {
-    partial class TestInfoDisplayControlBase
+    partial class ConfigControlBase
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,10 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // ConfigControlBase
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Name = "ConfigControlBase";
+            this.Size = new System.Drawing.Size(356, 178);
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+
     }
 }

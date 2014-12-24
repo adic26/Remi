@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
+using TsdLib.UI.Controls.Base;
 
 namespace TsdLib.UI.Controls
 {

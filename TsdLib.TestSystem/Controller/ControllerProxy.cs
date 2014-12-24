@@ -1,6 +1,6 @@
 ﻿using System;
 using TsdLib.Measurements;
-using TsdLib.UI.Forms;
+using TsdLib.UI;
 
 namespace TsdLib.TestSystem.Controller
 {
@@ -30,7 +30,7 @@ namespace TsdLib.TestSystem.Controller
         }
 
         /// <summary>
-        /// Default handler for the <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}.InfoEventProxy"/>. Calls <see cref="TsdLib.UI.Controls.TestInfoDisplayControlBase.AddTestInfo"/>.
+        /// Default handler for the <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}.InfoEventProxy"/>. Calls <see cref="TsdLib.UI.ITestInfoDisplayControl.AddTestInfo"/>.
         /// </summary>
         /// <param name="sender">The <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}"/> where the information was captured.</param>
         /// <param name="testInfo">The <see cref="TestInfo"/> that was captured.</param>
@@ -48,7 +48,7 @@ namespace TsdLib.TestSystem.Controller
         }
 
         /// <summary>
-        /// Default handler for the <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}.MeasurementEventProxy"/>. Calls <see cref="IView.AddMeasurement"/>.
+        /// Default handler for the <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}.MeasurementEventProxy"/>. Calls <see cref="TsdLib.UI.IMeasurementDisplayControl.AddMeasurement"/>.
         /// </summary>
         /// <param name="sender">The <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}"/> where the measurement was captured.</param>
         /// <param name="measurementBase">The <see cref="MeasurementBase"/> that was captured.</param>

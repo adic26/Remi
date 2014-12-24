@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 using TsdLib.Measurements;
-using TsdLib.UI.Controls;
 
 namespace TsdLib.UI.Forms
 {
@@ -12,17 +12,19 @@ namespace TsdLib.UI.Forms
     /// </summary>
     public partial class ViewBase : Form, IView
     {
-        public ConfigControlBase ConfigControl { get { return multiConfigControl; } }
+        public event EventHandler<CancelEventArgs> UIClosing;
 
-        public TestInfoDisplayControlBase TestInfoDisplayControl { get { return testInfoDataGridViewControl; } }
+        public IConfigControl ConfigControl { get { return multiConfigControl; } }
 
-        public MeasurementDisplayControlBase MeasurementDisplayControl { get { return measurementDataGridViewControl; } }
+        public ITestInfoDisplayControl TestInfoDisplayControl { get { return testInfoDataGridViewControl; } }
 
-        public TestSequenceControlBase TestSequenceControl { get { return testSequenceControl; } }
+        public IMeasurementDisplayControl MeasurementDisplayControl { get { return measurementDataGridViewControl; } }
 
-        public TestDetailsControlBase TestDetailsControl { get { return testDetailsControl; } }
+        public ITestSequenceControl TestSequenceControl { get { return testSequenceControl; } }
 
-        public TraceListenerControlBase TraceListenerControl { get { return traceListenerTextBoxControl; } }
+        public ITestDetailsControl TestDetailsControl { get { return testDetailsControl; } }
+
+        public ITraceListenerControl TraceListenerControl { get { return traceListenerTextBoxControl; } }
 
         /// <summary>
         /// Initializes a new instance of the base UI form.
@@ -30,17 +32,13 @@ namespace TsdLib.UI.Forms
         protected ViewBase()
         {
             InitializeComponent();
-
-            //TODO: use data binding to bind TestSequence.SelectedStationConfig = Config.SelectedStationConfig in the constructor - but have to expose Config.SelectedStationConfig as a BindingSource
             ConfigControl.ConfigSelectionChanged += Config_ConfigSelectionChanged;
-
-
             Load += (sender, args) => SetState(State.ReadyToTest);
         }
 
-        void Config_ConfigSelectionChanged(object sender, IEnumerable<Configuration.IConfigItem> configItems)
+        void Config_ConfigSelectionChanged(object sender, EventArgs e)
         {
-            ConfigControlBase control = sender as ConfigControlBase;
+            IConfigControl control = sender as IConfigControl;
             if (control != null)
             {
                 TestSequenceControl.SelectedStationConfig = control.SelectedStationConfig;
@@ -56,7 +54,7 @@ namespace TsdLib.UI.Forms
         /// <param name="state">State to set.</param>
         public virtual void SetState(State state)
         {
-            foreach (TsdLibControl control in Controls)
+            foreach (ITsdLibControl control in Controls)
                 control.SetState(state);
         }
 
@@ -80,7 +78,18 @@ namespace TsdLib.UI.Forms
 
         private void ViewBase_FormClosing(object sender, FormClosingEventArgs e)
         {
-            TestSequenceControl.OnAbort(e);
+            EventHandler<CancelEventArgs> invoker = UIClosing;
+            if (invoker != null)
+                invoker(this, e);
+        }
+
+        /// <summary>
+        /// Gets or sets the text displayed in the form title.
+        /// </summary>
+        public string Title
+        {
+            get { return Text; }
+            set { Text = value; }
         }
     }
 }

@@ -116,7 +116,7 @@ namespace $safeprojectname$
                 base.EditTestDetails(sender, false);
         }
 
-        protected override void PublishResults(ITestResults results)
+        protected override void PublishResults(TsdLib.Measurements.ITestResults results)
         {
             System.Diagnostics.Trace.WriteLine("Simulating database upload");
             System.Threading.Thread.Sleep(10000);

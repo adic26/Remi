@@ -96,7 +96,7 @@
             this.checkedListBox_SequenceConfig.Name = "checkedListBox_SequenceConfig";
             this.checkedListBox_SequenceConfig.Size = new System.Drawing.Size(174, 79);
             this.checkedListBox_SequenceConfig.TabIndex = 36;
-            this.checkedListBox_SequenceConfig.SelectedValueChanged += new System.EventHandler(this.config_SelectionChangeCommitted);
+            this.checkedListBox_SequenceConfig.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.config_SelectionChangeCommittedCheckBox);
             // 
             // checkedListBox_TestConfig
             // 
@@ -107,7 +107,7 @@
             this.checkedListBox_TestConfig.Name = "checkedListBox_TestConfig";
             this.checkedListBox_TestConfig.Size = new System.Drawing.Size(174, 79);
             this.checkedListBox_TestConfig.TabIndex = 37;
-            this.checkedListBox_TestConfig.SelectedValueChanged += new System.EventHandler(this.config_SelectionChangeCommitted);
+            this.checkedListBox_TestConfig.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.config_SelectionChangeCommittedCheckBox);
             // 
             // label_SequenceConfig
             // 

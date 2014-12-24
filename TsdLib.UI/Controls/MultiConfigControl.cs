@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using TsdLib.Configuration;
+using TsdLib.UI.Controls.Base;
 
 namespace TsdLib.UI.Controls
 {
@@ -97,7 +97,25 @@ namespace TsdLib.UI.Controls
 
         private void config_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            OnConfigSelectionChanged(sender as ListBox);
+            OnConfigSelectionChanged(e);
+        }
+
+        private void config_SelectionChangeCommittedCheckBox(object sender, ItemCheckEventArgs e)
+        {
+            CheckedListBox checkedListBox = sender as CheckedListBox;
+            if (checkedListBox != null)
+            {
+                try
+                {
+                    checkedListBox.ItemCheck -= config_SelectionChangeCommittedCheckBox;
+                    checkedListBox.SetItemCheckState(e.Index, e.NewValue);
+                    OnConfigSelectionChanged(e);
+                }
+                finally
+                {
+                    checkedListBox.ItemCheck += config_SelectionChangeCommittedCheckBox;
+                }
+            }
         }
     }
 }

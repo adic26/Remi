@@ -52,6 +52,12 @@
       <Generator>InstrumentClassGenerator</Generator>
       <LastGenOutput>BCM4334.cs</LastGenOutput>
     </Content>
+    <Content Include="Instruments\BlackBerry_BCM4334.xml">
+      <Generator>InstrumentClassGenerator</Generator>
+    </Content>
+    <Content Include="Instruments\BlackBerry_BCM4339.xml">
+      <Generator>InstrumentClassGenerator</Generator>
+    </Content>
     <Content Include="Instruments\Helpers\IBlackBerryWlan.cs.pp" />
     <Compile Include="InstrumentLibraryExceptions.cs" />
     <Compile Include="InstrumentParser.cs" />

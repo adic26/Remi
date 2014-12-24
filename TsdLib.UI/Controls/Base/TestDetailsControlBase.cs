@@ -1,9 +1,15 @@
 ﻿using System;
 
-namespace TsdLib.UI.Controls
+namespace TsdLib.UI.Controls.Base
 {
-    public partial class TestDetailsControlBase : TsdLibControl
+    /// <summary>
+    /// Placeholder for a control to view or edit the test details on the UI.
+    /// </summary>
+    public partial class TestDetailsControlBase : TsdLibControl, ITestDetailsControl
     {
+        /// <summary>
+        /// Initialize the control.
+        /// </summary>
         public TestDetailsControlBase()
         {
             InitializeComponent();

@@ -54,55 +54,26 @@
     <Compile Include="Measurements\TestInfo.cs" />
     <Compile Include="Measurements\TestResultsCollection.cs" />
     <Compile Include="Measurements\TestSummary.cs" />
-    <Compile Include="UI\Controls\ConfigControlBase.cs">
+    <Compile Include="UI\IConfigControl.cs" />
+    <Compile Include="UI\IMeasurementDisplayControl.cs" />
+    <Compile Include="UI\ITestDetailsControl.cs" />
+    <Compile Include="UI\ITestInfoDisplayControl.cs" />
+    <Compile Include="UI\ITestSequenceControl.cs" />
+    <Compile Include="UI\ITraceListenerControl.cs" />
+    <Compile Include="UI\ITsdLibControl.cs" />
+    <Compile Include="UI\Controls.Base\TsdLibControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Controls\ConfigControlBase.Designer.cs">
-      <DependentUpon>ConfigControlBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Controls\MeasurementDisplayControlBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\MeasurementDisplayControlBase.Designer.cs">
-      <DependentUpon>MeasurementDisplayControlBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Controls\TestDetailsControlBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\TestDetailsControlBase.Designer.cs">
-      <DependentUpon>TestDetailsControlBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Controls\TestInfoDisplayControlBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\TestInfoDisplayControlBase.Designer.cs">
-      <DependentUpon>TestInfoDisplayControlBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Controls\TestSequenceControlBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\TestSequenceControlBase.Designer.cs">
-      <DependentUpon>TestSequenceControlBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Controls\TraceListenerControlBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\TraceListenerControlBase.Designer.cs">
-      <DependentUpon>TraceListenerControlBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Controls\TsdLibControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\TsdLibControl.Designer.cs">
+    <Compile Include="UI\Controls.Base\TsdLibControl.Designer.cs">
       <DependentUpon>TsdLibControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Controls\TsdLibLabelledControl.cs">
+    <Compile Include="UI\Controls.Base\TsdLibLabelledControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Controls\TsdLibLabelledControl.Designer.cs">
+    <Compile Include="UI\Controls.Base\TsdLibLabelledControl.Designer.cs">
       <DependentUpon>TsdLibLabelledControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Forms\IView.cs" />
+    <Compile Include="UI\IView.cs" />
     <Compile Include="Measurements\MeasurementBase.cs" />
     <Compile Include="Measurements\MeasurmentResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -111,22 +82,17 @@
     <Compile Include="TsdLibException.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\Controls\ConfigControlBase.resx">
-      <DependentUpon>ConfigControlBase.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Controls\MeasurementDisplayControlBase.resx">
-      <DependentUpon>MeasurementDisplayControlBase.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Controls\TsdLibControl.resx">
+    <EmbeddedResource Include="UI\Controls.Base\TsdLibControl.resx">
       <DependentUpon>TsdLibControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Controls\TsdLibLabelledControl.resx">
+    <EmbeddedResource Include="UI\Controls.Base\TsdLibLabelledControl.resx">
       <DependentUpon>TsdLibLabelledControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="TsdLib.Core.nuspec" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>call "$(SolutionDir)NuGetPostBuild.bat" $(ProjectPath) $(ConfigurationName)</PostBuildEvent>

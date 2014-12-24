@@ -1,4 +1,5 @@
 ﻿using TsdLib.Measurements;
+using TsdLib.UI.Controls.Base;
 
 namespace TsdLib.UI.Controls
 {

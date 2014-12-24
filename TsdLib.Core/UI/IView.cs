@@ -1,26 +1,29 @@
-﻿using TsdLib.UI.Controls;
+﻿using System;
+using System.ComponentModel;
 
-namespace TsdLib.UI.Forms
+namespace TsdLib.UI
 {
     /// <summary>
     /// Interface used to connect UI implementations to the TsdLib framework.
     /// </summary>
     public interface IView
     {
-        /// <summary>
+        event EventHandler<CancelEventArgs> UIClosing;
+
+            /// <summary>
         /// Gets a TraceListener used to write trace and debug information to the user interface.
         /// </summary>
-        TraceListenerControlBase TraceListenerControl { get; }
+        ITraceListenerControl TraceListenerControl { get; }
 
-        ConfigControlBase ConfigControl { get; }
+        IConfigControl ConfigControl { get; }
 
-        TestInfoDisplayControlBase TestInfoDisplayControl { get; }
+        ITestInfoDisplayControl TestInfoDisplayControl { get; }
 
-        MeasurementDisplayControlBase MeasurementDisplayControl { get; }
+        IMeasurementDisplayControl MeasurementDisplayControl { get; }
 
-        TestSequenceControlBase TestSequenceControl { get; }
+        ITestSequenceControl TestSequenceControl { get; }
 
-        TestDetailsControlBase TestDetailsControl { get; }
+        ITestDetailsControl TestDetailsControl { get; }
 
         /// <summary>
         /// Set the appearance and behaviour of IU controls, based on the current status of the system.
@@ -37,7 +40,7 @@ namespace TsdLib.UI.Forms
         /// <summary>
         /// Gets or sets the text displayed in the title section of the UI.
         /// </summary>
-        string Text { get; set; }
+        string Title { get; set; }
     }
 
 

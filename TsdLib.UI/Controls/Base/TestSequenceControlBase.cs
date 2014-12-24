@@ -1,9 +1,12 @@
 ﻿using System;
 using TsdLib.Configuration;
 
-namespace TsdLib.UI.Controls
+namespace TsdLib.UI.Controls.Base
 {
-    public partial class TestSequenceControlBase : TsdLibControl
+    /// <summary>
+    /// Placeholder for a control to start and stop a test sequence on the UI.
+    /// </summary>
+    public partial class TestSequenceControlBase : TsdLibControl, ITestSequenceControl
     {
         public TestSequenceControlBase()
         {
@@ -36,20 +39,16 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Fire the <see cref="AbortTestSequence"/> event.
         /// </summary>
-        /// <param name="e"></param>
-        public virtual void OnAbort(EventArgs e)
+        protected virtual void OnAbort()
         {
-            if (AbortTestSequence != null/* && CurrentState == State.TestInProgress*/)
-                AbortTestSequence(this, e);
+            if (AbortTestSequence != null)
+                AbortTestSequence(this, EventArgs.Empty);
         }
 
         public IConfigItem[] SelectedStationConfig { get; set; }
         public IConfigItem[] SelectedProductConfig { get; set; }
         public IConfigItem[] SelectedTestConfig { get; set; }
         public IConfigItem[] SelectedSequenceConfig { get; set; }
-        public virtual bool PublishResults {
-            get { return false; }
-        }
-
+        public virtual bool PublishResults { get { return false; } }
     }
 }

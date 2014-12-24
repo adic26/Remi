@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Windows.Forms;
 using TsdLib.Configuration;
+using TsdLib.UI.Controls.Base;
 
 namespace TsdLib.UI.Controls
 {
@@ -85,7 +85,7 @@ namespace TsdLib.UI.Controls
 
         private void config_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            OnConfigSelectionChanged(sender as ListBox);
+            OnConfigSelectionChanged(e);
         }
     }
 }

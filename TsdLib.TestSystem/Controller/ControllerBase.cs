@@ -1,6 +1,8 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -13,7 +15,7 @@ using TsdLib.Configuration;
 using TsdLib.Measurements;
 using TsdLib.TestSystem.CodeGenerator;
 using TsdLib.TestSystem.TestSequence;
-using TsdLib.UI.Forms;
+using TsdLib.UI;
 
 namespace TsdLib.TestSystem.Controller
 {
@@ -34,6 +36,7 @@ namespace TsdLib.TestSystem.Controller
 
         private readonly bool _localDomain;
         TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> _sequence;
+        private readonly List<Task> _loggingTasks; 
 
         #endregion
 
@@ -65,6 +68,10 @@ namespace TsdLib.TestSystem.Controller
         /// Gets a configuration manager for sequence config.
         /// </summary>
         protected IConfigManager SequenceConfigManager { get; private set; }
+        /// <summary>
+        /// Gets a list of active tasks responsible for logging test results.
+        /// </summary>
+        protected ReadOnlyCollection<Task> LoggingTasks { get; private set; }
 
         #endregion
 
@@ -80,6 +87,9 @@ namespace TsdLib.TestSystem.Controller
             Trace.AutoFlush = true;
             Trace.Listeners.Add(new TextWriterTraceListener(SpecialFolders.TraceLogs));
 
+            _loggingTasks = new List<Task>();
+            LoggingTasks = new ReadOnlyCollection<Task>(_loggingTasks);
+
             Details = testDetails;
 
             StationConfigManager = ConfigManager<TStationConfig>.GetConfigManager(Details, configConnection);
@@ -88,7 +98,7 @@ namespace TsdLib.TestSystem.Controller
             SequenceConfigManager = ConfigManager<Sequence>.GetConfigManager(Details, configConnection);
 
             //set up view
-            UI = new TView { Text = Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode };
+            UI = new TView { Title = Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode };
 
             testDetails.TestSystemIdentityChanged += testDetails_TestSystemIdentityChanged;
             testDetails_TestSystemIdentityChanged(this, "Initialization");
@@ -107,11 +117,12 @@ namespace TsdLib.TestSystem.Controller
             UI.TestDetailsControl.EditTestDetails += EditTestDetails;
             UI.TestSequenceControl.ExecuteTestSequence += ExecuteTestSequence;
             UI.TestSequenceControl.AbortTestSequence += AbortTestSequence;
+            UI.UIClosing += UIClosing;
         }
 
         void testDetails_TestSystemIdentityChanged(object sender, string e)
         {
-            UI.Text = Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode;
+            UI.Title = Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode;
             UI.ConfigControl.StationConfigManager = StationConfigManager.Reload();
             UI.ConfigControl.ProductConfigManager = ProductConfigManager.Reload();
             UI.ConfigControl.TestConfigManager = TestConfigManager.Reload();
@@ -142,7 +153,6 @@ namespace TsdLib.TestSystem.Controller
                 SynchronizationContext uiContext = SynchronizationContext.Current;
 
                 ControllerProxy controllerProxy;
-
 
                 foreach (Sequence sequenceConfig in sequenceConfigs)
                 {
@@ -193,17 +203,23 @@ namespace TsdLib.TestSystem.Controller
 
                     ITestResults testResults = MeasurementsFactory.CreateTestResults(Details, _sequence.Measurements, overallPass ? "Pass" : "Fail", startTime, endTime, _sequence.TestInfo);
 
-                    UI.SetState(State.ReadyToTest);
-
-                    await Task.Run(() =>
+                    _loggingTasks.Add(Task.Run(() =>
                     {
-                        Thread.CurrentThread.Name = "Result Handler Thread";
+                        ITestResults localTestResults = testResults; //Capture the test results to a local variable in case they are overwritten by the next sequence before the logging is complete.
+                        if (Thread.CurrentThread.Name != null)
+                            Thread.CurrentThread.Name = "Result Handler Thread";
                         Thread.CurrentThread.IsBackground = false;
-                        SaveResults(testResults);
+                        SaveResults(localTestResults);
                         if (publishResults)
-                            PublishResults(testResults);
-                    });
+                            PublishResults(localTestResults);
+                    }).ContinueWith(t =>
+                    {
+                        _loggingTasks.Remove(t);
+                        if (t.IsFaulted && t.Exception != null)
+                            Trace.WriteLine("Failed to log test results!" + Environment.NewLine + string.Join(Environment.NewLine, t.Exception.Flatten().InnerExceptions));
+                    }));
                 }
+                UI.SetState(State.ReadyToTest);
             }
             catch (OperationCanceledException) //User cancellation and controller proxy errors are propagated as OperationCancelledException
             {
@@ -225,7 +241,7 @@ namespace TsdLib.TestSystem.Controller
 
                 //Test test sequence did not set the Error property - this should never happen
                 else
-                    MessageBox.Show("An undescribed error has occurred. Please contact TSD for support.", "Unknown Error:");
+                    MessageBox.Show("An undescribed error has occurred and was not reported by the test sequence. Please contact TSD for support.", "Unknown Error:");
             }
             catch (TsdLibException ex)
             {
@@ -314,10 +330,10 @@ namespace TsdLib.TestSystem.Controller
         }
 
         /// <summary>
-        /// Default handler for the <see cref="TsdLib.UI.Controls.TestSequenceControlBase.AbortTestSequence"/> event.
+        /// Default handler for the <see cref="TsdLib.UI.ITestSequenceControl.AbortTestSequence"/> event.
         /// </summary>
         /// <param name="sender">The <see cref="IView"/> that raised the event.</param>
-        /// <param name="e">Empty EventArgs object.</param>
+        /// <param name="e">Empty event args.</param>
         protected virtual void AbortTestSequence(object sender, EventArgs e)
         {
             if (_sequence != null)
@@ -331,6 +347,26 @@ namespace TsdLib.TestSystem.Controller
         protected virtual IEnumerable<CodeCompileUnit> GenerateCodeCompileUnits()
         {
             return new CodeCompileUnit[0];
+        }
+
+        /// <summary>
+        /// Default handler for the <see cref="TsdLib.UI.IView.UIClosing"/> event.
+        /// </summary>
+        /// <param name="sender">The <see cref="IView"/> that raised the event.</param>
+        /// <param name="e">A <see cref="CancelEventArgs"/> object to provide an opportunity to cancel the closing operation.</param>
+        protected virtual void UIClosing(object sender, CancelEventArgs e)
+        {
+            if (LoggingTasks.Count > 0)
+            {
+                Trace.WriteLine("There are currently {0} test result logging operations in progress");
+                //Currently, the logging operations are run on background threads, so there is no need to cancel the close or wait for the tasks to complete
+
+                //Option 1: This will cancel the close and keep the UI open
+                //e.Cancel = true;
+
+                //Option 2: This will keep the application open until all logging is complete.
+                //Task.WaitAll(LoggingTasks.ToArray());
+            }
         }
 
         #endregion

@@ -1,8 +1,12 @@
 ﻿using System.Windows.Forms;
 
-namespace TsdLib.UI.Controls
+namespace TsdLib.UI.Controls.Base
 {
-    public partial class TsdLibControl : UserControl
+    //TODO: should this be a control? Maybe just MarshalByRefObject
+    /// <summary>
+    /// Base class that all TsdLib controls should derive from.
+    /// </summary>
+    public partial class TsdLibControl : UserControl, ITsdLibControl
     {
         public TsdLibControl()
         {

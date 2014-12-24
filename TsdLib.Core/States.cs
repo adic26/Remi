@@ -1,17 +1,20 @@
-﻿namespace TsdLib
+﻿using System;
+
+namespace TsdLib
 {
     /// <summary>
     /// Describes various states that the system can be in.
     /// </summary>
+    [Flags]
     public enum State
     {
         /// <summary>
-        /// A test is currently running. The only allowable input should be to abort.
+        /// A test is currently running.
         /// </summary>
-        TestInProgress,
+        TestInProgress = 1,
         /// <summary>
         /// The system is ready to configure or start a test. 
         /// </summary>
-        ReadyToTest
+        ReadyToTest = 2
     }
 }

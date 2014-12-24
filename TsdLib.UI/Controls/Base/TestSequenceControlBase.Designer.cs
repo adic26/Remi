@@ -1,6 +1,6 @@
-﻿namespace TsdLib.UI.Controls
+﻿namespace TsdLib.UI.Controls.Base
 {
-    partial class MeasurementDisplayControlBase
+    partial class TestSequenceControlBase
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,22 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
-            this.splitContainer.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // MeasurementDisplayBase
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "MeasurementDisplayBase";
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
-            this.splitContainer.ResumeLayout(false);
-            this.ResumeLayout(false);
-
         }
 
         #endregion
-
     }
 }

@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using TsdLib.Configuration;
 
-namespace TsdLib.UI.Controls
+namespace TsdLib.UI.Controls.Base
 {
-    public partial class ConfigControlBase : TsdLibControl
+    /// <summary>
+    /// Placeholder for a control to select, view or edit the test configuration on the UI.
+    /// </summary>
+    public partial class ConfigControlBase : TsdLibControl, IConfigControl
     {
-        protected ConfigControlBase()
+        /// <summary>
+        /// Initialize the control.
+        /// </summary>
+        public ConfigControlBase()
         {
             InitializeComponent();
         }
@@ -30,23 +35,22 @@ namespace TsdLib.UI.Controls
         /// </summary>
         public virtual IConfigManager SequenceConfigManager { get; set; }
 
-
         private readonly IConfigItem[] _empty = new IConfigItem[0];
 
         /// <summary>
-        /// Override to expose the selected station configuration instances.
+        /// Override to expose the selected station configuration instance(s).
         /// </summary>
         public virtual IConfigItem[] SelectedStationConfig { get { return _empty; } }
         /// <summary>
-        /// Override to expose the selected product configuration instances.
+        /// Override to expose the selected product configuration instance(s).
         /// </summary>
         public virtual IConfigItem[] SelectedProductConfig { get { return _empty; } }
         /// <summary>
-        /// Override to expose the selected test configuration instances.
+        /// Override to expose the selected test configuration instance(s).
         /// </summary>
         public virtual IConfigItem[] SelectedTestConfig { get { return _empty; } }
         /// <summary>
-        /// Override to expose the selected sequence configuration instances.
+        /// Override to expose the selected sequence configuration instance(s).
         /// </summary>
         public virtual IConfigItem[] SelectedSequenceConfig { get { return _empty; } }
         
@@ -66,12 +70,16 @@ namespace TsdLib.UI.Controls
                 invoker(this, configManagersArray);
         }
 
-        public event EventHandler<IConfigItem[]> ConfigSelectionChanged;
-        protected virtual void OnConfigSelectionChanged(ListBox control)
+        /// <summary>
+        /// Event fired when a selected configuration instance is changed.
+        /// </summary>
+        public event EventHandler ConfigSelectionChanged;
+
+        protected virtual void OnConfigSelectionChanged(EventArgs e)
         {
-            EventHandler<IConfigItem[]> invoker = ConfigSelectionChanged;
+            EventHandler invoker = ConfigSelectionChanged;
             if (invoker != null)
-                invoker(this, control.SelectedItems.Cast<IConfigItem>().ToArray());
+                invoker(this, EventArgs.Empty);
         }
     }
 }

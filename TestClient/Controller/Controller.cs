@@ -3,7 +3,6 @@ using TestClient.Configuration;
 using TestClient.View;
 using TsdLib;
 using TsdLib.Configuration;
-using TsdLib.Measurements;
 using TsdLib.TestSystem.CodeGenerator;
 using TsdLib.TestSystem.Controller;
 
@@ -116,7 +115,7 @@ namespace TestClient
                 base.EditTestDetails(sender, false);
         }
 
-        protected override void PublishResults(ITestResults results)
+        protected override void PublishResults(TsdLib.Measurements.ITestResults results)
         {
             System.Diagnostics.Trace.WriteLine("Simulating database upload");
             System.Threading.Thread.Sleep(10000);

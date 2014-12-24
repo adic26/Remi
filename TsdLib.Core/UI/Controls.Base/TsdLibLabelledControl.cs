@@ -1,4 +1,4 @@
-﻿namespace TsdLib.UI.Controls
+﻿namespace TsdLib.UI.Controls.Base
 {
     public partial class TsdLibLabelledControl : TsdLibControl
     {
