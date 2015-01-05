@@ -94,7 +94,6 @@ namespace TsdLib.Instrument
                 new object[] { connections[0] },
                 null);
 
-
             InitCommandsAttribute initCommands = (InitCommandsAttribute)Attribute.GetCustomAttribute(typeof(TInstrument), typeof(InitCommandsAttribute), true);
             if (initCommands != null)
                 foreach (string command in initCommands.Commands)

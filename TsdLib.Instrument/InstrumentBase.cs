@@ -14,7 +14,7 @@ namespace TsdLib.Instrument
         /// <summary>
         /// A connection object to used to communicate with the instrument.
         /// </summary>
-        internal protected readonly ConnectionBase Connection;
+        public ConnectionBase Connection { get; private set; }
 
         /// <summary>
         /// Gets a description of the instrument, including connection information.
