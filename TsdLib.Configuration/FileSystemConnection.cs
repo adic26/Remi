@@ -25,8 +25,10 @@ namespace TsdLib.Configuration
 
         private string getDirectoryInfo(string testSystemName, Version testSystemVersion, OperatingMode testSystemMode)
         {
-            Match m = Regex.Match(testSystemVersion.ToString(), _appVersionFilter);
-            string appVersion = m.Success ? m.Value : testSystemVersion.ToString();
+            if (!_settingsBaseDirectory.Exists)
+                throw new InvalidDirectoryException(_settingsBaseDirectory.FullName);
+            Match match = Regex.Match(testSystemVersion.ToString(), _appVersionFilter);
+            string appVersion = match.Success ? match.Value : testSystemVersion.ToString();
             return _settingsBaseDirectory.CreateSubdirectory(Path.Combine(testSystemName, appVersion, testSystemMode.ToString())).FullName;
         }
 
@@ -81,7 +83,7 @@ namespace TsdLib.Configuration
         {
             string fileName = Path.GetFileName(sourceFilePath);
             if (fileName == null)
-                throw new InvalidFilePathException(sourceFilePath);
+                throw new InvalidFileException(sourceFilePath);
 
             string destinationFilePath = Path.Combine(getDirectoryInfo(testSystemName, testSystemVersion, testSystemMode), fileName);
 
