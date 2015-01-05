@@ -41,8 +41,7 @@
             // 
             // button_ViewEditConfiguration
             // 
-            this.button_ViewEditConfiguration.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_ViewEditConfiguration.Location = new System.Drawing.Point(206, 25);
+            this.button_ViewEditConfiguration.Location = new System.Drawing.Point(10, 23);
             this.button_ViewEditConfiguration.Name = "button_ViewEditConfiguration";
             this.button_ViewEditConfiguration.Size = new System.Drawing.Size(174, 53);
             this.button_ViewEditConfiguration.TabIndex = 35;
@@ -52,8 +51,9 @@
             // 
             // label_ProductConfig
             // 
+            this.label_ProductConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label_ProductConfig.AutoSize = true;
-            this.label_ProductConfig.Location = new System.Drawing.Point(7, 46);
+            this.label_ProductConfig.Location = new System.Drawing.Point(203, 47);
             this.label_ProductConfig.Name = "label_ProductConfig";
             this.label_ProductConfig.Size = new System.Drawing.Size(77, 13);
             this.label_ProductConfig.TabIndex = 34;
@@ -61,8 +61,9 @@
             // 
             // label_StationConfig
             // 
+            this.label_StationConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label_StationConfig.AutoSize = true;
-            this.label_StationConfig.Location = new System.Drawing.Point(7, 7);
+            this.label_StationConfig.Location = new System.Drawing.Point(203, 8);
             this.label_StationConfig.Name = "label_StationConfig";
             this.label_StationConfig.Size = new System.Drawing.Size(73, 13);
             this.label_StationConfig.TabIndex = 33;
@@ -70,9 +71,10 @@
             // 
             // comboBox_ProductConfig
             // 
+            this.comboBox_ProductConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox_ProductConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_ProductConfig.FormattingEnabled = true;
-            this.comboBox_ProductConfig.Location = new System.Drawing.Point(10, 61);
+            this.comboBox_ProductConfig.Location = new System.Drawing.Point(206, 62);
             this.comboBox_ProductConfig.Name = "comboBox_ProductConfig";
             this.comboBox_ProductConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_ProductConfig.TabIndex = 32;
@@ -80,9 +82,10 @@
             // 
             // comboBox_StationConfig
             // 
+            this.comboBox_StationConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox_StationConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_StationConfig.FormattingEnabled = true;
-            this.comboBox_StationConfig.Location = new System.Drawing.Point(10, 22);
+            this.comboBox_StationConfig.Location = new System.Drawing.Point(206, 23);
             this.comboBox_StationConfig.Name = "comboBox_StationConfig";
             this.comboBox_StationConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_StationConfig.TabIndex = 31;
@@ -92,7 +95,7 @@
             // 
             this.checkedListBox_SequenceConfig.CheckOnClick = true;
             this.checkedListBox_SequenceConfig.FormattingEnabled = true;
-            this.checkedListBox_SequenceConfig.Location = new System.Drawing.Point(10, 103);
+            this.checkedListBox_SequenceConfig.Location = new System.Drawing.Point(10, 101);
             this.checkedListBox_SequenceConfig.Name = "checkedListBox_SequenceConfig";
             this.checkedListBox_SequenceConfig.Size = new System.Drawing.Size(174, 79);
             this.checkedListBox_SequenceConfig.TabIndex = 36;
@@ -103,7 +106,7 @@
             this.checkedListBox_TestConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkedListBox_TestConfig.CheckOnClick = true;
             this.checkedListBox_TestConfig.FormattingEnabled = true;
-            this.checkedListBox_TestConfig.Location = new System.Drawing.Point(206, 103);
+            this.checkedListBox_TestConfig.Location = new System.Drawing.Point(206, 101);
             this.checkedListBox_TestConfig.Name = "checkedListBox_TestConfig";
             this.checkedListBox_TestConfig.Size = new System.Drawing.Size(174, 79);
             this.checkedListBox_TestConfig.TabIndex = 37;
@@ -112,7 +115,7 @@
             // label_SequenceConfig
             // 
             this.label_SequenceConfig.AutoSize = true;
-            this.label_SequenceConfig.Location = new System.Drawing.Point(7, 88);
+            this.label_SequenceConfig.Location = new System.Drawing.Point(7, 86);
             this.label_SequenceConfig.Name = "label_SequenceConfig";
             this.label_SequenceConfig.Size = new System.Drawing.Size(89, 13);
             this.label_SequenceConfig.TabIndex = 38;
@@ -122,7 +125,7 @@
             // 
             this.label_TestConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label_TestConfig.AutoSize = true;
-            this.label_TestConfig.Location = new System.Drawing.Point(203, 88);
+            this.label_TestConfig.Location = new System.Drawing.Point(203, 86);
             this.label_TestConfig.Name = "label_TestConfig";
             this.label_TestConfig.Size = new System.Drawing.Size(61, 13);
             this.label_TestConfig.TabIndex = 39;

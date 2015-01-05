@@ -142,11 +142,11 @@ namespace TsdLib.UI.Forms
             // 
             this.multiConfigControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.multiConfigControl.Location = new System.Drawing.Point(291, 12);
+            this.multiConfigControl.Location = new System.Drawing.Point(312, 12);
             this.multiConfigControl.Name = "multiConfigControl";
             this.multiConfigControl.ProductConfigManager = null;
             this.multiConfigControl.SequenceConfigManager = null;
-            this.multiConfigControl.Size = new System.Drawing.Size(395, 188);
+            this.multiConfigControl.Size = new System.Drawing.Size(374, 188);
             this.multiConfigControl.StationConfigManager = null;
             this.multiConfigControl.TabIndex = 0;
             this.multiConfigControl.TestConfigManager = null;
@@ -182,11 +182,11 @@ namespace TsdLib.UI.Forms
         private System.Windows.Forms.DataGridViewTextBoxColumn LowerLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn UpperLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Result;
-        private Controls.MultiConfigControl multiConfigControl;
-        private Controls.MeasurementDataGridViewControl measurementDataGridViewControl;
-        private Controls.TestInfoDataGridViewControl testInfoDataGridViewControl;
-        private Controls.TestSequenceControl testSequenceControl;
-        private Controls.TestDetailsControl testDetailsControl;
-        private Controls.TraceListenerTextBoxControl traceListenerTextBoxControl;
+        protected Controls.MultiConfigControl multiConfigControl;
+        protected Controls.MeasurementDataGridViewControl measurementDataGridViewControl;
+        protected Controls.TestInfoDataGridViewControl testInfoDataGridViewControl;
+        protected Controls.TestSequenceControl testSequenceControl;
+        protected Controls.TestDetailsControl testDetailsControl;
+        protected Controls.TraceListenerTextBoxControl traceListenerTextBoxControl;
     }
 }
