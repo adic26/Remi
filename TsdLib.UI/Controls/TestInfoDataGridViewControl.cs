@@ -14,5 +14,11 @@ namespace TsdLib.UI.Controls
         {
             dataGridView.Rows.Add(testInfo.Name, testInfo.Value);
         }
+
+        public override void SetState(State state)
+        {
+            if (state.HasFlag(State.TestInProgress))
+                dataGridView.Rows.Clear();
+        }
     }
 }

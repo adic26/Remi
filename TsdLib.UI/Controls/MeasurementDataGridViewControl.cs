@@ -40,5 +40,11 @@ namespace TsdLib.UI.Controls
             }
 
         }
+
+        public override void SetState(State state)
+        {
+            if (state.HasFlag(State.TestInProgress))
+                dataGridView.Rows.Clear();
+        }
     }
 }
