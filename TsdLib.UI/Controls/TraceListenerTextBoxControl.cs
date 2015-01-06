@@ -20,12 +20,20 @@ namespace TsdLib.UI.Controls
             _listener = new TextBoxTraceListener(textBox);
         }
 
+        public override void SetState(State state)
+        {
+            if (state.HasFlag(State.TestInProgress))
+                _listener.TextBox.Clear();
+        }
+
+        #region nested TraceListener implementation
+
         /// <summary>
         /// Subscribe a text box to monitor the Trace and Debug output messages.
         /// </summary>
         private class TextBoxTraceListener : TraceListener
         {
-            readonly TextBoxBase _textBox;
+            public readonly TextBoxBase TextBox;
             readonly Action<string> _textBoxAppend;
 
             /// <summary>
@@ -45,11 +53,11 @@ namespace TsdLib.UI.Controls
             /// <param name="textBox">Text box to subscribe to trace messages.</param>
             public TextBoxTraceListener(TextBoxBase textBox)
             {
-                _textBox = textBox;
+                TextBox = textBox;
                 _textBoxAppend = textBox.AppendText;
                 _buffer = new StringBuilder();
 
-                _textBox.HandleCreated += _textBox_HandleCreated;
+                TextBox.HandleCreated += _textBox_HandleCreated;
             }
 
             void _textBox_HandleCreated(object sender, EventArgs e)
@@ -65,17 +73,17 @@ namespace TsdLib.UI.Controls
             /// <param name="message">Message to write.</param>
             public override void Write(string message)
             {
-                if (_textBox.IsDisposed)
+                if (TextBox.IsDisposed)
                     return;
 
-                if (!_textBox.IsHandleCreated)
+                if (!TextBox.IsHandleCreated)
                 {
                     _buffer.Append(message);
                     return;
                 }
 
-                if (_textBox.InvokeRequired)
-                    _textBox.Invoke(_textBoxAppend, message);
+                if (TextBox.InvokeRequired)
+                    TextBox.Invoke(_textBoxAppend, message);
                 else
                     _textBoxAppend(message);
             }
@@ -89,5 +97,7 @@ namespace TsdLib.UI.Controls
                 Write(message + Environment.NewLine);
             }
         }
+
+        #endregion
     }
 }

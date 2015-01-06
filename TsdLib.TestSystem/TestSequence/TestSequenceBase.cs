@@ -28,11 +28,6 @@ namespace TsdLib.TestSystem.TestSequence
             get { return UserCancellationTokenSource.Token.IsCancellationRequested; }
         }
 
-        public bool CancelledByError
-        {
-            get { return ErrorCancellationTokenSource.Token.IsCancellationRequested; }
-        }
-
         public Exception Error { get; private set; }
 
         private CancellationTokenSource UserCancellationTokenSource { get; set; }
