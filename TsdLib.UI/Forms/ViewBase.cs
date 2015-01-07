@@ -33,7 +33,13 @@ namespace TsdLib.UI.Forms
         {
             InitializeComponent();
             ConfigControl.ConfigSelectionChanged += Config_ConfigSelectionChanged;
-            Load += (sender, args) => SetState(State.ReadyToTest);
+            Load += ViewBase_Load;
+        }
+
+        void ViewBase_Load(object sender, EventArgs e)
+        {
+            SetState(State.ReadyToTest);
+            ConfigControl.ConfigSelectionChanged += Config_ConfigSelectionChanged;
         }
 
         void Config_ConfigSelectionChanged(object sender, EventArgs e)

@@ -117,5 +117,29 @@ namespace TsdLib.UI.Controls
                 }
             }
         }
+
+        private void button_SequenceConfigSelectAll_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < checkedListBox_SequenceConfig.Items.Count; i++)
+                checkedListBox_SequenceConfig.SetItemChecked(i, true);
+        }
+
+        private void button_SequenceConfigSelectNone_Click(object sender, EventArgs e)
+        {
+            foreach (int checkedIndex in checkedListBox_SequenceConfig.CheckedIndices)
+                checkedListBox_SequenceConfig.SetItemChecked(checkedIndex, false);
+        }
+
+        private void button_TestConfigSelectAll_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < checkedListBox_TestConfig.Items.Count; i++)
+                checkedListBox_TestConfig.SetItemChecked(i, true);
+        }
+
+        private void button_TestConfigSelectNone_Click(object sender, EventArgs e)
+        {
+            foreach (int checkedIndex in checkedListBox_TestConfig.CheckedIndices)
+                checkedListBox_TestConfig.SetItemChecked(checkedIndex, false);
+        }
     }
 }

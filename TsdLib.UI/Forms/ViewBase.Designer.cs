@@ -97,7 +97,7 @@ namespace TsdLib.UI.Forms
             this.traceListenerTextBoxControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.traceListenerTextBoxControl.Location = new System.Drawing.Point(12, 464);
+            this.traceListenerTextBoxControl.Location = new System.Drawing.Point(12, 499);
             this.traceListenerTextBoxControl.Name = "traceListenerTextBoxControl";
             this.traceListenerTextBoxControl.Size = new System.Drawing.Size(1032, 236);
             this.traceListenerTextBoxControl.TabIndex = 5;
@@ -125,7 +125,7 @@ namespace TsdLib.UI.Forms
             // 
             this.testInfoDataGridViewControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.testInfoDataGridViewControl.Location = new System.Drawing.Point(12, 206);
+            this.testInfoDataGridViewControl.Location = new System.Drawing.Point(12, 241);
             this.testInfoDataGridViewControl.Name = "testInfoDataGridViewControl";
             this.testInfoDataGridViewControl.Size = new System.Drawing.Size(257, 252);
             this.testInfoDataGridViewControl.TabIndex = 2;
@@ -133,35 +133,34 @@ namespace TsdLib.UI.Forms
             // measurementDataGridViewControl
             // 
             this.measurementDataGridViewControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.measurementDataGridViewControl.Location = new System.Drawing.Point(291, 206);
+            this.measurementDataGridViewControl.DisplayLimitsAndResult = true;
+            this.measurementDataGridViewControl.Location = new System.Drawing.Point(291, 241);
             this.measurementDataGridViewControl.Name = "measurementDataGridViewControl";
             this.measurementDataGridViewControl.Size = new System.Drawing.Size(753, 252);
             this.measurementDataGridViewControl.TabIndex = 1;
             // 
             // multiConfigControl
             // 
-            this.multiConfigControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.multiConfigControl.Location = new System.Drawing.Point(312, 12);
+            this.multiConfigControl.Location = new System.Drawing.Point(291, 12);
             this.multiConfigControl.Name = "multiConfigControl";
             this.multiConfigControl.ProductConfigManager = null;
             this.multiConfigControl.SequenceConfigManager = null;
-            this.multiConfigControl.Size = new System.Drawing.Size(374, 188);
+            this.multiConfigControl.Size = new System.Drawing.Size(387, 213);
             this.multiConfigControl.StationConfigManager = null;
-            this.multiConfigControl.TabIndex = 0;
+            this.multiConfigControl.TabIndex = 6;
             this.multiConfigControl.TestConfigManager = null;
             // 
             // ViewBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1056, 713);
+            this.ClientSize = new System.Drawing.Size(1056, 748);
+            this.Controls.Add(this.multiConfigControl);
             this.Controls.Add(this.traceListenerTextBoxControl);
             this.Controls.Add(this.testDetailsControl);
             this.Controls.Add(this.testSequenceControl);
             this.Controls.Add(this.testInfoDataGridViewControl);
             this.Controls.Add(this.measurementDataGridViewControl);
-            this.Controls.Add(this.multiConfigControl);
             this.MinimumSize = new System.Drawing.Size(1072, 751);
             this.Name = "ViewBase";
             this.Text = "TsdLib Generic Test System";
@@ -182,11 +181,11 @@ namespace TsdLib.UI.Forms
         private System.Windows.Forms.DataGridViewTextBoxColumn LowerLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn UpperLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Result;
-        protected Controls.MultiConfigControl multiConfigControl;
         protected Controls.MeasurementDataGridViewControl measurementDataGridViewControl;
         protected Controls.TestInfoDataGridViewControl testInfoDataGridViewControl;
         protected Controls.TestSequenceControl testSequenceControl;
         protected Controls.TestDetailsControl testDetailsControl;
         protected Controls.TraceListenerTextBoxControl traceListenerTextBoxControl;
+        private Controls.MultiConfigControl multiConfigControl;
     }
 }

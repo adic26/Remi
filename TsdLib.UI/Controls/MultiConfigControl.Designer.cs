@@ -37,6 +37,10 @@
             this.checkedListBox_TestConfig = new System.Windows.Forms.CheckedListBox();
             this.label_SequenceConfig = new System.Windows.Forms.Label();
             this.label_TestConfig = new System.Windows.Forms.Label();
+            this.button_TestConfigSelectAll = new System.Windows.Forms.Button();
+            this.button_TestConfigSelectNone = new System.Windows.Forms.Button();
+            this.button_SequenceConfigSelectNone = new System.Windows.Forms.Button();
+            this.button_SequenceConfigSelectAll = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button_ViewEditConfiguration
@@ -96,6 +100,7 @@
             this.checkedListBox_SequenceConfig.CheckOnClick = true;
             this.checkedListBox_SequenceConfig.FormattingEnabled = true;
             this.checkedListBox_SequenceConfig.Location = new System.Drawing.Point(10, 101);
+            this.checkedListBox_SequenceConfig.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.checkedListBox_SequenceConfig.Name = "checkedListBox_SequenceConfig";
             this.checkedListBox_SequenceConfig.Size = new System.Drawing.Size(174, 79);
             this.checkedListBox_SequenceConfig.TabIndex = 36;
@@ -107,6 +112,7 @@
             this.checkedListBox_TestConfig.CheckOnClick = true;
             this.checkedListBox_TestConfig.FormattingEnabled = true;
             this.checkedListBox_TestConfig.Location = new System.Drawing.Point(206, 101);
+            this.checkedListBox_TestConfig.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.checkedListBox_TestConfig.Name = "checkedListBox_TestConfig";
             this.checkedListBox_TestConfig.Size = new System.Drawing.Size(174, 79);
             this.checkedListBox_TestConfig.TabIndex = 37;
@@ -131,10 +137,58 @@
             this.label_TestConfig.TabIndex = 39;
             this.label_TestConfig.Text = "Test Config";
             // 
+            // button_TestConfigSelectAll
+            // 
+            this.button_TestConfigSelectAll.Location = new System.Drawing.Point(206, 182);
+            this.button_TestConfigSelectAll.Margin = new System.Windows.Forms.Padding(3, 1, 3, 3);
+            this.button_TestConfigSelectAll.Name = "button_TestConfigSelectAll";
+            this.button_TestConfigSelectAll.Size = new System.Drawing.Size(81, 23);
+            this.button_TestConfigSelectAll.TabIndex = 40;
+            this.button_TestConfigSelectAll.Text = "Select All";
+            this.button_TestConfigSelectAll.UseVisualStyleBackColor = true;
+            this.button_TestConfigSelectAll.Click += new System.EventHandler(this.button_TestConfigSelectAll_Click);
+            // 
+            // button_TestConfigSelectNone
+            // 
+            this.button_TestConfigSelectNone.Location = new System.Drawing.Point(299, 182);
+            this.button_TestConfigSelectNone.Margin = new System.Windows.Forms.Padding(3, 1, 3, 3);
+            this.button_TestConfigSelectNone.Name = "button_TestConfigSelectNone";
+            this.button_TestConfigSelectNone.Size = new System.Drawing.Size(81, 23);
+            this.button_TestConfigSelectNone.TabIndex = 41;
+            this.button_TestConfigSelectNone.Text = "Select None";
+            this.button_TestConfigSelectNone.UseVisualStyleBackColor = true;
+            this.button_TestConfigSelectNone.Click += new System.EventHandler(this.button_TestConfigSelectNone_Click);
+            // 
+            // button_SequenceConfigSelectNone
+            // 
+            this.button_SequenceConfigSelectNone.Location = new System.Drawing.Point(103, 182);
+            this.button_SequenceConfigSelectNone.Margin = new System.Windows.Forms.Padding(3, 1, 3, 3);
+            this.button_SequenceConfigSelectNone.Name = "button_SequenceConfigSelectNone";
+            this.button_SequenceConfigSelectNone.Size = new System.Drawing.Size(81, 23);
+            this.button_SequenceConfigSelectNone.TabIndex = 43;
+            this.button_SequenceConfigSelectNone.Text = "Select None";
+            this.button_SequenceConfigSelectNone.UseVisualStyleBackColor = true;
+            this.button_SequenceConfigSelectNone.Click += new System.EventHandler(this.button_SequenceConfigSelectNone_Click);
+            // 
+            // button_SequenceConfigSelectAll
+            // 
+            this.button_SequenceConfigSelectAll.Location = new System.Drawing.Point(10, 182);
+            this.button_SequenceConfigSelectAll.Margin = new System.Windows.Forms.Padding(3, 1, 3, 3);
+            this.button_SequenceConfigSelectAll.Name = "button_SequenceConfigSelectAll";
+            this.button_SequenceConfigSelectAll.Size = new System.Drawing.Size(81, 23);
+            this.button_SequenceConfigSelectAll.TabIndex = 42;
+            this.button_SequenceConfigSelectAll.Text = "Select All";
+            this.button_SequenceConfigSelectAll.UseVisualStyleBackColor = true;
+            this.button_SequenceConfigSelectAll.Click += new System.EventHandler(this.button_SequenceConfigSelectAll_Click);
+            // 
             // MultiConfigControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.button_SequenceConfigSelectNone);
+            this.Controls.Add(this.button_SequenceConfigSelectAll);
+            this.Controls.Add(this.button_TestConfigSelectNone);
+            this.Controls.Add(this.button_TestConfigSelectAll);
             this.Controls.Add(this.label_TestConfig);
             this.Controls.Add(this.label_SequenceConfig);
             this.Controls.Add(this.checkedListBox_TestConfig);
@@ -145,7 +199,7 @@
             this.Controls.Add(this.comboBox_ProductConfig);
             this.Controls.Add(this.comboBox_StationConfig);
             this.Name = "MultiConfigControl";
-            this.Size = new System.Drawing.Size(387, 188);
+            this.Size = new System.Drawing.Size(387, 213);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -162,5 +216,9 @@
         private System.Windows.Forms.CheckedListBox checkedListBox_TestConfig;
         protected System.Windows.Forms.Label label_SequenceConfig;
         protected System.Windows.Forms.Label label_TestConfig;
+        private System.Windows.Forms.Button button_TestConfigSelectAll;
+        private System.Windows.Forms.Button button_TestConfigSelectNone;
+        private System.Windows.Forms.Button button_SequenceConfigSelectNone;
+        private System.Windows.Forms.Button button_SequenceConfigSelectAll;
     }
 }
