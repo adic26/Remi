@@ -39,6 +39,7 @@ namespace TsdLib.UI.Forms
         {
             SetState(State.ReadyToTest);
             ConfigControl.ConfigSelectionChanged += Config_ConfigSelectionChanged;
+            Config_ConfigSelectionChanged(ConfigControl, EventArgs.Empty);
         }
 
         void Config_ConfigSelectionChanged(object sender, EventArgs e)
