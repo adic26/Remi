@@ -24,5 +24,10 @@ namespace TsdLib.UI.Controls.Base
         {
 
         }
+
+        /// <summary>
+        /// True to display or false to hide the upper/lower limit and result display. Override to define behaviour.
+        /// </summary>
+        public virtual bool DisplayLimitsAndResult { get; set; }
     }
 }

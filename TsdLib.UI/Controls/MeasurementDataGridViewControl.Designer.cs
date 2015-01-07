@@ -114,11 +114,11 @@
             this.Column_Result.Name = "Column_Result";
             this.Column_Result.ReadOnly = true;
             // 
-            // MeasurementDisplayControlDataGridView
+            // MeasurementDataGridViewControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "MeasurementDisplayControlDataGridView";
+            this.Name = "MeasurementDataGridViewControl";
             this.splitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
@@ -129,12 +129,12 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dataGridView;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_MeasurementName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_MeasuredValue;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_Units;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_LowerLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_UpperLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_Result;
+        protected System.Windows.Forms.DataGridView dataGridView;
     }
 }

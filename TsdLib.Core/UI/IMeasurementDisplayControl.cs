@@ -12,5 +12,10 @@ namespace TsdLib.UI
         /// </summary>
         /// <param name="measurement">Measurement to add.</param>
         void AddMeasurement(MeasurementBase measurement);
+
+        /// <summary>
+        /// True to display or false to hide the upper/lower limit and result display.
+        /// </summary>
+        bool DisplayLimitsAndResult { get; set; }
     }
 }

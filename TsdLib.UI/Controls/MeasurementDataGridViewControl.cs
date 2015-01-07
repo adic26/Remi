@@ -46,5 +46,18 @@ namespace TsdLib.UI.Controls
             if (state.HasFlag(State.TestInProgress))
                 dataGridView.Rows.Clear();
         }
+
+        private bool _limitsAndResultdisplayed = true;
+        public override bool DisplayLimitsAndResult
+        {
+            set
+            {
+                dataGridView.Columns["Column_LowerLimit"].Visible = value;
+                dataGridView.Columns["Column_UpperLimit"].Visible = value;
+                dataGridView.Columns["Column_Result"].Visible = value;
+                _limitsAndResultdisplayed = value;
+            }
+            get { return _limitsAndResultdisplayed; }
+        }
     }
 }
