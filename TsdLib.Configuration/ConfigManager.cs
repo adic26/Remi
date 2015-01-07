@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -61,8 +62,14 @@ namespace TsdLib.Configuration
         public void Add(T configItem)
         {
             T existing = _configs.FirstOrDefault(cfg => cfg.Name == configItem.Name);
-            if (existing != null)
+
+            if (existing == null)
+                Trace.WriteLine("Adding " + configItem.Name);
+            else
+            {
                 _configs.Remove(existing);
+                Trace.WriteLine("Replacing " + configItem.Name);
+            }
             _configs.Add(configItem);
         }
 

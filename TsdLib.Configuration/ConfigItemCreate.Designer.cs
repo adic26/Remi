@@ -95,19 +95,18 @@
             this.textBox_Name.TabIndex = 6;
             this.textBox_Name.TextChanged += new System.EventHandler(this.textBox_Name_TextChanged);
             // 
-            // ConfigItemCreate
+            // ConfigItemCreateForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(211, 167);
-            this.ControlBox = false;
             this.Controls.Add(this.radioButton_LocalOnly);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button_Cancel);
             this.Controls.Add(this.button_Ok);
             this.Controls.Add(this.radioButton_StoreInDatabase);
             this.Controls.Add(this.textBox_Name);
-            this.Name = "ConfigItemCreate";
+            this.Name = "ConfigItemCreateForm";
             this.ResumeLayout(false);
             this.PerformLayout();
 
