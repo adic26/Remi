@@ -36,12 +36,12 @@ namespace TsdLib.UI.Forms
             this.LowerLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UpperLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Result = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.multiConfigControl = new TsdLib.UI.Controls.MultiConfigControl();
             this.traceListenerTextBoxControl = new TsdLib.UI.Controls.TraceListenerTextBoxControl();
             this.testDetailsControl = new TsdLib.UI.Controls.TestDetailsControl();
             this.testSequenceControl = new TsdLib.UI.Controls.TestSequenceControl();
             this.testInfoDataGridViewControl = new TsdLib.UI.Controls.TestInfoDataGridViewControl();
             this.measurementDataGridViewControl = new TsdLib.UI.Controls.MeasurementDataGridViewControl();
-            this.multiConfigControl = new TsdLib.UI.Controls.MultiConfigControl();
             this.SuspendLayout();
             // 
             // MeasurementName
@@ -92,6 +92,17 @@ namespace TsdLib.UI.Forms
             this.Result.Name = "Result";
             this.Result.ReadOnly = true;
             // 
+            // multiConfigControl
+            // 
+            this.multiConfigControl.Location = new System.Drawing.Point(291, 22);
+            this.multiConfigControl.Name = "multiConfigControl";
+            this.multiConfigControl.ProductConfigManager = null;
+            this.multiConfigControl.SequenceConfigManager = null;
+            this.multiConfigControl.Size = new System.Drawing.Size(387, 213);
+            this.multiConfigControl.StationConfigManager = null;
+            this.multiConfigControl.TabIndex = 6;
+            this.multiConfigControl.TestConfigManager = null;
+            // 
             // traceListenerTextBoxControl
             // 
             this.traceListenerTextBoxControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -139,17 +150,6 @@ namespace TsdLib.UI.Forms
             this.measurementDataGridViewControl.Size = new System.Drawing.Size(753, 252);
             this.measurementDataGridViewControl.TabIndex = 1;
             // 
-            // multiConfigControl
-            // 
-            this.multiConfigControl.Location = new System.Drawing.Point(291, 12);
-            this.multiConfigControl.Name = "multiConfigControl";
-            this.multiConfigControl.ProductConfigManager = null;
-            this.multiConfigControl.SequenceConfigManager = null;
-            this.multiConfigControl.Size = new System.Drawing.Size(387, 213);
-            this.multiConfigControl.StationConfigManager = null;
-            this.multiConfigControl.TabIndex = 6;
-            this.multiConfigControl.TestConfigManager = null;
-            // 
             // ViewBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -186,6 +186,6 @@ namespace TsdLib.UI.Forms
         protected Controls.TestSequenceControl testSequenceControl;
         protected Controls.TestDetailsControl testDetailsControl;
         protected Controls.TraceListenerTextBoxControl traceListenerTextBoxControl;
-        private Controls.MultiConfigControl multiConfigControl;
+        protected Controls.MultiConfigControl multiConfigControl;
     }
 }

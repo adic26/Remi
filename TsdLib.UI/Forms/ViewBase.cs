@@ -14,17 +14,17 @@ namespace TsdLib.UI.Forms
     {
         public event EventHandler<CancelEventArgs> UIClosing;
 
-        public IConfigControl ConfigControl { get { return multiConfigControl; } }
+        public virtual IConfigControl ConfigControl { get { return multiConfigControl; } }
 
-        public ITestInfoDisplayControl TestInfoDisplayControl { get { return testInfoDataGridViewControl; } }
+        public virtual ITestInfoDisplayControl TestInfoDisplayControl { get { return testInfoDataGridViewControl; } }
 
-        public IMeasurementDisplayControl MeasurementDisplayControl { get { return measurementDataGridViewControl; } }
+        public virtual IMeasurementDisplayControl MeasurementDisplayControl { get { return measurementDataGridViewControl; } }
 
-        public ITestSequenceControl TestSequenceControl { get { return testSequenceControl; } }
+        public virtual ITestSequenceControl TestSequenceControl { get { return testSequenceControl; } }
 
-        public ITestDetailsControl TestDetailsControl { get { return testDetailsControl; } }
+        public virtual ITestDetailsControl TestDetailsControl { get { return testDetailsControl; } }
 
-        public ITraceListenerControl TraceListenerControl { get { return traceListenerTextBoxControl; } }
+        public virtual ITraceListenerControl TraceListenerControl { get { return traceListenerTextBoxControl; } }
 
         /// <summary>
         /// Initializes a new instance of the base UI form.
@@ -32,7 +32,6 @@ namespace TsdLib.UI.Forms
         protected ViewBase()
         {
             InitializeComponent();
-            ConfigControl.ConfigSelectionChanged += Config_ConfigSelectionChanged;
             Load += ViewBase_Load;
         }
 
