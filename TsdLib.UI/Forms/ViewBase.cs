@@ -3,7 +3,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 using TsdLib.Measurements;
-
+//TODO: make ViewBase the minimal implemtation of IView - with NotImplementedExceptions for all controls
+//Add SetState
 namespace TsdLib.UI.Forms
 {
     /// <summary>
@@ -32,26 +33,6 @@ namespace TsdLib.UI.Forms
         protected ViewBase()
         {
             InitializeComponent();
-            Load += ViewBase_Load;
-        }
-
-        void ViewBase_Load(object sender, EventArgs e)
-        {
-            SetState(State.ReadyToTest);
-            ConfigControl.ConfigSelectionChanged += Config_ConfigSelectionChanged;
-            Config_ConfigSelectionChanged(ConfigControl, EventArgs.Empty);
-        }
-
-        void Config_ConfigSelectionChanged(object sender, EventArgs e)
-        {
-            IConfigControl control = sender as IConfigControl;
-            if (control != null)
-            {
-                TestSequenceControl.SelectedStationConfig = control.SelectedStationConfig;
-                TestSequenceControl.SelectedProductConfig = control.SelectedProductConfig;
-                TestSequenceControl.SelectedTestConfig = control.SelectedTestConfig;
-                TestSequenceControl.SelectedSequenceConfig = control.SelectedSequenceConfig;
-            }
         }
 
         /// <summary>

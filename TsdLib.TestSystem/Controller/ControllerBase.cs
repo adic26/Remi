@@ -116,10 +116,25 @@ namespace TsdLib.TestSystem.Controller
 
             //subscribe to view events
             UI.ConfigControl.ViewEditConfiguration += EditConfigurationNew;
+            UI.ConfigControl.ConfigSelectionChanged += ConfigControlOnConfigSelectionChanged;
             UI.TestDetailsControl.EditTestDetails += EditTestDetails;
             UI.TestSequenceControl.ExecuteTestSequence += ExecuteTestSequence;
             UI.TestSequenceControl.AbortTestSequence += AbortTestSequence;
             UI.UIClosing += UIClosing;
+
+            UI.SetState(State.ReadyToTest);
+        }
+
+        private void ConfigControlOnConfigSelectionChanged(object sender, EventArgs eventArgs)
+        {
+            IConfigControl control = sender as IConfigControl;
+            if (control != null)
+            {
+                UI.TestSequenceControl.SelectedStationConfig = control.SelectedStationConfig;
+                UI.TestSequenceControl.SelectedProductConfig = control.SelectedProductConfig;
+                UI.TestSequenceControl.SelectedTestConfig = control.SelectedTestConfig;
+                UI.TestSequenceControl.SelectedSequenceConfig = control.SelectedSequenceConfig;
+            }
         }
 
         void testDetails_TestSystemIdentityChanged(object sender, string e)
