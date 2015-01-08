@@ -35,6 +35,9 @@
             // 
             // textBox
             // 
+            this.textBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox.Location = new System.Drawing.Point(12, 12);
             this.textBox.Multiline = true;
             this.textBox.Name = "textBox";
@@ -44,6 +47,7 @@
             // 
             // button_OK
             // 
+            this.button_OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.button_OK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.button_OK.Location = new System.Drawing.Point(12, 545);
             this.button_OK.Name = "button_OK";
@@ -54,6 +58,7 @@
             // 
             // button_Cancel
             // 
+            this.button_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.button_Cancel.Location = new System.Drawing.Point(610, 545);
             this.button_Cancel.Name = "button_Cancel";

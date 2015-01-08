@@ -23,7 +23,8 @@ namespace TsdLib
                         .CreateSubdirectory("ErrorLogs")
                         .CreateSubdirectory(DateTime.Now.ToString("MMM_dd_yyyy"));
 
-                    _errorLogs = new FileInfo(Path.Combine(directory.FullName, Assembly.GetEntryAssembly().GetName().Name + ".txt"));
+                    //_errorLogs = new FileInfo(Path.Combine(directory.FullName, Assembly.GetEntryAssembly().GetName().Name + ".txt"));
+                    _errorLogs = new FileInfo(Path.Combine(directory.FullName, "TestAutomation" + ".txt"));
                 }
                 return _errorLogs;
             }
@@ -43,7 +44,8 @@ namespace TsdLib
                         .CreateSubdirectory("TraceLogs")
                         .CreateSubdirectory(DateTime.Now.ToString("MMM_dd_yyyy"));
 
-                    _traceLogs = new StreamWriter(Path.Combine(directory.FullName, Assembly.GetEntryAssembly().GetName().Name + ".txt"), false);
+                    //_traceLogs = new StreamWriter(Path.Combine(directory.FullName, Assembly.GetEntryAssembly().GetName().Name + ".txt"), false);
+                    _traceLogs = new StreamWriter(Path.Combine(directory.FullName, "TestAutomation" + ".txt"), false);
                 }
                 return _traceLogs;
             }
