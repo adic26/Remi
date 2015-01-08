@@ -130,6 +130,15 @@ namespace TsdLib.Configuration
 
     }
 
+    public class NullStationConfig : StationConfigCommon
+    {
+
+        public override void InitializeDefaultValues()
+        {
+            
+        }
+    }
+
     /// <summary>
     /// Contains base station config properties common to every type of product. Product config properties include those related to a specific DUT model, eg. radio bands, CPU chipset, etc.
     /// Product config is used to parameterize the test sequence, customizing the sequence to operate on different DUT models.
@@ -140,6 +149,15 @@ namespace TsdLib.Configuration
 
     }
 
+    public class NullProductConfig : ProductConfigCommon
+    {
+
+        public override void InitializeDefaultValues()
+        {
+
+        }
+    }
+
     /// <summary>
     /// Contains base test config properties common to every type of test. Test config properties include those related to a test system, eg. temperature profile, loop iterations, etc.
     /// Test config is used to parameterize the test sequence, allowing the same sequence to perform different test cases (ie. strict vs. relaxed or functional vs. parametric)
@@ -148,6 +166,15 @@ namespace TsdLib.Configuration
     public abstract class TestConfigCommon : ConfigItem
     {
 
+    }
+
+    public class NullTestConfig : TestConfigCommon
+    {
+
+        public override void InitializeDefaultValues()
+        {
+
+        }
     }
 
     /// <summary>

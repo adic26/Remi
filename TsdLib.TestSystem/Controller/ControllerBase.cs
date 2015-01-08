@@ -19,6 +19,16 @@ using TsdLib.UI;
 
 namespace TsdLib.TestSystem.Controller
 {
+    public abstract class ControllerBase<TView> : ControllerBase<TView, NullStationConfig, NullProductConfig, NullTestConfig>
+        where TView : IView, new()
+    {
+        protected ControllerBase(ITestDetails testDetails, IConfigConnection configConnection, bool localDomain)
+            : base(testDetails, configConnection, localDomain)
+        {
+
+        }
+    }
+
     /// <summary>
     /// Contains base functionality for the system controller.
     /// </summary>
