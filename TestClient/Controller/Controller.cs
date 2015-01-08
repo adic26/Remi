@@ -10,7 +10,7 @@ namespace TestClient
 {
     public class Controller : ControllerBase<TestClientView, StationConfig, ProductConfig, TestConfig>
     {
-        public Controller(TestDetails testDetails, IConfigConnection databaseConnection, bool localDomain)
+        public Controller(ITestDetails testDetails, IConfigConnection databaseConnection, bool localDomain)
             : base(testDetails, databaseConnection, localDomain)
         {
 #if REMICONTROL

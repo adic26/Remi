@@ -19,7 +19,7 @@ namespace TsdLib.Configuration
         where T : ConfigItem, new()
     {
         private static ConfigManager<T> _instance;
-        public static IConfigManager GetConfigManager(TestDetails details, IConfigConnection sharedConfigConnection)
+        public static IConfigManager GetConfigManager(ITestDetails details, IConfigConnection sharedConfigConnection)
         {
             return _instance ?? (_instance = new ConfigManager<T>(details, sharedConfigConnection));
         }
@@ -32,7 +32,7 @@ namespace TsdLib.Configuration
             get { return typeof (T).Name; }
         }
 
-        private readonly TestDetails _testDetails;
+        private readonly ITestDetails _testDetails;
         private readonly FileSystemConnection _localConfigConnection;
         private readonly IConfigConnection _sharedConfigConnection;
         private readonly XmlSerializer _serializer;
@@ -43,9 +43,9 @@ namespace TsdLib.Configuration
         /// <summary>
         /// Initialize a new configuration manager instance.
         /// </summary>
-        /// <param name="testDetails">The <see cref="TestDetails"/> used for retriving the relevant configuration data.</param>
+        /// <param name="testDetails">The <see cref="ITestDetails"/> used for retriving the relevant configuration data.</param>
         /// <param name="sharedConfigConnection">An <see cref="IConfigConnection"/> object used to persist configuration to a shared location (ie. database, network share, local shared directory, etc.)</param>
-        public ConfigManager(TestDetails testDetails, IConfigConnection sharedConfigConnection)
+        public ConfigManager(ITestDetails testDetails, IConfigConnection sharedConfigConnection)
         {
             _testDetails = testDetails;
             _localConfigConnection = new FileSystemConnection(SpecialFolders.Configuration);

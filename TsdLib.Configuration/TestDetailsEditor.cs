@@ -4,7 +4,7 @@ namespace TsdLib.Configuration
 {
     partial class TestDetailsEditor : Form
     {
-        public TestDetailsEditor(TestDetails details)
+        public TestDetailsEditor(ITestDetails details)
         {
             InitializeComponent();
             

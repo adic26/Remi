@@ -168,7 +168,7 @@ namespace TsdLib.TestSystem.TestSequence
         /// <param name="productConfig">Product config instance containing product-specific configuration.</param>
         /// <param name="testConfigs">Zero or more test config instances containing test-specific configuration.</param>
         /// <returns>A <see cref="TestResultCollection"/> containing the test results.</returns>
-        public void ExecuteSequence(TestDetails testDetails, TStationConfig stationConfig, TProductConfig productConfig, params TTestConfig[] testConfigs)
+        public void ExecuteSequence(ITestDetails testDetails, TStationConfig stationConfig, TProductConfig productConfig, params TTestConfig[] testConfigs)
         {
             try
             {

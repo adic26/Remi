@@ -44,7 +44,7 @@ namespace TestClient
             else
                 settingsLocation = @"C:\temp\TsdLibSettings";
 
-            TestDetails testDetails = new TestDetails(testSystemName, testSystemVersion, testSystemMode);
+            ITestDetails testDetails = new TestDetails(testSystemName, testSystemVersion, testSystemMode);
 
             IConfigConnection sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation));
             

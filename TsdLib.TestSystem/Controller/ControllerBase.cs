@@ -32,15 +32,9 @@ namespace TsdLib.TestSystem.Controller
         where TProductConfig : ProductConfigCommon, new()
         where TTestConfig : TestConfigCommon, new()
     {
-        #region Private fields
-
         private readonly bool _localDomain;
         TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> _sequence;
         private readonly List<Task> _loggingTasks; 
-
-        #endregion
-
-        #region Public and protected properties
 
         /// <summary>
         /// Gets a reference to the user interface.
@@ -50,7 +44,7 @@ namespace TsdLib.TestSystem.Controller
         /// <summary>
         /// Gets or sets the metadata describing the test request.
         /// </summary>
-        protected TestDetails Details { get; private set; }
+        protected ITestDetails Details { get; private set; }
 
         /// <summary>
         /// Gets a configuration manager for station config.
@@ -73,15 +67,13 @@ namespace TsdLib.TestSystem.Controller
         /// </summary>
         protected ReadOnlyCollection<Task> LoggingTasks { get; private set; }
 
-        #endregion
-
         /// <summary>
         /// Initialize a new system controller.
         /// </summary>
         /// <param name="testDetails">A <see cref="Details"/> object containing metadata describing the test request.</param>
         /// <param name="configConnection">An <see cref="IConfigConnection"/> object to handle configuration persistence with a database.</param>
         /// <param name="localDomain">True to execute the test sequence in the local application domain. Only available in Debug configuration.</param>
-        protected ControllerBase(TestDetails testDetails, IConfigConnection configConnection, bool localDomain)
+        protected ControllerBase(ITestDetails testDetails, IConfigConnection configConnection, bool localDomain)
         {
             Thread.CurrentThread.Name = "UI Thread";
             Trace.AutoFlush = true;
@@ -266,8 +258,6 @@ namespace TsdLib.TestSystem.Controller
                     AppDomain.Unload(sequenceDomain);
             }
         }
-        
-        #region Virtual Methods
 
         /// <summary>
         /// Default handler for the ViewBase.ViewEditConfiguration event.
@@ -368,8 +358,5 @@ namespace TsdLib.TestSystem.Controller
                 //Task.WaitAll(LoggingTasks.ToArray());
             }
         }
-
-        #endregion
-
     }
 }
