@@ -76,11 +76,10 @@ namespace TestClient
 
         protected override void PublishResults(TsdLib.Measurements.ITestResults results)
         {
-            string dataLoggerXmlFile = results.SaveXml(new System.IO.DirectoryInfo(@"C:\TestResults"));
+            string xmlFile = TsdLib.SpecialFolders.GetResultsFile(results.Details, results.Summary, "xml").Name;
             System.Diagnostics.Trace.WriteLine("Uploading results to database...");
-            DBControl.DAL.Results.UploadXML(dataLoggerXmlFile);
+            DBControl.DAL.Results.UploadXML(xmlFile);
             System.Diagnostics.Trace.WriteLine("Upload complete. Results can be viewed at " + results.Details.JobNumber);
-            
         }
 #endif
 

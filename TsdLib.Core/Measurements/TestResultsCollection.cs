@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
@@ -99,50 +100,33 @@ namespace TsdLib.Measurements
             return fileName;
         }
 
-
         /// <summary>
         /// Save the test results to an xml file in the specified directory. Useful for uploading to database.
         /// </summary>
-        /// <param name="directory">A <see cref="System.IO.DirectoryInfo"/> object representing the directory to save the test results file to.</param>
         /// <returns>The absolute path to the xml file generated.</returns>
-        public string SaveXml(DirectoryInfo directory)
+        public string SaveXml()
         {
-            if (!directory.Exists)
-                directory.Create();
-
-            string jobNumber = string.IsNullOrWhiteSpace(Details.JobNumber) ? "" : Details.JobNumber + "-";
-
-            string unitNumber = Details.UnitNumber == 0 ? "" : Details.UnitNumber.ToString("D3") + "-";
-            string timeStamp = Summary.DateStarted.ToString("yyyy-MM-dd_hh-mm-ss");
-
-            string fileName = Path.Combine(directory.FullName, jobNumber + unitNumber + timeStamp + ".xml");
-
-            using (Stream s = File.Create(fileName))
-                _serializer.Serialize(s, this);
-
-            return fileName;
+            using (FileStream stream = SpecialFolders.GetResultsFile(Details, Summary, "xml"))
+            {
+                _serializer.Serialize(stream, this);
+                return stream.Name;
+            }
         }
 
         /// <summary>
         /// Save the test results to a csv file in the specified directory. Useful for viewing results locally.
         /// </summary>
-        /// <param name="directory">A <see cref="System.IO.DirectoryInfo"/> object representing the directory to save the test results file to.</param>
         /// <returns>The absolute path to the csv file generated.</returns>
-        public string SaveCsv(DirectoryInfo directory)
+        public string SaveCsv()
         {
-            if (!directory.Exists)
-                directory.Create();
-
-            string jobNumber = string.IsNullOrWhiteSpace(Details.JobNumber) ? "" : Details.JobNumber + "-";
-
-            string unitNumber = Details.UnitNumber == 0 ? "" : Details.UnitNumber.ToString("D3") + "-";
-            string timeStamp = Summary.DateStarted.ToString("yyyy-MM-dd_hh-mm-ss");
-
-            string fileName = Path.Combine(directory.FullName, jobNumber + unitNumber + timeStamp + ".csv");
-
-            File.WriteAllText(fileName, ToString(Environment.NewLine, ","));
-
-            return fileName;
+                FileStream fileStream = SpecialFolders.GetResultsFile(Details, Summary, "csv");
+            
+                using (StreamWriter writer = new StreamWriter(fileStream))
+                {
+                    writer.Write(ToString(Environment.NewLine, ","));
+                    return fileStream.Name;
+                }
+            
         }
 
         /// <summary>

@@ -12,8 +12,8 @@ namespace TsdLib.Measurements
         List<TestInfo> TestInfo { get; }
         IEnumerable<MeasurementBase> Measurements { get; }
 
-        string SaveXml(DirectoryInfo directory);
-        string SaveCsv(DirectoryInfo directory);
+        string SaveXml();
+        string SaveCsv();
         string SaveBinary(DirectoryInfo directory);
     }
 

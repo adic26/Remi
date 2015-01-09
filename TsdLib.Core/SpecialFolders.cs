@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
+using TsdLib.Configuration;
+using TsdLib.Measurements;
 
 namespace TsdLib
 {
@@ -45,6 +46,7 @@ namespace TsdLib
                         .CreateSubdirectory(DateTime.Now.ToString("MMM_dd_yyyy"));
 
                     //_traceLogs = new StreamWriter(Path.Combine(directory.FullName, Assembly.GetEntryAssembly().GetName().Name + ".txt"), false);
+                    //TODO: if in use, create new file
                     _traceLogs = new StreamWriter(Path.Combine(directory.FullName, "TestAutomation" + ".txt"), false);
                 }
                 return _traceLogs;
@@ -82,6 +84,34 @@ namespace TsdLib
                 DirectoryInfo directory = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
                 return directory.CreateSubdirectory("TsdLib");
             }
+        }
+
+        /// <summary>
+        /// Save the test results to an xml file in the specified directory. Useful for uploading to database.
+        /// </summary>
+        
+        /// <returns>The absolute path to the xml file generated.</returns>
+        public static FileStream GetResultsFile(ITestDetails details, ITestSummary summary, string extension)
+        {
+            var directory = baseFolder
+                .CreateSubdirectory("TestResults")
+                .CreateSubdirectory(details.TestSystemName);
+
+            string jobNumber = string.IsNullOrWhiteSpace(details.JobNumber) ? "" : details.JobNumber + "-";
+
+            string unitNumber = details.UnitNumber == 0 ? "" : details.UnitNumber.ToString("D3") + "-";
+            string timeStamp = summary.DateStarted.ToString("yyyy-MM-dd_hh-mm-ss");
+
+            string fileName = Path.Combine(directory.FullName, jobNumber + unitNumber + timeStamp + "." + extension);
+
+            return File.Open(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        }
+
+        public static string GetResultsFileName(ITestDetails details, ITestSummary summary, string extension)
+        {
+            FileStream s = GetResultsFile(details, summary, extension);
+            s.Close();
+            return s.Name;
         }
     }
 }

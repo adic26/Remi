@@ -340,8 +340,8 @@ namespace TsdLib.TestSystem.Controller
         {
             DirectoryInfo resultsDirectory = SpecialFolders.GetResultsFolder(results.Details.TestSystemName);
 
-            string xmlResultsFile = results.SaveXml(resultsDirectory);
-            string csvResultsFile = results.SaveCsv(resultsDirectory);
+            string xmlResultsFile = results.SaveXml();
+            string csvResultsFile = results.SaveCsv();
             
             Trace.WriteLine("XML results saved to " + xmlResultsFile);
             Trace.WriteLine("CSV results saved to " + csvResultsFile);
