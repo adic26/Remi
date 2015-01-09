@@ -5,6 +5,7 @@ namespace TsdLib.Configuration
     /// <summary>
     /// Provides config data to pass to Test Sequence upon execution.
     /// </summary>
+    [Obsolete("Shouldn't worry about passing data between User Controls - just let the controller take what it needs")]
     public class TestSequenceEventArgs : EventArgs
     {
         /// <summary>

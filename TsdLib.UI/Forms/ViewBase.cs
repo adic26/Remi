@@ -3,8 +3,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 using TsdLib.Measurements;
-//TODO: make ViewBase the minimal implemtation of IView - with NotImplementedExceptions for all controls
-//Add SetState
+//TODO: make ViewBase the minimal implemtation of IView - return null for all controls
+//nulls - ConfigControl, TestDetailsControl, TestSequenceControl, TraceListenerControl, TestInfoDisplayControl
+//Add SetState to iterate ITsdLibControls and set their states
 namespace TsdLib.UI.Forms
 {
     /// <summary>
@@ -41,8 +42,12 @@ namespace TsdLib.UI.Forms
         /// <param name="state">State to set.</param>
         public virtual void SetState(State state)
         {
-            foreach (ITsdLibControl control in Controls)
-                control.SetState(state);
+            foreach (object control in Controls)
+            {
+                ITsdLibControl tsdCtrl = control as ITsdLibControl;
+                if (tsdCtrl != null)
+                    tsdCtrl.SetState(state);
+            }
         }
 
         /// <summary>
@@ -71,12 +76,12 @@ namespace TsdLib.UI.Forms
         }
 
         /// <summary>
-        /// Gets or sets the text displayed in the form title.
+        /// Sets the text displayed in the title section of the UI.
         /// </summary>
-        public string Title
+        /// <param name="title">Text to display.</param>
+        public void SetTitle(string title)
         {
-            get { return Text; }
-            set { Text = value; }
+            Text = title;
         }
     }
 }

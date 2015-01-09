@@ -100,7 +100,8 @@ namespace TsdLib.TestSystem.Controller
             SequenceConfigManager = ConfigManager<Sequence>.GetConfigManager(Details, configConnection);
 
             //set up view
-            UI = new TView { Title = Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode };
+            UI = new TView();
+            UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
 
             testDetails.TestSystemIdentityChanged += testDetails_TestSystemIdentityChanged;
             testDetails_TestSystemIdentityChanged(this, "Initialization");
@@ -115,11 +116,17 @@ namespace TsdLib.TestSystem.Controller
 #endif
 
             //subscribe to view events
-            UI.ConfigControl.ViewEditConfiguration += EditConfigurationNew;
-            UI.ConfigControl.ConfigSelectionChanged += ConfigControlOnConfigSelectionChanged;
-            UI.TestDetailsControl.EditTestDetails += EditTestDetails;
-            UI.TestSequenceControl.ExecuteTestSequence += ExecuteTestSequence;
-            UI.TestSequenceControl.AbortTestSequence += AbortTestSequence;
+            if (UI.ConfigControl != null)
+            {
+                UI.ConfigControl.ViewEditConfiguration += EditConfigurationNew;
+                UI.ConfigControl.ConfigSelectionChanged += ConfigControlOnConfigSelectionChanged;
+            }
+            if (UI.TestDetailsControl != null)
+            {
+                UI.TestDetailsControl.EditTestDetails += EditTestDetails;
+                UI.TestSequenceControl.ExecuteTestSequence += ExecuteTestSequence;
+                UI.TestSequenceControl.AbortTestSequence += AbortTestSequence;
+            }
             UI.UIClosing += UIClosing;
 
             UI.SetState(State.ReadyToTest);
@@ -127,19 +134,17 @@ namespace TsdLib.TestSystem.Controller
 
         private void ConfigControlOnConfigSelectionChanged(object sender, EventArgs eventArgs)
         {
-            IConfigControl control = sender as IConfigControl;
-            if (control != null)
-            {
-                UI.TestSequenceControl.SelectedStationConfig = control.SelectedStationConfig;
-                UI.TestSequenceControl.SelectedProductConfig = control.SelectedProductConfig;
-                UI.TestSequenceControl.SelectedTestConfig = control.SelectedTestConfig;
-                UI.TestSequenceControl.SelectedSequenceConfig = control.SelectedSequenceConfig;
-            }
+            if (UI.ConfigControl == null) return;
+            UI.TestSequenceControl.SelectedStationConfig = UI.ConfigControl.SelectedStationConfig;
+            UI.TestSequenceControl.SelectedProductConfig = UI.ConfigControl.SelectedProductConfig;
+            UI.TestSequenceControl.SelectedTestConfig = UI.ConfigControl.SelectedTestConfig;
+            UI.TestSequenceControl.SelectedSequenceConfig = UI.ConfigControl.SelectedSequenceConfig;
         }
 
         void testDetails_TestSystemIdentityChanged(object sender, string e)
         {
-            UI.Title = Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode;
+            UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
+            if (UI.ConfigControl == null) return;
             UI.ConfigControl.StationConfigManager = StationConfigManager.Reload();
             UI.ConfigControl.ProductConfigManager = ProductConfigManager.Reload();
             UI.ConfigControl.TestConfigManager = TestConfigManager.Reload();
@@ -150,7 +155,7 @@ namespace TsdLib.TestSystem.Controller
         /// Default handler for the ViewBase.ExecuteTestSequence event.
         /// </summary>
         /// <param name="sender">Object that raised the exception. Should be a reference to the Execute Test Sequence button.</param>
-        /// <param name="e">EventArgs containing the product, station, test and sequence configuration objects.</param>
+        /// <param name="e">EventArgs containing the product, station, test and sequence configuration objects. Not currently used.</param>
         protected async void ExecuteTestSequence(object sender, TestSequenceEventArgs e)
         {
             AppDomain sequenceDomain = null;
@@ -159,11 +164,16 @@ namespace TsdLib.TestSystem.Controller
             {
                 UI.SetState(State.TestInProgress);
 
-                TStationConfig stationConfig = (TStationConfig)e.StationConfig.FirstOrDefault();
-                TProductConfig productConfig = (TProductConfig)e.ProductConfig.FirstOrDefault();
-                IEnumerable<TTestConfig> testConfigs = e.TestConfig.Cast<TTestConfig>();
-                IEnumerable<Sequence> sequenceConfigs = e.SequenceConfig.Cast<Sequence>();
-                bool publishResults = e.PublishResults;
+                TStationConfig stationConfig = (TStationConfig)UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? StationConfigManager.GetList()[0] as TStationConfig;
+                TProductConfig productConfig = (TProductConfig)UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? ProductConfigManager.GetList()[0] as TProductConfig;
+                TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig.Cast<TTestConfig>().ToArray();
+                if (!testConfigs.Any())
+                    testConfigs = TestConfigManager.GetList().Cast<TTestConfig>().ToArray();
+
+                Sequence[] sequenceConfigs = UI.ConfigControl.SelectedSequenceConfig.Cast<Sequence>().ToArray();
+                if (!sequenceConfigs.Any())
+                    sequenceConfigs = SequenceConfigManager.GetList().Cast<Sequence>().ToArray();
+                bool publishResults = UI.TestSequenceControl.PublishResults;
 
                 Trace.WriteLine(string.Format("Using {0} application domain", _localDomain ? "local" : "remote"));
 
@@ -193,11 +203,13 @@ namespace TsdLib.TestSystem.Controller
                             string sequenceAssembly = generator.Compile(codeCompileUnits.Concat(additionalCodeCompileUnits));
 
                             sequenceDomain = AppDomain.CreateDomain("Sequence Domain");
+                            
 
                             _sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>) sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, Details.SafeTestSystemName + ".Sequences" + "." + config.Name);
                             controllerProxy = (ControllerProxy) sequenceDomain.CreateInstanceAndUnwrap(typeof (ControllerProxy).Assembly.FullName, typeof (ControllerProxy).FullName, false, BindingFlags.CreateInstance, null, new object[] {UI, _sequence}, CultureInfo.CurrentCulture, null);
 
-                            _sequence.AddTraceListener(UI.TraceListenerControl.Listener);
+                            if (UI.TraceListenerControl != null)
+                                _sequence.AddTraceListener(UI.TraceListenerControl.Listener);
                         }
 
                         EventProxy<TestInfo> infoEventHandler = new EventProxy<TestInfo>();
@@ -212,7 +224,7 @@ namespace TsdLib.TestSystem.Controller
                         _sequence.DataEventProxy = dataEventHandler;
                         dataEventHandler.Attach(controllerProxy.DataAdded, uiContext);
 
-                        _sequence.ExecuteSequence(Details, stationConfig, productConfig, testConfigs.ToArray());
+                        _sequence.ExecuteSequence(Details, stationConfig, productConfig, testConfigs);
                     });
                     DateTime endTime = DateTime.Now;
 

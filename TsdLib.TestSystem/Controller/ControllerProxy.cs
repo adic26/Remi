@@ -38,8 +38,8 @@ namespace TsdLib.TestSystem.Controller
         {
             try
             {
-                ViewProxy.TestInfoDisplayControl.AddTestInfo(testInfo);
-
+                if (ViewProxy.TestInfoDisplayControl != null)
+                    ViewProxy.TestInfoDisplayControl.AddTestInfo(testInfo);
             }
             catch (Exception ex)
             {
@@ -56,7 +56,8 @@ namespace TsdLib.TestSystem.Controller
         {
             try
             {
-                ViewProxy.MeasurementDisplayControl.AddMeasurement(measurementBase);
+                if (ViewProxy.MeasurementDisplayControl != null)
+                    ViewProxy.MeasurementDisplayControl.AddMeasurement(measurementBase);
             }
             catch (Exception ex)
             {

@@ -20,6 +20,12 @@ namespace TsdLib.Configuration
     [Serializable]
     public abstract class ConfigItem : IConfigItem
     {
+        //Can't use MarshalByRefObject, since it gives problems casting to and from the IConfigItem between the UI and Controller.
+        //public override object InitializeLifetimeService()
+        //{
+        //    return null;
+        //}
+
         /// <summary>
         /// Initialize the configuration properties to default values.
         /// </summary>
@@ -55,14 +61,22 @@ namespace TsdLib.Configuration
         /// Initialize a new ConfigItem.
         /// </summary>
         protected ConfigItem()
+            : this("Not Assigned", false, true) 
         {
             //This is currently not suggested, since default values do not get serialized. It is better for derived types to use the Init method.
-            foreach (PropertyDescriptor prop in TypeDescriptor.GetProperties(this))
-            {
-                DefaultValueAttribute attr = (DefaultValueAttribute)prop.Attributes[typeof(DefaultValueAttribute)];
-                if (attr != null)
-                    prop.SetValue(this, attr.Value);
-            }
+            //foreach (PropertyDescriptor prop in TypeDescriptor.GetProperties(this))
+            //{
+            //    DefaultValueAttribute attr = (DefaultValueAttribute)prop.Attributes[typeof(DefaultValueAttribute)];
+            //    if (attr != null)
+            //        prop.SetValue(this, attr.Value);
+            //}
+        }
+
+        protected ConfigItem(string name, bool storeInDatabase, bool isDefault)
+        {
+            Name = name;
+            StoreInDatabase = storeInDatabase;
+            IsDefault = isDefault;
         }
 
         /// <summary>
@@ -127,11 +141,27 @@ namespace TsdLib.Configuration
     [Serializable]
     public abstract class StationConfigCommon : ConfigItem
     {
+        protected StationConfigCommon()
+            : this("NotAssigned", false, true)
+        {
 
+        }
+
+        protected StationConfigCommon(string name, bool storeInDatabase, bool isDefault)
+            : base(name, storeInDatabase, isDefault)
+        {
+
+        }
     }
 
+    [Serializable]
     public class NullStationConfig : StationConfigCommon
     {
+        public NullStationConfig()
+            : base("NullStationConfig", false, true)
+        {
+
+        }
 
         public override void InitializeDefaultValues()
         {
@@ -146,11 +176,27 @@ namespace TsdLib.Configuration
     [Serializable]
     public abstract class ProductConfigCommon : ConfigItem
     {
+        protected ProductConfigCommon()
+            : this("NotAssigned", false, true)
+        {
 
+        }
+
+        protected ProductConfigCommon(string name, bool storeInDatabase, bool isDefault)
+            : base(name, storeInDatabase, isDefault)
+        {
+
+        }
     }
 
+    [Serializable]
     public class NullProductConfig : ProductConfigCommon
     {
+        public NullProductConfig()
+            : base("NullProductConfig", false, true)
+        {
+
+        }
 
         public override void InitializeDefaultValues()
         {
@@ -165,11 +211,27 @@ namespace TsdLib.Configuration
     [Serializable]
     public abstract class TestConfigCommon : ConfigItem
     {
+        protected TestConfigCommon()
+            : this("NotAssigned", false, true)
+        {
 
+        }
+
+        protected TestConfigCommon(string name, bool storeInDatabase, bool isDefault)
+            : base(name, storeInDatabase, isDefault)
+        {
+
+        }
     }
 
+    [Serializable]
     public class NullTestConfig : TestConfigCommon
     {
+        public NullTestConfig()
+            : base("NullTestConfig", false, true)
+        {
+
+        }
 
         public override void InitializeDefaultValues()
         {

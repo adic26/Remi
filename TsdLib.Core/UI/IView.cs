@@ -38,9 +38,10 @@ namespace TsdLib.UI
         void AddData(object data);
 
         /// <summary>
-        /// Gets or sets the text displayed in the title section of the UI.
+        /// Sets the text displayed in the title section of the UI.
         /// </summary>
-        string Title { get; set; }
+        /// <param name="title">Text to display.</param>
+        void SetTitle(string title);
     }
 
 

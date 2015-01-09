@@ -68,6 +68,7 @@ namespace TestClient
                 foreach (string seqFile in Directory.EnumerateFiles(sequenceFolder))
                 {
                     Trace.WriteLine("Found" + seqFile);
+                    //TODO: only replace if newer?
                     sequenceConfigManager.Add(new Sequence(seqFile, storeInDatabase, assemblyReferences));
                 }
                 sequenceConfigManager.Save();

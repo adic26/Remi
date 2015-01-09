@@ -229,6 +229,8 @@ namespace TsdLib.Configuration
 
         public IList GetList()
         {
+            if (_bindingSource.Count == 0)
+                Reload();
             return _bindingSource;
         }
 
