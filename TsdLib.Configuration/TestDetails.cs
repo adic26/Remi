@@ -173,7 +173,7 @@ namespace TsdLib.Configuration
         /// <param name="testSystemVersion">Version of the test system.</param>
         /// <param name="testSystemMode">The operating mode of the test system (ie. Development, Engineering or Production).</param>
         public TestDetails(string testSystemName, Version testSystemVersion, OperatingMode testSystemMode)
-            : this(testSystemName, testSystemVersion, testSystemMode, "QRA-XX-TEST", 0, "T077 Other", "Baseline") {  }
+            : this(testSystemName, testSystemVersion, testSystemMode, "QRA-XX-TEST", 99, "T077 Other", "Baseline") {  }
 
         /// <summary>
         /// Initialize a new TestDetails object.
