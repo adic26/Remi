@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
@@ -47,11 +46,10 @@ namespace TsdLib.Measurements
         /// </summary>
         public ITestSummary Summary { get; set; }
 
-        //TODO: create ITestInfo interface
         /// <summary>
         /// Gets the information captured during the test.
         /// </summary>
-        public List<TestInfo> TestInfo { get; set; }
+        public List<ITestInfo> TestInfo { get; set; }
 
         /// <summary>
         /// Gets the measurements captued during the test.
@@ -67,12 +65,12 @@ namespace TsdLib.Measurements
         /// <param name="measurements">A sequence of measurements captured during the test sequence. Can be any type deriving from <see cref="TsdLib.Measurements.MeasurementBase"/>.</param>
         /// <param name="summary">A <see cref="TsdLib.Measurements.TestSummary"/> object summarizing the test results.</param>
         /// <param name="information">OPTIONAL: A sequence of informational entries captured during the test sequence.</param>
-        public TestResultCollection(ITestDetails details, IEnumerable<MeasurementBase> measurements, ITestSummary summary, IEnumerable<TestInfo> information = null)
+        public TestResultCollection(ITestDetails details, IEnumerable<MeasurementBase> measurements, ITestSummary summary, IEnumerable<ITestInfo> information = null)
         {
             Details = details;
             Measurements = measurements;
             Summary = summary;
-            TestInfo = information != null ? information.ToList() : new List<TestInfo>();
+            TestInfo = information != null ? information.ToList() : new List<ITestInfo>();
             
             if (details.TsdFrameworkVersion != null)
                 TestInfo.Insert(0, new TestInfo("TSD Framework Version", details.TsdFrameworkVersion));

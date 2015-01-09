@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Xml;
 using System.Xml.Schema;
-using System.Xml.Serialization;
-
 namespace TsdLib.Measurements
 {
     /// <summary>
     /// An informational entry in the test results collection.
     /// </summary>
     [Serializable]
-    public class TestInfo : IXmlSerializable
+    public class TestInfo : ITestInfo
     {
         /// <summary>
         /// Name of the information entry.

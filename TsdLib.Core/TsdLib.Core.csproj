@@ -47,6 +47,7 @@
     <Compile Include="Configuration\TestSequenceEventArgs.cs" />
     <Compile Include="Instrument\InstrumentEvents.cs" />
     <Compile Include="Instrument\IInstrument.cs" />
+    <Compile Include="Measurements\ITestInfo.cs" />
     <Compile Include="TestSystem\ITestSequence.cs" />
     <Compile Include="Measurements\Factory.cs" />
     <Compile Include="Measurements\ITestResults.cs" />
