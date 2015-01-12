@@ -11,5 +11,10 @@ namespace TsdLib.UI
         /// Gets a trace listener.
         /// </summary>
         TraceListener Listener { get; }
+
+        /// <summary>
+        /// Clear the trace output from the UI.
+        /// </summary>
+        void Clear();
     }
 }

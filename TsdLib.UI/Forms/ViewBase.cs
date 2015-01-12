@@ -3,9 +3,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 using TsdLib.Measurements;
-//TODO: make ViewBase the minimal implemtation of IView - return null for all controls
+//TODO: make ViewBase the minimal implemtation of IView - return null - or maybe Base implementation - for all controls
 //nulls - ConfigControl, TestDetailsControl, TestSequenceControl, TraceListenerControl, TestInfoDisplayControl
-//Add SetState to iterate ITsdLibControls and set their states
 namespace TsdLib.UI.Forms
 {
     /// <summary>
@@ -27,6 +26,8 @@ namespace TsdLib.UI.Forms
         public virtual ITestDetailsControl TestDetailsControl { get { return testDetailsControl; } }
 
         public virtual ITraceListenerControl TraceListenerControl { get { return traceListenerTextBoxControl; } }
+
+        public virtual IProgressControl ProgressControl { get { return null; } }
 
         /// <summary>
         /// Initializes a new instance of the base UI form.

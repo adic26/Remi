@@ -50,5 +50,14 @@ namespace TsdLib.UI.Controls.Base
         public IConfigItem[] SelectedTestConfig { get; set; }
         public IConfigItem[] SelectedSequenceConfig { get; set; }
         public virtual bool PublishResults { get { return false; } }
+
+        /// <summary>
+        /// Enables the control if the test system is ready to test. Otherwise disables.
+        /// </summary>
+        /// <param name="state">The current state of the test system.</param>
+        public override void SetState(State state)
+        {
+            Enabled = state.HasFlag(State.ReadyToTest);
+        }
     }
 }

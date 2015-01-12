@@ -66,6 +66,24 @@ namespace TsdLib.TestSystem.Controller
         }
 
         /// <summary>
+        /// Default handler for the <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}.MeasurementEventProxy"/>. Calls <see cref="TsdLib.UI.IMeasurementDisplayControl.AddMeasurement"/>.
+        /// </summary>
+        /// <param name="sender">The <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}"/> where the measurement was captured.</param>
+        /// <param name="progress">The progress represented as a percentage.</param>
+        public void ProgressUpdated(object sender, int progress)
+        {
+            try
+            {
+                if (ViewProxy.ProgressControl != null)
+                    ViewProxy.ProgressControl.UpdateProgress(progress, TestSequence.NumberOfSteps);
+            }
+            catch (Exception ex)
+            {
+                TestSequence.Abort(ex);
+            }
+        }
+
+        /// <summary>
         /// Default handler for the <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}.DataEventProxy"/>. Calls <see cref="IView.AddData"/>.
         /// </summary>
         /// <param name="sender">The <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}"/> where the measurement was captured.</param>

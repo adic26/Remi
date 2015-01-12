@@ -13,14 +13,14 @@ namespace TsdLib.UI.Controls.Base
             InitializeComponent();
         }
 
-        public virtual void SetState(State state)
-        {
-
-        }
-
         public override object InitializeLifetimeService()
         {
             return null;
+        }
+
+        public virtual void SetState(State state)
+        {
+            
         }
     }
 }

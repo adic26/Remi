@@ -8,11 +8,6 @@ namespace TsdLib.UI.Controls
 {
     public partial class MultiConfigControl : ConfigControlBase
     {
-        public override void SetState(State state)
-        {
-            Enabled = state.HasFlag(State.ReadyToTest);
-        }
-
         public MultiConfigControl()
         {
             InitializeComponent();

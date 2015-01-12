@@ -10,7 +10,7 @@ namespace TsdLib.UI
     {
         event EventHandler<CancelEventArgs> UIClosing;
 
-            /// <summary>
+        /// <summary>
         /// Gets a TraceListener used to write trace and debug information to the user interface.
         /// </summary>
         ITraceListenerControl TraceListenerControl { get; }
@@ -20,6 +20,8 @@ namespace TsdLib.UI
         ITestInfoDisplayControl TestInfoDisplayControl { get; }
 
         IMeasurementDisplayControl MeasurementDisplayControl { get; }
+
+        IProgressControl ProgressControl { get; }
 
         ITestSequenceControl TestSequenceControl { get; }
 

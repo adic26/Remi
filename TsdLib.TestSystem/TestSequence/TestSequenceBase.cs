@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using TsdLib.Configuration;
 using TsdLib.Instrument;
@@ -29,6 +30,8 @@ namespace TsdLib.TestSystem.TestSequence
         }
 
         public Exception Error { get; private set; }
+
+        public int NumberOfSteps { get; set; }
 
         private CancellationTokenSource UserCancellationTokenSource { get; set; }
 
@@ -84,7 +87,7 @@ namespace TsdLib.TestSystem.TestSequence
         /// <summary>
         /// Gets the collection of general data captured during the test sequence.
         /// </summary>
-        public readonly BindingList<object> Data;
+        [Obsolete]public readonly BindingList<object> Data;
 
         /// <summary>
         /// Gets or sets an EventProxy object that can be used to send information events across AppDomain boundaries.
@@ -97,7 +100,12 @@ namespace TsdLib.TestSystem.TestSequence
         public EventProxy<MeasurementBase> MeasurementEventProxy { get; set; }
 
         /// <summary>
-        /// Gets or sets an EventProxy object that can be used to send data events across AppDomain boundaries.
+        /// Gets or sets an EventProxy object that can be used to send progress updates across AppDomain boundaries.
+        /// </summary>
+        public EventProxy<int> ProgressEventProxy { get; set; }
+
+        /// <summary>
+        /// Gets or sets an EventProxy object that can be used to send general data across AppDomain boundaries.
         /// </summary>
         public EventProxy<object> DataEventProxy { get; set; }
 
@@ -172,6 +180,9 @@ namespace TsdLib.TestSystem.TestSequence
         {
             try
             {
+                if (testConfigs.Length > 1)
+                    NumberOfSteps = testConfigs.Length;
+
                 TestInfo.Add(new TestInfo("Station Configuration", stationConfig.Name));
                 TestInfo.Add(new TestInfo("Product Configuration", productConfig.Name));
                 foreach (TTestConfig testConfig in testConfigs)
@@ -182,9 +193,12 @@ namespace TsdLib.TestSystem.TestSequence
 
                 ExecutePreTest(linked.Token, stationConfig, productConfig);
 
+                int testNumber = 0;
                 foreach (TTestConfig testConfig in testConfigs)
                 {
                     Trace.WriteLine(string.Format("Starting {0} at {1}.", testConfig.Name, DateTime.Now));
+                    ProgressEventProxy.FireEvent(this, testNumber++);
+                        
                     ExecuteTest(linked.Token, stationConfig, productConfig, testConfig);
                 }
 
@@ -193,6 +207,7 @@ namespace TsdLib.TestSystem.TestSequence
                 ExecutePostTest(linked.Token, stationConfig, productConfig);
 
                 Trace.WriteLine("Completed test sequence at " + DateTime.Now);
+                ProgressEventProxy.FireEvent(this, NumberOfSteps);
             }
             catch (Exception ex)
             {

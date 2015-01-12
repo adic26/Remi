@@ -220,6 +220,10 @@ namespace TsdLib.TestSystem.Controller
                         _sequence.MeasurementEventProxy = measurementEventHandler;
                         measurementEventHandler.Attach(controllerProxy.MeasurementAdded, uiContext);
 
+                        EventProxy<int> progressEventHandler = new EventProxy<int>();
+                        _sequence.ProgressEventProxy = progressEventHandler;
+                        progressEventHandler.Attach(controllerProxy.ProgressUpdated, uiContext);
+
                         EventProxy<object> dataEventHandler = new EventProxy<object>();
                         _sequence.DataEventProxy = dataEventHandler;
                         dataEventHandler.Attach(controllerProxy.DataAdded, uiContext);
@@ -228,9 +232,13 @@ namespace TsdLib.TestSystem.Controller
                     });
                     DateTime endTime = DateTime.Now;
 
-                    bool overallPass = _sequence.Measurements.Any() && _sequence.Measurements.All(m => m.Result == MeasurementResult.Pass);
+                    string overallResult;
+                    if (!_sequence.Measurements.Any() || _sequence.Measurements.All(m => m.Result == MeasurementResult.Undefined))
+                        overallResult = "Undefined";
+                    else
+                        overallResult = _sequence.Measurements.All(m => m.Result == MeasurementResult.Pass) ? "Pass" : "Fail";
 
-                    ITestResults testResults = MeasurementsFactory.CreateTestResults(Details, _sequence.Measurements, overallPass ? "Pass" : "Fail", startTime, endTime, _sequence.TestInfo);
+                    ITestResults testResults = MeasurementsFactory.CreateTestResults(Details, _sequence.Measurements, overallResult, startTime, endTime, _sequence.TestInfo);
 
                     _loggingTasks.Add(Task.Run(() =>
                     {

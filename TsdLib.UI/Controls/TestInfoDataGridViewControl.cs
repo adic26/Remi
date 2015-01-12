@@ -10,15 +10,21 @@ namespace TsdLib.UI.Controls
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Override to add test information to the data grid.
+        /// </summary>
+        /// <param name="testInfo">Test information to add.</param>
         public override void AddTestInfo(TestInfo testInfo)
         {
             dataGridView.Rows.Add(testInfo.Name, testInfo.Value);
         }
 
-        public override void SetState(State state)
+        /// <summary>
+        /// Clear the test information from the UI.
+        /// </summary>
+        public override void ClearTestInfo()
         {
-            if (state.HasFlag(State.TestInProgress))
-                dataGridView.Rows.Clear();
+            dataGridView.Rows.Clear();
         }
     }
 }

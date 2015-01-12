@@ -41,10 +41,9 @@ namespace TsdLib.UI.Controls
 
         }
 
-        public override void SetState(State state)
+        public override void ClearMeasurements()
         {
-            if (state.HasFlag(State.TestInProgress))
-                dataGridView.Rows.Clear();
+            dataGridView.Rows.Clear();
         }
 
         private bool _limitsAndResultdisplayed = true;

@@ -20,10 +20,12 @@ namespace TsdLib.UI.Controls
             _listener = new TextBoxTraceListener(textBox);
         }
 
-        public override void SetState(State state)
+        /// <summary>
+        /// Clear the trace output from the trace listener's text box.
+        /// </summary>
+        public override void Clear()
         {
-            if (state.HasFlag(State.TestInProgress))
-                _listener.TextBox.Clear();
+            _listener.TextBox.Clear();
         }
 
         #region nested TraceListener implementation

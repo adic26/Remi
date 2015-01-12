@@ -36,6 +36,7 @@ namespace TsdLib.UI.Forms
             this.LowerLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UpperLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Result = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.progressControl1 = new TsdLib.UI.Controls.ProgressControl();
             this.multiConfigControl = new TsdLib.UI.Controls.MultiConfigControl();
             this.traceListenerTextBoxControl = new TsdLib.UI.Controls.TraceListenerTextBoxControl();
             this.testDetailsControl = new TsdLib.UI.Controls.TestDetailsControl();
@@ -91,6 +92,13 @@ namespace TsdLib.UI.Forms
             this.Result.HeaderText = "Result";
             this.Result.Name = "Result";
             this.Result.ReadOnly = true;
+            // 
+            // progressControl1
+            // 
+            this.progressControl1.Location = new System.Drawing.Point(12, 174);
+            this.progressControl1.Name = "progressControl1";
+            this.progressControl1.Size = new System.Drawing.Size(257, 61);
+            this.progressControl1.TabIndex = 7;
             // 
             // multiConfigControl
             // 
@@ -155,6 +163,7 @@ namespace TsdLib.UI.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1056, 748);
+            this.Controls.Add(this.progressControl1);
             this.Controls.Add(this.multiConfigControl);
             this.Controls.Add(this.traceListenerTextBoxControl);
             this.Controls.Add(this.testDetailsControl);
@@ -187,5 +196,6 @@ namespace TsdLib.UI.Forms
         protected Controls.TestDetailsControl testDetailsControl;
         protected Controls.TraceListenerTextBoxControl traceListenerTextBoxControl;
         protected Controls.MultiConfigControl multiConfigControl;
+        private Controls.ProgressControl progressControl1;
     }
 }

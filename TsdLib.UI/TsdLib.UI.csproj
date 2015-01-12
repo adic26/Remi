@@ -39,6 +39,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\Base\ProgressControlBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Base\ProgressControlBase.Designer.cs">
+      <DependentUpon>ProgressControlBase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ConfigControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -68,6 +74,12 @@
     </Compile>
     <Compile Include="Controls\MultiConfigControl.Designer.cs">
       <DependentUpon>MultiConfigControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ProgressControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ProgressControl.Designer.cs">
+      <DependentUpon>ProgressControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\TestDetailsControl.cs">
       <SubType>UserControl</SubType>
@@ -142,6 +154,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\MultiConfigControl.resx">
       <DependentUpon>MultiConfigControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ProgressControl.resx">
+      <DependentUpon>ProgressControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\TestDetailsControl.resx">
       <DependentUpon>TestDetailsControl.cs</DependentUpon>

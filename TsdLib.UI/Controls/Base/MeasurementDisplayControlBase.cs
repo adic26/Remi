@@ -25,9 +25,20 @@ namespace TsdLib.UI.Controls.Base
 
         }
 
+        public virtual void ClearMeasurements()
+        {
+
+        }
+
         /// <summary>
         /// True to display or false to hide the upper/lower limit and result display. Override to define behaviour.
         /// </summary>
         public virtual bool DisplayLimitsAndResult { get; set; }
+
+        public override void SetState(State state)
+        {
+            if (state.HasFlag(State.TestInProgress))
+                ClearMeasurements();
+        }
     }
 }

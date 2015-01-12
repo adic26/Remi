@@ -11,7 +11,7 @@
         public TsdLibLabelledControl()
         {
             InitializeComponent();
-            Text = GetType().Name + " - override the Text property in this control's constructor to set this text.";
+            Text = GetType().Name + " - set the Text property in this control's constructor to set this text.";
         }
     }
 }

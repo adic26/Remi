@@ -81,5 +81,14 @@ namespace TsdLib.UI.Controls.Base
             if (invoker != null)
                 invoker(this, EventArgs.Empty);
         }
+
+        /// <summary>
+        /// Enables the control if the test system is ready to test. Otherwise disables.
+        /// </summary>
+        /// <param name="state">The current state of the test system.</param>
+        public override void SetState(State state)
+        {
+            Enabled = state.HasFlag(State.ReadyToTest);
+        }
     }
 }

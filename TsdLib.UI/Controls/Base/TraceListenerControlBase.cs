@@ -13,6 +13,8 @@ namespace TsdLib.UI.Controls.Base
         /// </summary>
         public virtual TraceListener Listener { get { return _defaultListener; } }
 
+
+
         /// <summary>
         /// Initialize a the control and add the <see cref="Listener"/> the to <see cref="Trace.Listeners"/> collection.
         /// </summary>
@@ -21,6 +23,20 @@ namespace TsdLib.UI.Controls.Base
             InitializeComponent();
             Text = "Status";
             HandleCreated += (sender, e) => Trace.Listeners.Add(Listener);
+        }
+
+        public override void SetState(State state)
+        {
+            if (state.HasFlag(State.TestInProgress))
+                Clear();
+        }
+
+        /// <summary>
+        /// Clear the trace output from the UI.
+        /// </summary>
+        public virtual void Clear()
+        {
+            
         }
     }
 }

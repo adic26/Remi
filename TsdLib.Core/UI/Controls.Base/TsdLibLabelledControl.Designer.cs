@@ -45,6 +45,11 @@
             // splitContainer.Panel1
             // 
             this.splitContainer.Panel1.Controls.Add(this.label);
+            this.splitContainer.Panel1.Padding = new System.Windows.Forms.Padding(3);
+            // 
+            // splitContainer.Panel2
+            // 
+            this.splitContainer.Panel2.Padding = new System.Windows.Forms.Padding(3);
             this.splitContainer.Size = new System.Drawing.Size(680, 298);
             this.splitContainer.SplitterDistance = 25;
             this.splitContainer.TabIndex = 0;
@@ -53,7 +58,7 @@
             // 
             this.label.AutoSize = true;
             this.label.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label.Location = new System.Drawing.Point(0, 12);
+            this.label.Location = new System.Drawing.Point(3, 9);
             this.label.Name = "label";
             this.label.Size = new System.Drawing.Size(29, 13);
             this.label.TabIndex = 0;

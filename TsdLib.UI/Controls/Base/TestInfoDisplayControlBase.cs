@@ -24,5 +24,23 @@ namespace TsdLib.UI.Controls.Base
         {
 
         }
+
+        /// <summary>
+        /// Clear the test information from the UI.
+        /// </summary>
+        public virtual void ClearTestInfo()
+        {
+
+        }
+
+        /// <summary>
+        /// Clears the test information from the UI when a test is started.
+        /// </summary>
+        /// <param name="state">The current state of the test system.</param>
+        public override void SetState(State state)
+        {
+            if (state.HasFlag(State.TestInProgress))
+                ClearTestInfo();
+        }
     }
 }
