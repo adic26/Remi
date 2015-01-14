@@ -1,4 +1,5 @@
-﻿using System.CodeDom;
+﻿using System;
+using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,17 +16,20 @@ namespace TsdLib.TestSystem.CodeGenerator
     {
         private readonly Language _language;
         private readonly string _tempPath;
+        private readonly string _assemblyDirectory;
 
         /// <summary>
         /// Initialize a new code generator.
         /// </summary>
         /// <param name="language">Generate C# or Visual Basic code.</param>
-        public DynamicCompiler(Language language)
+        /// <param name="assemblyDirectory">The absolute path to the directory where referenced assemblies can be located.</param>
+        public DynamicCompiler(Language language, string assemblyDirectory)
         {
             _language = language;
             _tempPath = Path.Combine(Path.GetTempPath(), "TsdLib");
             if (!Directory.Exists(_tempPath))
                 Directory.CreateDirectory(_tempPath);
+            _assemblyDirectory = assemblyDirectory;
         }
 
         /// <summary>
@@ -83,7 +87,7 @@ namespace TsdLib.TestSystem.CodeGenerator
         public string Compile(IEnumerable<CodeCompileUnit> codeCompileUnits)
         {
             CodeDomProvider provider = CodeDomProvider.CreateProvider(_language.ToString());
-
+            
             foreach (string file in Directory.EnumerateFiles(_tempPath))
                 File.Delete(file);
 
@@ -94,7 +98,7 @@ namespace TsdLib.TestSystem.CodeGenerator
                 IncludeDebugInformation = true,
                 OutputAssembly = dllPath
             };
-
+            
 #if DEBUG
             cp.CompilerOptions += " /d:DEBUG";
 #endif
@@ -112,7 +116,11 @@ namespace TsdLib.TestSystem.CodeGenerator
                     provider.GenerateCodeFromCompileUnit(codeCompileUnit, w, new CodeGeneratorOptions { BracingStyle = "C" });
             }
 
+            string currentDirectory = Directory.GetCurrentDirectory();
+            Directory.SetCurrentDirectory(_assemblyDirectory);
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
             CompilerResults compilerResults = provider.CompileAssemblyFromFile(cp, Directory.GetFiles(_tempPath, "*." + provider.FileExtension));
+            Directory.SetCurrentDirectory(currentDirectory);
 
             if (compilerResults.Errors.HasErrors)
                 throw new CompilerException(compilerResults.Errors);

@@ -95,7 +95,7 @@ namespace TsdLib
         {
             var directory = baseFolder
                 .CreateSubdirectory("TestResults")
-                .CreateSubdirectory(details.TestSystemName);
+                .CreateSubdirectory(details.SafeTestSystemName);
 
             string jobNumber = string.IsNullOrWhiteSpace(details.JobNumber) ? "" : details.JobNumber + "-";
 

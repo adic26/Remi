@@ -56,6 +56,8 @@ namespace TsdLib.TestSystem.Controller
         /// </summary>
         protected ITestDetails Details { get; private set; }
 
+        protected ITestDetails ConfigDetails { get; private set; }
+
         /// <summary>
         /// Gets a configuration manager for station config.
         /// </summary>
@@ -83,7 +85,8 @@ namespace TsdLib.TestSystem.Controller
         /// <param name="testDetails">A <see cref="Details"/> object containing metadata describing the test request.</param>
         /// <param name="configConnection">An <see cref="IConfigConnection"/> object to handle configuration persistence with a database.</param>
         /// <param name="localDomain">True to execute the test sequence in the local application domain. Only available in Debug configuration.</param>
-        protected ControllerBase(ITestDetails testDetails, IConfigConnection configConnection, bool localDomain)
+        /// <param name="configDetails">OPTIONAL: Specify an alternate test details object that will only be used to manage test configuration.</param>
+        protected ControllerBase(ITestDetails testDetails, IConfigConnection configConnection, bool localDomain, ITestDetails configDetails = null)
         {
             Thread.CurrentThread.Name = "UI Thread";
             Trace.AutoFlush = true;
@@ -93,18 +96,19 @@ namespace TsdLib.TestSystem.Controller
             LoggingTasks = new ReadOnlyCollection<Task>(_loggingTasks);
 
             Details = testDetails;
+            ConfigDetails = configDetails ?? testDetails;
 
-            StationConfigManager = ConfigManager<TStationConfig>.GetConfigManager(Details, configConnection);
-            ProductConfigManager = ConfigManager<TProductConfig>.GetConfigManager(Details, configConnection);
-            TestConfigManager = ConfigManager<TTestConfig>.GetConfigManager(Details, configConnection);
-            SequenceConfigManager = ConfigManager<Sequence>.GetConfigManager(Details, configConnection);
+            StationConfigManager = ConfigManager<TStationConfig>.GetConfigManager(ConfigDetails, configConnection);
+            ProductConfigManager = ConfigManager<TProductConfig>.GetConfigManager(ConfigDetails, configConnection);
+            TestConfigManager = ConfigManager<TTestConfig>.GetConfigManager(ConfigDetails, configConnection);
+            SequenceConfigManager = ConfigManager<Sequence>.GetConfigManager(ConfigDetails, configConnection);
 
             //set up view
             UI = new TView();
             UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
 
-            testDetails.TestSystemIdentityChanged += testDetails_TestSystemIdentityChanged;
-            testDetails_TestSystemIdentityChanged(this, "Initialization");
+            ConfigDetails.TestSystemIdentityChanged += configDetails_TestSystemIdentityChanged;
+            configDetails_TestSystemIdentityChanged(this, "Initialization");
 
 #if DEBUG
             Trace.WriteLine("Using TsdLib debug assembly. Test results will only be stored as Analysis.");
@@ -141,7 +145,7 @@ namespace TsdLib.TestSystem.Controller
             UI.TestSequenceControl.SelectedSequenceConfig = UI.ConfigControl.SelectedSequenceConfig;
         }
 
-        void testDetails_TestSystemIdentityChanged(object sender, string e)
+        void configDetails_TestSystemIdentityChanged(object sender, string e)
         {
             UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
             if (UI.ConfigControl == null) return;
@@ -199,7 +203,7 @@ namespace TsdLib.TestSystem.Controller
 
                             IEnumerable<CodeCompileUnit> additionalCodeCompileUnits = GenerateCodeCompileUnits();
 
-                            DynamicCompiler generator = new DynamicCompiler(Language.CSharp);
+                            DynamicCompiler generator = new DynamicCompiler(Language.CSharp, AppDomain.CurrentDomain.BaseDirectory);
                             string sequenceAssembly = generator.Compile(codeCompileUnits.Concat(additionalCodeCompileUnits));
 
                             sequenceDomain = AppDomain.CreateDomain("Sequence Domain");
@@ -228,7 +232,7 @@ namespace TsdLib.TestSystem.Controller
                         _sequence.DataEventProxy = dataEventHandler;
                         dataEventHandler.Attach(controllerProxy.DataAdded, uiContext);
 
-                        _sequence.ExecuteSequence(Details, stationConfig, productConfig, testConfigs);
+                        _sequence.ExecuteSequence(stationConfig, productConfig, testConfigs);
                     });
                     DateTime endTime = DateTime.Now;
 
@@ -238,7 +242,7 @@ namespace TsdLib.TestSystem.Controller
                     else
                         overallResult = _sequence.Measurements.All(m => m.Result == MeasurementResult.Pass) ? "Pass" : "Fail";
 
-                    ITestResults testResults = MeasurementsFactory.CreateTestResults(Details, _sequence.Measurements, overallResult, startTime, endTime, _sequence.TestInfo);
+                    ITestResults testResults = MeasurementsFactory.CreateTestResults(ConfigDetails, _sequence.Measurements, overallResult, startTime, endTime, _sequence.TestInfo);
 
                     _loggingTasks.Add(Task.Run(() =>
                     {
@@ -311,7 +315,7 @@ namespace TsdLib.TestSystem.Controller
         /// <param name="e">Empty EventArgs object.</param>
         protected virtual void EditConfiguration(object sender, EventArgs e)
         {
-            using (ConfigManagerForm form = new ConfigManagerForm(Details.TestSystemName, Details.TestSystemVersion, true, new []{ StationConfigManager, ProductConfigManager, TestConfigManager, SequenceConfigManager}))
+            using (ConfigManagerForm form = new ConfigManagerForm(ConfigDetails.TestSystemName, ConfigDetails.TestSystemVersion, true, new[] { StationConfigManager, ProductConfigManager, TestConfigManager, SequenceConfigManager }))
                 if (form.ShowDialog() == DialogResult.OK)
                     foreach (IConfigManager modifiedConfig in form.ModifiedConfigs)
                         modifiedConfig.Save();
@@ -324,7 +328,7 @@ namespace TsdLib.TestSystem.Controller
         /// <param name="configManagers">An array of <see cref="IConfigManager"/> objects containing the configuration data.</param>
         protected virtual void EditConfigurationNew(object sender, IConfigManager[] configManagers)
         {
-            using (ConfigManagerForm form = new ConfigManagerForm(Details.TestSystemName, Details.TestSystemVersion, true, configManagers))
+            using (ConfigManagerForm form = new ConfigManagerForm(ConfigDetails.TestSystemName, ConfigDetails.TestSystemVersion, true, configManagers))
                 if (form.ShowDialog() == DialogResult.OK)
                     foreach (IConfigManager modifiedConfig in form.ModifiedConfigs)
                         modifiedConfig.Save();
@@ -337,7 +341,7 @@ namespace TsdLib.TestSystem.Controller
         /// <param name="e">True if requesting to use database settings. False otherwise.</param>
         protected virtual void EditTestDetails(object sender, bool e)
         {
-            Details.Edit();
+            ConfigDetails.Edit();
         }
 
         /// <summary>
@@ -346,8 +350,6 @@ namespace TsdLib.TestSystem.Controller
         /// <param name="results">The <see cref="ITestResults"/> that was captured by the test sequence.</param>
         protected virtual void SaveResults(ITestResults results)
         {
-            DirectoryInfo resultsDirectory = SpecialFolders.GetResultsFolder(results.Details.TestSystemName);
-
             string xmlResultsFile = results.SaveXml();
             string csvResultsFile = results.SaveCsv();
             

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing.Design;
 using System.Globalization;
 using System.IO;
@@ -324,6 +325,12 @@ namespace {0}.Sequences
             AssemblyReferences = new HashSet<string>(assemblyReferences);
             StoreInDatabase = storeInDatabase;
             Name = Regex.Match(SourceCode, @"(?<=class )\w+").Value;
+
+            var namespaceMatch = Regex.Match(SourceCode, @"(?<=namespace.*Sequences.)\w+");
+            if (namespaceMatch.Success)
+                Name = Name.Insert(0, namespaceMatch.Value + ".");
+            Trace.WriteLine("Name = " + Name);
+            IsDefault = false;
         }
     }
 

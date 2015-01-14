@@ -83,7 +83,7 @@ namespace TsdLib.Configuration
             if (_configs.Count == 0 || reload)
             {
                 string localConfigString;
-                bool localConfigexists = _localConfigConnection.TryReadString(_testDetails.TestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), out localConfigString);
+                bool localConfigexists = _localConfigConnection.TryReadString(_testDetails.SafeTestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), out localConfigString);
                 if (localConfigexists)
                 {
                     XDocument localXmlDoc = XDocument.Parse(localConfigString);
@@ -94,7 +94,7 @@ namespace TsdLib.Configuration
                     if (_sharedConfigConnection != null)
                     {
                         string sharedConfigString;
-                        bool sharedConfigExists = _sharedConfigConnection.TryReadString(_testDetails.TestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), out sharedConfigString);
+                        bool sharedConfigExists = _sharedConfigConnection.TryReadString(_testDetails.SafeTestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), out sharedConfigString);
                         if (sharedConfigExists)
                         {
                             XDocument sharedXmlDoc = XDocument.Parse(sharedConfigString);
@@ -141,7 +141,7 @@ namespace TsdLib.Configuration
         {
             return GetConfigGroup().FirstOrDefault(
                 cfg => cfg.Name == name &&
-                _testDetails.TestSystemName == cfg.Details.TestSystemName &&
+                _testDetails.SafeTestSystemName == cfg.Details.SafeTestSystemName &&
                 _testDetails.TestSystemVersion == cfg.Details.TestSystemVersion &&
                 _testDetails.TestSystemMode == cfg.Details.TestSystemMode);
         }
@@ -160,7 +160,7 @@ namespace TsdLib.Configuration
             using (XmlWriter xmlWriter = XmlWriter.Create(sbLocal, xmlWriterSettings))
                 _serializer.Serialize(xmlWriter, _configs);
 
-            _localConfigConnection.WriteString(_testDetails.TestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), sbLocal.ToString());
+            _localConfigConnection.WriteString(_testDetails.SafeTestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), sbLocal.ToString());
 
             List<T> sharedConfigGroups = _configs.Where(cfg => cfg.StoreInDatabase).ToList();
 
@@ -169,7 +169,7 @@ namespace TsdLib.Configuration
                 StringBuilder sbDatabase = new StringBuilder();
                 using (XmlWriter xmlWriter = XmlWriter.Create(sbDatabase, xmlWriterSettings))
                     _serializer.Serialize(xmlWriter, new BindingList<T>(sharedConfigGroups));
-                _sharedConfigConnection.WriteString(_testDetails.TestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), sbDatabase.ToString());
+                _sharedConfigConnection.WriteString(_testDetails.SafeTestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), sbDatabase.ToString());
             }
         }
 

@@ -171,12 +171,11 @@ namespace TsdLib.TestSystem.TestSequence
         /// <summary>
         /// Start execution of the test sequence with the specified configuration objects.
         /// </summary>
-        /// <param name="testDetails">Details about the test request or job.</param>
         /// <param name="stationConfig">Station config instance containing station-specific configuration.</param>
         /// <param name="productConfig">Product config instance containing product-specific configuration.</param>
         /// <param name="testConfigs">Zero or more test config instances containing test-specific configuration.</param>
         /// <returns>A <see cref="TestResultCollection"/> containing the test results.</returns>
-        public void ExecuteSequence(ITestDetails testDetails, TStationConfig stationConfig, TProductConfig productConfig, params TTestConfig[] testConfigs)
+        public void ExecuteSequence(TStationConfig stationConfig, TProductConfig productConfig, params TTestConfig[] testConfigs)
         {
             try
             {
