@@ -136,6 +136,7 @@
       <DependentUpon>ViewBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypeEditors\EnumUITypeEditor.cs" />
     <Compile Include="Utilities\Display.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
