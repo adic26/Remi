@@ -2,12 +2,12 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace TsdLib.UI.Utilities
+namespace TsdLib.Utilities.Display
 {
     /// <summary>
     /// Contains various utility methods related to how information or user interface elements are displayed.
     /// </summary>
-    public static class Display
+    public static class Monitor
     {
         /// <summary>
         /// Show a <see cref="System.Windows.Forms.Form"/> on the specified monitor.
