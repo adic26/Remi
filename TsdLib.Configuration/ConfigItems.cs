@@ -271,9 +271,19 @@ namespace TsdLib.Configuration
         [Category("Test Sequence")]
         public string SourceCode { get; set; }
 
+        public string Namespace
+        {
+            get { return Regex.Match(SourceCode, @"(?<=namespace )[\w\.]+").Value; }
+        }
+
+        public string ClassName
+        {
+            get { return Regex.Match(SourceCode, @"(?<=class )\w+").Value; }
+        }
+
         public string FullTypeName
         {
-            get { return Regex.Match(SourceCode, @"(?<=namespace )\w+").Value + "." + Regex.Match(SourceCode, @"(?<=class )\w+"); }
+            get { return Namespace + "." + ClassName; }
         }
 
         /// <summary>

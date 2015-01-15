@@ -19,17 +19,17 @@ namespace TsdLib.InstrumentLibrary
     /// </summary>
     public class InstrumentParser : ICodeParser
     {
-        private readonly string _testSystemName;
+        private readonly string _nameSpace;
         private readonly string _language;
 
         /// <summary>
         /// Initialize a new instrument code parser to transform xml files into code files.
         /// </summary>
-        /// <param name="testSystemName">Name of the test system. Will be used to generate namespaces.</param>
+        /// <param name="nameSpace">Name of the test system. Will be used to generate namespaces.</param>
         /// <param name="language">Generate C# or Visual Basic code.</param>
-        public InstrumentParser(string testSystemName, string language)
+        public InstrumentParser(string nameSpace, string language)
         {
-            _testSystemName = testSystemName;
+            _nameSpace = nameSpace;
             _language = language;
         }
 
@@ -52,7 +52,7 @@ namespace TsdLib.InstrumentLibrary
         /// <returns>A <see cref="System.CodeDom.CodeCompileUnit"/> containing the source code and assembly references required to compile.</returns>
         public CodeCompileUnit Parse(TextReader sourceFile)
         {
-            string namespaceDeclaration = _testSystemName.Replace(' ', '_');
+            string namespaceDeclaration = _nameSpace.Replace(' ', '_');
             if (!namespaceDeclaration.Contains(".Instruments"))
                 namespaceDeclaration += ".Instruments";
 
