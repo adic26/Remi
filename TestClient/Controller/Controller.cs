@@ -13,12 +13,6 @@ namespace TestClient
         public Controller(ITestDetails testDetails, IConfigConnection databaseConnection, bool localDomain)
             : base(testDetails, databaseConnection, localDomain)
         {
-#if REMICONTROL
-            _webServiceInstantiateTask = System.Threading.Tasks.Task.Run(() => DBControl.Helpers.Helper.InstantiateWebServices());
-#endif
-#if simREMICONTROL
-            _webServiceInstantiateTask = System.Threading.Tasks.Task.Run(() => DBControl.Helpers.Helper.InstantiateWebServices());
-#endif
 
         }
 
@@ -47,7 +41,7 @@ namespace TestClient
 #endif
 
 #if REMICONTROL
-        private readonly System.Threading.Tasks.Task _webServiceInstantiateTask;
+        private readonly System.Threading.Tasks.Task _webServiceInstantiateTask = System.Threading.Tasks.Task.Run(() => DBControl.Helpers.Helper.InstantiateWebServices());
 
         protected override void EditTestDetails(object sender, bool getFromDatabase)
         {
@@ -79,15 +73,18 @@ namespace TestClient
 
         protected override void PublishResults(TsdLib.Measurements.ITestResults results)
         {
-            string xmlFile = TsdLib.SpecialFolders.GetResultsFile(results.Details, results.Summary, "xml").Name;
+            string xmlFile = TsdLib.SpecialFolders.GetResultsFileName(results.Details, results.Summary, "xml");
+            string path = System.IO.Path.GetDirectoryName(xmlFile);
+            if (path == null)
+                throw new System.IO.DirectoryNotFoundException("The results folder does not exist on this machine.");
             System.Diagnostics.Trace.WriteLine("Uploading results to database...");
-            DBControl.DAL.Results.UploadXML(xmlFile);
+            DBControl.DAL.Results.UploadXML(xmlFile, path, System.IO.Path.Combine(path, "PublishFailed"), System.IO.Path.Combine(path, "Published"), false, true);
             System.Diagnostics.Trace.WriteLine("Upload complete. Results can be viewed at " + results.Details.JobNumber);
         }
 #endif
 
 #if simREMICONTROL
-        private readonly System.Threading.Tasks.Task _webServiceInstantiateTask;
+        private readonly System.Threading.Tasks.Task _webServiceInstantiateTask = System.Threading.Tasks.Task.Run(() => DBControl.Helpers.Helper.InstantiateWebServices());
 
         protected override void EditTestDetails(object sender, bool getFromDatabase)
         {
