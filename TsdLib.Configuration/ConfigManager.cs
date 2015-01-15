@@ -82,6 +82,21 @@ namespace TsdLib.Configuration
         {
             if (_configs.Count == 0 || reload)
             {
+                XElement sharedXml = null;
+
+                if (_sharedConfigConnection != null)
+                {
+                    string sharedConfigString;
+                    var sharedConfigExists = _sharedConfigConnection.TryReadString(_testDetails.SafeTestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), out sharedConfigString);
+                    if (sharedConfigExists)
+                    {
+                        XDocument sharedXmlDoc = XDocument.Parse(sharedConfigString);
+                        sharedXml = sharedXmlDoc.Root;
+                        if (sharedXml == null)
+                            throw new InvalidConfigFileException(sharedXmlDoc);
+                    }
+                }
+
                 string localConfigString;
                 bool localConfigexists = _localConfigConnection.TryReadString(_testDetails.SafeTestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), out localConfigString);
                 if (localConfigexists)
@@ -91,28 +106,22 @@ namespace TsdLib.Configuration
                     if (localXml == null)
                         throw new InvalidConfigFileException(localXmlDoc);
 
-                    if (_sharedConfigConnection != null)
-                    {
-                        string sharedConfigString;
-                        bool sharedConfigExists = _sharedConfigConnection.TryReadString(_testDetails.SafeTestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), out sharedConfigString);
-                        if (sharedConfigExists)
-                        {
-                            XDocument sharedXmlDoc = XDocument.Parse(sharedConfigString);
-                            XElement sharedXml = sharedXmlDoc.Root;
-                            if (sharedXml == null)
-                                throw new InvalidConfigFileException(sharedXmlDoc);
+                    //Merge the shared config into the local config
+                    if (sharedXml != null)
+                        localXml.ReplaceAll(sharedXml.Elements()
+                            .Union(localXml.Elements(), new ConfigXmlEqualityComparer(localXml, sharedXml)));
 
-                            localXml.ReplaceAll(sharedXml.Elements()
-                                .Union(localXml.Elements(), new ConfigXmlEqualityComparer(localXml, sharedXml)));
-                        }
-                    }
-
+                    //If there are non-default configs, remove the defaults - they are no longer needed.
                     if (localXml.Elements().Any(e => e.Attribute("IsDefault").Value == "false"))
                         localXml.Elements().Where(e => e.Attribute("IsDefault").Value == "true").Remove();
 
+                    //Deserialize the merged config XML into the configs list
                     using (XmlReader reader = localXml.CreateReader())
                         _configs = (BindingList<T>)(_serializer.Deserialize(reader));
                 }
+                else if (sharedXml != null) //Deserialize the shared config XML into the configs list
+                    using (XmlReader reader = sharedXml.CreateReader())
+                        _configs = (BindingList<T>)(_serializer.Deserialize(reader));
                 else
                 {
                     T newCfg = new T

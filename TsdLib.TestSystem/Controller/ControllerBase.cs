@@ -194,7 +194,7 @@ namespace TsdLib.TestSystem.Controller
                     {
                         if (_localDomain)
                         {
-                            _sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>) Activator.CreateInstance(Assembly.GetEntryAssembly().GetType(Assembly.GetEntryAssembly().GetName().Name + ".Sequences" + "." + config.Name));
+                            _sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)Activator.CreateInstance(Assembly.GetEntryAssembly().GetType(config.FullTypeName));
                             controllerProxy = (ControllerProxy) Activator.CreateInstance(typeof (ControllerProxy), BindingFlags.CreateInstance, null, new object[] {UI, _sequence}, CultureInfo.CurrentCulture);
                         }
                         else
@@ -207,9 +207,9 @@ namespace TsdLib.TestSystem.Controller
                             string sequenceAssembly = generator.Compile(codeCompileUnits.Concat(additionalCodeCompileUnits));
 
                             sequenceDomain = AppDomain.CreateDomain("Sequence Domain");
-                            
 
-                            _sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>) sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, Details.SafeTestSystemName + ".Sequences" + "." + config.Name);
+
+                            _sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, config.FullTypeName);
                             controllerProxy = (ControllerProxy) sequenceDomain.CreateInstanceAndUnwrap(typeof (ControllerProxy).Assembly.FullName, typeof (ControllerProxy).FullName, false, BindingFlags.CreateInstance, null, new object[] {UI, _sequence}, CultureInfo.CurrentCulture, null);
 
                             if (UI.TraceListenerControl != null)

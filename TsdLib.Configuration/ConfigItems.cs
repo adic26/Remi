@@ -271,6 +271,11 @@ namespace TsdLib.Configuration
         [Category("Test Sequence")]
         public string SourceCode { get; set; }
 
+        public string FullTypeName
+        {
+            get { return Regex.Match(SourceCode, @"(?<=namespace )\w+").Value + "." + Regex.Match(SourceCode, @"(?<=class )\w+"); }
+        }
+
         /// <summary>
         /// Initialize the sequence configuration with an empty ExecuteTest method and basic assembly references.
         /// </summary>
