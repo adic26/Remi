@@ -198,7 +198,7 @@ namespace TsdLib.TestSystem.Controller
                         {
                             List<CodeCompileUnit> codeCompileUnits = new List<CodeCompileUnit> {new BasicCodeParser(config.AssemblyReferences.ToArray()).Parse(new StringReader(config.SourceCode))};
 
-                            IEnumerable<CodeCompileUnit> additionalCodeCompileUnits = GenerateAdditionalCodeCompileUnits(config.Namespace);
+                            IEnumerable<CodeCompileUnit> additionalCodeCompileUnits = GenerateAdditionalCodeCompileUnits(config.Namespace.Replace(".Sequences", ""));
 
                             DynamicCompiler generator = new DynamicCompiler(Language.CSharp, AppDomain.CurrentDomain.BaseDirectory);
                             string sequenceAssembly = generator.Compile(codeCompileUnits.Concat(additionalCodeCompileUnits));
