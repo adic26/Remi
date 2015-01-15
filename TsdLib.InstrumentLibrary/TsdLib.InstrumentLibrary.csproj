@@ -48,17 +48,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InstrumentClassGenerator.cs" />
-    <Content Include="Instruments\BlackBerry.xml">
-      <Generator>InstrumentClassGenerator</Generator>
-      <LastGenOutput>BCM4334.cs</LastGenOutput>
-    </Content>
-    <Content Include="Instruments\BlackBerry_BCM4334.xml">
-      <Generator>InstrumentClassGenerator</Generator>
-    </Content>
-    <Content Include="Instruments\BlackBerry_BCM4339.xml">
-      <Generator>InstrumentClassGenerator</Generator>
-    </Content>
-    <Content Include="Instruments\Helpers\IBlackBerryWlan.cs.pp" />
     <Compile Include="InstrumentLibraryExceptions.cs" />
     <Compile Include="InstrumentParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -75,10 +64,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Instruments\DummyPowerSupply.xml">
-      <Generator>InstrumentClassGenerator</Generator>
-      <LastGenOutput>DummyPowerSupply.cs</LastGenOutput>
-    </Content>
     <None Include="readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
