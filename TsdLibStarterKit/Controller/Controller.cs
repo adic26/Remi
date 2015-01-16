@@ -11,20 +11,14 @@ namespace $safeprojectname$
 {
     public class Controller : ControllerBase<$safeprojectname$View, StationConfig, ProductConfig, TestConfig>
     {
-        public Controller(TestDetails testDetails, IConfigConnection databaseConnection, bool localDomain)
+        public Controller(ITestDetails testDetails, IConfigConnection databaseConnection, bool localDomain)
             : base(testDetails, databaseConnection, localDomain)
         {
-#if REMICONTROL
-            _webServiceInstantiateTask = System.Threading.Tasks.Task.Run(() => DBControl.Helpers.Helper.InstantiateWebServices());
-#endif
-#if simREMICONTROL
-            _webServiceInstantiateTask = System.Threading.Tasks.Task.Run(() => DBControl.Helpers.Helper.InstantiateWebServices());
-#endif
 
         }
 
 #if INSTRUMENT_LIBRARY
-        protected override System.Collections.Generic.IEnumerable<System.CodeDom.CodeCompileUnit> GenerateCodeCompileUnits()
+        protected override System.Collections.Generic.IEnumerable<System.CodeDom.CodeCompileUnit> GenerateAdditionalCodeCompileUnits(string nameSpace)
         {
             System.Collections.Generic.List<System.CodeDom.CodeCompileUnit> codeCompileUnits = new System.Collections.Generic.List<System.CodeDom.CodeCompileUnit>();
 
@@ -32,7 +26,7 @@ namespace $safeprojectname$
                 return new System.CodeDom.CodeCompileUnit[0];
 
             string[] instrumentXmlFiles = System.IO.Directory.GetFiles("Instruments", "*.xml");
-            TsdLib.InstrumentLibrary.InstrumentParser instrumentXmlParser = new TsdLib.InstrumentLibrary.InstrumentParser(Details.TestSystemName, Language.CSharp.ToString());
+            TsdLib.InstrumentLibrary.InstrumentParser instrumentXmlParser = new TsdLib.InstrumentLibrary.InstrumentParser(nameSpace, Language.CSharp.ToString());
             codeCompileUnits.AddRange(instrumentXmlFiles.Select(xmlFile => instrumentXmlParser.Parse(new System.IO.StreamReader(xmlFile))));
 
             if (System.IO.Directory.Exists(@"Instruments\Helpers"))
@@ -48,7 +42,7 @@ namespace $safeprojectname$
 #endif
 
 #if REMICONTROL
-        private readonly System.Threading.Tasks.Task _webServiceInstantiateTask;
+        private readonly System.Threading.Tasks.Task _webServiceInstantiateTask = System.Threading.Tasks.Task.Run(() => DBControl.Helpers.Helper.InstantiateWebServices());
 
         protected override void EditTestDetails(object sender, bool getFromDatabase)
         {
@@ -80,16 +74,18 @@ namespace $safeprojectname$
 
         protected override void PublishResults(TsdLib.Measurements.ITestResults results)
         {
-            string dataLoggerXmlFile = results.SaveXml(new System.IO.DirectoryInfo(@"C:\TestResults"));
+            string xmlFile = TsdLib.SpecialFolders.GetResultsFileName(results.Details, results.Summary, "xml");
+            string path = System.IO.Path.GetDirectoryName(xmlFile);
+            if (path == null)
+                throw new System.IO.DirectoryNotFoundException("The results folder does not exist on this machine.");
             System.Diagnostics.Trace.WriteLine("Uploading results to database...");
-            DBControl.DAL.Results.UploadXML(dataLoggerXmlFile);
+            DBControl.DAL.Results.UploadXML(xmlFile, path, System.IO.Path.Combine(path, "PublishFailed"), System.IO.Path.Combine(path, "Published"), false, true);
             System.Diagnostics.Trace.WriteLine("Upload complete. Results can be viewed at " + results.Details.JobNumber);
-            
         }
 #endif
 
 #if simREMICONTROL
-        private readonly System.Threading.Tasks.Task _webServiceInstantiateTask;
+        private readonly System.Threading.Tasks.Task _webServiceInstantiateTask = System.Threading.Tasks.Task.Run(() => DBControl.Helpers.Helper.InstantiateWebServices());
 
         protected override void EditTestDetails(object sender, bool getFromDatabase)
         {

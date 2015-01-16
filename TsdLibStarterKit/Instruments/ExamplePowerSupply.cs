@@ -2,9 +2,13 @@
 // The NuGet package for the tool can be found in the Tsd NuGet Packages repository.
 // Once the NuGet package is installed, this file should be deleted.
 
+using System;
+using System.Reflection;
+
 namespace $safeprojectname$.Instruments
 {
     using System;
+    using System.Globalization;
     using TsdLib.Instrument;
     using TsdLib.Instrument.Dummy;
 
@@ -16,9 +20,16 @@ namespace $safeprojectname$.Instruments
 
         static DummyFactory _factory = new DummyFactory();
 
+        private DummyConnection _dummyConnection;
+        private readonly Random _random;
+
+
         internal ExamplePowerSupply(DummyConnection connection) :
             base(connection)
         {
+            _dummyConnection = connection;
+            _random = new Random();
+            Description = "Simulated Instrument";
         }
 
         public virtual DummyConnection DummyConnection
@@ -76,12 +87,14 @@ namespace $safeprojectname$.Instruments
             }
         }
 
+
         public virtual Double GetCurrent()
         {
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
                 Connection.SendCommand("GET:CURRENT?", -1);
+                _dummyConnection.StringToRead = _random.NextDouble().ToString(CultureInfo.InvariantCulture);
                 return Connection.GetResponse<Double>();
             }
             finally

@@ -19,7 +19,7 @@ namespace TsdLib.Instrument
         /// <summary>
         /// Gets a description of the instrument, including connection information.
         /// </summary>
-        public string Description { get; private set; }
+        public string Description { get; protected set; }
 
         /// <summary>
         /// Initialize a new instrument object with the specified connection.
