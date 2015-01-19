@@ -43,7 +43,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLibStarterKitInstaller",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.ConfigManagerApp", "TsdLib.ConfigManagerApp\TsdLib.ConfigManagerApp.csproj", "{A3B07997-F603-4BE4-B32F-2DCA36629BD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.InstrumentLibrary", "TsdLib.InstrumentLibrary\TsdLib.InstrumentLibrary.csproj", "{80C459F9-6A11-4BCC-B453-151BCF954E4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.InstrumentLibraryTools", "TsdLib.InstrumentLibraryTools\TsdLib.InstrumentLibraryTools.csproj", "{80C459F9-6A11-4BCC-B453-151BCF954E4F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.UI", "TsdLib.UI\TsdLib.UI.csproj", "{F4735655-3CC1-446B-B90B-7A193A1BDABB}"
 EndProject
@@ -58,6 +58,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Configuration", "TsdLib.Configuration\TsdLib.Configuration.csproj", "{2B62F43F-8670-4F88-B7BC-C9723D6FE8E7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdLib.Utilities", "TsdLib.Utilities\TsdLib.Utilities.csproj", "{C0EDAD98-25D3-4824-9DB6-A27DF7299E5D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TsdLib.InstrumentLibrary", "TsdLib.InstrumentLibrary", "{D3B0A813-E317-466B-85BE-FC3808BA0EDF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
