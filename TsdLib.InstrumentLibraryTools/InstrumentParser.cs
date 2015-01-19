@@ -12,7 +12,7 @@ using System.Threading;
 using System.Xml.Linq;
 using System.Xml.Schema;
 
-namespace TsdLib.InstrumentLibrary
+namespace TsdLib.InstrumentLibraryTools
 {
     /// <summary>
     /// Contains functionality to dynamically generate .NET source code and/or assemblies.

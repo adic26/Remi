@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace TsdLib.InstrumentLibrary
+namespace TsdLib.InstrumentLibraryTools
 {
     /// <summary>
     /// COM visible wrapper for the InstrumentParser, to add support for Visual Studio Custom Tools

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TsdLib.InstrumentLibrary
+namespace TsdLib.InstrumentLibraryTools
 {
     /// <summary>
     /// Exception due to an error generating source code and/or assembly.

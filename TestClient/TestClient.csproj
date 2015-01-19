@@ -82,9 +82,9 @@
       <Project>{512BEDDC-2B71-42F0-9C1B-6D37497F5DA7}</Project>
       <Name>TsdLib.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TsdLib.InstrumentLibrary\TsdLib.InstrumentLibrary.csproj">
+    <ProjectReference Include="..\TsdLib.InstrumentLibraryTools\TsdLib.InstrumentLibraryTools.csproj">
       <Project>{80c459f9-6a11-4bcc-b453-151bcf954e4f}</Project>
-      <Name>TsdLib.InstrumentLibrary</Name>
+      <Name>TsdLib.InstrumentLibraryTools</Name>
     </ProjectReference>
     <ProjectReference Include="..\TsdLib.Instrument\TsdLib.Instrument.csproj">
       <Project>{421092EB-A692-46A8-A66B-247C94C16421}</Project>
