@@ -32,6 +32,16 @@ namespace TsdLib.Instrument
         }
 
         /// <summary>
+        /// Initialize a new instrument object with the specified connection.
+        /// </summary>
+        /// <param name="connection">A connection object to communicate with the instrument.</param>
+        protected InstrumentBase(DummyConnection connection)
+        {
+            Connection = connection;
+            Description = GetType().Name + " via " + connection.Description;
+        }
+
+        /// <summary>
         /// Gets the initialization commands that are sent to the instrument as part of the connection process.
         /// </summary>
         protected virtual string InitCommands { get { return ""; } }
