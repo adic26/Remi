@@ -80,18 +80,29 @@ namespace TsdLib.TestSystem.CodeGenerator
         }
 
         /// <summary>
-        /// Generates an class library (*.dll) assembly from the specified sequence of <see cref="CodeCompileUnit"/>.
+        /// Generates a class library (*.dll) assembly from the specified sequence of <see cref="CodeCompileUnit"/>.
         /// </summary>
         /// <param name="codeCompileUnits">A sequence of <see cref="CodeCompileUnit"/> containing the source code and assembly references required for compilation.</param>
         /// <returns>An absolute path to the dynamically generated assembly.</returns>
         public string Compile(IEnumerable<CodeCompileUnit> codeCompileUnits)
         {
             CodeDomProvider provider = CodeDomProvider.CreateProvider(_language.ToString());
-            
-            foreach (string file in Directory.EnumerateFiles(_tempPath))
-                File.Delete(file);
 
-            string dllPath = Path.Combine(_tempPath, "sequence.dll");
+            foreach (string file in Directory.EnumerateFiles(_tempPath))
+            {
+                try
+                {
+                    File.Delete(file);
+                }
+                catch (Exception)
+                {
+                    Trace.WriteLine("Couldn't delete " + file);
+                    
+                }
+            }
+
+            string dllName = Path.ChangeExtension(Path.GetRandomFileName(), "dll");
+            string dllPath = Path.Combine(_tempPath, dllName);
 
             CompilerParameters cp = new CompilerParameters
             {

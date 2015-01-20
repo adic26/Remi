@@ -1,17 +1,21 @@
+
 using System.Threading;
 using TestClient.Configuration;
 using TestClient.Instruments;
 using TsdLib.Measurements;
 using TsdLib.TestSystem.TestSequence;
+
 namespace TestClient.Sequences
 {
-    public class DummySequence : TestSequenceBase<StationConfig, ProductConfig, TestConfig>
+    public class DummySequence2 : TestSequenceBase<StationConfig, ProductConfig, TestConfig>
     {
         protected override void ExecuteTest(CancellationToken token, StationConfig stationConfig, ProductConfig productConfig, TestConfig testConfig)
         {
             //Use the System.Diagnostics.Debugger.Break() method to insert breakpoints.
             //System.Diagnostics.Debugger.Break();
+
             DummyPowerSupply ps = new DummyPowerSupply("addr");
+
             for (int i = 0; i < testConfig.LoopIterations; i++)
             {
                 foreach (double voltageSetting in testConfig.VoltageSettings)
@@ -19,6 +23,7 @@ namespace TestClient.Sequences
                     token.ThrowIfCancellationRequested();
                     ps.SetVoltage(voltageSetting);
                     Thread.Sleep(productConfig.SettlingTime);
+
                     MeasurementParameter[] measurementParameters =
                     {
                         new MeasurementParameter("Loop Iteration", i),
@@ -29,7 +34,7 @@ namespace TestClient.Sequences
                     Measurements.Add(measurement);
                 }
             }
-throw new System.Exception("Testing handlers");            
+            
         }
     }
 }

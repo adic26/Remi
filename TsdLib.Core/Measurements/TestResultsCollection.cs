@@ -199,7 +199,7 @@ namespace TsdLib.Measurements
 
             writer.WriteStartElement("Information");
             
-            foreach (TestInfo testInfo in TestInfo)
+            foreach (ITestInfo testInfo in TestInfo)
             {
                 writer.WriteStartElement("Info");
                 testInfo.WriteXml(writer);

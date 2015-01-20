@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TsdLib.InstrumentLibrary")]
-[assembly: AssemblyDescription("Contains a collection of instrument xml definitions and wrapper classes.")]
+[assembly: AssemblyTitle("TsdLib.InstrumentLibraryTools")]
+[assembly: AssemblyDescription("Contains tools required to transform instrument xml definitions into instrument control classes.")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else

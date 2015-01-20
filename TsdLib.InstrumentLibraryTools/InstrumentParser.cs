@@ -61,7 +61,7 @@ namespace TsdLib.InstrumentLibraryTools
             ccu.Namespaces.Add(ns);
 
             XmlSchema schema;
-            using (Stream schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TsdLib.InstrumentLibrary.TsdLib.Instruments.xsd"))
+            using (Stream schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Assembly.GetExecutingAssembly().GetName().Name + ".TsdLib.Instruments.xsd"))
             {
                 Debug.Assert(schemaStream != null, "The XML schema: TsdLib.CodeGenerator.TsdLib.Instruments.xsd is missing from the TsdLib.dll");
                 // ReSharper disable once AssignNullToNotNullAttribute

@@ -347,10 +347,9 @@ namespace TsdLib.TestSystem.Controller
         /// <param name="results">The <see cref="ITestResults"/> that was captured by the test sequence.</param>
         protected virtual void SaveResults(ITestResults results)
         {
-            string xmlResultsFile = results.SaveXml();
+            results.SaveXml();
             string csvResultsFile = results.SaveCsv();
             
-            Trace.WriteLine("XML results saved to " + xmlResultsFile);
             Trace.WriteLine("CSV results saved to " + csvResultsFile);
         }
 

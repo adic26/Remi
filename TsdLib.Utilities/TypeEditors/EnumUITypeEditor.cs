@@ -3,7 +3,6 @@
 using System;
 using System.ComponentModel;
 using System.Drawing.Design;
-using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
@@ -33,7 +32,7 @@ namespace TsdLib.Utilities.TypeEditors
             return UITypeEditorEditStyle.DropDown;
         }
 
-        private IWindowsFormsEditorService edSvc;
+        private IWindowsFormsEditorService _edSvc;
 
         //TODO: add support for Flags enums to use CheckedListBox
         public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
@@ -41,9 +40,9 @@ namespace TsdLib.Utilities.TypeEditors
             if (context == null || provider == null || context.PropertyDescriptor == null || value == null)
                 return base.EditValue(context, provider, value);
 
-            edSvc = (IWindowsFormsEditorService)provider.GetService(typeof(IWindowsFormsEditorService));
+            _edSvc = (IWindowsFormsEditorService)provider.GetService(typeof(IWindowsFormsEditorService));
 
-            if (edSvc == null)
+            if (_edSvc == null)
                 return base.EditValue(context, provider, value);
 
             ListBox listBox = new ListBox();
@@ -52,7 +51,7 @@ namespace TsdLib.Utilities.TypeEditors
             listBox.SelectedIndex = listBox.Items.IndexOf(value);
             listBox.SelectedIndexChanged += ListBoxOnSelectedIndexChanged;
 
-            edSvc.DropDownControl(listBox);
+            _edSvc.DropDownControl(listBox);
 
             var selectedItem = listBox.SelectedItem as ListBoxItem;
             if (selectedItem != null)
@@ -67,7 +66,7 @@ namespace TsdLib.Utilities.TypeEditors
             if (listBox != null)
             {
                 //if (listBox.SelectedItem is ListBoxItem)
-                    edSvc.CloseDropDown();
+                    _edSvc.CloseDropDown();
             }
         }
     }

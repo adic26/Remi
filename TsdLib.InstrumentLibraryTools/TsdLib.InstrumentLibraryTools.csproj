@@ -22,6 +22,7 @@
     <WarningLevel>4</WarningLevel>
     <RegisterForComInterop>false</RegisterForComInterop>
     <PlatformTarget>x86</PlatformTarget>
+    <DocumentationFile>bin\Debug\TsdLib.InstrumentLibraryTools.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <RegisterForComInterop>false</RegisterForComInterop>
+    <DocumentationFile>bin\Release\TsdLib.InstrumentLibraryTools.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
