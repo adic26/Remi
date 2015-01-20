@@ -46,7 +46,6 @@
     <Compile Include="Configuration\IConfigItem.cs" />
     <Compile Include="Configuration\IConfigManager.cs" />
     <Compile Include="Configuration\ITestDetails.cs" />
-    <Compile Include="Configuration\TestSequenceEventArgs.cs" />
     <Compile Include="Instrument\InstrumentEvents.cs" />
     <Compile Include="Instrument\IInstrument.cs" />
     <Compile Include="Measurements\ITestInfo.cs" />

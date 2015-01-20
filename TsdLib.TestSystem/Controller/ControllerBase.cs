@@ -156,8 +156,8 @@ namespace TsdLib.TestSystem.Controller
         /// Default handler for the ViewBase.ExecuteTestSequence event.
         /// </summary>
         /// <param name="sender">Object that raised the exception. Should be a reference to the Execute Test Sequence button.</param>
-        /// <param name="e">EventArgs containing the product, station, test and sequence configuration objects. Not currently used.</param>
-        protected async void ExecuteTestSequence(object sender, TestSequenceEventArgs e)
+        /// <param name="e">An emptry EventArgs object.</param>
+        protected async void ExecuteTestSequence(object sender, EventArgs e)
         {
             AppDomain sequenceDomain = null;
 

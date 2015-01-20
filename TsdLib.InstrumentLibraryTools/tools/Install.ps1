@@ -14,9 +14,9 @@ $config.Properties.Item("DefineConstants").Value = $constants
 
 $RegAsm = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory() + 'RegAsm.exe'
 
-$DestinationFolder = "C:\ProgramData\TsdLib\CodeGenerator\" + $package.version
+$DestinationFolder = "C:\ProgramData\TsdLib\InstrumentLibraryTools\" + $package.version
 
-$Assembly = $DestinationFolder + '\TsdLib.InstrumentLibrary.dll'
+$Assembly = $DestinationFolder + '\' + $package.Id + '.dll'
 $Codebase = '/codebase'
 
 New-Item -Force $DestinationFolder -Type Directory

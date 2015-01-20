@@ -16,7 +16,7 @@ namespace TsdLib.UI.Controls.Base
         /// <summary>
         /// Event fired when requesting to execute the Test Sequence.
         /// </summary>
-        public event EventHandler<TestSequenceEventArgs> ExecuteTestSequence;
+        public event EventHandler ExecuteTestSequence;
         /// <summary>
         /// Event fired when requesting to abort the Test Sequence current in progress.
         /// </summary>
@@ -25,15 +25,7 @@ namespace TsdLib.UI.Controls.Base
         protected virtual void OnExecute()
         {
             if (ExecuteTestSequence != null)
-                ExecuteTestSequence(
-                    this,
-                    new TestSequenceEventArgs(
-                        SelectedStationConfig,
-                        SelectedProductConfig,
-                        SelectedTestConfig,
-                        SelectedSequenceConfig,
-                        PublishResults)
-                );
+                ExecuteTestSequence(this, EventArgs.Empty);
         }
 
         /// <summary>

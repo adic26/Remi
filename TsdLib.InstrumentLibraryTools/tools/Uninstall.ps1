@@ -10,5 +10,5 @@ $config.Properties.Item("DefineConstants").Value = $constants.Replace(";INSTRUME
 
 $RegAsm = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory() + 'RegAsm.exe'
 
-$Assembly = 'C:\ProgramData\TsdLib\CodeGenerator\' + $package.version + '\TsdLib.InstrumentLibrary.dll'
+$Assembly = 'C:\ProgramData\TsdLib\InstrumentLibraryTools\' + $package.version + '\' + $package.Id + '.dll'
 Start-Process $RegAsm -ArgumentList /u, $Assembly -Verb runAs
