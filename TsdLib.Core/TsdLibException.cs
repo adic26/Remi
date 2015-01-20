@@ -11,12 +11,6 @@ namespace TsdLib
     [Serializable]
     public abstract class TsdLibException : Exception
     {
-        static void LogException(TsdLibException ex, string additional = "")
-        {
-            using (StreamWriter stream = new StreamWriter(SpecialFolders.ErrorLogs.FullName, true))
-                stream.WriteLine(ex + additional);
-        }
-
         /// <summary>
         /// Initializes a new instance of the TsdLibException class with a message and inner exception.
         /// </summary>
@@ -31,7 +25,8 @@ namespace TsdLib
 
             if (!supressTrace)
                 Trace.WriteLine(this + stackFrame);
-            LogException(this, stackTrace);
+            using (var stream = SpecialFolders.GetErrorLogs("TestClient"))
+                stream.WriteLine(this + stackTrace);
         }
 
         /// <summary>
@@ -43,7 +38,7 @@ namespace TsdLib
         }
 
         /// <summary>
-        /// Gets a string representation of the exception.
+        /// Gets a string representation of the exception. Sealed since it is used in the constructor.
         /// </summary>
         /// <returns>A string containing the type of exception, message and stack trace.</returns>
         public override sealed string ToString()

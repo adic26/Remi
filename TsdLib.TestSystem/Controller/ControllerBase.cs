@@ -43,8 +43,9 @@ namespace TsdLib.TestSystem.Controller
         where TTestConfig : TestConfigCommon, new()
     {
         private readonly bool _localDomain;
-        TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> _sequence;
-        private readonly List<Task> _loggingTasks; 
+        private TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> _sequence;
+        private readonly List<Task> _loggingTasks;
+        private readonly TextWriterTraceListener _textWriterTraceListener;
 
         /// <summary>
         /// Gets a reference to the user interface.
@@ -77,6 +78,7 @@ namespace TsdLib.TestSystem.Controller
         /// </summary>
         protected ReadOnlyCollection<Task> LoggingTasks { get; private set; }
 
+
         /// <summary>
         /// Initialize a new system controller.
         /// </summary>
@@ -87,7 +89,8 @@ namespace TsdLib.TestSystem.Controller
         {
             Thread.CurrentThread.Name = "UI Thread";
             Trace.AutoFlush = true;
-            Trace.Listeners.Add(new TextWriterTraceListener(SpecialFolders.TraceLogs));
+            _textWriterTraceListener = new TextWriterTraceListener(SpecialFolders.GetTraceLogs(testDetails.SafeTestSystemName));
+            Trace.Listeners.Add(_textWriterTraceListener);
 
             _loggingTasks = new List<Task>();
             LoggingTasks = new ReadOnlyCollection<Task>(_loggingTasks);
@@ -111,9 +114,10 @@ namespace TsdLib.TestSystem.Controller
             Trace.WriteLine("Using TsdLib debug assembly. Test results will only be stored as Analysis.");
             _localDomain = localDomain;
 #else
-            if (localDomain)
-                Trace.WriteLine("Operating in release mode - ignoring localDomain command-line switch. Test sequence will be executed in the remote application domain.");
-            _localDomain = false;
+            //should still leave the option of running in local domain in production/release - just need to make SequenceConfig readonly in config manager
+            //if (localDomain)
+            //    Trace.WriteLine("Operating in release mode - ignoring localDomain command-line switch. Test sequence will be executed in the remote application domain.");
+            //_localDomain = false;
 #endif
 
             //subscribe to view events
@@ -161,28 +165,28 @@ namespace TsdLib.TestSystem.Controller
         {
             AppDomain sequenceDomain = null;
 
-            try
+            UI.SetState(State.TestInProgress);
+
+            TStationConfig stationConfig = (TStationConfig)UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? StationConfigManager.GetList()[0] as TStationConfig;
+            TProductConfig productConfig = (TProductConfig)UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? ProductConfigManager.GetList()[0] as TProductConfig;
+            TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig.Cast<TTestConfig>().ToArray();
+            if (!testConfigs.Any())
+                testConfigs = TestConfigManager.GetList().Cast<TTestConfig>().ToArray();
+
+            Sequence[] sequenceConfigs = UI.ConfigControl.SelectedSequenceConfig.Cast<Sequence>().ToArray();
+            if (!sequenceConfigs.Any())
+                sequenceConfigs = SequenceConfigManager.GetList().Cast<Sequence>().ToArray();
+            bool publishResults = UI.TestSequenceControl.PublishResults;
+
+            Trace.WriteLine(string.Format("Using {0} application domain", _localDomain ? "local" : "remote"));
+
+            SynchronizationContext uiContext = SynchronizationContext.Current;
+
+            ControllerProxy controllerProxy;
+
+            foreach (Sequence sequenceConfig in sequenceConfigs)
             {
-                UI.SetState(State.TestInProgress);
-
-                TStationConfig stationConfig = (TStationConfig)UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? StationConfigManager.GetList()[0] as TStationConfig;
-                TProductConfig productConfig = (TProductConfig)UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? ProductConfigManager.GetList()[0] as TProductConfig;
-                TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig.Cast<TTestConfig>().ToArray();
-                if (!testConfigs.Any())
-                    testConfigs = TestConfigManager.GetList().Cast<TTestConfig>().ToArray();
-
-                Sequence[] sequenceConfigs = UI.ConfigControl.SelectedSequenceConfig.Cast<Sequence>().ToArray();
-                if (!sequenceConfigs.Any())
-                    sequenceConfigs = SequenceConfigManager.GetList().Cast<Sequence>().ToArray();
-                bool publishResults = UI.TestSequenceControl.PublishResults;
-
-                Trace.WriteLine(string.Format("Using {0} application domain", _localDomain ? "local" : "remote"));
-
-                SynchronizationContext uiContext = SynchronizationContext.Current;
-
-                ControllerProxy controllerProxy;
-
-                foreach (Sequence sequenceConfig in sequenceConfigs)
+                try
                 {
                     DateTime startTime = DateTime.Now;
 
@@ -211,6 +215,8 @@ namespace TsdLib.TestSystem.Controller
 
                             if (UI.TraceListenerControl != null)
                                 _sequence.AddTraceListener(UI.TraceListenerControl.Listener);
+
+                            _sequence.AddTraceListener(_textWriterTraceListener);
                         }
 
                         EventProxy<TestInfo> infoEventHandler = new EventProxy<TestInfo>();
@@ -231,6 +237,7 @@ namespace TsdLib.TestSystem.Controller
 
                         _sequence.ExecuteSequence(stationConfig, productConfig, testConfigs);
                     });
+
                     DateTime endTime = DateTime.Now;
 
                     string overallResult;
@@ -251,58 +258,74 @@ namespace TsdLib.TestSystem.Controller
                         if (publishResults)
                             PublishResults(localTestResults);
                     }).ContinueWith(t =>
-                    {
-                        _loggingTasks.Remove(t);
-                        if (t.IsFaulted && t.Exception != null)
-                            Trace.WriteLine("Failed to log test results!" + Environment.NewLine + string.Join(Environment.NewLine, t.Exception.Flatten().InnerExceptions));
-                    }));
-                }
-                UI.SetState(State.ReadyToTest);
-            }
-            catch (OperationCanceledException) //User cancellation and controller proxy errors are propagated as OperationCancelledException
-            {
-                UI.SetState(State.ReadyToTest);
-                if (_sequence.CancelledByUser)
-                    Trace.WriteLine("Test sequence was cancelled by user.");
+                        {
+                            _loggingTasks.Remove(t);
+                            if (t.IsFaulted && t.Exception != null)
+                                Trace.WriteLine("Failed to log test results!" + Environment.NewLine + string.Join(Environment.NewLine, t.Exception.Flatten().InnerExceptions));
+                        })
+                    );
 
-                //TsdLibException came from controller proxy
-                else if (_sequence.Error is TsdLibException)
+                }
+                catch (OperationCanceledException) //User cancellation and controller proxy errors are propagated as OperationCancelledException
                 {
-                    DialogResult result = MessageBox.Show(_sequence.Error.GetType().Name + Environment.NewLine + _sequence.Error.Message + Environment.NewLine + "Would you like to view help for this error?", "Error occurred in test sequence", MessageBoxButtons.YesNo);
-                    if (result == DialogResult.Yes)
-                        Process.Start(_sequence.Error.HelpLink);
+                    if (_sequence.CancelledByUser)
+                        Trace.WriteLine("Test sequence was cancelled by user.");
+
+                    //TsdLibException came from controller proxy or other client code
+                    else if (_sequence.Error is TsdLibException)
+                    {
+                        DialogResult result = MessageBox.Show(_sequence.Error.GetType().Name + Environment.NewLine + _sequence.Error.Message + Environment.NewLine + "Would you like to view help for this error?", "Error occurred in test sequence", MessageBoxButtons.YesNo);
+                        if (result == DialogResult.Yes)
+                            Process.Start(_sequence.Error.HelpLink);
+                    }
+
+                    //Some other exception came from controller proxy or other client code
+                    else if (_sequence.Error != null)
+                        MessageBox.Show(_sequence.Error.GetType().Name + Environment.NewLine + _sequence.Error + Environment.NewLine + "This error was unexpected and not handled by the TsdLib Application. Please contact TSD for support.", "Unexpected error occurred in test sequence");
+
+                    //Test test sequence did not set the Error property - this should never happen
+                    else
+                        MessageBox.Show("An undescribed error has occurred and was not reported by the test sequence. Please contact TSD for support.", "Unknown Error:");
                 }
-
-                //Some other exception came from controller proxy
-                else if (_sequence.Error != null)
-                    MessageBox.Show(_sequence.Error.GetType().Name + Environment.NewLine + _sequence.Error + Environment.NewLine + "This error was unexpected and not handled by the TsdLib Application. Please contact TSD for support.", "Unexpected error occurred in test sequence");
-
-                //Test test sequence did not set the Error property - this should never happen
-                else
-                    MessageBox.Show("An undescribed error has occurred and was not reported by the test sequence. Please contact TSD for support.", "Unknown Error:");
+                catch (TsdLibException ex)
+                {
+                    displayError(ex, sequenceConfig.Name);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.GetType().Name + Environment.NewLine + ex + Environment.NewLine + "This error was unexpected and not handled by the TsdLib Application. Please contact TSD for support.", "Unexpected error occurred in test sequence");
+                }
+                finally
+                {
+                    if (_sequence != null)
+                    {
+                        _sequence.Dispose();
+                        _sequence = null;
+                    }
+                    if (sequenceDomain != null)
+                        AppDomain.Unload(sequenceDomain);
+                }
             }
-            catch (TsdLibException ex)
+            UI.SetState(State.ReadyToTest);
+        }
+
+        private void displayError(Exception ex, string sequenceName)
+        {
+            Task t = Task.Run(() =>
             {
-                UI.SetState(State.ReadyToTest);
-                DialogResult result = MessageBox.Show(ex.GetType().Name + Environment.NewLine + ex.Message + Environment.NewLine + "Would you like to view help for this error?", "Error occurred in test sequence", MessageBoxButtons.YesNo);
+                bool tsdLibException = ex is TsdLibException;
+                DialogResult result = MessageBox.Show(string.Join(Environment.NewLine,
+                        "Error: " + ex.GetType().Name,
+                        "Message: " + ex.Message,
+                        tsdLibException ? "Would you like to view help for this error?" : ""),
+                    "Error occurred in " + sequenceName,
+                    tsdLibException ? MessageBoxButtons.YesNo : MessageBoxButtons.OK);
+
                 if (result == DialogResult.Yes)
                     Process.Start(ex.HelpLink);
-            }
-            catch (Exception ex)
-            {
-                UI.SetState(State.ReadyToTest);
-                MessageBox.Show(ex.GetType().Name + Environment.NewLine + ex + Environment.NewLine + "This error was unexpected and not handled by the TsdLib Application. Please contact TSD for support.", "Unexpected error occurred in test sequence");
-            }
-            finally
-            {
-                if (_sequence != null)
-                {
-                    _sequence.Dispose();
-                    _sequence = null;
-                }
-                if (sequenceDomain != null)
-                    AppDomain.Unload(sequenceDomain);
-            }
+            });
+            if (t.IsFaulted)
+                Trace.WriteLine(t.Exception);
         }
 
         /// <summary>
@@ -391,7 +414,7 @@ namespace TsdLib.TestSystem.Controller
         {
             if (LoggingTasks.Count > 0)
             {
-                Trace.WriteLine("There are currently {0} test result logging operations in progress");
+                Trace.WriteLine(string.Format("There are currently {0} test result logging operations in progress", LoggingTasks.Count));
                 //Currently, the logging operations are run on background threads, so there is no need to cancel the close or wait for the tasks to complete
 
                 //Option 1: This will cancel the close and keep the UI open

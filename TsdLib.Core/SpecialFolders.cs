@@ -10,47 +10,68 @@ namespace TsdLib
     /// </summary>
     public static class SpecialFolders
     {
-        private static FileInfo _errorLogs;
-        /// <summary>
-        /// Gets the folder where error logs are stored.
-        /// </summary>
-        public static FileInfo ErrorLogs
-        {
-            get
-            {
-                if (_errorLogs == null)
-                {
-                    DirectoryInfo directory = baseFolder
-                        .CreateSubdirectory("ErrorLogs")
-                        .CreateSubdirectory(DateTime.Now.ToString("MMM_dd_yyyy"));
+        private static readonly string currentDate = DateTime.Now.ToString("MMM_dd_yyyy");
+        private static readonly string currentTime = DateTime.Now.ToString("HH_mm_ss");
 
-                    //_errorLogs = new FileInfo(Path.Combine(directory.FullName, Assembly.GetEntryAssembly().GetName().Name + ".txt"));
-                    _errorLogs = new FileInfo(Path.Combine(directory.FullName, "TestAutomation" + ".txt"));
-                }
-                return _errorLogs;
-            }
-        }
+        //private static FileInfo _errorLogs;
+        ///// <summary>
+        ///// Gets the folder where error logs are stored.
+        ///// </summary>
+        //public static FileInfo GetErrorLogs(string testSystemName)
+        //{
+        //    if (_errorLogs == null)
+        //    {
+        //        DirectoryInfo directory = baseFolder
+        //            .CreateSubdirectory("ErrorLogs")
+        //            .CreateSubdirectory(currentDate);
 
-        private static StreamWriter _traceLogs;
+        //        _errorLogs = new FileInfo(Path.Combine(directory.FullName, testSystemName + ".txt"));
+        //    }
+        //    return _errorLogs;
+        //}
+
         /// <summary>
         /// Gets the folder where trace logs are stored.
         /// </summary>
-        public static StreamWriter TraceLogs
+        public static StreamWriter GetErrorLogs(string testSystemName)
         {
-            get
-            {
-                if (_traceLogs == null)
-                {
-                    DirectoryInfo directory = baseFolder
-                        .CreateSubdirectory("TraceLogs")
-                        .CreateSubdirectory(DateTime.Now.ToString("MMM_dd_yyyy"));
+            StreamWriter errorLogs;
+            DirectoryInfo directory = baseFolder
+                .CreateSubdirectory("ErrorLogs")
+                .CreateSubdirectory(currentDate);
 
-                    //_traceLogs = new StreamWriter(Path.Combine(directory.FullName, Assembly.GetEntryAssembly().GetName().Name + ".txt"), false);
-                    //TODO: if in use, create new file
-                    _traceLogs = new StreamWriter(Path.Combine(directory.FullName, "TestAutomation" + ".txt"), false);
-                }
-                return _traceLogs;
+            try
+            {
+                errorLogs = new StreamWriter(Path.Combine(directory.FullName, testSystemName + "_" + currentTime + ".txt"), true);
             }
+            catch (Exception)
+            {
+                errorLogs = new StreamWriter(Path.Combine(directory.FullName, testSystemName + "_" + currentTime + "_" + Path.ChangeExtension(Path.GetRandomFileName(), "txt")), true);
+            }
+
+            return errorLogs;
+        }
+
+        /// <summary>
+        /// Gets the folder where trace logs are stored.
+        /// </summary>
+        public static StreamWriter GetTraceLogs(string testSystemName)
+        {
+            StreamWriter traceLogs;
+                DirectoryInfo directory = baseFolder
+                    .CreateSubdirectory("TraceLogs")
+                    .CreateSubdirectory(currentDate);
+
+            try
+            {
+                traceLogs = new StreamWriter(Path.Combine(directory.FullName, testSystemName + "_" + currentTime + ".txt"), true);
+            }
+            catch (Exception)
+            {
+                traceLogs = new StreamWriter(Path.Combine(directory.FullName, testSystemName + "_" + currentTime + "_" + Path.ChangeExtension(Path.GetRandomFileName(), "txt")), true);
+            }
+
+            return traceLogs;
         }
 
         /// <summary>

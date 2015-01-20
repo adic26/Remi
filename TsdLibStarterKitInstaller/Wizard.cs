@@ -86,10 +86,12 @@ namespace TsdLibStarterKitInstaller
                 //If using OData repository, use the IPackage.IsLatestVersion property - should also try reading tags
                 IPackageRepository repo = PackageRepositoryFactory.Default.CreateRepository(repoKvp.Value);
 
-                IQueryable<IPackage> packages = repo.GetPackages()
-                    .GroupBy(p => p.Id)
-                    .Select(g => g.OrderBy(p => p.Version)
-                    .Last());
+                //IQueryable<IPackage> packages = repo.GetPackages()
+                //    .GroupBy(p => p.Id)
+                //    .Select(g => g.OrderBy(p => p.Version)
+                //    .Last());
+
+                IQueryable<IPackage> packages = repo.GetPackages().Where(p => p.IsLatestVersion);
 
                 using (SelectPackagesForm form = new SelectPackagesForm(repoKvp.Key, packages))
                 {

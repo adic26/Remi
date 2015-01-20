@@ -26,7 +26,7 @@ namespace $safeprojectname$
                 return new System.CodeDom.CodeCompileUnit[0];
 
             string[] instrumentXmlFiles = System.IO.Directory.GetFiles("Instruments", "*.xml");
-            TsdLib.InstrumentLibrary.InstrumentParser instrumentXmlParser = new TsdLib.InstrumentLibrary.InstrumentParser(nameSpace, Language.CSharp.ToString());
+            TsdLib.InstrumentLibraryTools.InstrumentParser instrumentXmlParser = new TsdLib.InstrumentLibraryTools.InstrumentParser(nameSpace, Language.CSharp.ToString());
             codeCompileUnits.AddRange(instrumentXmlFiles.Select(xmlFile => instrumentXmlParser.Parse(new System.IO.StreamReader(xmlFile))));
 
             if (System.IO.Directory.Exists(@"Instruments\Helpers"))

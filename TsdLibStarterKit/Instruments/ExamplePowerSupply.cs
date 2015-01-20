@@ -29,7 +29,7 @@ namespace $safeprojectname$.Instruments
         {
             _dummyConnection = connection;
             _random = new Random();
-            Description = "Simulated Instrument";
+            //Description = "Simulated Instrument";
         }
 
         public virtual DummyConnection DummyConnection

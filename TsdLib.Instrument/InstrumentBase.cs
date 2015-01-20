@@ -14,7 +14,7 @@ namespace TsdLib.Instrument
         /// <summary>
         /// A connection object to used to communicate with the instrument.
         /// </summary>
-        public ConnectionBase Connection { get; private set; }
+        public ConnectionBase Connection { get; protected set; }
 
         /// <summary>
         /// Gets a description of the instrument, including connection information.
@@ -29,15 +29,6 @@ namespace TsdLib.Instrument
         {
             Connection = connection;
             Description = GetType().Name + " via " + connection.Description;
-        }
-
-        /// <summary>
-        /// Initialize a new instrument object with a dummy connection.
-        /// </summary>
-        /// <param name="dummyConnection">A <see cref="DummyConnection"/> object to simulate communication with the instrument.</param>
-        protected InstrumentBase(DummyConnection dummyConnection)
-        {
-            Connection = dummyConnection;
         }
 
         /// <summary>
