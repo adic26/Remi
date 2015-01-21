@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Instruments xmlns="TsdLib.Instruments.xsd">
-  <Instrument Name="PowerSupply" ConnectionType="Visa">
-    <IdQuery Command="*IDN?\n" Response="MyInstrument, Model 12345"/>
-    <ModelNumber Message="*IDN?\n"/>
-    <SerialNumber Message="*IDN?\n"/>
-    <FirmwareVersion Message="*IDN?\n"/>
+  <Instrument Name="PowerSupply" ConnectionType="Dummy">
+    <IdQuery Response="MyInstrument, Model 12345"/>
+    <ModelNumber Message="*IDN?"/>
+    <SerialNumber Message="*IDN?"/>
+    <FirmwareVersion Message="*IDN?"/>
     <Command Name="SetVoltage" Message="SET:VOLT {0}">
       <Parameter Name="voltage" Type="Double"/>
     </Command>

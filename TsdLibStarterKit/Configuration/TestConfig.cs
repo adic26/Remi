@@ -8,24 +8,22 @@ namespace $safeprojectname$.Configuration
     [Serializable]
     public class TestConfig : TestConfigCommon
     {
+        //TODO: Create a test configuration structure using public properties with get and set accessors.
+        //The values for these properties will be configured by the application at run-time (in Development mode only) or in the database
+        //The property values will be accessed by the TestSequence.Execute() method
+
         [Category("Severity")]
+        [Description("How severe the test conditions are")]
         public int LoopIterations { get; set; }
 
         [Category("Power")]
+        [Description("A list of voltage settings to use on the DUT")]
         public List<double> VoltageSettings { get; set; }
 
         /// <summary>
-        /// Initialize a new TestConfig configuration instance from persisted settings.
+        /// Initialize the configuration properties to default values. Do not use a default constructor, as it can interfere with deserialization.
         /// </summary>
-        public TestConfig() { }
-
-        /// <summary>
-        /// Initialize a new TestConfig instance.
-        /// </summary>
-        /// <param name="name">Name of the configuration instance.</param>
-        /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
-        public TestConfig(string name, bool storeInDatabase)
-            : base(name, storeInDatabase)
+        public override void InitializeDefaultValues()
         {
             LoopIterations = 5;
 

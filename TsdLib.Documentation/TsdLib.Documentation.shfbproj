@@ -44,7 +44,16 @@
     <CatalogVersion>100</CatalogVersion>
     <CatalogProductId>VS</CatalogProductId>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\TsdLib\TsdLib.csproj" xmlns="" />
+      <DocumentationSource sourceFile="..\TsdLib.Core\TsdLib.Core.csproj" />
+      <DocumentationSource sourceFile="..\TsdLib.Configuration\TsdLib.Configuration.csproj" />
+      <DocumentationSource sourceFile="..\TsdLib.Instrument\TsdLib.Instrument.csproj" />
+      <DocumentationSource sourceFile="..\TsdLib.Instrument.Telnet\TsdLib.Instrument.Telnet.csproj" />
+      <DocumentationSource sourceFile="..\TsdLib.Measurements\TsdLib.Measurements.csproj" />
+      <DocumentationSource sourceFile="..\TsdLib.TestSystem\TsdLib.TestSystem.csproj" />
+      <DocumentationSource sourceFile="..\TsdLib.UI\TsdLib.UI.csproj" />
+      <DocumentationSource sourceFile="..\TsdLib.Utilities\TsdLib.Utilities.csproj" />
+      <DocumentationSource sourceFile="..\TsdLib.InstrumentLibraryTools\TsdLib.InstrumentLibraryTools.csproj" />
+      <DocumentationSource sourceFile="..\TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj" />
     </DocumentationSources>
     <MaximumGroupParts>2</MaximumGroupParts>
     <NamespaceGrouping>False</NamespaceGrouping>
@@ -58,18 +67,34 @@
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="TsdLib" isDocumented="True">Contains base functionality for the TsdLib Framework.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="TsdLib.Configuration" isDocumented="True">Contains functionality for strongly typed configuration classes used to parameterize test sequence execution. Configuration is stored on the local machine and can optionally be persisted to a database.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="TsdLib.Controller" isDocumented="True">Contains functionality to connect the user interface with instruments and test sequence engines. The 'Controller' in the Model-View-Controller design pattern.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="TsdLib.Instrument" isDocumented="True">Contains functionality to interact with test equipment and DUTs, including instrument discovery, connection and communication.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="TsdLib.Instrument.Dummy" isDocumented="True">Contains functionality to simulate test equipment or DUTs. Useful for developing systems and testing code without the need for physical instruments.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="TsdLib.TestSequence" isDocumented="True">Contains functionality to define and execute dynamic test sequences by sending/receiving commands/responses to/from test equipment and DUTs.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="TsdLib.View" isDocumented="True">Contains functionality to display information and collect input from the user. Loose coupling to the Controller allows UI logic to be completely separate from business logic, test sequences or instrument control. The 'View' in the Model-View-Controller design pattern.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="TsdLib.CodeGenerator" isDocumented="True">Contains functionality to generate dynamic assemblies for test sequences and instrument definitions.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="TsdLib.Proxies" isDocumented="False">Contains functionality to operate with multiple Application Domains.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="TsdLib.TestResults" isDocumented="True">Contains functionality to capture and record measurements from test sequences.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="(global)" isDocumented="False" />
-<NamespaceSummaryItem name="TsdLib.Utilities" isDocumented="True">Contains static classes and methods to perform miscellaneous operations.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="TsdLib.Annotations" isDocumented="False">Contains attribute definitions useful for controlling ReSharper code analysis.</NamespaceSummaryItem></NamespaceSummaries>
+      <NamespaceSummaryItem name="TsdLib.Configuration" isDocumented="True">Contains functionality for strongly typed configuration classes used to parameterize test sequence execution. Configuration is stored on the local machine and can optionally be persisted to a database.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="TsdLib.Controller" isDocumented="True">Contains functionality to connect the user interface with instruments and test sequence engines. The 'Controller' in the Model-View-Controller design pattern.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="TsdLib.Instrument" isDocumented="True">Contains functionality to interact with test equipment and DUTs, including instrument discovery, connection and communication.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="TsdLib.Instrument.Dummy" isDocumented="True">Contains functionality to simulate test equipment or DUTs. Useful for developing systems and testing code without the need for physical instruments.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="TsdLib.TestSequence" isDocumented="True">Contains functionality to define and execute dynamic test sequences by sending/receiving commands/responses to/from test equipment and DUTs.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="TsdLib.View" isDocumented="True">Contains functionality to display information and collect input from the user. Loose coupling to the Controller allows UI logic to be completely separate from business logic, test sequences or instrument control. The 'View' in the Model-View-Controller design pattern.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="TsdLib.CodeGenerator" isDocumented="True">Contains functionality to generate dynamic assemblies for test sequences and instrument definitions.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="TsdLib.Proxies" isDocumented="False">Contains functionality to operate with multiple Application Domains.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="TsdLib.TestResults" isDocumented="True">Contains functionality to capture and record measurements from test sequences.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="(global)" isDocumented="False" />
+      <NamespaceSummaryItem name="TsdLib.Utilities" isDocumented="True">Contains static classes and methods to perform miscellaneous operations.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="TsdLib.Annotations" isDocumented="False">Contains attribute definitions useful for controlling ReSharper code analysis.</NamespaceSummaryItem>
+    </NamespaceSummaries>
+    <PlugInConfigurations>
+      <PlugInConfig id="Assembly Binding Redirection" enabled="True">
+        <configuration useGAC="false">
+          <assemblyBinding>
+            <dependentAssembly>
+              <assemblyIdentity name="NationalInstruments.Common" publicKeyToken="dc6ad606294fc298" />
+              <bindingRedirect oldVersion="13.0.40.168" newVersion="13.0.40.190" />
+            </dependentAssembly>
+          </assemblyBinding>
+          <ignoreIfUnresolved>
+            <assemblyIdentity name="BusinessObjects.Licensing.KeycodeDecoder" />
+          </ignoreIfUnresolved>
+        </configuration>
+      </PlugInConfig>
+    </PlugInConfigurations>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

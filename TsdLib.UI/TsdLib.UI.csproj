@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F4735655-3CC1-446B-B90B-7A193A1BDABB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TsdLib.UI</RootNamespace>
+    <AssemblyName>TsdLib.UI</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <DocumentationFile>bin\Debug\TsdLib.UI.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\TsdLib.UI.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\Base\ProgressControlBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Base\ProgressControlBase.Designer.cs">
+      <DependentUpon>ProgressControlBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ConfigControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ConfigControl.Designer.cs">
+      <DependentUpon>ConfigControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Base\ConfigControlBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Base\ConfigControlBase.Designer.cs">
+      <DependentUpon>ConfigControlBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MeasurementDataGridViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MeasurementDataGridViewControl.Designer.cs">
+      <DependentUpon>MeasurementDataGridViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Base\MeasurementDisplayControlBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Base\MeasurementDisplayControlBase.Designer.cs">
+      <DependentUpon>MeasurementDisplayControlBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MultiConfigControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MultiConfigControl.Designer.cs">
+      <DependentUpon>MultiConfigControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ProgressControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ProgressControl.Designer.cs">
+      <DependentUpon>ProgressControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TestDetailsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TestDetailsControl.Designer.cs">
+      <DependentUpon>TestDetailsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Base\TestDetailsControlBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Base\TestDetailsControlBase.Designer.cs">
+      <DependentUpon>TestDetailsControlBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TestInfoDataGridViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TestInfoDataGridViewControl.Designer.cs">
+      <DependentUpon>TestInfoDataGridViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Base\TestInfoDisplayControlBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Base\TestInfoDisplayControlBase.Designer.cs">
+      <DependentUpon>TestInfoDisplayControlBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TestSequenceControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TestSequenceControl.Designer.cs">
+      <DependentUpon>TestSequenceControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Base\TestSequenceControlBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Base\TestSequenceControlBase.Designer.cs">
+      <DependentUpon>TestSequenceControlBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Base\TraceListenerControlBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Base\TraceListenerControlBase.Designer.cs">
+      <DependentUpon>TraceListenerControlBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TraceListenerTextBoxControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TraceListenerTextBoxControl.Designer.cs">
+      <DependentUpon>TraceListenerTextBoxControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ViewBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ViewBase.Designer.cs">
+      <DependentUpon>ViewBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\ConfigControl.resx">
+      <DependentUpon>ConfigControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Base\ConfigControlBase.resx">
+      <DependentUpon>ConfigControlBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MeasurementDataGridViewControl.resx">
+      <DependentUpon>MeasurementDataGridViewControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Base\MeasurementDisplayControlBase.resx">
+      <DependentUpon>MeasurementDisplayControlBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MultiConfigControl.resx">
+      <DependentUpon>MultiConfigControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ProgressControl.resx">
+      <DependentUpon>ProgressControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TestDetailsControl.resx">
+      <DependentUpon>TestDetailsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TestInfoDataGridViewControl.resx">
+      <DependentUpon>TestInfoDataGridViewControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TestSequenceControl.resx">
+      <DependentUpon>TestSequenceControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TraceListenerTextBoxControl.resx">
+      <DependentUpon>TraceListenerTextBoxControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ViewBase.resx">
+      <DependentUpon>ViewBase.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TsdLib.UI.nuspec" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TsdLib.Core\TsdLib.Core.csproj">
+      <Project>{512BEDDC-2B71-42F0-9C1B-6D37497F5DA7}</Project>
+      <Name>TsdLib.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>call "$(SolutionDir)NuGetPostBuild.bat" $(ProjectPath) $(ConfigurationName)</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

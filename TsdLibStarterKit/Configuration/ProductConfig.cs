@@ -12,20 +12,13 @@ namespace $safeprojectname$.Configuration
         //The property values will be accessed by the TestSequence.Execute() method
 
         [Category("Timing")]
+        [Description("Number of milliseconds to wait after adjusting voltage level")]
         public int SettlingTime { get; set; }
 
         /// <summary>
-        /// Initialize a new ProductConfig configuration instance from persisted settings.
+        /// Initialize the configuration properties to default values. Do not use a default constructor, as it can interfere with deserialization.
         /// </summary>
-        public ProductConfig()  { }
-
-        /// <summary>
-        /// Initialize a new ProductConfig instance.
-        /// </summary>
-        /// <param name="name">Name of the configuration instance.</param>
-        /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
-        public ProductConfig(string name, bool storeInDatabase)
-            : base(name, storeInDatabase)
+        public override void InitializeDefaultValues()
         {
             SettlingTime = 500;
         }

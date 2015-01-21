@@ -8,20 +8,13 @@ namespace TestClient.Configuration
     public class StationConfig : StationConfigCommon
     {
         [Category("Power Supply")]
+        [Description("The VISA resource name used to identify the power supply")]
         public string PowerSupplyAddress { get; set; }
 
         /// <summary>
-        /// Initialize a new StationConfig configuration instance from persisted settings.
+        /// Initialize the configuration properties to default values. Do not use a default constructor, as it can interfere with deserialization.
         /// </summary>
-        public StationConfig() { }
-
-        /// <summary>
-        /// Initialize a new StationConfig instance.
-        /// </summary>
-        /// <param name="name">Name of the configuration instance.</param>
-        /// <param name="storeInDatabase">True to store configuration locally and on a database. False to store locally only.</param>
-        public StationConfig(string name, bool storeInDatabase)
-            : base(name, storeInDatabase)
+        public override void InitializeDefaultValues()
         {
             PowerSupplyAddress = "GPIB0::1::INSTR";
         }

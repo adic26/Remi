@@ -49,9 +49,13 @@
     <Compile Include="TelnetFactory.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TsdLib\TsdLib.csproj">
-      <Project>{da39d49a-e06e-4cd9-b2a2-326057bdc41d}</Project>
-      <Name>TsdLib</Name>
+    <ProjectReference Include="..\TsdLib.Core\TsdLib.Core.csproj">
+      <Project>{512BEDDC-2B71-42F0-9C1B-6D37497F5DA7}</Project>
+      <Name>TsdLib.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instrument\TsdLib.Instrument.csproj">
+      <Project>{421092EB-A692-46A8-A66B-247C94C16421}</Project>
+      <Name>TsdLib.Instrument</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -60,18 +64,18 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>del *.nupkg
-nuget pack $(ProjectPath) -Prop Configuration=$(ConfigurationName) -IncludeReferencedProjects</PostBuildEvent>
+    <PostBuildEvent>call "$(SolutionDir)NuGetPostBuild.bat" $(ProjectPath) $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  -->
+
   <Target Name="AfterBuild">
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
       <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
     </GetAssemblyIdentity>
     <Exec Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages_Experimental\" WorkingDirectory="$(TargetDir)" />
   </Target>
+    -->
 </Project>
