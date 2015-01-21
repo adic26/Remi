@@ -48,7 +48,6 @@
       <DocumentationSource sourceFile="..\TsdLib.Configuration\TsdLib.Configuration.csproj" />
       <DocumentationSource sourceFile="..\TsdLib.Instrument\TsdLib.Instrument.csproj" />
       <DocumentationSource sourceFile="..\TsdLib.Instrument.Telnet\TsdLib.Instrument.Telnet.csproj" />
-      <DocumentationSource sourceFile="..\TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj" />
       <DocumentationSource sourceFile="..\TsdLib.Measurements\TsdLib.Measurements.csproj" />
       <DocumentationSource sourceFile="..\TsdLib.TestSystem\TsdLib.TestSystem.csproj" />
       <DocumentationSource sourceFile="..\TsdLib.UI\TsdLib.UI.csproj" />
