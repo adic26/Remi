@@ -159,7 +159,9 @@ namespace TsdLib.InstrumentLibraryTools
                 instrumentClass.Comments.Add(new CodeCommentStatement("ReSharper disable once FieldCanBeMadeReadOnly.Local"));
                 instrumentClass.Members.Add(new FactoryReference(connectionType));
                 instrumentClass.Members.Add(new ConnectMethod(instrumentClass.Name));
-                instrumentClass.Members.Add(new ConnectMethod(instrumentClass.Name, "address"));
+                instrumentClass.Members.Add(new ConnectMethod(instrumentClass.Name, "System.String", "address"));
+                instrumentClass.Members.Add(new ConnectMethod(instrumentClass.Name, "ConnectionBase", "connection", connectionType + "Connection"));
+
 
                 //Add info property overloads
                 instrumentClass.Members.AddRange(
@@ -284,7 +286,7 @@ namespace TsdLib.InstrumentLibraryTools
 
     class ConnectMethod : CodeMemberMethod
     {
-        public ConnectMethod(string instrumentName, string argumentName = null)
+        public ConnectMethod(string instrumentName, string argumentType = null, string argumentName = null, string argumentCastType = null)
         {
             Attributes = MemberAttributes.Public | MemberAttributes.Static;
             Name = "Connect";
@@ -297,13 +299,16 @@ namespace TsdLib.InstrumentLibraryTools
 
             CodeMethodInvokeExpression factoryMethodInvoke = new CodeMethodInvokeExpression(factoryMethodReference);
 
-            if (argumentName != null)
+            if (argumentType != null && argumentName != null)
             {
-                Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), argumentName));
-                factoryMethodInvoke.Parameters.Add(new CodeVariableReferenceExpression(argumentName));
+                Parameters.Add(new CodeParameterDeclarationExpression(argumentType, argumentName));
+                if (argumentCastType == null)
+                    factoryMethodInvoke.Parameters.Add(new CodeVariableReferenceExpression(argumentName));
+                else
+                    factoryMethodInvoke.Parameters.Add(new CodeCastExpression(argumentCastType,
+                        new CodeVariableReferenceExpression(argumentName)));
             }
             Statements.Add(new CodeMethodReturnStatement(factoryMethodInvoke));
-
         }
     }
 

@@ -118,6 +118,7 @@ namespace TsdLib.TestSystem.Controller
             //if (localDomain)
             //    Trace.WriteLine("Operating in release mode - ignoring localDomain command-line switch. Test sequence will be executed in the remote application domain.");
             //_localDomain = false;
+            _localDomain = localDomain;
 #endif
 
             //subscribe to view events

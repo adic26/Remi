@@ -114,7 +114,7 @@ namespace TsdLib.Instrument
         {
             if (disposing)
             {
-                Debug.WriteLine("Disposing " + Description);
+                Trace.WriteLine("Disposing " + Description);
                 Connection.Dispose();
             }
         }

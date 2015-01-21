@@ -1,4 +1,6 @@
-﻿Getting Started with the TsdLib Instrument Library 
+﻿Getting Started with the TsdLib Instrument Library Tools
+
+NOTE: You may need to restart Visual Studio for the Custom Tool to refresh when updating the Instrument Library Tools.
 
 Instrument XML definitions are placed in the Instruments project folder.
 

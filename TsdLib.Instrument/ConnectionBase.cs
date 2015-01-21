@@ -107,7 +107,7 @@ namespace TsdLib.Instrument
         {
             int localDelay = delay != -1 ? delay : DefaultDelay;
             if (localDelay > 0)
-                Debug.WriteLine("Waiting " + localDelay + "ms before sending");
+                Trace.WriteLine("Waiting " + localDelay + "ms before sending");
             Thread.Sleep(localDelay);
                 
             lock (SyncRoot)
@@ -118,7 +118,7 @@ namespace TsdLib.Instrument
 
                 foreach (string partialCommand in split)
                 {
-                    Debug.WriteLine("Sending command to " + Description + ": " + partialCommand);
+                    Trace.WriteLine("Sending command to " + Description + ": " + partialCommand);
                     Write(partialCommand);
                     if (CheckForError())
                         throw new CommandException(this, partialCommand);
@@ -138,7 +138,7 @@ namespace TsdLib.Instrument
         {
             int localDelay = delay != -1 ? delay : DefaultDelay;
             if (localDelay > 0)
-                Debug.WriteLine("Waiting " + localDelay + "ms before receiving string response");
+                Trace.WriteLine("Waiting " + localDelay + "ms before receiving string response");
             Thread.Sleep(localDelay);
 
             string parsedResponse = "";
@@ -154,7 +154,7 @@ namespace TsdLib.Instrument
                     if (CheckForError())
                         throw new ResponseException(this);
 
-                    Debug.WriteLine("Received response from: " + Description + ": " + response);
+                    Trace.WriteLine("Received response from: " + Description + ": " + response);
 
                     Match match = Regex.Match(response, regex, RegexOptions.Singleline);
                     if (!match.Success)
@@ -166,10 +166,10 @@ namespace TsdLib.Instrument
                         parsedResponse = match.Value;
 
                     if (parsedResponse != response)
-                        Debug.WriteLine("RegEx pattern: " + regex + "  Parsed response: " + parsedResponse);
+                        Trace.WriteLine("RegEx pattern: " + regex + "  Parsed response: " + parsedResponse);
 
                     if (typeof(T) != typeof(string))
-                        Debug.WriteLine("Returning as: " + typeof(T).Name);
+                        Trace.WriteLine("Returning as: " + typeof(T).Name);
 
                     if (typeof(T) == typeof(bool))
                     {
@@ -201,7 +201,7 @@ namespace TsdLib.Instrument
         {
             int localDelay = delay != -1 ? delay : DefaultDelay;
             if (localDelay > 0)
-                Debug.WriteLine("Waiting " + localDelay + "ms before receiving byte response");
+                Trace.WriteLine("Waiting " + localDelay + "ms before receiving byte response");
             Thread.Sleep(localDelay);
 
             lock (SyncRoot)
@@ -214,7 +214,7 @@ namespace TsdLib.Instrument
                 if (CheckForError())
                     throw new ResponseException(this);
 
-                Debug.WriteLine("Received response from " + Description + ": " + Encoding.ASCII.GetString(response));
+                Trace.WriteLine("Received response from " + Description + ": " + Encoding.ASCII.GetString(response));
 
                 return response;
             }

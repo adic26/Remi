@@ -43,23 +43,28 @@ namespace TsdLib.Instrument
         public TInstrument GetInstrument<TInstrument>(string address = null)
             where TInstrument : InstrumentBase<TConnection>
         {
+            TConnection[] connections = GetConnection<TInstrument>(address);
+
+            if (connections.Length == 0)
+                throw new ConnectException<TInstrument, TConnection>();
+
+            TInstrument inst = GetInstrument<TInstrument>(connections[0]);
+
+            InstrumentEvents.FireConnected(this, inst);
+
+            return inst;
+        }
+
+        public TConnection[] GetConnection<TInstrument>(string address = null)
+            where TInstrument : InstrumentBase<TConnection>
+        {
             IdQueryAttribute idAtt = (IdQueryAttribute)Attribute.GetCustomAttribute(typeof(TInstrument), typeof(IdQueryAttribute), true);
             ConnectionSettingAttribute[] connectionAttributes = Attribute.GetCustomAttributes(typeof(TInstrument), typeof(ConnectionSettingAttribute), true).Cast<ConnectionSettingAttribute>().ToArray();
 
             CommandDelayAttribute delayAttribute = (CommandDelayAttribute)Attribute.GetCustomAttribute(typeof(TInstrument), typeof(CommandDelayAttribute), true);
             int defaultDelay = delayAttribute != null ? delayAttribute.Delay : 0;
 
-            string[] instrumentAddresses;
-
-            if (string.IsNullOrWhiteSpace(address))
-            {
-                instrumentAddresses = SearchForInstruments().ToArray();
-                Debug.WriteLine("Found instruments:" + Environment.NewLine + string.Join(Environment.NewLine, instrumentAddresses));
-            }
-            else
-            {
-                instrumentAddresses = new[] {address};
-            }
+            string[] instrumentAddresses = string.IsNullOrWhiteSpace(address) ? SearchForInstruments().ToArray() : new[] { address };
 
             List<TConnection> connections = new List<TConnection>();
             foreach (string instrumentAddress in instrumentAddresses)
@@ -68,30 +73,33 @@ namespace TsdLib.Instrument
 
                 if (conn != null)
                 {
-                    Debug.WriteLine("Connecting to " + instrumentAddress);
+                    Trace.WriteLine("Connecting to " + instrumentAddress);
 
                     string id = GetInstrumentIdentifier(conn, idAtt);
                     if (id.Contains(idAtt.Response) || id == "Dummy_Device")
                     {
-                        Debug.WriteLine("Found identifier match: " + id);
+                        Trace.WriteLine("Found identifier match: " + id);
                         connections.Add(conn);
                     }
                     else
                     {
-                        Debug.WriteLine("Response from " + instrumentAddress + " does not match expected response: " + idAtt.Response + ". Disposing connection");
+                        Trace.WriteLine("Response from " + instrumentAddress + " does not match expected response: " + idAtt.Response + ". Disposing connection");
                         conn.Dispose();
                     }
                 }
             }
 
-            if (connections.Count == 0)
-                throw new ConnectException<TInstrument, TConnection>();
+            return connections.ToArray();
+        }
 
+        public TInstrument GetInstrument<TInstrument>(TConnection connection)
+            where TInstrument : InstrumentBase<TConnection>
+        {
             TInstrument inst = (TInstrument)Activator.CreateInstance(
                 typeof(TInstrument),
                 BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
                 null,
-                new object[] { connections[0] },
+                new object[] { connection },
                 null);
 
             InitCommandsAttribute initCommands = (InitCommandsAttribute)Attribute.GetCustomAttribute(typeof(TInstrument), typeof(InitCommandsAttribute), true);
@@ -108,12 +116,10 @@ namespace TsdLib.Instrument
             inst.Connection.SendCommand(inst.FirmwareVersionMessage, -1);
             inst.FirmwareVersion = inst.Connection.GetResponse<string>(inst.FirmwareVersionRegEx, inst.FirmwareVersionTermChar);
 
-            Debug.WriteLine("Connected to " + inst.Description);
-            Debug.WriteLine("Model number: " + inst.ModelNumber);
-            Debug.WriteLine("Serial number: " + inst.SerialNumber);
-            Debug.WriteLine("Firmware version: " + inst.FirmwareVersion);
-
-            InstrumentEvents.FireConnected(this, inst);
+            Trace.WriteLine("Connected to " + inst.Description);
+            Trace.WriteLine("Model number: " + inst.ModelNumber);
+            Trace.WriteLine("Serial number: " + inst.SerialNumber);
+            Trace.WriteLine("Firmware version: " + inst.FirmwareVersion);
 
             return inst;
         }
