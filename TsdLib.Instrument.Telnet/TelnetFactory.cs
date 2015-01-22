@@ -69,7 +69,7 @@ namespace TsdLib.Instrument.Telnet
         }
 
         /// <summary>
-        /// Send a request to identify the instrument via the specified TelnetConnection.
+        /// Send a request to identify the type of instrument via the specified TelnetConnection.
         /// </summary>
         /// <param name="connection">TelnetConnection object representing the connection to the instrument.</param>
         /// <param name="idAttribute">Not required for TelnetConnection.</param>

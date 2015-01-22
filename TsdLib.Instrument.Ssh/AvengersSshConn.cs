@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Managed.Adb;
 using TsdLib.Instrument.Ssh.AdbUtilities;
 
@@ -14,32 +11,34 @@ namespace TsdLib.Instrument.Ssh
     /// </summary>
     class AvengersSshConn : SshConnection
     {
-        public Device DUT;
-        private StreamOutputReceiver OutputReceiver;
+        public Device Dut;
+        private readonly StreamOutputReceiver _outputReceiver;
 
-        public override bool IsConnected { get { return (DUT != null); } }
+        public override bool IsConnected { get { return (Dut != null); } }
 
         /// <summary>
         /// Constructor for this connection. Will throw an exception if no devices are detected
         /// </summary>
-        internal AvengersSshConn() : base("Avengers") 
+        internal AvengersSshConn()
+            : base("Avengers") 
         {
             List<Device> devices = AdbHelper.Instance.GetDevices(AndroidDebugBridge.SocketAddress);
 
             if (!devices.Any())
                 throw new Exception("No Avengers Devices Found");
             
-            DUT = devices[0];
-            OutputReceiver = StreamOutputReceiver.Instance;
+            Dut = devices[0];
+            _outputReceiver = StreamOutputReceiver.Instance;
         }
 
-        internal AvengersSshConn(Device device) : base(device.SerialNumber)
+        internal AvengersSshConn(Device device)
+            : base(device.SerialNumber)
         {
             if (device == null)
-                throw new ArgumentNullException("device parameter cannot be null");
+                throw new ArgumentNullException("device");
 
-            DUT = device;
-            OutputReceiver = StreamOutputReceiver.Instance;
+            Dut = device;
+            _outputReceiver = StreamOutputReceiver.Instance;
         }
 
         /// <summary>
@@ -48,7 +47,7 @@ namespace TsdLib.Instrument.Ssh
         /// <returns></returns>
         protected override bool CheckForError()
         {
-            return DUT.IsOffline;
+            return Dut.IsOffline;
         }
 
         protected override byte ReadByte()
@@ -61,7 +60,7 @@ namespace TsdLib.Instrument.Ssh
         /// <returns>Shell output</returns>
         protected override string ReadString()
         {
-            return OutputReceiver.OutputStream.ReadToEnd();
+            return _outputReceiver.OutputStream.ReadToEnd();
         }
         /// <summary>
         /// sends a remote shell command
@@ -69,7 +68,7 @@ namespace TsdLib.Instrument.Ssh
         /// <param name="message">command</param>
         protected override void Write(string message)
         {
-            DUT.ExecuteRootShellCommand(message, OutputReceiver);
+            Dut.ExecuteRootShellCommand(message, _outputReceiver);
         }
     }
 }

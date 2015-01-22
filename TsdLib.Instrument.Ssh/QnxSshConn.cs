@@ -1,47 +1,43 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using RootDevice.QConn;
-using RootDevice.Utilities;
 
 namespace TsdLib.Instrument.Ssh
 {
     public class QnxSshConn : SshConnection
     {
-        public const string plinkResourceFolder = @"plink_resources\";
-        private const string publicKeyFile = @"public.key";
+        public const string PlinkResourceFolder = @"plink_resources\";
+        private const string PublicKeyFile = @"public.key";
 
-        private QConnClient qconn;
-        private StreamReader OutputStream;
-        private StreamWriter InputStream;
-        private string deviceIP;
+        private readonly QConnClient _qconn;
+        private readonly StreamReader _streamReader;
+        private readonly StreamWriter _streamWriter;
 
-        private Process sshSession;
+        private readonly Process _sshSession;
 
         public override bool IsConnected
         {
-            get { return !sshSession.HasExited; }
+            get { return !_sshSession.HasExited; }
         }
         public int Timeout = 300;
 
 
-        internal QnxSshConn(string rtasUser, string rtasPass, string ipAddr, string devicePass) : base(ipAddr)
+        internal QnxSshConn(string rtasUser, string rtasPass, string ipAddr, string devicePass)
+            : base(ipAddr)
         {
-            qconn = new QConnClient();
-            deviceIP = ipAddr;
+            _qconn = new QConnClient();
+            string deviceIp = ipAddr;
 
-            qconn.Root(deviceIP, plinkResourceFolder + publicKeyFile, rtasUser, rtasPass, devicePass);
+            _qconn.Root(deviceIp, PlinkResourceFolder + PublicKeyFile, rtasUser, rtasPass, devicePass);
 
-            sshSession = new Process
+            _sshSession = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = plinkResourceFolder + "plink",
-                    Arguments = "-ssh -l root -i " + plinkResourceFolder + "private.ppk " + deviceIP,
+                    FileName = PlinkResourceFolder + "plink",
+                    Arguments = "-ssh -l root -i " + PlinkResourceFolder + "private.ppk " + deviceIp,
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardInput = true,
@@ -49,17 +45,18 @@ namespace TsdLib.Instrument.Ssh
                 }
             };
 
-            sshSession.Start();
+            _sshSession.Start();
 
-            OutputStream = sshSession.StandardOutput;
-            InputStream = sshSession.StandardInput;
+            _streamReader = _sshSession.StandardOutput;
+            _streamWriter = _sshSession.StandardInput;
 
-            InputStream.WriteLine("y");
+            _streamWriter.WriteLine("y");
         }
 
         protected override bool CheckForError()
         {
-            return sshSession.HasExited;
+            //TODO: make sure streams are open or check for errors on QConnClient
+            return _sshSession.HasExited;
         }
         protected override byte ReadByte()
         {
@@ -67,26 +64,26 @@ namespace TsdLib.Instrument.Ssh
         }
         protected override void Write(string message)
         {
-            InputStream.WriteLine(message);
+            _streamWriter.WriteLine(message);
 
-            if (OutputStream.Read() == 35 &&        //"# "
-                OutputStream.Read() == 32 &&
-                OutputStream.Peek() == -1)
-                InputStream.WriteLine(message);     //if plink hasnt fully started up yet, resend the command
+            if (_streamReader.Read() == 35 &&        //"# "
+                _streamReader.Read() == 32 &&
+                _streamReader.Peek() == -1)
+                _streamWriter.WriteLine(message);     //if plink hasnt fully started up yet, resend the command
 
             string line = "";
             while (!line.Contains(message))
-                line = OutputStream.ReadLine();
+                line = _streamReader.ReadLine();
         }
         protected override string ReadString()
         {
-            var timeoutWatch = new Stopwatch();
-            var output = new StringBuilder();
+            Stopwatch timeoutWatch = new Stopwatch();
+            StringBuilder output = new StringBuilder();
             timeoutWatch.Start();
 
             while (timeoutWatch.ElapsedMilliseconds < Timeout)
             {
-                string line = OutputStream.ReadLine();
+                string line = _streamReader.ReadLine();
                 if (line.StartsWith("#"))
                     break;
                 if (line != "")
@@ -96,9 +93,9 @@ namespace TsdLib.Instrument.Ssh
         }
         protected override void Dispose(bool disposing)
         {
-            if (!sshSession.HasExited)
-                sshSession.Kill();
-            qconn.Stop();
+            if (!_sshSession.HasExited)
+                _sshSession.Kill();
+            _qconn.Stop();
             base.Dispose(disposing);
         }
     }

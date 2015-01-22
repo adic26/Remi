@@ -54,6 +54,7 @@
       <DocumentationSource sourceFile="..\TsdLib.Utilities\TsdLib.Utilities.csproj" />
       <DocumentationSource sourceFile="..\TsdLib.InstrumentLibraryTools\TsdLib.InstrumentLibraryTools.csproj" />
       <DocumentationSource sourceFile="..\TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj" />
+      <DocumentationSource sourceFile="..\TsdLib.Instrument.Ssh\TsdLib.Instrument.Ssh.csproj" />
     </DocumentationSources>
     <MaximumGroupParts>2</MaximumGroupParts>
     <NamespaceGrouping>False</NamespaceGrouping>

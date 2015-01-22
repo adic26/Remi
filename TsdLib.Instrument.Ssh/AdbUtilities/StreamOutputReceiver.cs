@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Managed.Adb;
 
 namespace TsdLib.Instrument.Ssh.AdbUtilities
@@ -13,27 +8,21 @@ namespace TsdLib.Instrument.Ssh.AdbUtilities
     /// </summary>
     class StreamOutputReceiver : MultiLineReceiver
     {
-        private Stream _outputStream;
+        private readonly Stream _outputStream;
         public StreamReader OutputStream;
 
-        private static StreamOutputReceiver _instance = null;
+        private static StreamOutputReceiver _instance;
         /// <summary>
         /// Gets an instance of this class
         /// </summary>
         public static StreamOutputReceiver Instance 
         { 
-            get 
-            {
-                if (_instance == null)
-                    _instance = new StreamOutputReceiver();
-                return _instance;
-            } 
+            get { return _instance ?? (_instance = new StreamOutputReceiver()); }
         }
         /// <summary>
         /// private constructor. Instantiates the streams
         /// </summary>
         private StreamOutputReceiver()
-            : base()
         {
             _outputStream = new MemoryStream();
             OutputStream = new StreamReader(_outputStream);

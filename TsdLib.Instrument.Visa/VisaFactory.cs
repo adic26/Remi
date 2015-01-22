@@ -61,7 +61,7 @@ namespace TsdLib.Instrument.Visa
         }
 
         /// <summary>
-        /// Send a request to identify the instrument via the specified VisaConnection.
+        /// Send a request to identify the type of instrument via the specified VisaConnection.
         /// </summary>
         /// <param name="connection">VisaConnection object representing the connection to the instrument.</param>
         /// <param name="idAttribute">IdQueryAttribute object representing the command (ie. *IDN?) to send to the instrument and a termination character (if required) to signal the end of the instrument response.</param>
