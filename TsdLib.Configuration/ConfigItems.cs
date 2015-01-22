@@ -19,7 +19,7 @@ namespace TsdLib.Configuration
     /// Base class for a specific instance of a configuration.
     /// </summary>
     [Serializable]
-    public abstract class ConfigItem : IConfigItem
+    public abstract class ConfigItem : IConfigItem, IComponent
     {
         //Can't use MarshalByRefObject, since it gives problems casting to and from the IConfigItem between the UI and Controller.
         //public override object InitializeLifetimeService()
