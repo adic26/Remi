@@ -50,6 +50,7 @@
     <Compile Include="TypeConverters\EnumDescriptionConverter.cs" />
     <Compile Include="TypeConverters\StringConversionExtensions.cs" />
     <Compile Include="TypeEditors\EnumUITypeEditor.cs" />
+    <Compile Include="TypeEditors\VersionUITypeEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TsdLib.Utilities.nuspec" />

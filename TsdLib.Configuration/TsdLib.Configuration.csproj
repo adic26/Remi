@@ -95,6 +95,10 @@
       <Project>{512BEDDC-2B71-42F0-9C1B-6D37497F5DA7}</Project>
       <Name>TsdLib.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Utilities\TsdLib.Utilities.csproj">
+      <Project>{C0EDAD98-25D3-4824-9DB6-A27DF7299E5D}</Project>
+      <Name>TsdLib.Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="TsdLib.Configuration.nuspec" />
