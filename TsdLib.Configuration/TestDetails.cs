@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Globalization;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
+using TsdLib.Utilities.TypeEditors;
 
 namespace TsdLib.Configuration
 {
@@ -65,6 +67,7 @@ namespace TsdLib.Configuration
         [Category("Test Details")]
         [DisplayName("Test System Version")]
         [Description("Version of the test system")]
+        [Editor(typeof(VersionUITypeEditor), typeof(UITypeEditor))]
         public Version TestSystemVersion
         {
             get { return _testSystemVersion; }

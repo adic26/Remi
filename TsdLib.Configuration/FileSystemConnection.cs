@@ -21,6 +21,9 @@ namespace TsdLib.Configuration
         {
             _settingsBaseDirectory = settingsBasePath;
             _appVersionFilter = appVersionFilter;
+
+            if (!_settingsBaseDirectory.Exists)
+                _settingsBaseDirectory.Create();
         }
 
         private string getDirectoryInfo(string testSystemName, Version testSystemVersion, OperatingMode testSystemMode)
