@@ -41,7 +41,7 @@ namespace TsdLibStarterKitInstaller
                 using (Stream schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TsdLibStarterKitInstaller.WizardData.xsd"))
                 {
                     if (schemaStream == null)
-                        throw new WizardBackoutException("The XML schema: TsdLib.CodeGenerator.TsdLib.Instruments.xsd is missing from the TsdLib.dll");
+                        throw new WizardBackoutException("The XML schema: WizardData.xsd is missing from TsdLibStarterKitInstaller.dll");
                     schema = XmlSchema.Read(schemaStream, null);
                 }
                 XNamespace ns = schema.TargetNamespace;
@@ -67,38 +67,45 @@ namespace TsdLibStarterKitInstaller
 
         public void ProjectFinishedGenerating(Project project)
         {
-            if (NuGetPackageInstaller == null)
+            try
             {
-                MessageBox.Show("NuGet Package Manager not available. Please add packages manually from the following locations: " + string.Join(Environment.NewLine, _packageRepositories));
-                return;
-            }
-
-            Settings nugetSettings = new Settings(new PhysicalFileSystem(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NuGet")));
-            nugetSettings.SetValue("packageRestore", "enabled", "True");
-            nugetSettings.SetValue("packageRestore", "automatic", "True");
-            nugetSettings.SetValues("packageSources", _packageRepositories.ToList());
-            nugetSettings.GetValues("activePackageSource", false);
-            nugetSettings.DeleteValue("activePackageSource", nugetSettings.GetValues("activePackageSource", false).First().Key);
-            nugetSettings.SetValue("activePackageSource", _packageRepositories.First().Key, _packageRepositories.First().Value);
-
-            foreach (var repoKvp in _packageRepositories)
-            {
-                //If using OData repository, use the IPackage.IsLatestVersion property - should also try reading tags
-                IPackageRepository repo = PackageRepositoryFactory.Default.CreateRepository(repoKvp.Value);
-
-                //IQueryable<IPackage> packages = repo.GetPackages()
-                //    .GroupBy(p => p.Id)
-                //    .Select(g => g.OrderBy(p => p.Version)
-                //    .Last());
-
-                IQueryable<IPackage> packages = repo.GetPackages().Where(p => p.IsLatestVersion);
-
-                using (SelectPackagesForm form = new SelectPackagesForm(repoKvp.Key, packages))
+                if (NuGetPackageInstaller == null)
                 {
-                    form.ShowDialog();
-                    foreach (IPackage selectedPackage in form.SelectedPackages)
-                        NuGetPackageInstaller.InstallPackage(repo, project, selectedPackage.Id, selectedPackage.Version.ToString(), false, false);
+                    MessageBox.Show("NuGet Package Manager not available. Please add packages manually from the following locations: " + string.Join(Environment.NewLine, _packageRepositories));
+                    return;
                 }
+
+                Settings nugetSettings = new Settings(new PhysicalFileSystem(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NuGet")));
+                nugetSettings.SetValue("packageRestore", "enabled", "True");
+                nugetSettings.SetValue("packageRestore", "automatic", "True");
+                nugetSettings.SetValues("packageSources", _packageRepositories.ToList());
+                nugetSettings.GetValues("activePackageSource", false);
+                nugetSettings.DeleteValue("activePackageSource", nugetSettings.GetValues("activePackageSource", false).First().Key);
+                nugetSettings.SetValue("activePackageSource", _packageRepositories.First().Key, _packageRepositories.First().Value);
+
+                foreach (var repoKvp in _packageRepositories)
+                {
+                    //If using OData repository, use the IPackage.IsLatestVersion property - should also try reading tags
+                    IPackageRepository repo = PackageRepositoryFactory.Default.CreateRepository(repoKvp.Value);
+
+                    //IQueryable<IPackage> packages = repo.GetPackages()
+                    //    .GroupBy(p => p.Id)
+                    //    .Select(g => g.OrderBy(p => p.Version)
+                    //    .Last());
+
+                    IQueryable<IPackage> packages = repo.GetPackages().Where(p => p.IsLatestVersion);
+
+                    using (SelectPackagesForm form = new SelectPackagesForm(repoKvp.Key, packages))
+                    {
+                        form.ShowDialog();
+                        foreach (IPackage selectedPackage in form.SelectedPackages)
+                            NuGetPackageInstaller.InstallPackage(repo, project, selectedPackage.Id, selectedPackage.Version.ToString(), false, false);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), ex.GetType().Name);
             }
         }
 

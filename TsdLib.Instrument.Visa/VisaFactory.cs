@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using NationalInstruments.VisaNS;
 
@@ -17,7 +18,17 @@ namespace TsdLib.Instrument.Visa
         /// <returns>A sequence of instrument addresses.</returns>
         protected override IEnumerable<string> SearchForInstruments()
         {
-            return ResourceManager.GetLocalManager().FindResources("?*INSTR");
+            try
+            {
+                return ResourceManager.GetLocalManager().FindResources("?*INSTR");
+
+            }
+            catch (FileNotFoundException ex)
+            {
+                if (ex.FileName.Contains("NationalInstruments.VisaNS"))
+                    throw new VisaDriverNotInstalledException(ex);
+                throw;
+            }
         }
 
         /// <summary>
