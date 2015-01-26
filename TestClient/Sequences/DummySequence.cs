@@ -30,7 +30,6 @@ namespace TestClient.Sequences
                         new MeasurementParameter("Voltage", voltageSetting),
                         new MeasurementParameter("Temperature", 22.5)
                     };
-                    throw new TsdLib.Instrument.CommandException("Some command", "testing exception logger");
                     Measurement<double> measurement = new Measurement<double>("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: measurementParameters);
                     Measurements.Add(measurement);
                 }

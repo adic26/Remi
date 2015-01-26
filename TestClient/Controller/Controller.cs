@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using TestClient.Configuration;
 using TestClient.View;
-using TsdLib;
+//using TsdLib;
 using TsdLib.Configuration;
 using TsdLib.TestSystem.CodeGenerator;
 using TsdLib.TestSystem.Controller;
@@ -32,7 +32,7 @@ namespace TestClient
             {
                 string[] instrumentHelperCsFiles = System.IO.Directory.GetFiles(@"Instruments\Helpers", "*.cs");
                 string[] instrumentHelperVbFiles = System.IO.Directory.GetFiles(@"Instruments\Helpers", "*.vb");
-                BasicCodeParser instrumentHelperParser = new BasicCodeParser();
+                TsdLib.BasicCodeParser instrumentHelperParser = new TsdLib.BasicCodeParser();
                 codeCompileUnits.AddRange(instrumentHelperCsFiles.Concat(instrumentHelperVbFiles).Select(xmlFile => instrumentHelperParser.Parse(new System.IO.StreamReader(xmlFile))));
             }
 

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.NetworkInformation;
 using RootDevice.Utilities;
-using Managed.Adb;
 
 namespace TsdLib.Instrument.Ssh
 {
@@ -14,14 +12,10 @@ namespace TsdLib.Instrument.Ssh
         public int NumRetries = 2;
 
         public string devicePass { private get; set; }
-
-        private List<Device> _aosDeveices;
         
         protected override IEnumerable<string> SearchForInstruments()
         {
-            _aosDeveices = new List<Device>(AdbHelper.Instance.GetDevices(AndroidDebugBridge.SocketAddress));
-
-            return ConnectionUtility.GetDeviceAddresses().Concat(_aosDeveices.Select(device => device.SerialNumber));
+            return ConnectionUtility.GetDeviceAddresses();
         }
         /// <summary>
         /// Will try to connect to either a BB10 or Avengers device, depending on whether or not a BB10 device is detected
@@ -36,11 +30,11 @@ namespace TsdLib.Instrument.Ssh
             {
                 try
                 {
-                    Device aosDevice = _aosDeveices.FirstOrDefault(device => device.SerialNumber == address);
-                    if (aosDevice != null)
-                        return new AvengersSshConn(aosDevice);
+                    //Device aosDevice = AdbHelper.Instance.GetDevices(AndroidDebugBridge.SocketAddress).FirstOrDefault(device => device.SerialNumber == address);
+                    //if (aosDevice != null)
+                    //    return new AvengersSshConn(aosDevice);
 
-                    return new QnxSshConn("r8_rel_lab", "r8r3liability", address, devicePass);
+                    return new SshConnection("r8_rel_lab", "r8r3liability", address, devicePass);
                 }
                 catch (Exception ex)
                 {
@@ -58,8 +52,8 @@ namespace TsdLib.Instrument.Ssh
         /// <returns></returns>
         protected override string GetInstrumentIdentifier(SshConnection connection, IdQueryAttribute idAttribute)
         {
-            if (connection is AvengersSshConn)
-                return "Avengers";
+            //if (connection is AvengersSshConn)
+            //    return "Avengers";
 
             string identifier =
                 (from ni in NetworkInterface.GetAllNetworkInterfaces()

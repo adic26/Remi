@@ -1,11 +1,13 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Managed.Adb;
 
-namespace TsdLib.Instrument.Ssh.AdbUtilities
+namespace TsdLib.Instrument.Adb.ManagedAdb
 {
     /// <summary>
     /// class used to receive shell outputs from ADB shell
     /// </summary>
+    [Obsolete("Only needed for ManagedAdb")]
     class StreamOutputReceiver : MultiLineReceiver
     {
         private readonly Stream _outputStream;

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Managed.Adb;
-using TsdLib.Instrument.Ssh.AdbUtilities;
 
-namespace TsdLib.Instrument.Ssh
+namespace TsdLib.Instrument.Adb.ManagedAdb
 {
     /// <summary>
     /// An SSH Connection with Avengers devices
     /// </summary>
-    class AvengersSshConn : SshConnection
+    [Obsolete("Should use the AdbConnection")]
+    public class ManagedAdbConnection : ConnectionBase
     {
         public Device Dut;
         private readonly StreamOutputReceiver _outputReceiver;
@@ -19,7 +19,7 @@ namespace TsdLib.Instrument.Ssh
         /// <summary>
         /// Constructor for this connection. Will throw an exception if no devices are detected
         /// </summary>
-        internal AvengersSshConn()
+        internal ManagedAdbConnection()
             : base("Avengers") 
         {
             List<Device> devices = AdbHelper.Instance.GetDevices(AndroidDebugBridge.SocketAddress);
@@ -31,7 +31,7 @@ namespace TsdLib.Instrument.Ssh
             _outputReceiver = StreamOutputReceiver.Instance;
         }
 
-        internal AvengersSshConn(Device device)
+        internal ManagedAdbConnection(Device device)
             : base(device.SerialNumber)
         {
             if (device == null)

@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,11 +29,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Managed.AndroidDebugBridge">
-      <HintPath>..\packages\Managed.Adb.1.0.0.100693\lib\Managed.AndroidDebugBridge.dll</HintPath>
-    </Reference>
     <Reference Include="RootDevice">
       <HintPath>.\RootDevice.dll</HintPath>
     </Reference>
@@ -40,11 +39,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdbUtilities\StreamOutputReceiver.cs" />
-    <Compile Include="AvengersSshConn.cs" />
-    <Compile Include="QnxSshConn.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SshConnection.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SshFactory.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -53,7 +49,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="plink_resources\private.ppk">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

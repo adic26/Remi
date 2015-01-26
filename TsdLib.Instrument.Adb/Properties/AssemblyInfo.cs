@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TsdLib.Instrument.Ssh")]
+[assembly: AssemblyTitle("TsdLib.Instrument.Adb")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Research In Motion")]
-[assembly: AssemblyProduct("TsdLib.Instrument.Ssh")]
-[assembly: AssemblyCopyright("Copyright © Research In Motion 2014")]
+[assembly: AssemblyCompany("BlackBerry")]
+[assembly: AssemblyProduct("TsdLib.Instrument.Adb")]
+[assembly: AssemblyCopyright("Copyright © BlackBerry 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("f7fe91df-2bc5-4916-86d7-26d2237179d5")]
+[assembly: Guid("385a2ec3-5e91-4f4b-99dd-d9def2b7f1c2")]
 
 // Version information for an assembly consists of the following four values:
 //
