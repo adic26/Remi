@@ -113,6 +113,8 @@ namespace TsdLib.TestSystem.TestSequence
         /// </summary>
         protected TestSequenceBase()
         {
+            Trace.AutoFlush = true;
+
             UserCancellationTokenSource = new CancellationTokenSource();
             ErrorCancellationTokenSource = new CancellationTokenSource();
             linked = CancellationTokenSource.CreateLinkedTokenSource(UserCancellationTokenSource.Token, ErrorCancellationTokenSource.Token);
