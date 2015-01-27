@@ -67,9 +67,7 @@
     <None Include="TsdLib.Instrument.Visa.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="tools\NIVISA1401full_downloader.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="tools\NIVISA1401full_downloader.exe" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
