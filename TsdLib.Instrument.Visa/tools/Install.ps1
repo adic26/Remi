@@ -5,7 +5,7 @@ $regKey = 'HKLM:Software\National Instruments\NI-VISA\CurrentVersion'
 If (!(Test-Path($regKey)))
 {
     Write-Host "No Registry key for NI-VISA drivers"
-    Install-Drivers
+    InstallDrivers
 }
 Else
 {
