@@ -37,6 +37,6 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.*")]
 #if DEBUG
-[assembly: AssemblyInformationalVersion("1.1-debug")]
+[assembly: AssemblyInformationalVersion("1.1.0-debug")]
 #endif
 
