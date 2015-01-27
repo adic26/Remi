@@ -27,7 +27,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;INSTRUMENT_LIBRARY;simREMICONTROL;REMICONTROL</DefineConstants>
+    <DefineConstants>TRACE;INSTRUMENT_LIBRARY;REMICONTROL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>

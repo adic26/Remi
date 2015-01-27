@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="69d7b1ff-89bd-42a4-bdbb-95a78d9dcce4" Version="1.0.0.76" Language="en-US" Publisher="BlackBerry" />
+    <Identity Id="69d7b1ff-89bd-42a4-bdbb-95a78d9dcce4" Version="1.0.0.78" Language="en-US" Publisher="BlackBerry" />
     <DisplayName>TsdLibStarterKit</DisplayName>
     <Description xml:space="preserve">Starter kit for developing applications based on the TsdLib Framework.</Description>
   </Metadata>
