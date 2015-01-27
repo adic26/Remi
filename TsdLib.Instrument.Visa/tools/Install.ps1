@@ -10,20 +10,20 @@ If (!(Test-Path($regKey)))
 Else
 {
     $val = (Get-ItemProperty -Path 'HKLM:Software\National Instruments\NI-VISA\CurrentVersion' -Name "Version").Version
-    If ($val -ne "14.0.11")
+    If ($val -ne "14.0.1")
     {
         Write-Host "Wrong version for NI-VISA drivers"
-        Install-Drivers
+        InstallDrivers
     }
 }
 
-function Install-Drivers
+function InstallDrivers
 {
     Write-Host "Running VISA driver downloader"
     Start-Process -FilePath $toolsPath + "\NIVISA1401full_downloader.exe"
 }
 
-function Install-Drivers-From_msi
+function InstallDriversFromMsi
 {
     Write-Host "Installing VISA drivers"
     $installSwitch = "/i"
