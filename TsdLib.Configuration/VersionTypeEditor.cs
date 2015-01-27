@@ -4,9 +4,9 @@ using System.Drawing.Design;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
-namespace TsdLib.Utilities.TypeEditors
+namespace TsdLib.Configuration
 {
-    public class VersionUITypeEditor : UITypeEditor
+    public class VersionTypeEditor : UITypeEditor
     {
         public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
         {
@@ -22,7 +22,7 @@ namespace TsdLib.Utilities.TypeEditors
             if (edSvc == null)
                 return base.EditValue(context, provider, value);
 
-            MaskedTextBox maskedTextBox = new MaskedTextBox();
+            MaskedTextBox maskedTextBox = new MaskedTextBox("##0.##0.###0.####0");
             edSvc.DropDownControl(maskedTextBox);
 
             Version newValue;

@@ -75,6 +75,7 @@
     <Compile Include="TestDetailsEditor.Designer.cs">
       <DependentUpon>TestDetailsEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="VersionTypeEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ConfigItemCreate.resx">

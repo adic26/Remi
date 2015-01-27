@@ -67,7 +67,7 @@ namespace TsdLib.Configuration
         [Category("Test Details")]
         [DisplayName("Test System Version")]
         [Description("Version of the test system")]
-        [Editor(typeof(VersionUITypeEditor), typeof(UITypeEditor))]
+        [Editor(typeof(VersionTypeEditor), typeof(UITypeEditor))]
         public Version TestSystemVersion
         {
             get { return _testSystemVersion; }
