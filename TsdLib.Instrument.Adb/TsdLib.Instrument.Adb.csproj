@@ -32,14 +32,6 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Managed.AndroidDebugBridge, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e53c7809c22fb533, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Managed.Adb.1.0.0.110347\lib\Managed.AndroidDebugBridge.dll</HintPath>
-    </Reference>
-    <Reference Include="MoreLinq">
-      <HintPath>..\packages\Managed.Adb.1.0.0.110347\lib\MoreLinq.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -51,9 +43,9 @@
   <ItemGroup>
     <Compile Include="AdbConnection.cs" />
     <Compile Include="AdbFactory.cs" />
-    <Compile Include="ManagedAdb\StreamOutputReceiver.cs" />
-    <Compile Include="ManagedAdb\ManagedAdbConnection.cs" />
-    <Compile Include="ManagedAdb\ManagedAdbFactory.cs" />
+    <None Include="ManagedAdb\StreamOutputReceiver.cs" />
+    <None Include="ManagedAdb\ManagedAdbConnection.cs" />
+    <None Include="ManagedAdb\ManagedAdbFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -132,9 +124,6 @@
       <Project>{421092EB-A692-46A8-A66B-247C94C16421}</Project>
       <Name>TsdLib.Instrument</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
