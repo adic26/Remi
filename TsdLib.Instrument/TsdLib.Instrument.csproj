@@ -45,7 +45,6 @@
     <Compile Include="InstrumentAttributes.cs" />
     <Compile Include="InstrumentBase.cs" />
     <Compile Include="InstrumentExceptions.cs" />
-    <Compile Include="InstrumentWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

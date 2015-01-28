@@ -16,12 +16,24 @@ namespace TsdLib.Instrument
         /// </summary>
         string ModelNumber { get; }
         /// <summary>
+        /// Gets the descriptor used for the <see cref="ModelNumber"/> property.
+        /// </summary>
+        string ModelNumberDescriptor { get; }
+        /// <summary>
         /// Gets the instrument serial number.
         /// </summary>
         string SerialNumber { get; }
         /// <summary>
+        /// Gets the descriptor used for the <see cref="SerialNumber"/> property.
+        /// </summary>
+        string SerialNumberDescriptor { get; }
+        /// <summary>
         /// Gets the instrument firmware version.
         /// </summary>
         string FirmwareVersion { get; }
+        /// <summary>
+        /// Gets the descriptor used for the <see cref="FirmwareVersion"/> property.
+        /// </summary>
+        string FirmwareVersionDescriptor { get; }
     }
 }

@@ -67,6 +67,14 @@ namespace TestClient.Instruments
             }
         }
         
+        public override string SerialNumberDescriptor
+        {
+            get
+            {
+                return "BSN";
+            }
+        }
+        
         protected override string FirmwareVersionMessage
         {
             get
@@ -83,6 +91,14 @@ namespace TestClient.Instruments
             }
         }
         
+        public override string FirmwareVersionDescriptor
+        {
+            get
+            {
+                return "OS Version";
+            }
+        }
+        
         public static Aos_BCM4339 Connect()
         {
             return _factory.GetInstrument<Aos_BCM4339>();
@@ -96,19 +112,6 @@ namespace TestClient.Instruments
         public static Aos_BCM4339 Connect(ConnectionBase connection)
         {
             return _factory.GetInstrument<Aos_BCM4339>(((AdbConnection)(connection)));
-        }
-        
-        public virtual void LoadFirmware(String firmwareImage)
-        {
-            System.Threading.Monitor.Enter(Connection.SyncRoot);
-            try
-            {
-                Connection.SendCommand("", -1, firmwareImage);
-            }
-            finally
-            {
-                System.Threading.Monitor.Exit(Connection.SyncRoot);
-            }
         }
         
         public virtual void DisableWlan()

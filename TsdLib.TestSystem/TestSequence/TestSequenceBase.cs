@@ -155,9 +155,9 @@ namespace TsdLib.TestSystem.TestSequence
             _instruments.Add(e);
             string instrumentType = e.GetType().Name;
             TestInfo.Add(new TestInfo(instrumentType + " Description", e.Description));
-            TestInfo.Add(new TestInfo(instrumentType + " Model Number", e.ModelNumber));
-            TestInfo.Add(new TestInfo(instrumentType + " Serial Number", e.SerialNumber));
-            TestInfo.Add(new TestInfo(instrumentType + " Firmware Version", e.FirmwareVersion));
+            TestInfo.Add(new TestInfo(instrumentType + " " + e.ModelNumberDescriptor, e.ModelNumber));
+            TestInfo.Add(new TestInfo(instrumentType + " " + e.SerialNumberDescriptor, e.SerialNumber));
+            TestInfo.Add(new TestInfo(instrumentType + " " + e.FirmwareVersionDescriptor, e.FirmwareVersion));
         }
 
         /// <summary>

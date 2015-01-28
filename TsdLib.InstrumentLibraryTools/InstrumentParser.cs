@@ -164,15 +164,9 @@ namespace TsdLib.InstrumentLibraryTools
 
 
                 //Add info property overloads
-                instrumentClass.Members.AddRange(
-                    new InfoPropertyCollection(
-                        instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "ModelNumber")));
-                instrumentClass.Members.AddRange(
-                    new InfoPropertyCollection(
-                        instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "SerialNumber")));
-                instrumentClass.Members.AddRange(
-                    new InfoPropertyCollection(
-                        instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "FirmwareVersion")));
+                instrumentClass.Members.AddRange(new InfoPropertyCollection(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "ModelNumber")));
+                instrumentClass.Members.AddRange(new InfoPropertyCollection(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "SerialNumber")));
+                instrumentClass.Members.AddRange(new InfoPropertyCollection(instrumentElement.Elements().FirstOrDefault(e => e.Name.LocalName == "FirmwareVersion")));
 
                 //Add command methods
                 foreach (XElement methodElement in instrumentElement.Elements().Where(e => e.Name.LocalName == "Command"))
@@ -339,14 +333,26 @@ namespace TsdLib.InstrumentLibraryTools
 
             if ((string)infoElement.Attribute("TermChar") != null)
             {
-                CodeMemberProperty regexMember = new CodeMemberProperty
+                CodeMemberProperty termCharMember = new CodeMemberProperty
                 {
                     Name = infoElement.Name.LocalName + "TermChar",
                     Type = new CodeTypeReference(typeof(char)),
                     Attributes = MemberAttributes.Family | MemberAttributes.Override
                 };
-                regexMember.GetStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(((string)infoElement.Attribute("TermChar"))[0])));
-                Add(regexMember);
+                termCharMember.GetStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(((string)infoElement.Attribute("TermChar"))[0])));
+                Add(termCharMember);
+            }
+
+            if ((string)infoElement.Attribute("Descriptor") != null)
+            {
+                CodeMemberProperty descriptorMember = new CodeMemberProperty
+                {
+                    Name = infoElement.Name.LocalName + "Descriptor",
+                    Type = new CodeTypeReference(typeof(string)),
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override
+                };
+                descriptorMember.GetStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(((string)infoElement.Attribute("Descriptor")))));
+                Add(descriptorMember);
             }
         }
     }

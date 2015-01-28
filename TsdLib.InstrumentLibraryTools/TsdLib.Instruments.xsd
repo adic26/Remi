@@ -154,6 +154,11 @@
         <xs:documentation>Optional: Optional: A character that signals the end of the expected response from the instrument.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="Descriptor">
+      <xs:annotation>
+        <xs:documentation>Optional: A string that will be used to describe this informational item..</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:complexType>
 
   <xs:complexType name="InitCommandElement">

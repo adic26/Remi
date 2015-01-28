@@ -64,6 +64,14 @@ namespace TsdLib.Instrument
         public string ModelNumber { get; internal set; }
 
         /// <summary>
+        /// Gets the descriptor used for the <see cref="IInstrument.ModelNumber"/> property.
+        /// </summary>
+        public virtual string ModelNumberDescriptor
+        {
+            get { return "Model Number"; }
+        }
+
+        /// <summary>
         /// Gets the message to send to the instrument to query the serial number.
         /// </summary>
         protected internal abstract string SerialNumberMessage { get; }
@@ -81,6 +89,14 @@ namespace TsdLib.Instrument
         public string SerialNumber { get; internal set; }
 
         /// <summary>
+        /// Gets the descriptor used for the <see cref="IInstrument.SerialNumber"/> property.
+        /// </summary>
+        public virtual string SerialNumberDescriptor
+        {
+            get { return "Serial Number"; }
+        }
+
+        /// <summary>
         /// Gets the message to send to the instrument to query the firmware version.
         /// </summary>
         protected internal abstract string FirmwareVersionMessage { get; }
@@ -96,6 +112,14 @@ namespace TsdLib.Instrument
         /// Gets the instrument firmware version.
         /// </summary>
         public string FirmwareVersion { get; internal set; }
+
+        /// <summary>
+        /// Gets the descriptor used for the <see cref="IInstrument.FirmwareVersion"/> property.
+        /// </summary>
+        public virtual string FirmwareVersionDescriptor
+        {
+            get { return "Firmware Version"; }
+        }
 
         /// <summary>
         /// Closes the instrument connection and disposes of any resources being used.

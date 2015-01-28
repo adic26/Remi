@@ -7,12 +7,9 @@
 
     <!--Identification-->
     <ModelNumber Message="cat /system/build.prop | grep ro.build.id" RegEx="(?&lt;=ro.build.id=)\w+"/>
-    <SerialNumber Message="cat /system/build.prop | grep ro.build.date.utc" RegEx="(?&lt;=ro.build.date.utc=)\d+"/>
-    <FirmwareVersion Message="cat /system/build.prop | grep ro.build.version.incremental" RegEx="(?&lt;=ro.build.version.incremental=)\w+"/>
+    <SerialNumber Message="cat /system/build.prop | grep ro.build.date.utc" RegEx="(?&lt;=ro.build.date.utc=)\d+" Descriptor="BSN"/>
+    <FirmwareVersion Message="cat /system/build.prop | grep ro.build.version.incremental" RegEx="(?&lt;=ro.build.version.incremental=)\w+" Descriptor="OS Version"/>
 
-    <Command Name="LoadFirmware" Message="">
-      <Parameter Name="firmwareImage" Type="String"/>
-    </Command>
     <Command Name="DisableWlan" Message="netcfg wlan0 down">
     </Command>
     <Command Name="EnableWlan" Message="netcfg wlan0 up">
