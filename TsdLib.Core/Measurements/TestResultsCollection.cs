@@ -16,9 +16,11 @@ namespace TsdLib.Measurements
     /// Represents a collection of <see cref="TsdLib.Measurements.MeasurementBase"/> objects and <see cref="TsdLib.Measurements.TestInfo"/> objects with an <see cref="ITestDetails"/> to store metadata and an <see cref="ITestSummary"/> to summarize the test results.
     /// </summary>
     [Serializable]
-    [XmlRoot(ElementName = "TestResults", Namespace = "TsdLib.ResultsFile.xsd")]
+    [XmlRoot(ElementName = "TestResults", Namespace = SchemaFileName)]
     public class TestResultCollection : ITestResults
     {
+        private const string SchemaFileName = "TsdLib.ResultsFile.xsd";
+
         static IFormatter _formatter = new BinaryFormatter();
         static XmlSerializer _serializer = new XmlSerializer(typeof(TestResultCollection));
 
@@ -55,6 +57,14 @@ namespace TsdLib.Measurements
         /// Gets the measurements captued during the test.
         /// </summary>
         public IEnumerable<MeasurementBase> Measurements { get; set; }
+
+        /// <summary>
+        /// Gets the name of the xml schema used to validate the serialized output.
+        /// </summary>
+        public string SchemaFile
+        {
+            get { return SchemaFileName; }
+        }
 
         private TestResultCollection() { }
 
@@ -99,12 +109,26 @@ namespace TsdLib.Measurements
         }
 
         /// <summary>
-        /// Save the test results to an xml file in the specified directory. Useful for uploading to database.
+        /// Save the test results to an xml file in the default test results directory. Useful for uploading to database.
         /// </summary>
         /// <returns>The absolute path to the xml file generated.</returns>
         public string SaveXml()
         {
             using (FileStream stream = SpecialFolders.GetResultsFile(Details, Summary, "xml"))
+            {
+                _serializer.Serialize(stream, this);
+                return stream.Name;
+            }
+        }
+
+        /// <summary>
+        /// Save the test results to an xml file in the specified directory. Useful for uploading to database.
+        /// </summary>
+        /// <param name="directory">The </param>
+        /// <returns>The absolute path to the xml file generated.</returns>
+        public string SaveXml(DirectoryInfo directory)
+        {
+            using (FileStream stream = File.OpenWrite(directory.FullName))
             {
                 _serializer.Serialize(stream, this);
                 return stream.Name;

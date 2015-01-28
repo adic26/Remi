@@ -11,6 +11,7 @@ namespace TsdLib.Measurements
         ITestSummary Summary { get; }
         List<ITestInfo> TestInfo { get; }
         IEnumerable<MeasurementBase> Measurements { get; }
+        string SchemaFile { get; }
 
         string SaveXml();
         string SaveCsv();

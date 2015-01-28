@@ -1,5 +1,21 @@
 ﻿param($installPath, $toolsPath, $package, $project)
 
+function InstallDrivers
+{
+    Write-Host "Running VISA driver downloader"
+	$exePath = $toolsPath + "\NIVISA1401full_downloader.exe"
+    Start-Process -FilePath $exePath
+}
+
+function InstallDriversFromMsi
+{
+    Write-Host "Installing VISA drivers"
+    $installSwitch = "/i"
+    $msiPath = $toolsPath + "\NIVISA1401full_downloader.exe"
+    $features = "ADDLOCAL='.NET Framework 4.5 Language Support"
+    Start-Process -FilePath $msiPath -ArgumentList /i, $msiPath
+}
+
 $regKey = 'HKLM:Software\National Instruments\NI-VISA\CurrentVersion'
 
 If (!(Test-Path($regKey)))
@@ -17,17 +33,3 @@ Else
     }
 }
 
-function InstallDrivers
-{
-    Write-Host "Running VISA driver downloader"
-    Start-Process -FilePath $toolsPath + "\NIVISA1401full_downloader.exe"
-}
-
-function InstallDriversFromMsi
-{
-    Write-Host "Installing VISA drivers"
-    $installSwitch = "/i"
-    $msiPath = $toolsPath + "\NIVISA1401full_downloader.exe"
-    $features = "ADDLOCAL='.NET Framework 4.5 Language Support"
-    Start-Process -FilePath $msiPath -ArgumentList /i, $msiPath
-}

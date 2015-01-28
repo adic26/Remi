@@ -234,6 +234,8 @@ namespace TsdLib.TestSystem.TestSequence
             if (disposing)
             {
                 InstrumentEvents.Connected -= FactoryEvents_Connected;
+                foreach (IInstrument instrument in _instruments)
+                    instrument.Dispose();
             }
         }
 

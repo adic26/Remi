@@ -44,12 +44,13 @@ namespace TsdLib.Instrument.Adb
 
         protected override void Write(string message)
         {
+            _output.Clear();
             _shellProcess.StandardInput.WriteLine(message);
         }
 
         protected override string ReadString()
         {
-            _outputWaitHandle.WaitOne(5000);
+            _outputWaitHandle.WaitOne(25000);
             string data = _output.ToString();
             _output.Clear();
 
@@ -73,6 +74,8 @@ namespace TsdLib.Instrument.Adb
 
         protected override void Dispose(bool disposing)
         {
+            _shellProcess.CancelErrorRead();
+            _shellProcess.CancelOutputRead();
             _shellProcess.Kill();
             base.Dispose(disposing);
         }

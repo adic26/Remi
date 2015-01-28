@@ -61,7 +61,7 @@
     <None Include="tools\Install.ps1" />
     <None Include="key.snk" />
     <None Include="tools\Uninstall.ps1" />
-    <None Include="TsdLib.InstrumentLibrary.nuspec">
+    <None Include="TsdLib.InstrumentLibraryTools.nuspec">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

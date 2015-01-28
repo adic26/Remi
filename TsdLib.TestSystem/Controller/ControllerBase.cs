@@ -288,23 +288,27 @@ namespace TsdLib.TestSystem.Controller
                     else
                         MessageBox.Show("An undescribed error has occurred and was not reported by the test sequence. Please contact TSD for support.", "Unknown Error:");
                 }
-                catch (TsdLibException ex)
+                catch (Exception ex)
                 {
                     displayError(ex, sequenceConfig.Name);
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.GetType().Name + Environment.NewLine + ex + Environment.NewLine + "This error was unexpected and not handled by the TsdLib Application. Please contact TSD for support.", "Unexpected error occurred in test sequence");
-                }
                 finally
                 {
-                    if (_sequence != null)
+                    try
                     {
-                        _sequence.Dispose();
-                        _sequence = null;
+                        if (_sequence != null)
+                        {
+                            _sequence.Dispose();
+                            _sequence = null;
+                        }
+                        if (sequenceDomain != null)
+                            AppDomain.Unload(sequenceDomain);
                     }
-                    if (sequenceDomain != null)
-                        AppDomain.Unload(sequenceDomain);
+                    catch (CannotUnloadAppDomainException ex)
+                    {
+                        Trace.WriteLine("AppDomain could not be unloaded." + Environment.NewLine + ex);
+                    }
+
                 }
             }
             UI.SetState(State.ReadyToTest);
@@ -324,9 +328,11 @@ namespace TsdLib.TestSystem.Controller
 
                 if (result == DialogResult.Yes)
                     Process.Start(ex.HelpLink);
+            }).ContinueWith(task => 
+            {
+                if (task.IsFaulted)
+                    Trace.WriteLine(task.Exception);
             });
-            if (t.IsFaulted)
-                Trace.WriteLine(t.Exception);
         }
 
         /// <summary>

@@ -17,7 +17,5 @@
   </metadata>
   <files>
     <file src="tools\*.*" target="tools"/>
-    <file src="TsdLib.Instruments.xsd" target="content"/>
-    <file src="readme.txt" target=""/>
   </files>
 </package>

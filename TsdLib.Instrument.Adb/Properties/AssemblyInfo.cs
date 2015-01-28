@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TsdLib.Instrument.Adb")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("TsdLib Instrument module for controlling instruments (usually BlackBerry devices) through an Adb shell.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BlackBerry")]
 [assembly: AssemblyProduct("TsdLib.Instrument.Adb")]
@@ -33,5 +33,5 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.*")]
 #if DEBUG
-[assembly: AssemblyInformationalVersion("1.1.0-debug")]
+[assembly: AssemblyInformationalVersion("1.1.6-debug")]
 #endif
