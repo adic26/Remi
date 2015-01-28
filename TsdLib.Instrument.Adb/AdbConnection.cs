@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 
@@ -6,60 +7,81 @@ namespace TsdLib.Instrument.Adb
 {
     public class AdbConnection : ConnectionBase
     {
-        private readonly Process _shellProcess;
         private readonly StringBuilder _output;
-        private readonly AutoResetEvent _outputWaitHandle;
         private readonly StringBuilder _error;
-        private readonly AutoResetEvent _errorWaitHandle;
 
-        internal AdbConnection(string address, Process shellProcess)
+        internal AdbConnection(string address)
             : base(address)
         {
-            _shellProcess = shellProcess;
-            _shellProcess.OutputDataReceived += _shellProcess_OutputDataReceived;
-            _shellProcess.ErrorDataReceived += _shellProcess_ErrorDataReceived;
             _output = new StringBuilder();
-            _outputWaitHandle = new AutoResetEvent(false);
             _error = new StringBuilder();
-            _errorWaitHandle = new AutoResetEvent(false);
-            _shellProcess.BeginOutputReadLine();
-            _shellProcess.BeginErrorReadLine();
-        }
-
-        void _shellProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            if (e.Data == null)
-                _outputWaitHandle.Set();
-            else if (!string.IsNullOrWhiteSpace(e.Data))
-                _output.AppendLine(e.Data);
-        }
-
-        void _shellProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            if (e.Data == null)
-                _errorWaitHandle.Set();
-            else if (!string.IsNullOrWhiteSpace(e.Data))
-                _error.AppendLine(e.Data);
         }
 
         protected override void Write(string message)
         {
             _output.Clear();
-            _shellProcess.StandardInput.WriteLine(message);
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                FileName = @"platform-tools\adb.exe",
+                Arguments = "-s " + Address + " shell " + message,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+            };
+            using (Process process = Process.Start(startInfo))
+            {
+                if (process == null)
+                    throw new AdbConnectException("Could not start adb process");
+                using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
+                using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
+                {
+                    process.OutputDataReceived += (sender, e) =>
+                    {
+                        if (e.Data == null)
+                            outputWaitHandle.Set();
+                        else if (!string.IsNullOrEmpty(e.Data))
+                            _output.Append(e.Data.Trim());
+                    };
+                    process.ErrorDataReceived += (sender, e) =>
+                    {
+                        if (e.Data == null)
+                            errorWaitHandle.Set();
+                        else if (!string.IsNullOrEmpty(e.Data))
+                            _error.Append(e.Data.Trim());
+                    };
+
+                    process.Start();
+
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+
+                    if (process.WaitForExit(5000) && outputWaitHandle.WaitOne(5000) && errorWaitHandle.WaitOne(5000))
+                    {
+                        if (process.ExitCode != 0)
+                            throw new AdbCommandException(this, message, "Adb process exited with code " + process.ExitCode);
+                    }
+                    else
+                    {
+                        process.Kill();
+                        throw new AdbCommandException(this, message, "Timeout waiting for Adb process to exit");
+                    }
+                }
+            }
+
+
         }
 
         protected override string ReadString()
         {
-            _outputWaitHandle.WaitOne(25000);
-            string data = _output.ToString();
+            string response = _output.ToString();
             _output.Clear();
-
-            return data;
+            return response;
         }
 
         protected override byte ReadByte()
         {
-            return (byte)_shellProcess.StandardOutput.BaseStream.ReadByte();
+            throw new NotImplementedException();
         }
 
         protected override bool CheckForError()
@@ -69,15 +91,7 @@ namespace TsdLib.Instrument.Adb
 
         public override bool IsConnected
         {
-            get { return !_shellProcess.HasExited && _shellProcess.Responding; }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            _shellProcess.CancelErrorRead();
-            _shellProcess.CancelOutputRead();
-            _shellProcess.Kill();
-            base.Dispose(disposing);
+            get { return true; }
         }
     }
 }

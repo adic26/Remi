@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
@@ -17,7 +18,6 @@ namespace TsdLib.Instrument.Adb
                 FileName = AdbFileLocation,
                 Arguments = "devices",
                 RedirectStandardError = true,
-                RedirectStandardInput = true,
                 RedirectStandardOutput = true
             };
 
@@ -35,6 +35,9 @@ namespace TsdLib.Instrument.Adb
                     if (match.Success)
                         addresses.Add(match.Value);
                 }
+                queryDevicesProcess.WaitForExit(2000);
+                if (!queryDevicesProcess.HasExited)
+                    throw new AdbConnectException("Adb device query process did not terminate");
             }
             
             return addresses;
@@ -42,23 +45,20 @@ namespace TsdLib.Instrument.Adb
 
         void process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
-            
+            throw new AdbConnectException("Error received when searching for devices: " + e.Data);
         }
 
         protected override AdbConnection CreateConnection(string address, int defaultDelay, params ConnectionSettingAttribute[] attributes)
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo
+            using (Process rootProcess = Process.Start(AdbFileLocation, "root"))
             {
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                FileName = AdbFileLocation,
-                Arguments = "-s " + address + " shell ",
-                RedirectStandardError = true,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true
-            };
-
-            AdbConnection conn = new AdbConnection(address, Process.Start(startInfo));
+                if (rootProcess == null)
+                    throw new AdbConnectException("Could not start adb.exe to send the root command");
+                rootProcess.WaitForExit(10000);
+                if (!rootProcess.HasExited)
+                    throw new AdbConnectException("Root process did not terminate");
+            }
+            AdbConnection conn = new AdbConnection(address);
 
             return conn;
         }
@@ -68,4 +68,6 @@ namespace TsdLib.Instrument.Adb
             return "Avengers";
         }
     }
+
+
 }

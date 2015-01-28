@@ -75,8 +75,8 @@ namespace TsdLib.Instrument
         /// <param name="connection">Connection where the error occurred.</param>
         /// <param name="command">Command that caused the error.</param>
         /// <param name="inner">OPTIONAL: The Exception that is the cause of the CommandException.</param>
-        public CommandException(ConnectionBase connection, string command, Exception inner = null)
-            : base("Error sending command: " + command + " to " + connection.Description, inner) { }
+        public CommandException(ConnectionBase connection, string command, string message, Exception inner = null)
+            : base(string.Format("Error sending command: {0} to {1}.{3}Error details: {2}", command, connection.Description, message, Environment.NewLine), inner) { }
 
         /// <summary>
         /// Deserialization constructor used by the .NET Framework to initialize an instance of the CommandException class from serialized data.

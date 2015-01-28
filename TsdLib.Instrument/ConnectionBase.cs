@@ -121,7 +121,7 @@ namespace TsdLib.Instrument
                     Trace.WriteLine("Sending command to " + Description + ": " + partialCommand);
                     Write(partialCommand);
                     if (CheckForError())
-                        throw new CommandException(this, partialCommand);
+                        throw new CommandException(this, partialCommand, "The connection object detected an error");
                 }
             }
         }
