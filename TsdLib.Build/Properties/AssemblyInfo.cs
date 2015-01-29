@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TsdLib.Instrument.Ssh")]
-[assembly: AssemblyDescription("TsdLib Instrument module for controlling instruments (usually BlackBerry devices) through the SSH protocol.")]
+[assembly: AssemblyTitle("TsdLib.Build")]
+[assembly: AssemblyDescription("A library containing development environment and build tools.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Research In Motion")]
-[assembly: AssemblyProduct("TsdLib.Instrument.Ssh")]
-[assembly: AssemblyCopyright("Copyright © Research In Motion 2014")]
+[assembly: AssemblyCompany("BlackBerry")]
+[assembly: AssemblyProduct("TsdLib.Build")]
+[assembly: AssemblyCopyright("Copyright © BlackBerry 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("f7fe91df-2bc5-4916-86d7-26d2237179d5")]
+[assembly: Guid("7456e2bb-2419-43b8-84da-bfad5af5aa34")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,6 +32,3 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.*")]
-#if DEBUG
-[assembly: AssemblyInformationalVersion("1.1.0-debug")]
-#endif

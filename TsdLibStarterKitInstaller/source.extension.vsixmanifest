@@ -10,6 +10,7 @@
   </Installation>
   <Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="4.5" />
+    <Dependency d:Source="Manual" DisplayName="NuGet Package Manager" Id="NuPackToolsVsix.Microsoft.27077b70-9dad-4c64-adcf-c7cf6bc9970c" Version="2.8.50926.602" d:InstallSource="Download" Location="https://visualstudiogallery.msdn.microsoft.com/27077b70-9dad-4c64-adcf-c7cf6bc9970c" />
   </Dependencies>
   <Assets>
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="TsdLibStarterKit" d:TargetPath="|TsdLibStarterKit;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
