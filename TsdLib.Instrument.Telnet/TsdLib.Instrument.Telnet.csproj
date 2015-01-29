@@ -64,18 +64,20 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call "$(SolutionDir)NuGetPostBuild.bat" $(ProjectPath) $(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>rem call "$(SolutionDir)NuGetPostBuild.bat" $(ProjectPath) $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-
-  <Target Name="AfterBuild">
-    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
-      <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
-    </GetAssemblyIdentity>
-    <Exec Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages_Experimental\" WorkingDirectory="$(TargetDir)" />
-  </Target>
     -->
+  <UsingTask AssemblyFile="C:\Users\jmckee\Source\Repos\TsdLib\TsdLib.Build\bin\Debug\TsdLib.Build.dll" TaskName="AssemblyInformationalVersionSync"/>
+  <Target Name="AfterBuild" Outputs="@(AssemblyInformationalVersionAttributeValue)">
+    <AssemblyInformationalVersionSync AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
+    </AssemblyInformationalVersionSync>
+    <!--<Exec Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages_Experimental\" WorkingDirectory="$(TargetDir)" />-->
+    
+  </Target>
+
 </Project>
