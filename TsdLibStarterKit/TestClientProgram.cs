@@ -43,7 +43,7 @@ namespace $safeprojectname$
                 _argsList = args.ToList();
 
                 string testSystemName = getConfigValue(TestSystemNameArg) ?? Application.ProductName;
-                Version testSystemVersion = Version.Parse(getConfigValue(TestSystemVersionArg) ?? Application.ProductVersion);
+                Version testSystemVersion = Version.Parse(getConfigValue(TestSystemVersionArg) ?? Application.ProductVersion.Split('-')[0]);
                 string testSystemVersionMask = getConfigValue(TestSystemVersionMaskArg) ?? @"\d+\.\d+";
                 OperatingMode testSystemMode = (OperatingMode)Enum.Parse(typeof(OperatingMode), getConfigValue(TestSystemModeArg) ?? DefaultMode.ToString());
                 bool localDomain = bool.Parse(getConfigValue(LocalDomainArg) ?? "false");
