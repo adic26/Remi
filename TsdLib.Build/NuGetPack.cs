@@ -8,7 +8,7 @@ using Microsoft.Build.Utilities;
 
 namespace TsdLib.Build
 {
-    public class NuGetPack : Task
+    public class NuGetPack : AppDomainIsolatedTask 
     {
         [Required]
         public string OutputFolder { get; set; }
@@ -25,7 +25,7 @@ namespace TsdLib.Build
         {
             try
             {
-                foreach (string package in Directory.EnumerateFiles(OutputFolder, ".nupkg"))
+                foreach (string package in Directory.EnumerateFiles(OutputFolder, "*.nupkg"))
                     File.Delete(package);
 
                 Process nugetProcess = Process.Start("nuget.exe", string.Format("pack {0} -OutputDirectory {1} -Prop Configuration={2} -IncludeReferencedProjects {3}", TargetFile, OutputFolder, Configuration, OtherArguments ?? ""));
