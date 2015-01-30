@@ -272,21 +272,26 @@ namespace TsdLib.TestSystem.Controller
                     if (_sequence.CancelledByUser)
                         Trace.WriteLine("Test sequence was cancelled by user.");
 
-                    //TsdLibException came from controller proxy or other client code
                     else if (_sequence.Error is TsdLibException)
                     {
+                        Trace.WriteLine("TsdLibException: " + _sequence.Error.GetType().Name + " came from controller proxy or other client code");
                         DialogResult result = MessageBox.Show(_sequence.Error.GetType().Name + Environment.NewLine + _sequence.Error.Message + Environment.NewLine + "Would you like to view help for this error?", "Error occurred in test sequence", MessageBoxButtons.YesNo);
                         if (result == DialogResult.Yes)
                             Process.Start(_sequence.Error.HelpLink);
                     }
 
-                    //Some other exception came from controller proxy or other client code
                     else if (_sequence.Error != null)
+                    {
+                        Trace.WriteLine("System exception: " + _sequence.Error.GetType().Name + " came from controller proxy or other client code");
                         MessageBox.Show(_sequence.Error.GetType().Name + Environment.NewLine + _sequence.Error + Environment.NewLine + "This error was unexpected and not handled by the TsdLib Application. Please contact TSD for support.", "Unexpected error occurred in test sequence");
+                    }
 
                     //Test test sequence did not set the Error property - this should never happen
                     else
+                    {
+                        Trace.WriteLine("Test test sequence did not set the Error property - this should never happen");
                         MessageBox.Show("An undescribed error has occurred and was not reported by the test sequence. Please contact TSD for support.", "Unknown Error:");
+                    }
                 }
                 catch (Exception ex)
                 {
