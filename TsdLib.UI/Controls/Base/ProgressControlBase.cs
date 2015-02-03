@@ -13,11 +13,6 @@
             
         }
 
-        public virtual void SetMaxValue(int maxValue)
-        {
-            
-        }
-
         /// <summary>
         /// Resets the indicated progress when the test begins.
         /// </summary>

@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 [assembly: Guid("9bd6008e-0362-4b78-86d7-ff1a85ca03e6")]
 
 
-[assembly: AssemblyVersion("1.2.76")]
+[assembly: AssemblyVersion("1.2.77")]
 #if DEBUG
-[assembly: AssemblyInformationalVersion("1.2.76-debug")]
+[assembly: AssemblyInformationalVersion("1.2.77-debug")]
 #endif

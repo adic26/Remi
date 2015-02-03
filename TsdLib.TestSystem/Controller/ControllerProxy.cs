@@ -70,12 +70,12 @@ namespace TsdLib.TestSystem.Controller
         /// </summary>
         /// <param name="sender">The <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}"/> where the measurement was captured.</param>
         /// <param name="progress">The progress represented as a percentage.</param>
-        public void ProgressUpdated(object sender, int progress)
+        public void ProgressUpdated(object sender, Tuple<int, int> progress)
         {
             try
             {
                 if (ViewProxy.ProgressControl != null)
-                    ViewProxy.ProgressControl.UpdateProgress(progress, TestSequence.NumberOfSteps);
+                    ViewProxy.ProgressControl.UpdateProgress(progress.Item1, progress.Item2);
             }
             catch (Exception ex)
             {

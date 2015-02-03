@@ -14,10 +14,5 @@ namespace TsdLib.UI.Controls
             progressBar.Maximum = numberOfSteps;
             progressBar.Value = currentStep;
         }
-
-        public override void SetMaxValue(int maxValue)
-        {
-            progressBar.Maximum = maxValue;
-        }
     }
 }

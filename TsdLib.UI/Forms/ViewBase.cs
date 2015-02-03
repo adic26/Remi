@@ -27,7 +27,7 @@ namespace TsdLib.UI.Forms
 
         public virtual ITraceListenerControl TraceListenerControl { get { return traceListenerTextBoxControl; } }
 
-        public virtual IProgressControl ProgressControl { get { return null; } }
+        public virtual IProgressControl ProgressControl { get { return progressControl1; } }
 
         /// <summary>
         /// Initializes a new instance of the base UI form.

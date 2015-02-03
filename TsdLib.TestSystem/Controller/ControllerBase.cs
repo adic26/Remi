@@ -228,7 +228,7 @@ namespace TsdLib.TestSystem.Controller
                         _sequence.MeasurementEventProxy = measurementEventHandler;
                         measurementEventHandler.Attach(controllerProxy.MeasurementAdded, uiContext);
 
-                        EventProxy<int> progressEventHandler = new EventProxy<int>();
+                        EventProxy<Tuple<int, int>> progressEventHandler = new EventProxy<Tuple<int, int>>();
                         _sequence.ProgressEventProxy = progressEventHandler;
                         progressEventHandler.Attach(controllerProxy.ProgressUpdated, uiContext);
 

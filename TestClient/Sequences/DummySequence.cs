@@ -1,4 +1,5 @@
 
+using System;
 using System.Threading;
 using TestClient.Configuration;
 using TestClient.Instruments;
@@ -18,6 +19,7 @@ namespace TestClient.Sequences
 
             for (int i = 0; i < testConfig.LoopIterations; i++)
             {
+                ProgressEventProxy.FireEvent(this, new Tuple<int, int>(i, testConfig.LoopIterations));
                 foreach (double voltageSetting in testConfig.VoltageSettings)
                 {
                     token.ThrowIfCancellationRequested();
