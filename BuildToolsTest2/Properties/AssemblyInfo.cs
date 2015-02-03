@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 
 
 [assembly: AssemblyVersion("2.2")]
-[assembly: AssemblyFileVersion("2.2.8")]
+[assembly: AssemblyFileVersion("2.2.10")]
 #if DEBUG
-[assembly: AssemblyInformationalVersion("2.2.8-debug")]
+[assembly: AssemblyInformationalVersion("2.2.10-debug")]
 #endif

@@ -37,13 +37,6 @@
     <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TsdLib.Build\TsdLib.Build.csproj">
-      <Project>{1abada8f-9802-49f7-a7c0-9374f965dd17}</Project>
-      <Name>TsdLib.Build</Name>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -58,8 +51,8 @@
     <ApplySemanticVersioning AssemblyInfoFilePath="$(ProjectDir)Properties\AssemblyInfo.cs" />
   </Target>
   <Target Name="AfterBuild">
-      <NuGetPack OutputFolder="$(TargetDir)" TargetFile="$(ProjectPath)" Configuration="$(ConfigurationName)">
-		<Output TaskParameter="OutputPackage" ItemName="NuGetPackage" />
+    <NuGetPack OutputFolder="$(TargetDir)" TargetFile="$(ProjectPath)" Configuration="$(ConfigurationName)">
+      <Output TaskParameter="OutputPackage" ItemName="NuGetPackage" />
     </NuGetPack>
   </Target>
   <PropertyGroup>
