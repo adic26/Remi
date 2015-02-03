@@ -28,7 +28,14 @@ namespace TsdLib.Build
                 foreach (string package in Directory.EnumerateFiles(OutputFolder, "*.nupkg"))
                     File.Delete(package);
 
-                Process nugetProcess = Process.Start("nuget.exe", string.Format("pack {0} -OutputDirectory {1} -Prop Configuration={2} -IncludeReferencedProjects {3}", TargetFile, OutputFolder, Configuration, OtherArguments ?? ""));
+                ProcessStartInfo nugetProcessStartInfo = new ProcessStartInfo
+                {
+                    FileName = "nuget.exe",
+                    Arguments = string.Format("pack {0} -OutputDirectory {1} -Prop Configuration={2} -IncludeReferencedProjects {3}", TargetFile, OutputFolder, Configuration, OtherArguments ?? ""),
+                    CreateNoWindow = true,
+                    UseShellExecute = false
+                };
+                Process nugetProcess = Process.Start(nugetProcessStartInfo);
                 if (nugetProcess == null)
                     return false;
 

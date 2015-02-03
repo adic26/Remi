@@ -6,6 +6,7 @@
 //http://stackoverflow.com/questions/13510465/the-mystery-of-stuck-inactive-msbuild-exe-processes-locked-stylecop-dll-nuget
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -41,12 +42,23 @@ namespace TsdLib.Build
 // by using the '\*' as shown below:
 // \[assembly: AssemblyVersion\(""1.0.*""\)\]", "");
 
-                Version maxVersion = Regex.Matches(assemblyInfo, @"(?<=Assembly.*Version\("")\d+\.\d+\.\d+").Cast<Match>().Select(m => new Version(m.Value)).Max();
+                Match infoVersionMatch = Regex.Match(assemblyInfo, @"(?<=AssemblyInformationalVersion\("")\d+\.\d+\.\d+");
+                Version infoVersion = Version.Parse(infoVersionMatch.Success ? infoVersionMatch.Value : "1.0.0");
 
-                var newVersion = new Version(maxVersion.Major, maxVersion.Minor, maxVersion.Build + 1 );
+                Match versionMatch = Regex.Match(assemblyInfo, @"(?<=AssemblyVersion\("")\d+\.\d+");
+                Version version = Version.Parse(versionMatch.Success ? versionMatch.Value : "1.0.0");
 
-                assemblyInfo = Regex.Replace(assemblyInfo, @"\[assembly: AssemblyVersion.*\]", @"[assembly: AssemblyVersion(""" + newVersion + @""")]");
-                assemblyInfo = Regex.Replace(assemblyInfo, @"\[assembly: AssemblyFileVersion.*\]", "");
+                Version newVersion;
+                if (infoVersion.Major == version.Major && infoVersion.Minor == version.Minor) //major and minor are the same, just bump patch
+                    newVersion = new Version(version.Major, version.Minor, infoVersion.Build + 1);
+                else if (infoVersion.Major == version.Major) //minor has been updated by the developer, reset patch
+                    newVersion = new Version(version.Major, version.Minor, 0);
+                else //major has been updated by the developer, reset minor and patch
+                    newVersion = new Version(version.Major, 0, 0);
+
+
+                assemblyInfo = Regex.Replace(assemblyInfo, @"\[assembly: AssemblyVersion.*\]", @"[assembly: AssemblyVersion(""" + newVersion.Major + "." + newVersion.Minor + @""")]");
+                assemblyInfo = Regex.Replace(assemblyInfo, @"\[assembly: AssemblyFileVersion.*\]", @"[assembly: AssemblyFileVersion(""" + newVersion + @""")]");
                 assemblyInfo = Regex.Replace(assemblyInfo, @"\[assembly: AssemblyInformationalVersion.*\]", @"[assembly: AssemblyInformationalVersion(""" + newVersion + @"-debug"")]");
 
                 string newAsyInfo = Regex.Replace(assemblyInfo, @"(?<=Assembly.*Version\("")\d+\.\d+\.\d+", newVersion.ToString());

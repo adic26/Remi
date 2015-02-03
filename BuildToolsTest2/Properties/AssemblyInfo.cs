@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -23,7 +22,8 @@ using System.Runtime.InteropServices;
 [assembly: Guid("9bd6008e-0362-4b78-86d7-ff1a85ca03e6")]
 
 
-[assembly: AssemblyVersion("1.2.77")]
+[assembly: AssemblyVersion("2.2")]
+[assembly: AssemblyFileVersion("2.2.7")]
 #if DEBUG
-[assembly: AssemblyInformationalVersion("1.2.77-debug")]
+[assembly: AssemblyInformationalVersion("2.2.7-debug")]
 #endif
