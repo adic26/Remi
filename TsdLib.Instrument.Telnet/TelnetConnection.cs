@@ -7,7 +7,7 @@ using System.Threading;
 namespace TsdLib.Instrument.Telnet
 {
     /// <summary>
-    /// Contains functionality to communicate with a Telnet-based instrument.
+    /// Contains functionality to communicate with an instrument via the Telnet protocol.
     /// </summary>
     public class TelnetConnection : ConnectionBase
     {

@@ -6,8 +6,14 @@ using RootDevice.QConn;
 
 namespace TsdLib.Instrument.Ssh
 {
+    /// <summary>
+    /// Contains functionality to communicate with an instrument via the Ssh protocol.
+    /// </summary>
     public class SshConnection : ConnectionBase
     {
+        /// <summary>
+        /// Gets the folder containing plink binaries.
+        /// </summary>
         public const string PlinkResourceFolder = @"plink_resources\";
         private const string PublicKeyFile = @"public.key";
 
@@ -21,6 +27,9 @@ namespace TsdLib.Instrument.Ssh
         {
             get { return !_sshSession.HasExited; }
         }
+        /// <summary>
+        /// Gets or sets the read timeout.
+        /// </summary>
         public int Timeout = 300;
 
 
@@ -72,7 +81,7 @@ namespace TsdLib.Instrument.Ssh
                 _streamWriter.WriteLine(message);     //if plink hasnt fully started up yet, resend the command
 
             string line = "";
-            while (!line.Contains(message))
+            while (line != null && !line.Contains(message))
                 line = _streamReader.ReadLine();
         }
         protected override string ReadString()
@@ -84,7 +93,7 @@ namespace TsdLib.Instrument.Ssh
             while (timeoutWatch.ElapsedMilliseconds < Timeout)
             {
                 string line = _streamReader.ReadLine();
-                if (line.StartsWith("#"))
+                if (line == null || line.StartsWith("#"))
                     break;
                 if (line != "")
                     output.AppendLine(line);

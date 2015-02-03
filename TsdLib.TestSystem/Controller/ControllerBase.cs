@@ -321,7 +321,7 @@ namespace TsdLib.TestSystem.Controller
 
         private void displayError(Exception ex, string sequenceName)
         {
-            Task t = Task.Run(() =>
+            Task.Run(() =>
             {
                 bool tsdLibException = ex is TsdLibException;
                 DialogResult result = MessageBox.Show(string.Join(Environment.NewLine,

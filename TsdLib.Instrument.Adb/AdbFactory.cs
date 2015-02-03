@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace TsdLib.Instrument.Adb
 {
+    /// <summary>
+    /// Contains functionality to discover and connect to instruments via adb.exe.
+    /// </summary>
     public class AdbFactory : FactoryBase<AdbConnection>
     {
         private const string AdbFileLocation = @"platform-tools\adb.exe";

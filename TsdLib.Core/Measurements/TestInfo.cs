@@ -30,6 +30,16 @@ namespace TsdLib.Measurements
             Value = val;
         }
 
+
+        /// <summary>
+        /// Returns a string that represents the <see cref="TestInfo"/> object.
+        /// </summary>
+        /// <returns>A string containing the name and value of the <see cref="TestInfo"/> object.</returns>
+        public override string ToString()
+        {
+            return Name + " = " + Value;
+        }
+
         /// <summary>
         /// Not used. Required for IXmlSerializable.
         /// </summary>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 using System.Threading;
 using TsdLib.Configuration;
 using TsdLib.Instrument;
@@ -16,25 +17,28 @@ namespace TsdLib.TestSystem.TestSequence
     /// <typeparam name="TStationConfig">Type of Station Config used in the derived class.</typeparam>
     /// <typeparam name="TProductConfig">Type of Product Config used in the derived class.</typeparam>
     /// <typeparam name="TTestConfig">Type of Test Config used in the derived class.</typeparam>
-    public abstract class TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject, ITestSequence
+    public abstract class TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject, ICancellable
         where TStationConfig : StationConfigCommon
         where TProductConfig : ProductConfigCommon
         where TTestConfig : TestConfigCommon
     {
         private readonly List<IInstrument> _instruments;
 
+        private CancellationTokenSource UserCancellationTokenSource { get; set; }
+        private CancellationTokenSource ErrorCancellationTokenSource { get; set; }
+        private CancellationTokenSource linked { get; set; }
+
+        /// <summary>
+        /// Returns true if the test sequence was cancelled by the user. False if it was cancelled due to internal error.
+        /// </summary>
         public bool CancelledByUser
         {
             get { return UserCancellationTokenSource.Token.IsCancellationRequested; }
         }
-
+        /// <summary>
+        /// Gets the internal error responsible for test sequence cancellation.
+        /// </summary>
         public Exception Error { get; private set; }
-
-        private CancellationTokenSource UserCancellationTokenSource { get; set; }
-
-        private CancellationTokenSource ErrorCancellationTokenSource { get; set; }
-
-        private CancellationTokenSource linked { get; set; }
 
         /// <summary>
         /// Override to perform any initialization or connection setup befoer the test begins.
@@ -47,6 +51,14 @@ namespace TsdLib.TestSystem.TestSequence
             token.ThrowIfCancellationRequested();
 
         }
+        /// <summary>
+        /// Client application overrides this method to define test steps.
+        /// </summary>
+        /// <param name="token">A cancellation token used to support cooperative cancellation. Should periodically call <see cref="CancellationToken.ThrowIfCancellationRequested"/>.</param>
+        /// <param name="stationConfig">Station config instance containing station-specific configuration.</param>
+        /// <param name="productConfig">Product config instance containing product-specific configuration.</param>
+        /// <param name="testConfig">Test config instance containing test-specific configuration.</param>
+        protected abstract void ExecuteTest(CancellationToken token, TStationConfig stationConfig, TProductConfig productConfig, TTestConfig testConfig);
         /// <summary>
         /// Calls Dispose() on all instruments that were obtained using the static Connect method.
         /// Override to perform any custom teardown or disconnection after the test is complete, but make sure to call base.ExecutePostTest in the overriding method.
@@ -62,50 +74,86 @@ namespace TsdLib.TestSystem.TestSequence
                 instrument.Dispose();
             }
         }
-        /// <summary>
-        /// Client application overrides this method to define test steps.
-        /// </summary>
-        /// <param name="token">A cancellation token used to support cooperative cancellation. Should periodically call <see cref="CancellationToken.ThrowIfCancellationRequested"/>.</param>
-        /// <param name="stationConfig">Station config instance containing station-specific configuration.</param>
-        /// <param name="productConfig">Product config instance containing product-specific configuration.</param>
-        /// <param name="testConfig">Test config instance containing test-specific configuration.</param>
-        protected abstract void ExecuteTest(CancellationToken token, TStationConfig stationConfig, TProductConfig productConfig, TTestConfig testConfig);
+        
 
         /// <summary>
         /// Gets the collection of information captured during the test sequence.
         /// </summary>
-        public readonly BindingList<TestInfo> TestInfo;
+        internal readonly BindingList<ITestInfo> TestInfo;
+        /// <summary>
+        /// Add a new <see cref="ITestInfo"/> to the collection of test information.
+        /// </summary>
+        /// <param name="testInfo">test information to add.</param>
+        protected void AddTestInfo(ITestInfo testInfo)
+        {
+            TestInfo.Add(testInfo);
+        }
+        /// <summary>
+        /// Gets or sets an EventProxy object that can be used to send information events across AppDomain boundaries.
+        /// </summary>
+        internal EventProxy<TestInfo> InfoEventProxy { get; set; }
 
         /// <summary>
         /// Gets the collection of measurements captured during the test sequence.
         /// </summary>
-        public readonly BindingList<MeasurementBase> Measurements;
-
+        internal readonly BindingList<MeasurementBase> Measurements;
         /// <summary>
-        /// Gets the collection of general data captured during the test sequence.
+        /// Add a new <see cref="MeasurementBase"/> to the collection of test measurements.
         /// </summary>
-        [Obsolete]public readonly BindingList<object> Data;
-
-        /// <summary>
-        /// Gets or sets an EventProxy object that can be used to send information events across AppDomain boundaries.
-        /// </summary>
-        public EventProxy<TestInfo> InfoEventProxy { get; set; }
-
+        /// <param name="measurement">Measurement information to add.</param>
+        protected void AddMeasurement(MeasurementBase measurement)
+        {
+            Measurements.Add(measurement);
+        }
         /// <summary>
         /// Gets or sets an EventProxy object that can be used to send measurement events across AppDomain boundaries.
         /// </summary>
-        public EventProxy<MeasurementBase> MeasurementEventProxy { get; set; }
+        internal EventProxy<MeasurementBase> MeasurementEventProxy { get; set; }
 
+        /// <summary>
+        /// Update the application controller of the current test sequence progress.
+        /// </summary>
+        /// <param name="currentStep">The current step in the test sequence.</param>
+        /// <param name="numberOfSteps">The total number of steps in the test sequence.</param>
+        protected void UpdateProgress(int currentStep, int numberOfSteps)
+        {
+            ProgressEventProxy.FireEvent(this, new Tuple<int, int>(currentStep, numberOfSteps));
+        }
         /// <summary>
         /// Gets or sets an EventProxy object that can be used to send progress updates across AppDomain boundaries.
         /// </summary>
-        public EventProxy<Tuple<int,int>> ProgressEventProxy { get; set; }
+        internal EventProxy<Tuple<int, int>> ProgressEventProxy { get; set; }
 
+        /// <summary>
+        /// Send data to the application controller.
+        /// </summary>
+        /// <param name="data">Data that can be marshalled across AppDomain boundaries.</param>
+        protected void SendData(MarshalByRefObject data)
+        {
+            DataEventProxy.FireEvent(this, data);
+        }
+        /// <summary>
+        /// Send data to the application controller.
+        /// </summary>
+        /// <param name="data">Data that can be serialized across AppDomain boundaries.</param>
+        protected void SendData(ISerializable data)
+        {
+            DataEventProxy.FireEvent(this, data);
+        }
+        /// <summary>
+        /// Send data to the application controller.
+        /// </summary>
+        /// <param name="data">Data that can be marshalled across AppDomain boundaries as a value type.</param>
+        protected void SendData<T>(T data)
+            where T : struct
+        {
+            DataEventProxy.FireEvent(this, data);
+        }
         /// <summary>
         /// Gets or sets an EventProxy object that can be used to send general data across AppDomain boundaries.
         /// </summary>
-        public EventProxy<object> DataEventProxy { get; set; }
-
+        internal EventProxy<object> DataEventProxy { get; set; }
+        
         /// <summary>
         /// Initializes the TestSequenceBase object.
         /// </summary>
@@ -121,12 +169,16 @@ namespace TsdLib.TestSystem.TestSequence
 
             _instruments = new List<IInstrument>();
 
-            TestInfo = new BindingList<TestInfo>();
+            TestInfo = new BindingList<ITestInfo>();
             TestInfo.ListChanged += (sender, e) =>
             {
                 IBindingList list = sender as IBindingList;
-                if (list != null && InfoEventProxy != null)
-                    InfoEventProxy.FireEvent(this, (TestInfo)list[e.NewIndex]);
+                if (list == null)
+                    throw new TestSequenceException(this, "The TestInfo.ListChanged event was fired by an object not implementing IBindingList.");
+                TestInfo info = list[e.NewIndex] as TestInfo;
+                Trace.WriteLine(info);
+                if (InfoEventProxy != null)
+                    InfoEventProxy.FireEvent(this, info);
             };
 
             Measurements = new BindingList<MeasurementBase>();
@@ -137,18 +189,15 @@ namespace TsdLib.TestSystem.TestSequence
                     MeasurementEventProxy.FireEvent(this, (MeasurementBase)list[e.NewIndex]);
             };
 
-            Data = new BindingList<object>();
-            Data.ListChanged += (sender, e) =>
-            {
-                IBindingList list = sender as IBindingList;
-                if (list != null && DataEventProxy != null)
-                    DataEventProxy.FireEvent(this, list[e.NewIndex]);
-            };
-
             InstrumentEvents.Connected += FactoryEvents_Connected;
         }
 
-        private void FactoryEvents_Connected(object sender, IInstrument e)
+        /// <summary>
+        /// Event handler invoked when a new instrument is connected.
+        /// </summary>
+        /// <param name="sender">The factory class responsible for connecting to the new instrument.</param>
+        /// <param name="e">The new <see cref="IInstrument"/>.</param>
+        protected virtual void FactoryEvents_Connected(object sender, IInstrument e)
         {
             _instruments.Add(e);
             string instrumentType = e.GetType().Name;
@@ -211,6 +260,24 @@ namespace TsdLib.TestSystem.TestSequence
             }
         }
 
+
+
+
+        /// <summary>
+        /// Abort the test sequence due to user cancellation or error.
+        /// </summary>
+        /// <param name="error">If cancelling due to error, pass the responsible exception. If cancelling to to user, pass null.</param>
+        public void Abort(Exception error = null)
+        {
+            if (error == null)
+                UserCancellationTokenSource.Cancel();
+            else
+            {
+                Error = error;
+                ErrorCancellationTokenSource.Cancel();
+            }
+        }
+
         /// <summary>
         /// Dispose of any resources being used by the test sequence.
         /// </summary>
@@ -241,17 +308,6 @@ namespace TsdLib.TestSystem.TestSequence
         public override object InitializeLifetimeService()
         {
             return null;
-        }
-
-        public void Abort(Exception error = null)
-        {
-            if (error == null)
-                UserCancellationTokenSource.Cancel();
-            else
-            {
-                Error = error;
-                ErrorCancellationTokenSource.Cancel();
-            }
         }
     }
 }

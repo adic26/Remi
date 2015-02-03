@@ -5,6 +5,9 @@ using System.Threading;
 
 namespace TsdLib.Instrument.Adb
 {
+    /// <summary>
+    /// Contains functionality to communicate with an instrument using adb.exe.
+    /// </summary>
     public class AdbConnection : ConnectionBase
     {
         private readonly StringBuilder _output;
@@ -39,6 +42,7 @@ namespace TsdLib.Instrument.Adb
                     process.OutputDataReceived += (sender, e) =>
                     {
                         if (e.Data == null)
+                            // ReSharper disable once AccessToDisposedClosure
                             outputWaitHandle.Set();
                         else if (!string.IsNullOrEmpty(e.Data))
                             _output.Append(e.Data.Trim());
@@ -46,6 +50,7 @@ namespace TsdLib.Instrument.Adb
                     process.ErrorDataReceived += (sender, e) =>
                     {
                         if (e.Data == null)
+                            // ReSharper disable once AccessToDisposedClosure
                             errorWaitHandle.Set();
                         else if (!string.IsNullOrEmpty(e.Data))
                             _error.Append(e.Data.Trim());

@@ -16,14 +16,14 @@ namespace TsdLib.TestSystem.Controller
         /// </summary>
         public IView ViewProxy { get; private set; }
 
-        public ITestSequence TestSequence { get; private set;}
+        public ICancellable TestSequence { get; private set;}
 
         /// <summary>
         /// Initialize a new 
         /// </summary>
         /// <param name="view">An instance of <see cref="IView"/> that will be used to handle UI events.</param>
         /// <param name="testSequence">Reference to the test sequence.</param>
-        public ControllerProxy(IView view, ITestSequence testSequence)
+        public ControllerProxy(IView view, ICancellable testSequence)
         {
             ViewProxy = view;
             TestSequence = testSequence;

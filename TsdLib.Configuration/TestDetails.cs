@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
-using TsdLib.Utilities.TypeEditors;
 
 namespace TsdLib.Configuration
 {

@@ -1,5 +1,4 @@
 
-using System;
 using System.Threading;
 using TestClient.Configuration;
 using TestClient.Instruments;
@@ -19,7 +18,7 @@ namespace TestClient.Sequences
 
             for (int i = 0; i < testConfig.LoopIterations; i++)
             {
-                ProgressEventProxy.FireEvent(this, new Tuple<int, int>(i, testConfig.LoopIterations));
+                UpdateProgress(i, testConfig.LoopIterations);
                 foreach (double voltageSetting in testConfig.VoltageSettings)
                 {
                     token.ThrowIfCancellationRequested();
@@ -33,7 +32,7 @@ namespace TestClient.Sequences
                         new MeasurementParameter("Temperature", 22.5)
                     };
                     Measurement<double> measurement = new Measurement<double>("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: measurementParameters);
-                    Measurements.Add(measurement);
+                    AddMeasurement(measurement);
                 }
             }
             
