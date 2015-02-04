@@ -42,6 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicCodeParser.cs" />
+    <Compile Include="CodeGenerator\CodeGeneratorException.cs" />
+    <Compile Include="CodeGenerator\DynamicCompiler.cs" />
+    <Compile Include="CodeGenerator\Enums.cs" />
     <Compile Include="Configuration\Enums.cs" />
     <Compile Include="Configuration\IConfigItem.cs" />
     <Compile Include="Configuration\IConfigManager.cs" />

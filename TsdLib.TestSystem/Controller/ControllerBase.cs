@@ -11,9 +11,9 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TsdLib.CodeGenerator;
 using TsdLib.Configuration;
 using TsdLib.Measurements;
-using TsdLib.TestSystem.CodeGenerator;
 using TsdLib.TestSystem.TestSequence;
 using TsdLib.UI;
 

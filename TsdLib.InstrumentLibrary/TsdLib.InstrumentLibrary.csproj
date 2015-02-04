@@ -44,11 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="InstrumentProvider.cs" />
+    <Compile Include="TsdLib Instrument Library Visualizer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="TsdLib Instrument Library Visualizer.Designer.cs">
+      <DependentUpon>TsdLib Instrument Library Visualizer.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -61,6 +62,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="TsdLib Instrument Library Visualizer.resx">
+      <DependentUpon>TsdLib Instrument Library Visualizer.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Instruments\Interfaces\IBlackBerryWlan.cs.pp" />
     <None Include="Instruments\Interfaces\IWlanTestSet.cs.pp" />
     <None Include="Instruments\Schema\TsdLib.Instruments.xsd">
@@ -76,19 +80,51 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="tools\Install.ps1" />
+    <None Include="TsdLib.InstrumentLibrary.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Instruments\Agilent6632B.xml" />
-    <Content Include="Instruments\AIM4170C.xml" />
-    <Content Include="Instruments\Aos_BCM4339.xml" />
-    <Content Include="Instruments\BlackBerry.xml" />
-    <Content Include="Instruments\BlackBerry_BCM4334.xml" />
-    <Content Include="Instruments\BlackBerry_BCM4339.xml" />
+    <Content Include="Instruments\Agilent6632B.xml">
+      <Generator>InstrumentClassGenerator</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Instruments\AIM4170C.xml">
+      <Generator>InstrumentClassGenerator</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Instruments\Aos_BCM4339.xml">
+      <Generator>InstrumentClassGenerator</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Instruments\BlackBerry.xml">
+      <Generator>InstrumentClassGenerator</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Instruments\BlackBerry_BCM4334.xml">
+      <Generator>InstrumentClassGenerator</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Instruments\BlackBerry_BCM4339.xml">
+      <Generator>InstrumentClassGenerator</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Instruments\Documentation\readme.txt" />
-    <Content Include="Instruments\IQxel80.xml" />
+    <Content Include="Instruments\IQxel80.xml">
+      <Generator>InstrumentClassGenerator</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TsdLib.Core\TsdLib.Core.csproj">
+      <Project>{512beddc-2b71-42f0-9c1b-6d37497f5da7}</Project>
+      <Name>TsdLib.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.InstrumentLibraryTools\TsdLib.InstrumentLibraryTools.csproj">
+      <Project>{80C459F9-6A11-4BCC-B453-151BCF954E4F}</Project>
+      <Name>TsdLib.InstrumentLibraryTools</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

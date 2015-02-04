@@ -3,7 +3,7 @@ using System.CodeDom.Compiler;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace TsdLib.TestSystem.CodeGenerator
+namespace TsdLib.CodeGenerator
 {
     /// <summary>
     /// Exception due to an error compiling input source code.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TsdLib.TestSystem.CodeGenerator
+namespace TsdLib.CodeGenerator
 {
     /// <summary>
     /// Describes the types of input that are supported.
