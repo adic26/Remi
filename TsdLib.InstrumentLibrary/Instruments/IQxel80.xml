@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Instruments xmlns="TsdLib.Instruments.xsd">
+  <Instrument Name="IQxel80" ConnectionType="Visa" Interfaces="IWlanTestSet" InitCommands="SYS;DCL:HMOD;*RST;*CLS;FORM:READ:DATA ASC">
+
+    <!--Identification-->
+    <IdQuery Command="*IDN?" Response="LitePoint,IQXEL"/>
+    <ConnectionSetting Name="TermcharEn" ArgumentValue="true" ArgumentType="Boolean"/>
+    <ConnectionSetting Name="TmoValue" ArgumentValue="5000" ArgumentType="Int32"/>
+    <!--LitePoint,IQXEL,IQXL00940,1.12.1\n-->
+    <ModelNumber Message="*IDN?" RegEx="(?&lt;=\w+,).*?(?=,)"/>
+    <SerialNumber Message="*IDN?" RegEx="(?&lt;=(\w+,){2}).*?(?=,)"/>
+    <FirmwareVersion Message="*IDN?" RegEx="(?&lt;=(\w+,){3}).*?(?=\n)"/>
+
+    <!--Vector Signal Generator-->
+    <Command Name="InitializeVsg" Message="ROUT1;PORT:RES RF{0},VSG1;VSG1;MRST">
+      <Parameter Name="portNumber" Type="Int32"/>
+    </Command>
+    <Command Name="VsgConfigureSignal" Message="CHAN1;WIFI;CONF:BAND {0};CONF:CHAN:IND {1};CONF:CHAN:CBW {2};HSET:ALL VSG1">
+      <Parameter Name="band" Type="String"/>
+      <Parameter Name="channel" Type="Int32"/>
+      <Parameter Name="bandwidth" Type="Int32"/>
+    </Command>
+    <Command Name="VsgSetDownlinkPowerLevel" Message="VSG1;POW {0}">
+      <Parameter Name="powerLevel" Type="Double"/>
+    </Command>
+    <Command Name="VsgSetSamplingRate" Message="VSG1;SRAT {0}">
+      <Parameter Name="rate" Type="Double"/>
+    </Command>
+    <Command Name="VsgGenerateCw" Message="VSG1;MOD:STAT OFF;FREQ {0};POW {1};POW:STAT ON">
+      <Parameter Name="frequency" Type="Double"/>
+      <Parameter Name="power" Type="Double"/>
+    </Command>
+    <Command Name="VsgPlayWaveform" Message='VSG1; WAVE:LOAD "{0}";WLIS:COUN {1};wave:exec off;WLIST:WSEG1:DATA "{0}";wlist:wseg1:save;WLIST:COUNT:ENABLE WSEG1;WAVE:EXEC ON, WSEG1'>
+      <Parameter Name="waveFile" Type="String"/>
+      <Parameter Name="count" Type="Int32"/>
+    </Command>
+    <Command Name="VsgStopWaveform" Message="VSG1 ;WAVE:EXEC OFF;WLIST:COUNT:DISABLE WSEG1"></Command>
+    <Command Name="DisableVsg" Message="VSG1;POW:STAT OFF">
+    </Command>
+
+    <!--Vector Signal Analyzer-->
+    <Command Name="InitializeVsa" Message="ROUT1;PORT:RES RF{0},VSA1;VSA1;MRST">
+      <Parameter Name="portNumber" Type="Int32"/>
+    </Command>
+
+    <Command Name="VsaConfigureSignal" Message="CHAN1;WIFI;CONF:BAND {0};CONF:CHAN:IND {1};CONF:CHAN:CBW {2};CONF:UMAR {3};CONF:ENP:UL {4};CONF:STAN {5};HSET:ALL VSA1">
+      <Parameter Name="band" Type="String"/>
+      <Parameter Name="channel" Type="Int32"/>
+      <Parameter Name="bandwidth" Type="Int32"/>
+      <Parameter Name="userMargin" Type="Double"/>
+      <Parameter Name="expectedNominalPower" Type="Double"/>
+      <Parameter Name="modulation" Type="String"/>
+    </Command>
+
+    <Query Name="VsaGetCenterFrequency" Message="VSA1;FREQ?" ReturnType="Double">
+    </Query>
+    <Query Name="VsaMeasureUplinkPower" Message="VSA1;CAPT:TIME {0};INIT;WIFI;CALC:POW 0,5;FETC:POW:AVER?" RegEx="(?&lt;=.*,).*" ReturnType="Double">
+      <Parameter Name="captureLength" Type="Double"/>
+    </Query>
+    <Query Name="VsaMeasureEvmDsss" Message="VSA1;CAPT:TIME 0.05;INIT;WIFI;CONF:DSSS:EVM:METH RMS;CALC:TXQ 0,5;FETC:TXQ:DSSS:AVER?" RegEx="(?&lt;=.*,).*?(?=,)" ReturnType="Double">
+    </Query>
+    <Query Name="VsaMeasureFreqErrorDsss" Message="VSA1;CAPT:TIME 0.05;INIT;WIFI;CONF:DSSS:EVM:METH RMS;CALC:TXQ 0,5;FETC:TXQ:DSSS:AVER?" RegEx="(?&lt;=.*,.*,.*,.*,).*?(?=,)" ReturnType="Double">
+    </Query>
+    <Query Name="VsaMeasureEvmOfdm" Message="VSA1;CAPT:TIME 0.015;INIT;WIFI;CONF:OFDM:TRAC:SCL OFF;CALC:TXQ 0,5;FETC:TXQ:OFDM:EVM:ALL:AVER?" RegEx="(?&lt;=.*,).*" ReturnType="Double">
+    </Query>
+    <Query Name="VsaMeasureFreqErrorOfdm" Message="VSA1;CAPT:TIME 0.015;INIT;WIFI;CALC:TXQ 0,5;FETC:TXQ:OFDM:FERR:ALL:AVER?" RegEx="(?&lt;=.*,).*" ReturnType="Double">
+    </Query>
+    <Query Name="VsgGetWaveformStatus" Message="VSG1;WAVE:RCO?" ReturnType="Int32">
+    </Query>
+
+  </Instrument>
+</Instruments>

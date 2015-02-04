@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Instruments xmlns="TsdLib.Instruments.xsd">
+  <Instrument Name="BlackBerry_BCM4339" ConnectionType="Telnet" CommandDelay="200" Interfaces="IBlackBerryWlan" InitCommands="echo fw_pltenable::1>>/pps/services/wifi/escreen">
+
+    <!--Discovery-->
+    <IdQuery Response="BlackBerry Device"/>
+
+    <!--Identification-->
+    <ModelNumber Message="cat /pps/services/hw_info/inventory | grep Board_Type::" RegEx="(?&lt;=Board_Type::).*"/>
+    <SerialNumber Message="cat /pps/system/nvram/deviceinfo | grep BSN::" RegEx="(?&lt;=BSN::).*"/>
+    <FirmwareVersion Message="cat /pps/services/deviceproperties | grep scmbundle::" RegEx="(?&lt;=scmbundle::).*"/>
+
+    <Command Name="DisableWlan" Message="ifconfig bcm0 down">
+      </Command>
+    <Command Name="EnableWlan" Message="ifconfig bcm0 up">
+      </Command>
+    <Command Name="StartTx" Message="/var/wlan/wl pkteng_start 00:11:22:33:44:55 tx 100 1024 0">
+      </Command>
+    <Command Name="StopTx" Message="/var/wlan/wl pkteng_stop tx">
+      </Command>
+    <Command Name="StartRx" Message="/var/wlan/wl pkteng_start 00:00:00:C0:FF:EE rxwithack">
+      </Command>
+    <Command Name="StopRx" Message="/var/wlan/wl pkteng_stop rx">
+      </Command>
+    <Command Name="EnableDriver" Message="/var/wlan/wl up">
+    </Command>
+    <Command Name="DisableDriver" Message="/var/wlan/wl down">
+    </Command>
+    <Command Name="DisableMinimumPowerControl" Message="/var/wlan/wl mpc 0">
+    </Command>
+    <Command Name="DisableWatchdog" Message="/var/wlan/wl phy_watchdog 0">
+    </Command>
+    <Command Name="SetCountryCode" Message="/var/wlan/wl country {0}">
+      <Parameter Name="countryCode" Type="String"/>
+    </Command>
+    <Command Name="SetBand" Message="/var/wlan/wl band {0}">
+      <Parameter Name="band_try_auto" Type="String"/>
+    </Command>
+    <Command Name="SetRate" Message="/var/wlan/wl {0}g_rate -{1} {2} -b {3}">
+      <Parameter Name="band" Type="Int32"/> <!--2,5-->
+      <Parameter Name="rateType" Type="String"/> <!--r, h, v    add -s 1 parameter for 1 spatial stream-->
+      <Parameter Name="rate" Type="Double"/>
+      <Parameter Name="bandwidth" Type="Int32"/>
+    </Command>
+    <Command Name="SetChannel" Message="/var/wlan/wl chanspec {0}/{1}">  <!--try adding this after for auto band select;/var/wlan/wl band {0}-->
+      <Parameter Name="channel" Type="Int32"/>
+      <Parameter Name="bandwidth" Type="Int32"/>
+    </Command>
+    <Command Name="EnableForceCal" Message="/var/wlan/wl phy_forcecal 1">
+      </Command>
+    <Command Name="EnableScanSuppress" Message="/var/wlan/wl scansuppress 1">
+      </Command>
+    <Command Name="EnableClosedLoopPowerControl" Message="/var/wlan/wl phy_txpwrctrl 1">
+      </Command>
+    <Command Name="SetMimoTxBw" Message="/var/wlan/wl mimio_txbw {0}">
+      <Parameter Name="bandwidth" Type="Int32"/>
+    </Command>
+    <Command Name="SetTxPowerDefault" Message="/var/wlan/wl txpwr1 -1">
+      </Command>
+    <Command Name="SetTxPower" Message="/var/wlan/wl txpwr1 -d {0}">
+      <Parameter Name="powerLevel" Type="Double"/>
+    </Command>
+    <Command Name="SetTxPowerOverrideLimits" Message="/var/wlan/wl txpwr1 -d {0} -o">
+      <Parameter Name="powerLevel" Type="Double"/>
+    </Command>
+    <Command Name="ResetCounter" Message="/var/wlan/wl reset_cnts">
+    </Command>
+
+    <Query Name="GetChipsetFamily" Message="wl_bcm_dhd revinfo | grep chipnum" RegEx="(?&lt;=chipnum 0x)\d+" ReturnType="String">
+      </Query>
+    <Query Name="GetChipsetFirmwareType" Message="/var/wlan/wl ver" RegEx="(?&lt;=version (\d+\.){3}\d+ \().*(?=\))" ReturnType="String">
+      </Query>
+    <Query Name="GetChipsetFirmwareVersion" Message="/var/wlan/wl ver" RegEx="(?&lt;=version )(\d+\.){3}\d+" ReturnType="String">
+      </Query>
+    <Query Name="IsDriverEnabled" Message="/var/wlan/wl isup" ReturnType="Boolean">
+      </Query>
+    <Query Name="GetCountry" Message="/var/wlan/wl country" ReturnType="String">
+      </Query>
+    <Query Name="GetActivecal" Message="/var/wlan/wl phy_activecal" ReturnType="Boolean">
+      </Query>
+    <Query Name="GetRxFrameCount" Message="/var/wlan/wl counters | grep rxdfrmmcast" RegEx="(?&lt;=rxdfrmmcast )\d+" ReturnType="Int32">
+      </Query>
+
+  </Instrument>
+</Instruments>

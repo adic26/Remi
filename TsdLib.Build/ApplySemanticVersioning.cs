@@ -40,10 +40,21 @@ namespace TsdLib.Build
 // by using the '\*' as shown below:
 // \[assembly: AssemblyVersion\(""1.0.*""\)\]", "");
 
-                Match infoVersionMatch = Regex.Match(assemblyInfo, @"(?<=AssemblyInformationalVersion\("")\d+\.\d+\.\d+");
-                Version infoVersion = Version.Parse(infoVersionMatch.Success ? infoVersionMatch.Value : "1.0.0");
-
                 Match versionMatch = Regex.Match(assemblyInfo, @"(?<=AssemblyVersion\("")\d+\.\d+");
+                Match fileVersionMatch = Regex.Match(assemblyInfo, @"(?<=AssemblyFileVersion\("")\d+\.\d+\.\d+");
+                Match infoVersionMatch = Regex.Match(assemblyInfo, @"(?<=AssemblyInformationalVersion\("")\d+\.\d+\.\d+");
+
+
+                Version infoVersion = Version.Parse(infoVersionMatch.Success ? infoVersionMatch.Value : fileVersionMatch.Success ? fileVersionMatch.Value : versionMatch.Value);
+
+                if (!infoVersionMatch.Success)
+                {
+                    assemblyInfo += string.Format(
+@"#if DEBUG
+[assembly: AssemblyInformationalVersion(""{0}"")]
+#endif", infoVersion);
+                }
+
                 Version version = Version.Parse(versionMatch.Success ? versionMatch.Value : "1.0.0");
 
                 Version newVersion;

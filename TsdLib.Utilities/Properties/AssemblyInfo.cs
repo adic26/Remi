@@ -24,5 +24,5 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("1.0")]
 #if DEBUG
-[assembly: AssemblyInformationalVersion("1.0.0-debug")]
+[assembly: AssemblyInformationalVersion("1.0.1-debug")]
 #endif

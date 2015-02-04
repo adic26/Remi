@@ -6,10 +6,14 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("TsdLib.Instrument.Ssh")]
 [assembly: AssemblyDescription("TsdLib Instrument module for controlling instruments (usually BlackBerry devices) through the SSH protocol.")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Research In Motion")]
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
+[assembly: AssemblyConfiguration("Release")]
+#endif
+[assembly: AssemblyCompany("BlackBerry")]
 [assembly: AssemblyProduct("TsdLib.Instrument.Ssh")]
-[assembly: AssemblyCopyright("Copyright © Research In Motion 2014")]
+[assembly: AssemblyCopyright("Copyright © BlackBerry 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -24,5 +28,5 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("1.0")]
 #if DEBUG
-[assembly: AssemblyInformationalVersion("1.0.0-debug")]
+[assembly: AssemblyInformationalVersion("1.0.2-debug")]
 #endif

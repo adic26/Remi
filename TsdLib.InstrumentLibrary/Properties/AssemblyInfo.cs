@@ -4,15 +4,15 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TsdLib.Instrument.Adb")]
-[assembly: AssemblyDescription("TsdLib Instrument module for controlling instruments (usually BlackBerry devices) through an Adb shell.")]
+[assembly: AssemblyTitle("TsdLib.InstrumentLibrary")]
+[assembly: AssemblyDescription("A collection of instrument xml definitions and supporting files required to generate instrument control classes for the TsdLib Framework.")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else
 [assembly: AssemblyConfiguration("Release")]
 #endif
 [assembly: AssemblyCompany("BlackBerry")]
-[assembly: AssemblyProduct("TsdLib.Instrument.Adb")]
+[assembly: AssemblyProduct("TsdLib.InstrumentLibrary")]
 [assembly: AssemblyCopyright("Copyright © BlackBerry 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -23,10 +23,11 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("385a2ec3-5e91-4f4b-99dd-d9def2b7f1c2")]
+[assembly: Guid("2ee612a4-f5ef-4112-981a-7960e66362e2")]
 
 
 [assembly: AssemblyVersion("1.0")]
+[assembly: AssemblyFileVersion("1.0.3")]
 #if DEBUG
-[assembly: AssemblyInformationalVersion("1.0.2-debug")]
+[assembly: AssemblyInformationalVersion("1.0.3-debug")]
 #endif
