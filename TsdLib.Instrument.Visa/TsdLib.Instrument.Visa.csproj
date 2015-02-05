@@ -70,9 +70,6 @@
     <None Include="tools\NIVISA1401full_downloader.exe" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>call "$(SolutionDir)NuGetPostBuild.bat" $(ProjectPath) $(ConfigurationName)</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

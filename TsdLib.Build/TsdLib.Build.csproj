@@ -52,7 +52,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rem call "$(SolutionDir)NuGetPostBuild.bat" $(ProjectPath) $(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>del /q *.nupkg
+nuget pack $(ProjectPath) -Prop Configuration=$(ConfigurationName) -IncludeReferencedProjects</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

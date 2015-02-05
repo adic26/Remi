@@ -1,9 +1,8 @@
 ﻿using System.Linq;
 using TestClient.Configuration;
 using TestClient.View;
-//using TsdLib;
+using TsdLib.CodeGenerator;
 using TsdLib.Configuration;
-using TsdLib.TestSystem.CodeGenerator;
 using TsdLib.TestSystem.Controller;
 
 namespace TestClient

@@ -14,7 +14,9 @@ namespace TsdLib.Measurements
         string SchemaFile { get; }
 
         string SaveXml();
+        string SaveXml(DirectoryInfo directory);
         string SaveCsv();
+        string SaveCsv(DirectoryInfo directory);
         string SaveBinary(DirectoryInfo directory);
     }
 

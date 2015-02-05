@@ -4,7 +4,7 @@ using $safeprojectname$.View;
 using TsdLib;
 using TsdLib.Configuration;
 using TsdLib.Measurements;
-using TsdLib.TestSystem.CodeGenerator;
+using TsdLib.CodeGenerator;
 using TsdLib.TestSystem.Controller;
 
 namespace $safeprojectname$

@@ -108,31 +108,34 @@ namespace TsdLib
         }
 
         /// <summary>
-        /// Save the test results to an xml file in the specified directory. Useful for uploading to database.
+        /// Creates a new uniquely named file for writing test results.
         /// </summary>
-        
-        /// <returns>The absolute path to the xml file generated.</returns>
-        public static FileStream GetResultsFile(ITestDetails details, ITestSummary summary, string extension)
+        /// <returns>An open <see cref="FileStream"/> object used to write test results information.</returns>
+        public static FileStream GetResultsFile(ITestDetails details, ITestSummary summary, string extension, DirectoryInfo directoryInfo = null)
         {
-            var directory = baseFolder
-                .CreateSubdirectory("TestResults")
-                .CreateSubdirectory(details.SafeTestSystemName);
+            DirectoryInfo directory = directoryInfo ?? baseFolder.CreateSubdirectory("TestResults").CreateSubdirectory(details.SafeTestSystemName);
+            if (!directory.Exists)
+                directory.Create();
+            string fileName = GetResultsFileName(details, summary, extension);
 
+            return File.Open(Path.Combine(directory.FullName, fileName), FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        }
+
+        /// <summary>
+        /// Creates a unique file name based on the specified test details and summary.
+        /// </summary>
+        /// <param name="details">An <see cref="ITestDetails"/> object containing metadata information relevent to the test.</param>
+        /// <param name="summary">An <see cref="ITestSummary"/> object containing information about the results of a test.</param>
+        /// <param name="extension">The file extension to apply.</param>
+        /// <returns>A unique string that can be used to generate a test results file.</returns>
+        public static string GetResultsFileName(ITestDetails details, ITestSummary summary, string extension)
+        {
             string jobNumber = string.IsNullOrWhiteSpace(details.JobNumber) ? "" : details.JobNumber + "-";
 
             string unitNumber = details.UnitNumber == 0 ? "" : details.UnitNumber.ToString("D3") + "-";
             string timeStamp = summary.DateStarted.ToString("yyyy-MM-dd_hh-mm-ss");
 
-            string fileName = Path.Combine(directory.FullName, jobNumber + unitNumber + timeStamp + "." + extension);
-
-            return File.Open(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-        }
-
-        public static string GetResultsFileName(ITestDetails details, ITestSummary summary, string extension)
-        {
-            FileStream s = GetResultsFile(details, summary, extension);
-            s.Close();
-            return s.Name;
+            return jobNumber + unitNumber + timeStamp + "." + extension;
         }
     }
 }

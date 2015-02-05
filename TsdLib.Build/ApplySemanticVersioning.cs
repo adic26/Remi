@@ -7,6 +7,8 @@
 
 using System;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -18,61 +20,47 @@ namespace TsdLib.Build
         [Required]
         public string AssemblyInfoFilePath { get; set; }
 
-        public string DefaultVersionLine { get; set; }
-        public string DefaultFileVersionLine { get; set; }
-        public string DefaultInformationalVersionLine { get; set; }
-
         public override bool Execute()
         {
             try
             {
                 string assemblyInfo = File.ReadAllText(AssemblyInfoFilePath);
 
-                assemblyInfo = Regex.Replace(assemblyInfo, 
-@"// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers 
-// by using the '\*' as shown below:
-// \[assembly: AssemblyVersion\(""1.0.*""\)\]", "");
+                assemblyInfo = Regex.Replace(assemblyInfo, ExistingInstructions(), "");
 
-                Match versionMatch = Regex.Match(assemblyInfo, @"(?<=AssemblyVersion\("")\d+\.\d+");
-                Match fileVersionMatch = Regex.Match(assemblyInfo, @"(?<=AssemblyFileVersion\("")\d+\.\d+\.\d+");
-                Match infoVersionMatch = Regex.Match(assemblyInfo, @"(?<=AssemblyInformationalVersion\("")\d+\.\d+\.\d+");
+                Match versionMatch = Regex.Match(assemblyInfo, AssemblyVersionReadRegEx());
+                Match fileVersionMatch = Regex.Match(assemblyInfo, AssemblyFileVersionReadRegEx());
+                bool infoVersionMatchSuccess = Regex.Match(assemblyInfo, AssemblyInformationalVersionRegEx()).Success;
 
+                Version majorMinorPatchVersion = Version.Parse(fileVersionMatch.Success ? fileVersionMatch.Value : versionMatch.Success ? versionMatch.Value : "1.0.0");
 
-                Version infoVersion = Version.Parse(infoVersionMatch.Success ? infoVersionMatch.Value : fileVersionMatch.Success ? fileVersionMatch.Value : versionMatch.Value);
+                if (!versionMatch.Success)
+                    assemblyInfo += AssemblyVersionLine(majorMinorPatchVersion);
 
-                if (!infoVersionMatch.Success)
-                {
-                    assemblyInfo += string.Format(
-@"#if DEBUG
-[assembly: AssemblyInformationalVersion(""{0}"")]
-#endif", infoVersion);
-                }
+                if (!fileVersionMatch.Success)
+                    assemblyInfo += AssemblyFileVersionLine(majorMinorPatchVersion);
 
-                Version version = Version.Parse(versionMatch.Success ? versionMatch.Value : "1.0.0");
+                if (!infoVersionMatchSuccess)
+                    assemblyInfo += AssemblyInformationalVersionLine(majorMinorPatchVersion);
+
+                Version majorMinorVersion = Version.Parse(versionMatch.Success ? versionMatch.Value : "1.0.0");
 
                 Version newVersion;
-                if (infoVersion.Major == version.Major && infoVersion.Minor == version.Minor) //major and minor are the same, just bump patch
-                    newVersion = new Version(version.Major, version.Minor, infoVersion.Build + 1);
-                else if (infoVersion.Major == version.Major) //minor has been updated by the developer, reset patch
-                    newVersion = new Version(version.Major, version.Minor, 0);
+                if (majorMinorPatchVersion.Major == majorMinorVersion.Major && majorMinorPatchVersion.Minor == majorMinorVersion.Minor) //major and minor are the same, just bump patch
+                    newVersion = new Version(majorMinorVersion.Major, majorMinorVersion.Minor, majorMinorPatchVersion.Build + 1);
+                else if (majorMinorPatchVersion.Major == majorMinorVersion.Major) //minor has been updated by the developer, reset patch
+                    newVersion = new Version(majorMinorVersion.Major, majorMinorVersion.Minor, 0);
                 else //major has been updated by the developer, reset minor and patch
-                    newVersion = new Version(version.Major, 0, 0);
+                    newVersion = new Version(majorMinorVersion.Major, 0, 0);
 
 
-                assemblyInfo = Regex.Replace(assemblyInfo, @"\[assembly: AssemblyVersion.*\]", @"[assembly: AssemblyVersion(""" + newVersion.Major + "." + newVersion.Minor + @""")]");
-                assemblyInfo = Regex.Replace(assemblyInfo, @"\[assembly: AssemblyFileVersion.*\]", @"[assembly: AssemblyFileVersion(""" + newVersion + @""")]");
-                assemblyInfo = Regex.Replace(assemblyInfo, @"\[assembly: AssemblyInformationalVersion.*\]", @"[assembly: AssemblyInformationalVersion(""" + newVersion + @"-debug"")]");
+                assemblyInfo = Regex.Replace(assemblyInfo, AssemblyVersionReplacementRegEx(), AssemblyVersionLine(newVersion));
+                assemblyInfo = Regex.Replace(assemblyInfo, AssemblyFileVersionReplacementRegEx(), AssemblyFileVersionLine(newVersion));
+                assemblyInfo = Regex.Replace(assemblyInfo, AssemblyInformationalVersionRegEx(), AssemblyInformationalVersionLine(newVersion));
 
-                string newAsyInfo = Regex.Replace(assemblyInfo, @"(?<=Assembly.*Version\("")\d+\.\d+\.\d+", newVersion.ToString());
+                assemblyInfo = Regex.Replace(assemblyInfo, @"^\s+$[\r\n]*", "", RegexOptions.Multiline);
 
-                File.WriteAllText(AssemblyInfoFilePath, newAsyInfo);
+                File.WriteAllText(AssemblyInfoFilePath, assemblyInfo);
 
                 return true;
             }
@@ -82,5 +70,87 @@ namespace TsdLib.Build
                 return false;
             }
         }
+
+        private string ExistingInstructions()
+        {
+            return
+@"// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Build and Revision Numbers 
+// by using the '\*' as shown below:
+// \[assembly: AssemblyVersion\(""1.0.*""\)\]";
+        }
+
+        public string AssemblyVersionLine(Version version)
+        {
+            return string.Format(@"{0}[assembly: AssemblyVersion(""{1}.{2}"")]", Environment.NewLine, version.Major, version.Minor);
+        }
+
+        public string AssemblyVersionReadRegEx()
+        {
+            return @"(?<=\[assembly: AssemblyVersion\("")\d+\.\d+(?=""\)\])";
+        }
+
+        public string AssemblyVersionReplacementRegEx()
+        {
+            return @"\[assembly: AssemblyVersion\(""\d+\.\d+""\)\]";
+        }
+
+        public string AssemblyFileVersionLine(Version version)
+        {
+            return string.Format(@"{0}[assembly: AssemblyFileVersion(""{1}.{2}.{3}"")]", Environment.NewLine, version.Major, version.Minor, version.Build);
+        }
+
+        public string AssemblyFileVersionReadRegEx()
+        {
+            return @"(?<=\[assembly: AssemblyFileVersion\("")\d+\.\d+\.\d+(?=""\)\])";
+        }
+
+        public string AssemblyFileVersionReplacementRegEx()
+        {
+            return @"\[assembly: AssemblyFileVersion\(""\d+\.\d+\.\d+""\)\]";
+        }
+
+        public string AssemblyInformationalVersionLine(Version version)
+        {
+            return string.Format(
+@"
+#if DEBUG
+[assembly: AssemblyInformationalVersion(""{0}.{1}.{2}-debug"")]
+#else
+[assembly: AssemblyInformationalVersion(""{0}.{1}.{2}"")]
+#endif",
+                version.Major, version.Minor, version.Build);
+        }
+
+        //public string AssemblyInformationalVersionRegEx()
+        //{
+        //    return @"(?s)\#if DEBUG..\[assembly:\s?AssemblyInformationalVersion\(""\d+\.\d+\.\d+-debug""\)\]..\#else..\[assembly:\s?AssemblyInformationalVersion\(""\d+\.\d+\.\d+""\)\]..\#endif";
+        //}
+
+        public string AssemblyInformationalVersionRegEx()
+        {
+            return
+@"(?x)(?s)
+\#if\sDEBUG..
+\[assembly:\s?AssemblyInformationalVersion\(""\d+\.\d+\.\d+-debug""\)\]..
+\#else..
+\[assembly:\s?AssemblyInformationalVersion\(""\d+\.\d+\.\d+""\)\]..
+\#endif";
+        }
+
+//        public string AssemblyInformationalVersionRegEx()
+//        {
+//            return
+//@"(?s)\#if DEBUG..
+//\[assembly:AssemblyInformationalVersion\(""\d+\.\d+\.\d+-debug""\)\]..
+//.*
+//\#endif";
+//        }
     }
 }

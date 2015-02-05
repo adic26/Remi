@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
@@ -76,39 +77,48 @@ namespace TsdLib.TestSystem.TestSequence
         }
         
 
-        /// <summary>
-        /// Gets the collection of information captured during the test sequence.
-        /// </summary>
-        internal readonly BindingList<ITestInfo> TestInfo;
+
+        private readonly BindingList<ITestInfo> _testInfo;
         /// <summary>
         /// Add a new <see cref="ITestInfo"/> to the collection of test information.
         /// </summary>
         /// <param name="testInfo">test information to add.</param>
         protected void AddTestInfo(ITestInfo testInfo)
         {
-            TestInfo.Add(testInfo);
+            _testInfo.Add(testInfo);
         }
         /// <summary>
         /// Gets or sets an EventProxy object that can be used to send information events across AppDomain boundaries.
         /// </summary>
         internal EventProxy<TestInfo> InfoEventProxy { get; set; }
-
         /// <summary>
-        /// Gets the collection of measurements captured during the test sequence.
+        /// Gets the collection of information captured during the test sequence.
         /// </summary>
-        internal readonly BindingList<MeasurementBase> Measurements;
+        public ReadOnlyCollection<ITestInfo> TestInfo
+        {
+            get { return new ReadOnlyCollection<ITestInfo>(_testInfo); }
+        }
+
+        private readonly BindingList<MeasurementBase> _measurements;
         /// <summary>
         /// Add a new <see cref="MeasurementBase"/> to the collection of test measurements.
         /// </summary>
         /// <param name="measurement">Measurement information to add.</param>
         protected void AddMeasurement(MeasurementBase measurement)
         {
-            Measurements.Add(measurement);
+            _measurements.Add(measurement);
         }
         /// <summary>
         /// Gets or sets an EventProxy object that can be used to send measurement events across AppDomain boundaries.
         /// </summary>
         internal EventProxy<MeasurementBase> MeasurementEventProxy { get; set; }
+        /// <summary>
+        /// Gets the collection of measurements captured during the test sequence.
+        /// </summary>
+        public ReadOnlyCollection<MeasurementBase> Measurements
+        {
+            get { return new ReadOnlyCollection<MeasurementBase>(_measurements); }
+        }
 
         /// <summary>
         /// Update the application controller of the current test sequence progress.
@@ -169,8 +179,8 @@ namespace TsdLib.TestSystem.TestSequence
 
             _instruments = new List<IInstrument>();
 
-            TestInfo = new BindingList<ITestInfo>();
-            TestInfo.ListChanged += (sender, e) =>
+            _testInfo = new BindingList<ITestInfo>();
+            _testInfo.ListChanged += (sender, e) =>
             {
                 IBindingList list = sender as IBindingList;
                 if (list == null)
@@ -181,8 +191,8 @@ namespace TsdLib.TestSystem.TestSequence
                     InfoEventProxy.FireEvent(this, info);
             };
 
-            Measurements = new BindingList<MeasurementBase>();
-            Measurements.ListChanged += (sender, e) =>
+            _measurements = new BindingList<MeasurementBase>();
+            _measurements.ListChanged += (sender, e) =>
             {
                 IBindingList list = sender as IBindingList;
                 if (list != null && MeasurementEventProxy != null)
@@ -201,10 +211,10 @@ namespace TsdLib.TestSystem.TestSequence
         {
             _instruments.Add(e);
             string instrumentType = e.GetType().Name;
-            TestInfo.Add(new TestInfo(instrumentType + " Description", e.Description));
-            TestInfo.Add(new TestInfo(instrumentType + " " + e.ModelNumberDescriptor, e.ModelNumber));
-            TestInfo.Add(new TestInfo(instrumentType + " " + e.SerialNumberDescriptor, e.SerialNumber));
-            TestInfo.Add(new TestInfo(instrumentType + " " + e.FirmwareVersionDescriptor, e.FirmwareVersion));
+            _testInfo.Add(new TestInfo(instrumentType + " Description", e.Description));
+            _testInfo.Add(new TestInfo(instrumentType + " " + e.ModelNumberDescriptor, e.ModelNumber));
+            _testInfo.Add(new TestInfo(instrumentType + " " + e.SerialNumberDescriptor, e.SerialNumber));
+            _testInfo.Add(new TestInfo(instrumentType + " " + e.FirmwareVersionDescriptor, e.FirmwareVersion));
         }
 
         /// <summary>
@@ -227,11 +237,11 @@ namespace TsdLib.TestSystem.TestSequence
         {
             try
             {
-                TestInfo.Add(new TestInfo("Station Configuration", stationConfig.Name));
-                TestInfo.Add(new TestInfo("Product Configuration", productConfig.Name));
+                _testInfo.Add(new TestInfo("Station Configuration", stationConfig.Name));
+                _testInfo.Add(new TestInfo("Product Configuration", productConfig.Name));
                 foreach (TTestConfig testConfig in testConfigs)
-                    TestInfo.Add(new TestInfo("Test Configuration", testConfig.Name));
-                TestInfo.Add(new TestInfo("Sequence", GetType().Name));
+                    _testInfo.Add(new TestInfo("Test Configuration", testConfig.Name));
+                _testInfo.Add(new TestInfo("Sequence", GetType().Name));
 
                 Trace.WriteLine("Starting pre-test at " + DateTime.Now);
 

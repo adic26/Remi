@@ -114,11 +114,7 @@ namespace TsdLib.Measurements
         /// <returns>The absolute path to the xml file generated.</returns>
         public string SaveXml()
         {
-            using (FileStream stream = SpecialFolders.GetResultsFile(Details, Summary, "xml"))
-            {
-                _serializer.Serialize(stream, this);
-                return stream.Name;
-            }
+            return SaveXml(null);
         }
 
         /// <summary>
@@ -128,7 +124,7 @@ namespace TsdLib.Measurements
         /// <returns>The absolute path to the xml file generated.</returns>
         public string SaveXml(DirectoryInfo directory)
         {
-            using (FileStream stream = File.OpenWrite(directory.FullName))
+            using (FileStream stream = SpecialFolders.GetResultsFile(Details, Summary, "xml", directory))
             {
                 _serializer.Serialize(stream, this);
                 return stream.Name;
@@ -141,14 +137,8 @@ namespace TsdLib.Measurements
         /// <returns>The absolute path to the csv file generated.</returns>
         public string SaveCsv()
         {
-                FileStream fileStream = SpecialFolders.GetResultsFile(Details, Summary, "csv");
-            
-                using (StreamWriter writer = new StreamWriter(fileStream))
-                {
-                    writer.Write(ToString(Environment.NewLine, ","));
-                    return fileStream.Name;
-                }
-            
+            return SaveCsv(null);
+
         }
 
         /// <summary>
@@ -156,21 +146,15 @@ namespace TsdLib.Measurements
         /// </summary>
         /// <param name="directory">A <see cref="System.IO.DirectoryInfo"/> object representing the directory to save the test results file to.</param>
         /// <returns>The absolute path to the csv file generated.</returns>
-        public async Task<string> SaveCsvAsync(DirectoryInfo directory)
+        public string SaveCsv(DirectoryInfo directory)
         {
-            if (!directory.Exists)
-                directory.Create();
+            FileStream fileStream = SpecialFolders.GetResultsFile(Details, Summary, "csv", directory);
 
-            string jobNumber = string.IsNullOrWhiteSpace(Details.JobNumber) ? "" : Details.JobNumber + "-";
-
-            string unitNumber = Details.UnitNumber == 0 ? "" : Details.UnitNumber.ToString("D3") + "-";
-            string timeStamp = Summary.DateStarted.ToString("yyyy-MM-dd_hh-mm-ss");
-
-            string fileName = Path.Combine(directory.FullName, jobNumber + unitNumber + timeStamp + ".csv");
-
-            await Task.Run(() => File.WriteAllText(fileName, ToString(Environment.NewLine, ",")));
-            
-            return fileName;
+            using (StreamWriter writer = new StreamWriter(fileStream))
+            {
+                writer.Write(ToString(Environment.NewLine, ","));
+                return fileStream.Name;
+            }
         }
 
         /// <summary>

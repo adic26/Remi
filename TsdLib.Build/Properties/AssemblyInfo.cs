@@ -6,7 +6,11 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("TsdLib.Build")]
 [assembly: AssemblyDescription("A library containing development environment and build tools.")]
-[assembly: AssemblyConfiguration("")]
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
+[assembly: AssemblyConfiguration("Release")]
+#endif
 [assembly: AssemblyCompany("BlackBerry")]
 [assembly: AssemblyProduct("TsdLib.Build")]
 [assembly: AssemblyCopyright("Copyright © BlackBerry 2015")]
