@@ -64,9 +64,15 @@ namespace TsdLib.UI.Forms
         /// Add a general data object to the UI. Override to perform specific operations based on the type of the internal data value.
         /// </summary>
         /// <param name="data">Data to add.</param>
-        public virtual void AddData(object data)
+        public void AddData(object data)
         {
-            Trace.WriteLine("Received data: " + data);
+            addData((dynamic)data);
+        }
+
+        private void addData(object data)
+        {
+            Trace.WriteLine(string.Format("Unsupported data type received: {0}", data.GetType().Name));
+            Trace.WriteLine(string.Format("String representation: {0}", data));
         }
 
         private void ViewBase_FormClosing(object sender, FormClosingEventArgs e)
