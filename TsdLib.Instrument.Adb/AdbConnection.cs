@@ -1,80 +1,49 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Text;
-using System.Threading;
 
 namespace TsdLib.Instrument.Adb
 {
-    /// <summary>
-    /// Contains functionality to communicate with an instrument using adb.exe.
-    /// </summary>
+    ///// <summary>
+    ///// Contains functionality to communicate with an instrument using adb.exe.
+    ///// </summary>
     public class AdbConnection : ConnectionBase
     {
+        private readonly string _adbExe;
         private readonly StringBuilder _output;
         private readonly StringBuilder _error;
+        private int _exitCode;
 
-        internal AdbConnection(string address)
+        internal AdbConnection(string address, string adbFileLocation)
             : base(address)
         {
             _output = new StringBuilder();
             _error = new StringBuilder();
+            _adbExe = adbFileLocation;
         }
 
         protected override void Write(string message)
         {
             _output.Clear();
+            _error.Clear();
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                UseShellExecute = false,
+                FileName = "cmd.exe",
+                Arguments = string.Format(@"/c {0} -s {1} shell ""{2}""", _adbExe, Address, message),
                 CreateNoWindow = true,
-                FileName = @"platform-tools\adb.exe",
-                Arguments = "-s " + Address + " shell " + message,
-                RedirectStandardOutput = true,
+                UseShellExecute = false,
                 RedirectStandardError = true,
+                RedirectStandardOutput = true
             };
-            using (Process process = Process.Start(startInfo))
-            {
-                if (process == null)
-                    throw new AdbConnectException("Could not start adb process");
-                using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
-                using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
-                {
-                    process.OutputDataReceived += (sender, e) =>
-                    {
-                        if (e.Data == null)
-                            // ReSharper disable once AccessToDisposedClosure
-                            outputWaitHandle.Set();
-                        else if (!string.IsNullOrEmpty(e.Data))
-                            _output.Append(e.Data.Trim());
-                    };
-                    process.ErrorDataReceived += (sender, e) =>
-                    {
-                        if (e.Data == null)
-                            // ReSharper disable once AccessToDisposedClosure
-                            errorWaitHandle.Set();
-                        else if (!string.IsNullOrEmpty(e.Data))
-                            _error.Append(e.Data.Trim());
-                    };
 
-                    process.Start();
+            Process process = Process.Start(startInfo);
+            if (process== null || !process.WaitForExit(5000))
+                throw new Exception(string.Format("Command failed: {0}. Timeout waiting for Adb process to exit", message));
 
-                    process.BeginOutputReadLine();
-                    process.BeginErrorReadLine();
+            _output.Append(process.StandardOutput.ReadToEnd().Trim());
+            _error.Append(process.StandardError.ReadToEnd().Trim());
 
-                    if (process.WaitForExit(5000) && outputWaitHandle.WaitOne(5000) && errorWaitHandle.WaitOne(5000))
-                    {
-                        if (process.ExitCode != 0)
-                            throw new AdbCommandException(this, message, "Adb process exited with code " + process.ExitCode);
-                    }
-                    else
-                    {
-                        process.Kill();
-                        throw new AdbCommandException(this, message, "Timeout waiting for Adb process to exit");
-                    }
-                }
-            }
-
-
+            _exitCode = process.ExitCode;
         }
 
         protected override string ReadString()
@@ -91,7 +60,7 @@ namespace TsdLib.Instrument.Adb
 
         protected override bool CheckForError()
         {
-            return _error.Length != 0;
+            return _exitCode != 0 || _error.Length != 0;
         }
 
         public override bool IsConnected
