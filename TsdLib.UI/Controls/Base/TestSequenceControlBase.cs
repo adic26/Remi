@@ -16,11 +16,11 @@ namespace TsdLib.UI.Controls.Base
         /// <summary>
         /// Event fired when requesting to execute the Test Sequence.
         /// </summary>
-        public event EventHandler ExecuteTestSequence;
+        public virtual event EventHandler ExecuteTestSequence;
         /// <summary>
         /// Event fired when requesting to abort the Test Sequence current in progress.
         /// </summary>
-        public event EventHandler AbortTestSequence;
+        public virtual event EventHandler AbortTestSequence;
 
         protected virtual void OnExecute()
         {
