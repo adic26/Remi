@@ -237,6 +237,7 @@ namespace TsdLib.TestSystem.TestSequence
         {
             try
             {
+                //TODO: change TestInfo.Name to StationConfigCommon
                 _testInfo.Add(new TestInfo("Station Configuration", stationConfig.Name));
                 _testInfo.Add(new TestInfo("Product Configuration", productConfig.Name));
                 foreach (TTestConfig testConfig in testConfigs)

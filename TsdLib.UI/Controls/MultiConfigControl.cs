@@ -19,7 +19,11 @@ namespace TsdLib.UI.Controls
         public override IConfigManager StationConfigManager
         {
             get { return (IConfigManager)comboBox_StationConfig.DataSource; }
-            set { comboBox_StationConfig.DataSource = value; }
+            set
+            {
+                if (value == null) return;
+                comboBox_StationConfig.DataSource = value;
+            }
         }
         /// <summary>
         /// Sets the list of available Product Config instances.
@@ -27,7 +31,11 @@ namespace TsdLib.UI.Controls
         public override IConfigManager ProductConfigManager
         {
             get { return (IConfigManager)comboBox_ProductConfig.DataSource; }
-            set { comboBox_ProductConfig.DataSource = value; }
+            set
+            {
+                if (value == null) return;
+                comboBox_ProductConfig.DataSource = value;
+            }
         }
         /// <summary>
         /// Sets the list of available Test Config instances.
@@ -37,9 +45,9 @@ namespace TsdLib.UI.Controls
             get { return (IConfigManager)checkedListBox_TestConfig.DataSource; }
             set
             {
+                if (value == null) return;
                 checkedListBox_TestConfig.DataSource = value;
-                if (value != null)
-                    checkedListBox_TestConfig.SetItemChecked(0, true);
+                checkedListBox_TestConfig.SetItemChecked(0, true);
             }
         }
         /// <summary>
@@ -50,9 +58,9 @@ namespace TsdLib.UI.Controls
             get { return (IConfigManager)checkedListBox_SequenceConfig.DataSource; }
             set
             {
+                if (value == null) return;
                 checkedListBox_SequenceConfig.DataSource = value;
-                if (value != null)
-                    checkedListBox_SequenceConfig.SetItemChecked(0, true);
+                checkedListBox_SequenceConfig.SetItemChecked(0, true);
             }
         }
 

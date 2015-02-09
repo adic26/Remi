@@ -165,6 +165,7 @@ namespace TsdLib.Configuration
                 Indent = true
             };
 
+            //TODO: remove xml declaration
             StringBuilder sbLocal = new StringBuilder();
             using (XmlWriter xmlWriter = XmlWriter.Create(sbLocal, xmlWriterSettings))
                 _serializer.Serialize(xmlWriter, _configs);
