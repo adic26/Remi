@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace TsdLib.Configuration
+namespace TsdLib.Configuration.Connections
 {
     /// <summary>
     /// A database implementation that persists data settings to the local file system.

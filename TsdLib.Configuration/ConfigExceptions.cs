@@ -76,4 +76,40 @@ namespace TsdLib.Configuration
         protected InvalidDirectoryException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }
+
+    /// <summary>
+    /// Exception due to an error writing to a shared configuration location.
+    /// </summary>
+    [Serializable]
+    public class SharedConfigWriteFailedException : TsdLibException
+    {
+        public SharedConfigWriteFailedException(Exception inner = null)
+            : base("Failed to write configuration to the shared location", inner) { }
+
+        /// <summary>
+        /// Deserialization constructor used by the .NET Framework to initialize an instance of the <see cref="SharedConfigWriteFailedException"/> class from serialized data.
+        /// </summary>
+        /// <param name="info">The SerialzationInfo that holds the serialized object data about the exception being thrown.</param>
+        /// <param name="context">The StreamingContext that contains the contextual information about the source or destination.</param>
+        protected SharedConfigWriteFailedException(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
+    }
+
+    /// <summary>
+    /// Exception due to an invalid configuration type.
+    /// </summary>
+    [Serializable]
+    public class InvalidConfigTypeException : TsdLibException
+    {
+        public InvalidConfigTypeException(Type configType, Exception inner = null)
+            : base("The configuration type: " + configType.Name + " is invalid", inner) { }
+
+        /// <summary>
+        /// Deserialization constructor used by the .NET Framework to initialize an instance of the <see cref="InvalidConfigTypeException"/> class from serialized data.
+        /// </summary>
+        /// <param name="info">The SerialzationInfo that holds the serialized object data about the exception being thrown.</param>
+        /// <param name="context">The StreamingContext that contains the contextual information about the source or destination.</param>
+        protected InvalidConfigTypeException(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
+    }
 }

@@ -18,7 +18,7 @@ namespace TsdLib.UI.Controls.Base
         /// <summary>
         /// Event fired when requesting to edit the test details.
         /// </summary>
-        public virtual event EventHandler<bool> EditTestDetails;
+        public event EventHandler<bool> EditTestDetails;
 
         /// <summary>
         /// Fire the <see cref="EditTestDetails"/> event

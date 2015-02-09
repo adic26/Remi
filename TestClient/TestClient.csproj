@@ -35,13 +35,13 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DBControl, Version=4.3.5505.20419, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="DBControl, Version=4.4.5515.22611, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DBControl.4.3.5505.20419\lib\net45\DBControl.dll</HintPath>
+      <HintPath>..\packages\DBControl.4.4-debug\lib\net45\DBControl.dll</HintPath>
     </Reference>
-    <Reference Include="DBControl.XmlSerializers, Version=4.3.5505.20419, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="DBControl.XmlSerializers, Version=4.4.5515.22611, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DBControl.4.3.5505.20419\lib\net45\DBControl.XmlSerializers.dll</HintPath>
+      <HintPath>..\packages\DBControl.4.4-debug\lib\net45\DBControl.XmlSerializers.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\Connections\DatabaseConfigConnection.cs" />
     <Compile Include="Controller\Controller.cs" />
     <Compile Include="Configuration\ProductConfig.cs" />
     <Compile Include="Instruments\Aos_BCM4339.cs">

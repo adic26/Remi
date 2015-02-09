@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TsdLib.Configuration
+namespace TsdLib.Configuration.Connections
 {
     /// <summary>
     /// Defines methods to allow reading and writing string data to and from a storage location.

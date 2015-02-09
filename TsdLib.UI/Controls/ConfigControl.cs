@@ -96,7 +96,7 @@ namespace TsdLib.UI.Controls
 
         private void config_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            OnConfigSelectionChanged(e);
+            OnConfigSelectionChanged();
         }
     }
 }

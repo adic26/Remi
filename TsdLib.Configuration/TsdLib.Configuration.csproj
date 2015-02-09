@@ -42,6 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\ProductConfigCommon.cs" />
+    <Compile Include="Common\SequenceConfigCommon.cs" />
+    <Compile Include="Common\StationConfigCommon.cs" />
+    <Compile Include="Common\TestConfigCommon.cs" />
     <Compile Include="ConfigExceptions.cs" />
     <Compile Include="ConfigItemCreate.cs">
       <SubType>Form</SubType>
@@ -49,7 +53,7 @@
     <Compile Include="ConfigItemCreate.Designer.cs">
       <DependentUpon>ConfigItemCreate.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConfigItems.cs" />
+    <Compile Include="ConfigItem.cs" />
     <Compile Include="ConfigManager.cs" />
     <Compile Include="ConfigManagerForm.cs">
       <SubType>Form</SubType>
@@ -59,14 +63,17 @@
     </Compile>
     <Compile Include="DesignerVerbSite.cs" />
     <Compile Include="FilePath.cs" />
-    <Compile Include="FileSystemConnection.cs" />
-    <Compile Include="IConfigConnection.cs" />
+    <Compile Include="Connections\FileSystemConnection.cs" />
+    <Compile Include="Connections\IConfigConnection.cs" />
     <Compile Include="MultiLineStringEditor.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MultiLineStringEditor.Designer.cs">
       <DependentUpon>MultiLineStringEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Null\NullProductConfig.cs" />
+    <Compile Include="Null\NullStationConfig.cs" />
+    <Compile Include="Null\NullTestConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sequence.cs" />
     <Compile Include="TestDetails.cs" />
@@ -76,6 +83,7 @@
     <Compile Include="TestDetailsEditor.Designer.cs">
       <DependentUpon>TestDetailsEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\ConfigUtilities.cs" />
     <Compile Include="VersionTypeEditor.cs" />
   </ItemGroup>
   <ItemGroup>

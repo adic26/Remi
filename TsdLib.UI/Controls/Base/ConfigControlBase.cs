@@ -57,7 +57,7 @@ namespace TsdLib.UI.Controls.Base
         /// <summary>
         /// Event fired when requesting to modify the test system configuration.
         /// </summary>
-        public virtual event EventHandler<IConfigManager[]> ViewEditConfiguration;
+        public event EventHandler<IConfigManager[]> ViewEditConfiguration;
         /// <summary>
         /// Fire the <see cref="ViewEditConfiguration"/> event.
         /// </summary>
@@ -73,9 +73,12 @@ namespace TsdLib.UI.Controls.Base
         /// <summary>
         /// Event fired when a selected configuration instance is changed.
         /// </summary>
-        public virtual event EventHandler ConfigSelectionChanged;
+        public event EventHandler ConfigSelectionChanged;
 
-        protected virtual void OnConfigSelectionChanged(EventArgs e)
+        /// <summary>
+        /// Fires the <see cref="E:ConfigSelectionChanged"/> event.
+        /// </summary>
+        protected virtual void OnConfigSelectionChanged()
         {
             EventHandler invoker = ConfigSelectionChanged;
             if (invoker != null)

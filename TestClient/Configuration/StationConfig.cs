@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using TsdLib.Configuration;
+using TsdLib.Configuration.Common;
 
 namespace TestClient.Configuration
 {
@@ -16,6 +16,7 @@ namespace TestClient.Configuration
         /// </summary>
         public override void InitializeDefaultValues()
         {
+            base.InitializeDefaultValues();
             PowerSupplyAddress = "GPIB0::1::INSTR";
         }
     }

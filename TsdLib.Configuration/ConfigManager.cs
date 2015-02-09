@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using TsdLib.Configuration.Connections;
 
 namespace TsdLib.Configuration
 {

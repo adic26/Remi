@@ -81,7 +81,8 @@ namespace TsdLib.Measurements
             Measurements = measurements;
             Summary = summary;
             TestInfo = information != null ? information.ToList() : new List<ITestInfo>();
-            
+
+            TestInfo.Insert(0, new TestInfo("OperatingMode", details.TestSystemMode.ToString()));
             if (details.TsdFrameworkVersion != null)
                 TestInfo.Insert(0, new TestInfo("TSD Framework Version", details.TsdFrameworkVersion));
             if (details.TestSystemVersion != null)
@@ -206,12 +207,11 @@ namespace TsdLib.Measurements
             writer.WriteEndElement();
 
             writer.WriteStartElement("Information");
-            
+
             foreach (ITestInfo testInfo in TestInfo)
             {
                 writer.WriteStartElement("Info");
                 testInfo.WriteXml(writer);
-                writer.WriteElementString("TestSystemMode", Details.TestSystemMode.ToString());
                 writer.WriteEndElement();
             }
             writer.WriteEndElement();

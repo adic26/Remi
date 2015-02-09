@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Windows.Forms;
 using TsdLib.Configuration;
 using System.Configuration;
+using TestClient.Configuration.Connections;
+using TsdLib.Configuration.Connections;
 
 namespace TestClient
 {
@@ -56,7 +58,8 @@ namespace TestClient
 
                 ITestDetails testDetails = new TestDetails(testSystemName, testSystemVersion, testSystemMode);
 
-                IConfigConnection sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation), testSystemVersionMask);
+                //IConfigConnection sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation), testSystemVersionMask);
+                IConfigConnection sharedConfigConnection = new DatabaseConfigConnection(testSystemVersionMask);
 
                 if (args.Contains(SeqFolderArg))
                 {

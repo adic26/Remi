@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Threading;
 using TsdLib.Configuration;
+using TsdLib.Configuration.Common;
 using TsdLib.Instrument;
 using TsdLib.Measurements;
 using TsdLib.TestSystem.Controller;
@@ -18,7 +19,7 @@ namespace TsdLib.TestSystem.TestSequence
     /// <typeparam name="TStationConfig">Type of Station Config used in the derived class.</typeparam>
     /// <typeparam name="TProductConfig">Type of Product Config used in the derived class.</typeparam>
     /// <typeparam name="TTestConfig">Type of Test Config used in the derived class.</typeparam>
-    public abstract class TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject, ICancellable
+    public abstract class TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> : Sequence, ICancellable
         where TStationConfig : StationConfigCommon
         where TProductConfig : ProductConfigCommon
         where TTestConfig : TestConfigCommon
@@ -238,11 +239,12 @@ namespace TsdLib.TestSystem.TestSequence
             try
             {
                 //TODO: change TestInfo.Name to StationConfigCommon
-                _testInfo.Add(new TestInfo("Station Configuration", stationConfig.Name));
-                _testInfo.Add(new TestInfo("Product Configuration", productConfig.Name));
+                _testInfo.Add(new TestInfo(stationConfig.CommonBaseTypeName, stationConfig.Name));
+                _testInfo.Add(new TestInfo(productConfig.CommonBaseTypeName, productConfig.Name));
                 foreach (TTestConfig testConfig in testConfigs)
-                    _testInfo.Add(new TestInfo("Test Configuration", testConfig.Name));
-                _testInfo.Add(new TestInfo("Sequence", GetType().Name));
+                    _testInfo.Add(new TestInfo(testConfig.CommonBaseTypeName, testConfig.Name));
+                _testInfo.Add(new TestInfo(CommonBaseTypeName, GetType().Name));
+                //_testInfo.Add(new TestInfo("SequenceConfigCommon", GetType().Name)); //Use this if we have trouble deriving from SequenceConfigCommon instead of MarshalByRefObject - that way we can avoid making ConfigItem derive from MarshalByRefObject
 
                 Trace.WriteLine("Starting pre-test at " + DateTime.Now);
 
@@ -310,15 +312,6 @@ namespace TsdLib.TestSystem.TestSequence
                 foreach (IInstrument instrument in _instruments)
                     instrument.Dispose();
             }
-        }
-
-        /// <summary>
-        /// Returns null to ensure that the remote object's lifetime is as long as the hosting AppDomain.
-        /// </summary>
-        /// <returns>Null, which corresponds to an unlimited lease time.</returns>
-        public override object InitializeLifetimeService()
-        {
-            return null;
         }
     }
 }

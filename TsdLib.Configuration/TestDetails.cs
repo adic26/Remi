@@ -265,7 +265,7 @@ namespace TsdLib.Configuration
         public void WriteXml(XmlWriter writer)
         {
             writer.WriteElementString("TestName", TestSystemName);
-            writer.WriteElementString("RequestNumber", RequestNumber);
+            writer.WriteElementString("JobNumber", RequestNumber);
             writer.WriteElementString("UnitNumber", UnitNumber.ToString(CultureInfo.InvariantCulture));
             writer.WriteElementString("TestType", TestType);
             writer.WriteElementString("TestStage", TestStage);

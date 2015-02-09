@@ -100,7 +100,7 @@ namespace TsdLib.UI.Controls
 
         private void config_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            OnConfigSelectionChanged(e);
+            OnConfigSelectionChanged();
         }
 
         private void config_SelectionChangeCommittedCheckBox(object sender, ItemCheckEventArgs e)
@@ -112,7 +112,7 @@ namespace TsdLib.UI.Controls
                 {
                     checkedListBox.ItemCheck -= config_SelectionChangeCommittedCheckBox;
                     checkedListBox.SetItemCheckState(e.Index, e.NewValue);
-                    OnConfigSelectionChanged(e);
+                    OnConfigSelectionChanged();
                 }
                 finally
                 {

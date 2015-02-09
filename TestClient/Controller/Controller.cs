@@ -3,6 +3,7 @@ using TestClient.Configuration;
 using TestClient.View;
 using TsdLib.CodeGenerator;
 using TsdLib.Configuration;
+using TsdLib.Configuration.Connections;
 using TsdLib.TestSystem.Controller;
 
 namespace TestClient
@@ -72,9 +73,9 @@ namespace TestClient
 
         protected override void PublishResults(TsdLib.Measurements.ITestResults results)
         {
-            string xmlFile = TsdLib.SpecialFolders.GetResultsFileName(results.Details, results.Summary, "xml");
+            string xmlFile = System.IO.Path.Combine(TsdLib.SpecialFolders.GetResultsFolder(results.Details.SafeTestSystemName).FullName, TsdLib.SpecialFolders.GetResultsFileName(results.Details, results.Summary, "xml"));
             string path = System.IO.Path.GetDirectoryName(xmlFile);
-            if (path == null)
+            if (string.IsNullOrWhiteSpace(path))
                 throw new System.IO.DirectoryNotFoundException("The results folder does not exist on this machine.");
             System.Diagnostics.Trace.WriteLine("Uploading results to database...");
             DBControl.DAL.Results.UploadXML(xmlFile, path, System.IO.Path.Combine(path, "PublishFailed"), System.IO.Path.Combine(path, "Published"), false, true);
