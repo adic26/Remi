@@ -109,9 +109,9 @@ namespace TsdLib.Configuration
         /// Gets the job/request number.
         /// </summary>
         [Category("Test Details")]
-        [DisplayName("Job Number")]
+        [DisplayName("Request Number")]
         [Description("Request or job number used to track the testing")]
-        public string JobNumber { get; set; }
+        public string RequestNumber { get; set; }
 
         /// <summary>
         /// Gets the unit number for the current DUT.
@@ -147,15 +147,6 @@ namespace TsdLib.Configuration
         public string StationName { get; set; }
 
         /// <summary>
-        /// Gets the BSN of the DUT. Always returns 1234567890, since the BSN is automatically captured during test sequence.
-        /// </summary>
-        [Browsable(false)]
-        public string BSN
-        {
-            get { return "1234567890"; }
-        }
-
-        /// <summary>
         /// Gets the functional type (SFI: 1/MFI: 2/Acc: 3)
         /// </summary>
         [Category("Test Details")]
@@ -175,7 +166,7 @@ namespace TsdLib.Configuration
         /// <param name="testSystemVersion">Version of the test system.</param>
         /// <param name="testSystemMode">The operating mode of the test system (ie. Development, Engineering or Production).</param>
         public TestDetails(string testSystemName, Version testSystemVersion, OperatingMode testSystemMode)
-            : this(testSystemName, testSystemVersion, testSystemMode, "QRA-XX-TEST", 99, "T077 Other", "Baseline") {  }
+            : this(testSystemName, testSystemVersion, testSystemMode, "QRA-XX-TEST", 1, "T077 Other", "Baseline") {  }
 
         /// <summary>
         /// Initialize a new TestDetails object.
@@ -194,7 +185,7 @@ namespace TsdLib.Configuration
             TestSystemName = testSystemName;
             TestSystemVersion = testSystemVersion;
             TestSystemMode = testSystemMode;
-            JobNumber = jobNumber;
+            RequestNumber = jobNumber;
             UnitNumber = unitNumber;
             TestType = testType;
             TestStage = testStage;
@@ -226,7 +217,7 @@ namespace TsdLib.Configuration
                 string.Join(columnSeparator, "Test System Version", TestSystemVersion),
                 string.Join(columnSeparator, "Test System Mode", TestSystemMode),
                 string.Join(columnSeparator, "TSD Framework Version", TsdFrameworkVersion),
-                string.Join(columnSeparator, "JobN umber", JobNumber),
+                string.Join(columnSeparator, "JobN umber", RequestNumber),
                 string.Join(columnSeparator, "Unit Number", UnitNumber),
                 string.Join(columnSeparator, "Test Type", TestType),
                 string.Join(columnSeparator, "Test Stage", TestStage),
@@ -274,13 +265,13 @@ namespace TsdLib.Configuration
         public void WriteXml(XmlWriter writer)
         {
             writer.WriteElementString("TestName", TestSystemName);
-            writer.WriteElementString("JobNumber", JobNumber);
+            writer.WriteElementString("RequestNumber", RequestNumber);
             writer.WriteElementString("UnitNumber", UnitNumber.ToString(CultureInfo.InvariantCulture));
             writer.WriteElementString("TestType", TestType);
             writer.WriteElementString("TestStage", TestStage);
             writer.WriteElementString("StationName", StationName);
-            writer.WriteElementString("BSN", BSN);
-            writer.WriteElementString("FunctionalType", ((int)FunctionalType).ToString(CultureInfo.InvariantCulture));
+            if (!FunctionalType.HasFlag(FunctionalType.None))
+                writer.WriteElementString("FunctionalType", ((int)FunctionalType).ToString(CultureInfo.InvariantCulture));
         }
 
         /// <summary>
@@ -291,7 +282,7 @@ namespace TsdLib.Configuration
         {
             reader.ReadStartElement();
             TestSystemName = reader.ReadElementContentAsString("TestName", "");
-            JobNumber = reader.ReadElementContentAsString("JobNumber", "");
+            RequestNumber = reader.ReadElementContentAsString("JobNumber", "");
             UnitNumber = Convert.ToUInt32(reader.ReadElementContentAsString("UnitNumber", ""));
             TestType = reader.ReadElementContentAsString("TestType", "");
             TestStage = reader.ReadElementContentAsString("TestStage", "");

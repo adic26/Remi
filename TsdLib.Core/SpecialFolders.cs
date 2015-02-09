@@ -130,7 +130,7 @@ namespace TsdLib
         /// <returns>A unique string that can be used to generate a test results file.</returns>
         public static string GetResultsFileName(ITestDetails details, ITestSummary summary, string extension)
         {
-            string jobNumber = string.IsNullOrWhiteSpace(details.JobNumber) ? "" : details.JobNumber + "-";
+            string jobNumber = string.IsNullOrWhiteSpace(details.RequestNumber) ? "" : details.RequestNumber + "-";
 
             string unitNumber = details.UnitNumber == 0 ? "" : details.UnitNumber.ToString("D3") + "-";
             string timeStamp = summary.DateStarted.ToString("yyyy-MM-dd_hh-mm-ss");

@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing.Design;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
 namespace TsdLib.Configuration
@@ -59,10 +55,19 @@ namespace TsdLib.Configuration
         public bool IsDefault { get; set; }
 
         /// <summary>
+        /// Returns true by default, indicating that the config item is valid in the current context. Override to add conditions to return false.
+        /// </summary>
+        [Browsable((false))]
+        [XmlIgnore]
+        public virtual bool IsValid
+        {
+            get { return true; }
+        }
+
+        /// <summary>
         /// Initialize a new ConfigItem.
         /// </summary>
         protected ConfigItem()
-            : this("Not Assigned", false, true) 
         {
             //This is currently not suggested, since default values do not get serialized. It is better for derived types to use the Init method.
             //foreach (PropertyDescriptor prop in TypeDescriptor.GetProperties(this))
@@ -73,6 +78,12 @@ namespace TsdLib.Configuration
             //}
         }
 
+        /// <summary>
+        /// Initialize a new ConfigItem.
+        /// </summary>
+        /// <param name="name">Name to assign to the new config item.</param>
+        /// <param name="storeInDatabase">True if the config item will be stored in the shared config location.</param>
+        /// <param name="isDefault">True if the config item is auto-generated, and should be excluded when 'real' configs are present.</param>
         protected ConfigItem(string name, bool storeInDatabase, bool isDefault)
         {
             Name = name;
@@ -142,8 +153,17 @@ namespace TsdLib.Configuration
     [Serializable]
     public abstract class StationConfigCommon : ConfigItem
     {
+        /// <summary>
+        /// Gets or sets a list of machine names that can use this station config item.
+        /// </summary>
+        public List<string> MachineNames { get; set; }
+
+        public override bool IsValid
+        {
+            get { return MachineNames.Contains(Environment.MachineName); }
+        }
+
         protected StationConfigCommon()
-            : this("NotAssigned", false, true)
         {
 
         }
@@ -151,7 +171,7 @@ namespace TsdLib.Configuration
         protected StationConfigCommon(string name, bool storeInDatabase, bool isDefault)
             : base(name, storeInDatabase, isDefault)
         {
-
+            MachineNames = new List<string> {Environment.MachineName};
         }
     }
 
@@ -178,7 +198,6 @@ namespace TsdLib.Configuration
     public abstract class ProductConfigCommon : ConfigItem
     {
         protected ProductConfigCommon()
-            : this("NotAssigned", false, true)
         {
 
         }
@@ -213,7 +232,6 @@ namespace TsdLib.Configuration
     public abstract class TestConfigCommon : ConfigItem
     {
         protected TestConfigCommon()
-            : this("NotAssigned", false, true)
         {
 
         }
@@ -249,105 +267,7 @@ namespace TsdLib.Configuration
 
     }
 
-    /// <summary>
-    /// Conatains the step-by-step instrument control and measurement capturing instructions that make up a test sequence.
-    /// Can be parameterized by StationConfig, ProductConfig, TestConfig.
-    /// </summary>
-    [Serializable]
-    public class Sequence : SequenceConfigCommon
-    {
-        /// <summary>
-        /// Gets or sets a list of assemblies needed to be referenced declared in the test sequence.
-        /// </summary>
-        [Editor(typeof(MultiLineStringEditor), typeof(UITypeEditor))]
-        [TypeConverter(typeof(HashSetConverter))]
-        [Category("Dependencies")]
-        public HashSet<string> AssemblyReferences { get; set; }
 
-        /// <summary>
-        /// Gets or sets the source code for the step-by-step execution of the test sequence.
-        /// </summary>
-        [Editor(typeof(MultiLineStringEditor), typeof(UITypeEditor))]
-        [Category("Test Sequence")]
-        public string SourceCode { get; set; }
-
-        public string Namespace
-        {
-            get { return Regex.Match(SourceCode, @"(?<=namespace )[\w\.]+").Value; }
-        }
-
-        public string ClassName
-        {
-            get { return Regex.Match(SourceCode, @"(?<=class )\w+").Value; }
-        }
-
-        public string FullTypeName
-        {
-            get { return Namespace + "." + ClassName; }
-        }
-
-        /// <summary>
-        /// Initialize the sequence configuration with an empty ExecuteTest method and basic assembly references.
-        /// </summary>
-        public override void InitializeDefaultValues()
-        {
-            string assemblyName = Assembly.GetEntryAssembly().GetName().Name;
-
-            SourceCode = string.Format(
-@"
-using System.Diagnostics;
-using {0}.Configuration;
-using TsdLib.TestSequence;
-namespace {0}.Sequences
-{{
-    public class DefaultSequence : TestSequenceBase<StationConfig, ProductConfig, TestConfig>
-    {{
-        protected override void ExecuteTest(StationConfig stationConfig, ProductConfig productConfig, params TestConfig[] testConfigs)
-        {{
-            //TODO: Create test sequence. This is the step-by-step sequence of instrument and/or DUT commands and measurements
-
-            foreach (TestConfig testConfig in testConfigs)
-            {{
-                //Use the System.Diagnostics.Debugger.Break() method to insert breakpoints.
-                Debugger.Break();
-            }}
-        }}
-    }}
-}}
-",
-                assemblyName);
-
-            AssemblyReferences = new HashSet<string>(AppDomain.CurrentDomain.GetAssemblies().Select(asy => Path.GetFileName(asy.GetName().CodeBase))) { Path.GetFileName(Assembly.GetEntryAssembly().GetName().CodeBase) };
-        }
-
-        /// <summary>
-        /// Initialize a new Sequence configuration instance from persisted settings.
-        /// </summary>
-        public Sequence()
-        {
-
-        }
-
-        /// <summary>
-        /// Initialize a new Sequence configuration instance from a source code file.
-        /// </summary>
-        /// <param name="csFile">C# code file containing the complete test sequence class.</param>
-        /// <param name="storeInDatabase">True to store configuration locally and on the database. False to store locally only.</param>
-        /// <param name="assemblyReferences">Zero or more assemblies that are referenced by the test sequence class.</param>
-        public Sequence(string csFile, bool storeInDatabase, IEnumerable<string> assemblyReferences)
-        {
-            SourceCode = File.ReadAllText(csFile);
-            AssemblyReferences = new HashSet<string>(assemblyReferences);
-            StoreInDatabase = storeInDatabase;
-            Name = Regex.Match(SourceCode, @"(?<=class )\w+").Value;
-
-            var namespaceMatch = Regex.Match(SourceCode, @"(?<=namespace.*Sequences.)\w+");
-            if (namespaceMatch.Success)
-                Name = Name.Insert(0, namespaceMatch.Value + ".");
-            Trace.WriteLine("Name = " + Name);
-            IsDefault = false;
-        }
-    }
 
     internal class HashSetConverter : TypeConverter
     {

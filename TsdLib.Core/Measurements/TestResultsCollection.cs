@@ -4,12 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using TsdLib.Configuration;
 
+//TODO: Move out of core
 namespace TsdLib.Measurements
 {
     /// <summary>
@@ -98,7 +98,7 @@ namespace TsdLib.Measurements
             if (!directory.Exists)
                 directory.Create();
 
-            string formattedFileName = string.Format("{0}-{1}_", Details.JobNumber, Details.UnitNumber.ToString("D4"));
+            string formattedFileName = string.Format("{0}-{1}_", Details.RequestNumber, Details.UnitNumber.ToString("D4"));
 
             string fileName = Path.Combine(directory.FullName, formattedFileName + DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss") + ".bin");
 
@@ -211,6 +211,7 @@ namespace TsdLib.Measurements
             {
                 writer.WriteStartElement("Info");
                 testInfo.WriteXml(writer);
+                writer.WriteElementString("TestSystemMode", Details.TestSystemMode.ToString());
                 writer.WriteEndElement();
             }
             writer.WriteEndElement();

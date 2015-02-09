@@ -138,6 +138,12 @@ namespace TsdLib.Configuration
 
                 Save();
             }
+
+            var invalidConfigs = _configs.Where(cfg => !cfg.IsValid).ToArray();
+
+            foreach (T invalidConfig in invalidConfigs)
+                _configs.Remove(invalidConfig);
+
             return _configs;
         }
 
