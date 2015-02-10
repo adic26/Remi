@@ -233,11 +233,11 @@ namespace TsdLib.TestSystem.Controller
                             _sequence.AddTraceListener(_textWriterTraceListener);
                         }
 
-                        EventProxy<TestInfo> infoEventHandler = new EventProxy<TestInfo>();
+                        EventProxy<ITestInfo> infoEventHandler = new EventProxy<ITestInfo>();
                         _sequence.InfoEventProxy = infoEventHandler;
                         infoEventHandler.Attach(controllerProxy.InfoAdded, uiContext);
 
-                        EventProxy<MeasurementBase> measurementEventHandler = new EventProxy<MeasurementBase>();
+                        EventProxy<IMeasurement> measurementEventHandler = new EventProxy<IMeasurement>();
                         _sequence.MeasurementEventProxy = measurementEventHandler;
                         measurementEventHandler.Attach(controllerProxy.MeasurementAdded, uiContext);
 
@@ -259,8 +259,9 @@ namespace TsdLib.TestSystem.Controller
                         overallResult = "Undefined";
                     else
                         overallResult = _sequence.Measurements.All(m => m.Result == MeasurementResult.Pass) ? "Pass" : "Fail";
+                    //ITestResults testResults = new TsdLib.Measurements.TestResultCollection(Details, _sequence.Measurements, overallResult, startTime, endTime, _sequence.TestInfo);
+                    ITestResults testResults = new TestResultCollection(Details, _sequence.Measurements, new TestSummary(overallResult, startTime, endTime), _sequence.TestInfo);
 
-                    ITestResults testResults = MeasurementsFactory.CreateTestResults(Details, _sequence.Measurements, overallResult, startTime, endTime, _sequence.TestInfo);
 
                     _loggingTasks.Add(Task.Run(() =>
                     {

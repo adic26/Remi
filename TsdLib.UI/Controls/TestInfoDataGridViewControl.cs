@@ -14,7 +14,7 @@ namespace TsdLib.UI.Controls
         /// Override to add test information to the data grid.
         /// </summary>
         /// <param name="testInfo">Test information to add.</param>
-        public override void AddTestInfo(TestInfo testInfo)
+        public override void AddTestInfo(ITestInfo testInfo)
         {
             dataGridView.Rows.Add(testInfo.Name, testInfo.Value);
         }

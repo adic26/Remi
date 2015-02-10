@@ -61,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AssemblyInfo.cs" />
-    <Content Include="App.config" />
+    <Content Include="TestClientApp.config" />
     <None Include="TsdLibStarterKit.ico" />
   </ItemGroup>
   <ItemGroup>

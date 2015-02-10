@@ -91,7 +91,7 @@ namespace TsdLib.TestSystem.TestSequence
         /// <summary>
         /// Gets or sets an EventProxy object that can be used to send information events across AppDomain boundaries.
         /// </summary>
-        internal EventProxy<TestInfo> InfoEventProxy { get; set; }
+        internal EventProxy<ITestInfo> InfoEventProxy { get; set; }
         /// <summary>
         /// Gets the collection of information captured during the test sequence.
         /// </summary>
@@ -100,25 +100,25 @@ namespace TsdLib.TestSystem.TestSequence
             get { return new ReadOnlyCollection<ITestInfo>(_testInfo); }
         }
 
-        private readonly BindingList<MeasurementBase> _measurements;
+        private readonly BindingList<IMeasurement> _measurements;
         /// <summary>
         /// Add a new <see cref="MeasurementBase"/> to the collection of test measurements.
         /// </summary>
         /// <param name="measurement">Measurement information to add.</param>
-        protected void AddMeasurement(MeasurementBase measurement)
+        protected void AddMeasurement(IMeasurement measurement)
         {
             _measurements.Add(measurement);
         }
         /// <summary>
         /// Gets or sets an EventProxy object that can be used to send measurement events across AppDomain boundaries.
         /// </summary>
-        internal EventProxy<MeasurementBase> MeasurementEventProxy { get; set; }
+        internal EventProxy<IMeasurement> MeasurementEventProxy { get; set; }
         /// <summary>
         /// Gets the collection of measurements captured during the test sequence.
         /// </summary>
-        public ReadOnlyCollection<MeasurementBase> Measurements
+        public ReadOnlyCollection<IMeasurement> Measurements
         {
-            get { return new ReadOnlyCollection<MeasurementBase>(_measurements); }
+            get { return new ReadOnlyCollection<IMeasurement>(_measurements); }
         }
 
         /// <summary>
@@ -186,18 +186,18 @@ namespace TsdLib.TestSystem.TestSequence
                 IBindingList list = sender as IBindingList;
                 if (list == null)
                     throw new TestSequenceException(this, "The TestInfo.ListChanged event was fired by an object not implementing IBindingList.");
-                TestInfo info = list[e.NewIndex] as TestInfo;
+                ITestInfo info = list[e.NewIndex] as ITestInfo;
                 Trace.WriteLine(info);
                 if (InfoEventProxy != null)
                     InfoEventProxy.FireEvent(this, info);
             };
 
-            _measurements = new BindingList<MeasurementBase>();
+            _measurements = new BindingList<IMeasurement>();
             _measurements.ListChanged += (sender, e) =>
             {
                 IBindingList list = sender as IBindingList;
                 if (list != null && MeasurementEventProxy != null)
-                    MeasurementEventProxy.FireEvent(this, (MeasurementBase)list[e.NewIndex]);
+                    MeasurementEventProxy.FireEvent(this, (IMeasurement)list[e.NewIndex]);
             };
 
             InstrumentEvents.Connected += FactoryEvents_Connected;

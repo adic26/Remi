@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Xml;
 using System.Xml.Schema;
-using System.Xml.Serialization;
 
 namespace TsdLib.Measurements
 {
@@ -9,16 +8,17 @@ namespace TsdLib.Measurements
     /// A test condition or other information used to describe test conditions.
     /// </summary>
     [Serializable]
-    public class MeasurementParameter : IXmlSerializable
+    public class MeasurementParameter : IMeasurementParameter
     {
         /// <summary>
         /// Name of the parameter.
         /// </summary>
-        public readonly string Name;
+        public string Name { get; private set; }
+
         /// <summary>
         /// Value of the parameter.
         /// </summary>
-        public readonly object Value;
+        public object Value { get; private set; }
 
         /// <summary>
         /// Initialize a new MeasurementParameter object with the specified name and value.

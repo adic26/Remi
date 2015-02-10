@@ -20,7 +20,7 @@ namespace TsdLib.UI.Controls.Base
         /// Override to add a measurement to the UI display.
         /// </summary>
         /// <param name="measurement">Measurement to add.</param>
-        public virtual void AddMeasurement(MeasurementBase measurement)
+        public virtual void AddMeasurement(IMeasurement measurement)
         {
 
         }

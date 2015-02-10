@@ -11,7 +11,7 @@ namespace TsdLib.UI.Controls
             InitializeComponent();
         }
 
-        public override void AddMeasurement(MeasurementBase measurement)
+        public override void AddMeasurement(IMeasurement measurement)
         {
             int newRowIndex = dataGridView.Rows.Add();
 
@@ -22,7 +22,7 @@ namespace TsdLib.UI.Controls
             dataGridView.Rows[newRowIndex].Cells["Column_UpperLimit"].Value = measurement.UpperLimit;
             dataGridView.Rows[newRowIndex].Cells["Column_Result"].Value = measurement.Result;
 
-            foreach (MeasurementParameter measurementParameter in measurement.Parameters)
+            foreach (IMeasurementParameter measurementParameter in measurement.Parameters)
             {
                 string parameterColumnName = "Column_" + measurementParameter.Name.Replace(" ", "");
                 if (!dataGridView.Columns.Contains(parameterColumnName))

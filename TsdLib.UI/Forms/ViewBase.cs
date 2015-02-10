@@ -52,10 +52,10 @@ namespace TsdLib.UI.Forms
         }
 
         /// <summary>
-        /// Add a <see cref="MeasurementBase"/> to the DataGridView.
+        /// Add an <see cref="IMeasurement"/> to the DataGridView.
         /// </summary>
         /// <param name="measurement">Measurement to add.</param>
-        public virtual void AddMeasurement(MeasurementBase measurement)
+        public virtual void AddMeasurement(IMeasurement measurement)
         {
             measurementDataGridViewControl.AddMeasurement(measurement);
         }

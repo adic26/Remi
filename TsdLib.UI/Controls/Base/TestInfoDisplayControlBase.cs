@@ -20,7 +20,7 @@ namespace TsdLib.UI.Controls.Base
         /// Override to add test information to the UI display.
         /// </summary>
         /// <param name="testInfo">Test information to add.</param>
-        public virtual void AddTestInfo(TestInfo testInfo)
+        public virtual void AddTestInfo(ITestInfo testInfo)
         {
 
         }

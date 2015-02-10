@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -20,6 +21,8 @@ namespace TsdLib.Build
 
         [Output]
         public string OutputPackage { get; set; }
+        [Output]
+        public string NuGetOutput { get; set; }
 
         public override bool Execute()
         {
@@ -33,7 +36,9 @@ namespace TsdLib.Build
                     FileName = "nuget.exe",
                     Arguments = string.Format("pack {0} -OutputDirectory {1} -Prop Configuration={2} -IncludeReferencedProjects {3}", TargetFile, OutputFolder, Configuration, OtherArguments ?? ""),
                     CreateNoWindow = true,
-                    UseShellExecute = false
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true
                 };
                 Process nugetProcess = Process.Start(nugetProcessStartInfo);
                 if (nugetProcess == null)
@@ -42,7 +47,10 @@ namespace TsdLib.Build
                 if (!nugetProcess.WaitForExit(5000))
                     return false;
 
-                OutputPackage = "TODO: get name of generated package";
+                NuGetOutput = nugetProcess.ExitCode == 0 ? nugetProcess.StandardOutput.ReadToEnd() : nugetProcess.StandardError.ReadToEnd();
+
+                Match outputPackageMatch = Regex.Match(NuGetOutput, @"(?<=Successfully created package ').*\.nupkg(?=')");
+                OutputPackage = outputPackageMatch.Success ? outputPackageMatch.Value : "N/A";
 
                 return true;
 

@@ -47,6 +47,18 @@
     <Compile Include="Controls\Base\ProgressControlBase.Designer.cs">
       <DependentUpon>ProgressControlBase.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Base\TsdLibControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Base\TsdLibControl.Designer.cs">
+      <DependentUpon>TsdLibControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Base\TsdLibLabelledControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Base\TsdLibLabelledControl.Designer.cs">
+      <DependentUpon>TsdLibLabelledControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ConfigControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -141,6 +153,12 @@
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\Base\TsdLibControl.resx">
+      <DependentUpon>TsdLibControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Base\TsdLibLabelledControl.resx">
+      <DependentUpon>TsdLibLabelledControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\ConfigControl.resx">
       <DependentUpon>ConfigControl.cs</DependentUpon>
     </EmbeddedResource>

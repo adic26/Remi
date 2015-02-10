@@ -3,16 +3,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TsdLib.TestSystem")]
-[assembly: AssemblyDescription("Framework for designing a test system based on the Model-View-Controller pattern.")]
-#if DEBUG
-[assembly: AssemblyConfiguration("Debug")]
-#else
-[assembly: AssemblyConfiguration("Release")]
-#endif
+[assembly: AssemblyTitle("TsdLib.CodeGenerator")]
+[assembly: AssemblyDescription("Contains functionality to dynamically compile code.")]
+[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BlackBerry")]
-[assembly: AssemblyProduct("TsdLib.TestSystem")]
-[assembly: AssemblyCopyright("Copyright © BlackBerry 2014")]
+[assembly: AssemblyProduct("TsdLib.CodeGenerator")]
+[assembly: AssemblyCopyright("Copyright © BlackBerry 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -20,11 +16,11 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("863fd870-8705-4262-a620-1a09deecb5a2")]
+[assembly: Guid("ea14f6cb-93d2-4cba-8898-73515eb604d8")]
 [assembly: AssemblyVersion("1.0")]
-[assembly: AssemblyFileVersion("1.0.71")]
+[assembly: AssemblyFileVersion("1.0.9")]
 #if DEBUG
-[assembly: AssemblyInformationalVersion("1.0.71-debug")]
+[assembly: AssemblyInformationalVersion("1.0.9-debug")]
 #else
-[assembly: AssemblyInformationalVersion("1.0.71")]
+[assembly: AssemblyInformationalVersion("1.0.9")]
 #endif

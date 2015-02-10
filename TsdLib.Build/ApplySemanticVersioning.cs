@@ -18,6 +18,9 @@ namespace TsdLib.Build
         [Required]
         public string AssemblyInfoFilePath { get; set; }
 
+        [Output]
+        public string Result { get; set; }
+
         public override bool Execute()
         {
             try
@@ -60,11 +63,14 @@ namespace TsdLib.Build
 
                 File.WriteAllText(AssemblyInfoFilePath, assemblyInfo);
 
+                Result = "Successfully updated version to " + newVersion;
+
                 return true;
             }
 
-            catch (Exception)
+            catch (Exception ex)
             {
+                Result = ex.ToString();
                 return false;
             }
         }
@@ -96,7 +102,7 @@ namespace TsdLib.Build
 
         public string AssemblyVersionReplacementRegEx()
         {
-            return @"\[assembly: AssemblyVersion\(""\d+\.\d+""\)\]";
+            return @"\[assembly: AssemblyVersion\("".*""\)\]";
         }
 
         public string AssemblyFileVersionLine(Version version)
@@ -111,7 +117,7 @@ namespace TsdLib.Build
 
         public string AssemblyFileVersionReplacementRegEx()
         {
-            return @"\[assembly: AssemblyFileVersion\(""\d+\.\d+\.\d+""\)\]";
+            return @"\[assembly: AssemblyFileVersion\("".*""\)\]";
         }
 
         public string AssemblyInformationalVersionLine(Version version)

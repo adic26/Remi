@@ -43,11 +43,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="TsdLib.Build.nuspec" />
+    <None Include="build\TsdLib.Build.targets" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>del /q *.nupkg
-nuget pack $(ProjectPath) -Prop Configuration=$(ConfigurationName) -IncludeReferencedProjects</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
@@ -60,4 +61,17 @@ nuget pack $(ProjectPath) -Prop Configuration=$(ConfigurationName) -IncludeRefer
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="AfterBuild">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
+    </GetAssemblyIdentity>
+    <PropertyGroup>
+      <Pattern>(\d+)\.(\d+)\.(\d+)</Pattern>
+      <In>%(myAssemblyInfo.Version)</In>
+      <OutVersion>$([System.Text.RegularExpressions.Regex]::Match($(In), $(Pattern)))</OutVersion>
+      <DebugFlag Condition="$(ConfigurationName) == 'Debug'">-debug</DebugFlag>
+    </PropertyGroup>
+    <Exec Command="del /q *.nupkg" WorkingDirectory="$(TargetDir)" />
+    <Exec Command="nuget.exe pack $(ProjectDir)TsdLib.Build.nuspec -Version $(OutVersion)$(DebugFlag) -Prop Configuration=$(ConfigurationName) -Prop DebugFlag=$(DebugFlag) -NoPackageAnalysis" WorkingDirectory="$(TargetDir)" />
+  </Target>
 </Project>

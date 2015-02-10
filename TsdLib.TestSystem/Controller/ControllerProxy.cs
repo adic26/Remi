@@ -33,8 +33,8 @@ namespace TsdLib.TestSystem.Controller
         /// Default handler for the <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}.InfoEventProxy"/>. Calls <see cref="TsdLib.UI.ITestInfoDisplayControl.AddTestInfo"/>.
         /// </summary>
         /// <param name="sender">The <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}"/> where the information was captured.</param>
-        /// <param name="testInfo">The <see cref="TestInfo"/> that was captured.</param>
-        public void InfoAdded(object sender, TestInfo testInfo)
+        /// <param name="testInfo">The <see cref="ITestInfo"/> that was captured.</param>
+        public void InfoAdded(object sender, ITestInfo testInfo)
         {
             try
             {
@@ -51,8 +51,8 @@ namespace TsdLib.TestSystem.Controller
         /// Default handler for the <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}.MeasurementEventProxy"/>. Calls <see cref="TsdLib.UI.IMeasurementDisplayControl.AddMeasurement"/>.
         /// </summary>
         /// <param name="sender">The <see cref="TsdLib.TestSystem.TestSequence.TestSequenceBase{TStationConfig,TProductConfig,TTestConfig}"/> where the measurement was captured.</param>
-        /// <param name="measurementBase">The <see cref="MeasurementBase"/> that was captured.</param>
-        public void MeasurementAdded(object sender, MeasurementBase measurementBase)
+        /// <param name="measurementBase">The <see cref="IMeasurement"/> that was captured.</param>
+        public void MeasurementAdded(object sender, IMeasurement measurementBase)
         {
             try
             {

@@ -85,6 +85,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TsdLib.CodeGenerator\TsdLib.CodeGenerator.csproj">
+      <Project>{EEDD0176-678D-4AAC-B622-A96EB2488D22}</Project>
+      <Name>TsdLib.CodeGenerator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TsdLib.Configuration\TsdLib.Configuration.csproj">
       <Project>{2B62F43F-8670-4F88-B7BC-C9723D6FE8E7}</Project>
       <Name>TsdLib.Configuration</Name>

@@ -9,7 +9,6 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using TsdLib.Configuration;
 
-//TODO: Move out of core
 namespace TsdLib.Measurements
 {
     /// <summary>
@@ -56,7 +55,7 @@ namespace TsdLib.Measurements
         /// <summary>
         /// Gets the measurements captued during the test.
         /// </summary>
-        public IEnumerable<MeasurementBase> Measurements { get; set; }
+        public IEnumerable<IMeasurement> Measurements { get; set; }
 
         /// <summary>
         /// Gets the name of the xml schema used to validate the serialized output.
@@ -75,7 +74,7 @@ namespace TsdLib.Measurements
         /// <param name="measurements">A sequence of measurements captured during the test sequence. Can be any type deriving from <see cref="TsdLib.Measurements.MeasurementBase"/>.</param>
         /// <param name="summary">A <see cref="TsdLib.Measurements.TestSummary"/> object summarizing the test results.</param>
         /// <param name="information">OPTIONAL: A sequence of informational entries captured during the test sequence.</param>
-        public TestResultCollection(ITestDetails details, IEnumerable<MeasurementBase> measurements, ITestSummary summary, IEnumerable<ITestInfo> information = null)
+        public TestResultCollection(ITestDetails details, IEnumerable<IMeasurement> measurements, ITestSummary summary, IEnumerable<ITestInfo> information = null)
         {
             Details = details;
             Measurements = measurements;
@@ -184,7 +183,7 @@ namespace TsdLib.Measurements
                 Summary != null ? "Summary" + rowSeparator + Summary.ToString(rowSeparator, columnSeparator) : "",
                 "Measurements",
                 string.Join(columnSeparator, "Measurement Name","Measured Value","Units","Lower Limit","Upper Limit", "Result", parameterHeaders),
-                string.Join(rowSeparator, Measurements.Select(meas => meas.ToString(columnSeparator)))
+                string.Join(rowSeparator, Measurements.Select(meas => meas.ToString()))
                 );
         }
 
@@ -217,7 +216,7 @@ namespace TsdLib.Measurements
             writer.WriteEndElement();
 
             writer.WriteStartElement("Measurements");
-            foreach (MeasurementBase measurement in Measurements)
+            foreach (IMeasurement measurement in Measurements)
             {
                 writer.WriteStartElement("Measurement");
                 measurement.WriteXml(writer);

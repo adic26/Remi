@@ -35,30 +35,22 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicCodeParser.cs" />
-    <Compile Include="CodeGenerator\CodeGeneratorException.cs" />
-    <Compile Include="CodeGenerator\DynamicCompiler.cs" />
-    <Compile Include="CodeGenerator\Enums.cs" />
     <Compile Include="Configuration\Enums.cs" />
     <Compile Include="Configuration\IConfigItem.cs" />
     <Compile Include="Configuration\IConfigManager.cs" />
     <Compile Include="Configuration\ITestDetails.cs" />
     <Compile Include="Instrument\InstrumentEvents.cs" />
     <Compile Include="Instrument\IInstrument.cs" />
+    <Compile Include="Measurements\IMeasurement.cs" />
+    <Compile Include="Measurements\IMeasurementParameter.cs" />
     <Compile Include="Measurements\ITestInfo.cs" />
     <Compile Include="TestSystem\ITestSequence.cs" />
-    <Compile Include="Measurements\Factory.cs" />
     <Compile Include="Measurements\ITestResults.cs" />
     <Compile Include="Measurements\ITestSummary.cs" />
-    <Compile Include="Measurements\MeasurementParameter.cs" />
-    <Compile Include="Measurements\TestInfo.cs" />
-    <Compile Include="Measurements\TestResultsCollection.cs" />
-    <Compile Include="Measurements\TestSummary.cs" />
     <Compile Include="UI\IConfigControl.cs" />
     <Compile Include="UI\IMeasurementDisplayControl.cs" />
     <Compile Include="UI\IProgressControl.cs" />
@@ -67,33 +59,12 @@
     <Compile Include="UI\ITestSequenceControl.cs" />
     <Compile Include="UI\ITraceListenerControl.cs" />
     <Compile Include="UI\ITsdLibControl.cs" />
-    <Compile Include="UI\Controls.Base\TsdLibControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Controls.Base\TsdLibControl.Designer.cs">
-      <DependentUpon>TsdLibControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Controls.Base\TsdLibLabelledControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Controls.Base\TsdLibLabelledControl.Designer.cs">
-      <DependentUpon>TsdLibLabelledControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\IView.cs" />
-    <Compile Include="Measurements\MeasurementBase.cs" />
     <Compile Include="Measurements\MeasurmentResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpecialFolders.cs" />
     <Compile Include="States.cs" />
     <Compile Include="TsdLibException.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UI\Controls.Base\TsdLibControl.resx">
-      <DependentUpon>TsdLibControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Controls.Base\TsdLibLabelledControl.resx">
-      <DependentUpon>TsdLibLabelledControl.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="TsdLib.Core.nuspec" />

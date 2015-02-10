@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)..\</SolutionDir>
+  </PropertyGroup>
+  <UsingTask TaskName="ApplySemanticVersioning" AssemblyFile="$(MSBuildThisFileDirectory)..\TsdLib.Build.dll"/>
+  <UsingTask TaskName="NuGetPack" AssemblyFile="$(MSBuildThisFileDirectory)..\TsdLib.Build.dll"/>
+  <Target Name="Versioning" BeforeTargets="CoreCompile" Condition="'$(BuildServer)' != 'true'">
+    <Message Text="Applying semantic versioning"  Importance="High"/>
+    <ApplySemanticVersioning AssemblyInfoFilePath="$(ProjectDir)Properties\AssemblyInfo.cs">
+      <Output TaskParameter="Result" PropertyName="VersioningResult"/>
+    </ApplySemanticVersioning>
+    <Message Text="$(VersioningResult)"  Importance="High"/>
+  </Target>
+  <Target Name="NuGet" AfterTargets="Build">
+    <Message Text="Creating NuGet package"  Importance="High"/>
+    <NuGetPack OutputFolder="$(TargetDir)" TargetFile="$(ProjectPath)" Configuration="$(ConfigurationName)">
+      <Output TaskParameter="OutputPackage" PropertyName="NuGetPackage" />
+      <Output TaskParameter="NuGetOutput" PropertyName="NuGetOutputMessage" />
+    </NuGetPack>
+    <Message Text="$(NuGetOutputMessage)" Importance="High"/>
+  </Target>
+</Project>

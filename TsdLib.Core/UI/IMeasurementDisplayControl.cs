@@ -11,7 +11,7 @@ namespace TsdLib.UI
         /// Add a measurement to the UI display.
         /// </summary>
         /// <param name="measurement">Measurement to add.</param>
-        void AddMeasurement(MeasurementBase measurement);
+        void AddMeasurement(IMeasurement measurement);
 
         /// <summary>
         /// Clears all measurements from the UI display.

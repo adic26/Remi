@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
-using System.Xml.Serialization;
 
 namespace TsdLib.Measurements
 {
@@ -10,7 +9,7 @@ namespace TsdLib.Measurements
     /// Base class for all Measurement implementations. Defines members required to serialize to xml and/or binary.
     /// </summary>
     [Serializable]
-    public abstract class MeasurementBase : IXmlSerializable
+    public abstract class MeasurementBase : IMeasurement
     {
         /// <summary>
         /// Gets the pass/fail result of the measurement.
@@ -60,7 +59,7 @@ namespace TsdLib.Measurements
         /// <summary>
         /// Gets an array of MeasurementParameter objects describing the measurement conditions.
         /// </summary>
-        public MeasurementParameter[] Parameters { get; private set; }
+        public IMeasurementParameter[] Parameters { get; private set; }
 
         private MeasurementBase() { }
 
@@ -76,7 +75,7 @@ namespace TsdLib.Measurements
         /// <param name="comments">OPTIONAL: Any comments to include additional information.</param>
         /// <param name="description">OPTIONAL: A detailed description of the measurement.</param>
         /// <param name="parameters">OPTIONAL: A collection of MeasurementParameter objects describing the measurement conditions.</param>
-        protected MeasurementBase(string measurementName, string measuredValue, string units, string lowerLimit, string upperLimit, string[] files = null, string comments = "", string description = "", params MeasurementParameter[] parameters)
+        protected MeasurementBase(string measurementName, string measuredValue, string units, string lowerLimit, string upperLimit, string[] files = null, string comments = "", string description = "", params IMeasurementParameter[] parameters)
         {
             MeasurementName = measurementName;
             MeasuredValue = measuredValue;
@@ -86,7 +85,7 @@ namespace TsdLib.Measurements
             Files = files ?? new string[0];
             Comments = comments;
             Description = description;
-            Parameters = parameters ?? new MeasurementParameter[0];
+            Parameters = parameters ?? new IMeasurementParameter[0];
         }
 
         /// <summary>
@@ -138,7 +137,7 @@ namespace TsdLib.Measurements
             writer.WriteElementString("Description", Description);
 
             writer.WriteStartElement("Parameters");
-            foreach (MeasurementParameter parameter in Parameters)
+            foreach (IMeasurementParameter parameter in Parameters)
             {
                 writer.WriteStartElement("Parameter");
                 parameter.WriteXml(writer);
