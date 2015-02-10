@@ -114,7 +114,7 @@ namespace TsdLib.TestSystem.Controller
             ProductConfigManager = ConfigManager<TProductConfig>.GetConfigManager(Details, configConnection);
             TestConfigManager = ConfigManager<TTestConfig>.GetConfigManager(Details, configConnection);
             //TODO: if local domain, config manager should just reflect the entry assembly to get baked-in sequences and make Sequence read-only in editor form
-            SequenceConfigManager = ConfigManager<Sequence>.GetConfigManager(Details, configConnection);
+            SequenceConfigManager = ConfigManager<SequenceConfigCommon>.GetConfigManager(Details, configConnection);
 
             //set up view
             UI = new TView();
@@ -187,9 +187,9 @@ namespace TsdLib.TestSystem.Controller
             if (!testConfigs.Any())
                 testConfigs = TestConfigManager.GetList().Cast<TTestConfig>().ToArray();
 
-            Sequence[] sequenceConfigs = UI.ConfigControl.SelectedSequenceConfig.Cast<Sequence>().ToArray();
+            SequenceConfigCommon[] sequenceConfigs = UI.ConfigControl.SelectedSequenceConfig.Cast<SequenceConfigCommon>().ToArray();
             if (!sequenceConfigs.Any())
-                sequenceConfigs = SequenceConfigManager.GetList().Cast<Sequence>().ToArray();
+                sequenceConfigs = SequenceConfigManager.GetList().Cast<SequenceConfigCommon>().ToArray();
             bool publishResults = UI.TestSequenceControl.PublishResults;
 
             Trace.WriteLine(string.Format("Using {0} application domain", _localDomain ? "local" : "remote"));
@@ -198,13 +198,13 @@ namespace TsdLib.TestSystem.Controller
 
             ControllerProxy controllerProxy;
 
-            foreach (Sequence sequenceConfig in sequenceConfigs)
+            foreach (SequenceConfigCommon sequenceConfig in sequenceConfigs)
             {
                 try
                 {
                     DateTime startTime = DateTime.Now;
 
-                    Sequence config = sequenceConfig; //TODO: move this to another method and pass in the Sequence object
+                    SequenceConfigCommon config = sequenceConfig; //TODO: move this to another method and pass in the Sequence object
                     await Task.Run(() =>
                     {
                         if (_localDomain)

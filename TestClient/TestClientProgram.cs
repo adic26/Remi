@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using TsdLib.Configuration;
 using System.Configuration;
 using TestClient.Configuration.Connections;
+using TsdLib.Configuration.Common;
 using TsdLib.Configuration.Connections;
 
 namespace TestClient
@@ -95,13 +96,13 @@ namespace TestClient
         //TODO: move this to ConfigManager?
         private static void synchronizeSequences(ITestDetails testDetails, IConfigConnection sharedConfigConnection, string sequenceFolder, bool storeInDatabase)
         {
-            ConfigManager<Sequence> sequenceConfigManager = new ConfigManager<Sequence>(testDetails, sharedConfigConnection);
+            ConfigManager<SequenceConfigCommon> sequenceConfigManager = new ConfigManager<SequenceConfigCommon>(testDetails, sharedConfigConnection);
 
             HashSet<string> assemblyReferences = new HashSet<string>(AppDomain.CurrentDomain.GetAssemblies().Select(asy => Path.GetFileName(asy.GetName().CodeBase)), StringComparer.InvariantCultureIgnoreCase) { Path.GetFileName(Assembly.GetEntryAssembly().GetName().CodeBase) };
             foreach (string fileName in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll").Select(Path.GetFileName))
                 assemblyReferences.Add(fileName);
 
-            foreach (Sequence sequence in sequenceConfigManager.GetConfigGroup().Where(seq => !seq.IsDefault))
+            foreach (SequenceConfigCommon sequence in sequenceConfigManager.GetConfigGroup().Where(seq => !seq.IsDefault))
             {
                 string vsFile = Path.Combine(sequenceFolder, sequence.Name + ".cs");
                 if (!File.Exists(vsFile))
@@ -111,7 +112,7 @@ namespace TestClient
             {
                 Trace.WriteLine("Found" + seqFile);
                 //TODO: only replace if newer?
-                sequenceConfigManager.Add(new Sequence(seqFile, storeInDatabase, assemblyReferences));
+                sequenceConfigManager.Add(new SequenceConfigCommon(seqFile, storeInDatabase, assemblyReferences));
             }
             sequenceConfigManager.Save();
         }

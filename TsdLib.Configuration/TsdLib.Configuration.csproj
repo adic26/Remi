@@ -75,7 +75,6 @@
     <Compile Include="Null\NullStationConfig.cs" />
     <Compile Include="Null\NullTestConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sequence.cs" />
     <Compile Include="TestDetails.cs" />
     <Compile Include="TestDetailsEditor.cs">
       <SubType>Form</SubType>

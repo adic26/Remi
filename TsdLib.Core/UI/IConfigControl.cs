@@ -22,19 +22,19 @@ namespace TsdLib.UI
         event EventHandler ConfigSelectionChanged;
 
         /// <summary>
-        /// Gets or sets the station configuration manager. Suitable for binding to a <see cref="System.Windows.Forms.ListControl"/>.
+        /// Gets or sets the station configuration manager. Suitable for binding to a ListControl/>.
         /// </summary>
         IConfigManager StationConfigManager { get; set; }
         /// <summary>
-        /// Gets or sets the product configuration manager. Suitable for binding to a <see cref="System.Windows.Forms.ListControl"/>.
+        /// Gets or sets the product configuration manager. Suitable for binding to a ListControl/>.
         /// </summary>
         IConfigManager ProductConfigManager { get; set; }
         /// <summary>
-        /// Gets or sets the test configuration manager. Suitable for binding to a <see cref="System.Windows.Forms.ListControl"/>.
+        /// Gets or sets the test configuration manager. Suitable for binding to a ListControl/>.
         /// </summary>
         IConfigManager TestConfigManager { get; set; }
         /// <summary>
-        /// Gets or sets the sequence configuration manager. Suitable for binding to a <see cref="System.Windows.Forms.ListControl"/>.
+        /// Gets or sets the sequence configuration manager. Suitable for binding to a ListControl/>.
         /// </summary>
         IConfigManager SequenceConfigManager { get; set; }
 

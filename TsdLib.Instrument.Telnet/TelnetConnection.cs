@@ -90,7 +90,8 @@ namespace TsdLib.Instrument.Telnet
         /// <param name="disposing">True to dispose of unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
-            _tcpSocket.Close();
+            if (disposing)
+                _tcpSocket.Close();
             base.Dispose(disposing);
         }
 

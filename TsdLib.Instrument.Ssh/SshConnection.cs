@@ -102,9 +102,12 @@ namespace TsdLib.Instrument.Ssh
         }
         protected override void Dispose(bool disposing)
         {
-            if (!_sshSession.HasExited)
-                _sshSession.Kill();
-            _qconn.Stop();
+            if (disposing)
+            {
+                if (!_sshSession.HasExited)
+                    _sshSession.Kill();
+                _qconn.Stop();
+            }
             base.Dispose(disposing);
         }
     }

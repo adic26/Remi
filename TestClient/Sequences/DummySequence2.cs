@@ -24,7 +24,7 @@ namespace TestClient.Sequences
                     ps.SetVoltage(voltageSetting);
                     Thread.Sleep(productConfig.SettlingTime);
 
-                    MeasurementParameter[] measurementParameters =
+                    IMeasurementParameter[] measurementParameters =
                     {
                         new MeasurementParameter("Loop Iteration", i),
                         new MeasurementParameter("Voltage", voltageSetting),

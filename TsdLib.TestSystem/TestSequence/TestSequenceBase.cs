@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Threading;
-using TsdLib.Configuration;
 using TsdLib.Configuration.Common;
 using TsdLib.Instrument;
 using TsdLib.Measurements;
@@ -19,7 +18,7 @@ namespace TsdLib.TestSystem.TestSequence
     /// <typeparam name="TStationConfig">Type of Station Config used in the derived class.</typeparam>
     /// <typeparam name="TProductConfig">Type of Product Config used in the derived class.</typeparam>
     /// <typeparam name="TTestConfig">Type of Test Config used in the derived class.</typeparam>
-    public abstract class TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> : Sequence, ICancellable
+    public abstract class TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> : SequenceConfigCommon, ICancellable
         where TStationConfig : StationConfigCommon
         where TProductConfig : ProductConfigCommon
         where TTestConfig : TestConfigCommon
@@ -176,8 +175,6 @@ namespace TsdLib.TestSystem.TestSequence
             ErrorCancellationTokenSource = new CancellationTokenSource();
             linked = CancellationTokenSource.CreateLinkedTokenSource(UserCancellationTokenSource.Token, ErrorCancellationTokenSource.Token);
 
-            //UserCancellationTokenSource = cancellationTokenSource;
-
             _instruments = new List<IInstrument>();
 
             _testInfo = new BindingList<ITestInfo>();
@@ -294,17 +291,8 @@ namespace TsdLib.TestSystem.TestSequence
         /// <summary>
         /// Dispose of any resources being used by the test sequence.
         /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Dispose of any resources being used by the test sequence.
-        /// </summary>
         /// <param name="disposing">True to dispose of unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
@@ -312,6 +300,7 @@ namespace TsdLib.TestSystem.TestSequence
                 foreach (IInstrument instrument in _instruments)
                     instrument.Dispose();
             }
+            base.Dispose(disposing);
         }
     }
 }

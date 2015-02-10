@@ -131,12 +131,23 @@ namespace TsdLib.Configuration
         public event EventHandler Disposed;
 
         /// <summary>
-        /// Dispose the <see cref="IComponent"/>.
+        /// Dispose the <see cref="ConfigItem"/>.
         /// </summary>
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
             if (Disposed != null)
                 Disposed(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Dispose of any resources being used by the test sequence.
+        /// </summary>
+        /// <param name="disposing">True to dispose of unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+
         }
 
         #endregion

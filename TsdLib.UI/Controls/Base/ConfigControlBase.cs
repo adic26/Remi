@@ -19,19 +19,19 @@ namespace TsdLib.UI.Controls.Base
         }
 
         /// <summary>
-        /// Override to get and set the station configuration manager. Suitable for binding to a <see cref="System.Windows.Forms.ListControl"/>.
+        /// Override to get and set the station configuration manager. Suitable for binding to a ListControl/>.
         /// </summary>
         public virtual IConfigManager StationConfigManager { get; set; }
         /// <summary>
-        /// Override to get and set the product configuration manager. Suitable for binding to a <see cref="System.Windows.Forms.ListControl"/>.
+        /// Override to get and set the product configuration manager. Suitable for binding to a ListControl/>.
         /// </summary>
         public virtual IConfigManager ProductConfigManager { get; set; }
         /// <summary>
-        /// Override to get and set the test configuration manager. Suitable for binding to a <see cref="System.Windows.Forms.ListControl"/>.
+        /// Override to get and set the test configuration manager. Suitable for binding to a ListControl/>.
         /// </summary>
         public virtual IConfigManager TestConfigManager { get; set; }
         /// <summary>
-        /// Override to get and set the sequence configuration manager. Suitable for binding to a <see cref="System.Windows.Forms.ListControl"/>.
+        /// Override to get and set the sequence configuration manager. Suitable for binding to a ListControl/>.
         /// </summary>
         public virtual IConfigManager SequenceConfigManager { get; set; }
 
