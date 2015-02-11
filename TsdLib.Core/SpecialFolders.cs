@@ -110,6 +110,10 @@ namespace TsdLib
         /// <summary>
         /// Creates a new uniquely named file for writing test results.
         /// </summary>
+        /// <param name="details">An <see cref="ITestDetails"/> object containing metadata information relevent to the test.</param>
+        /// <param name="summary">An <see cref="ITestSummary"/> object containing information about the results of a test.</param>
+        /// <param name="extension">The file extension to use for the new file.</param>
+        /// <param name="directoryInfo">OPTIONAL: An alternate directory to use. If not specified, the default test results directory will be used.</param>
         /// <returns>An open <see cref="FileStream"/> object used to write test results information.</returns>
         public static FileStream GetResultsFile(ITestDetails details, ITestSummary summary, string extension, DirectoryInfo directoryInfo = null)
         {

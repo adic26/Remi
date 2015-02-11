@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -16,17 +15,23 @@ namespace TsdLib.Configuration
     /// Encapsulates configuration data of a specified type and provides methods to save and retieve.
     /// </summary>
     /// <typeparam name="T">Type of configuration derived from <see cref="ConfigItem"/></typeparam>
-    public class ConfigManager<T> : IConfigManager
+    public class ConfigManager<T> : IConfigManager<T>
         where T : ConfigItem, new()
     {
         private static ConfigManager<T> _instance;
-        public static IConfigManager GetConfigManager(ITestDetails details, IConfigConnection sharedConfigConnection)
+        /// <summary>
+        /// Uses the Singleton pattern to return a global instance of <see cref="IConfigManager{T}"/>.
+        /// </summary>
+        /// <param name="details">An <see cref="ITestDetails"/> object containing metadata information relevent to the test.</param>
+        /// <param name="sharedConfigConnection">An <see cref="IConfigConnection"/> object to control the connection with persisted storage.</param>
+        /// <returns></returns>
+        public static IConfigManager<T> GetConfigManager(ITestDetails details, IConfigConnection sharedConfigConnection)
         {
             return _instance ?? (_instance = new ConfigManager<T>(details, sharedConfigConnection));
         }
 
         /// <summary>
-        /// Gets the type of configuration for this <see cref="ConfigManager{T}"/>. Useful when binding to a UI control.
+        /// Gets the type of configuration for this <see cref="ConfigManager{T}"/>. Do not remove, it is used for binding to UI controls.
         /// </summary>
         public string ConfigTypeName
         {
@@ -39,7 +44,7 @@ namespace TsdLib.Configuration
         private readonly XmlSerializer _serializer;
 
         private readonly BindingSource _bindingSource;
-        private BindingList<T> _configs;
+        private List<T> _configs;
 
         /// <summary>
         /// Initialize a new configuration manager instance.
@@ -51,8 +56,8 @@ namespace TsdLib.Configuration
             _testDetails = testDetails;
             _localConfigConnection = new FileSystemConnection(SpecialFolders.Configuration);
             _sharedConfigConnection = sharedConfigConnection;
-            _serializer = new XmlSerializer(typeof(BindingList<T>));
-            _configs = new BindingList<T>();
+            _serializer = new XmlSerializer(typeof(List<T>));
+            _configs = new List<T>();
             _bindingSource = new BindingSource{DataSource = _configs};
         }
 
@@ -75,76 +80,24 @@ namespace TsdLib.Configuration
         }
 
         /// <summary>
+        /// Add a new <see cref="ConfigItem"/> to the collection.
+        /// </summary>
+        /// <param name="item">Config instance to add.</param>
+        void IConfigManager.Add(IConfigItem item)
+        {
+            T cfg = item as T;
+            if (cfg != null)
+                Add(cfg);
+        }
+
+        /// <summary>
         /// Retrive the set of configuration instances.
         /// </summary>
-        /// <param name="reload">OPTIONAL: Specify true to reload the configuration data from storage.</param>
         /// <returns>A collection of configuration instances.</returns>
-        public BindingList<T> GetConfigGroup(bool reload = false)
+        public IEnumerable<T> GetConfigGroup()
         {
-            if (_configs.Count == 0 || reload)
-            {
-                XElement sharedXml = null;
-
-                if (_sharedConfigConnection != null)
-                {
-                    string sharedConfigString;
-                    var sharedConfigExists = _sharedConfigConnection.TryReadString(_testDetails.SafeTestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), out sharedConfigString);
-                    if (sharedConfigExists)
-                    {
-                        XDocument sharedXmlDoc = XDocument.Parse(sharedConfigString);
-                        sharedXml = sharedXmlDoc.Root;
-                        if (sharedXml == null)
-                            throw new InvalidConfigFileException(sharedXmlDoc);
-                    }
-                }
-
-                string localConfigString;
-                bool localConfigexists = _localConfigConnection.TryReadString(_testDetails.SafeTestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), out localConfigString);
-                if (localConfigexists)
-                {
-                    XDocument localXmlDoc = XDocument.Parse(localConfigString);
-                    XElement localXml = localXmlDoc.Root;
-                    if (localXml == null)
-                        throw new InvalidConfigFileException(localXmlDoc);
-
-                    //Merge the shared config into the local config
-                    if (sharedXml != null)
-                        localXml.ReplaceAll(sharedXml.Elements()
-                            .Union(localXml.Elements(), new ConfigXmlEqualityComparer(localXml, sharedXml)));
-
-                    //If there are non-default configs, remove the defaults - they are no longer needed.
-                    if (localXml.Elements().Any(e => e.Attribute("IsDefault").Value == "false"))
-                        localXml.Elements().Where(e => e.Attribute("IsDefault").Value == "true").Remove();
-
-                    //Deserialize the merged config XML into the configs list
-                    using (XmlReader reader = localXml.CreateReader())
-                        _configs = (BindingList<T>)(_serializer.Deserialize(reader));
-                }
-                else if (sharedXml != null) //Deserialize the shared config XML into the configs list
-                    using (XmlReader reader = sharedXml.CreateReader())
-                        _configs = (BindingList<T>)(_serializer.Deserialize(reader));
-                else
-                {
-                    T newCfg = new T
-                    {
-                        Name = "Default" + typeof(T).Name,
-                        Details = _testDetails,
-                        IsDefault = true,
-                        StoreInDatabase = false
-                    };
-                    newCfg.InitializeDefaultValues();
-                    _configs.Clear();
-                    _configs.Add(newCfg);
-                }
-
-                Save();
-            }
-
-            var invalidConfigs = _configs.Where(cfg => !cfg.IsValid).ToArray();
-
-            foreach (T invalidConfig in invalidConfigs)
-                _configs.Remove(invalidConfig);
-
+            if (_configs.Count == 0)
+                Reload();
             return _configs;
         }
 
@@ -185,26 +138,70 @@ namespace TsdLib.Configuration
             {
                 StringBuilder sbDatabase = new StringBuilder();
                 using (XmlWriter xmlWriter = XmlWriter.Create(sbDatabase, xmlWriterSettings))
-                    _serializer.Serialize(xmlWriter, new BindingList<T>(sharedConfigGroups));
+                    _serializer.Serialize(xmlWriter, new List<T>(sharedConfigGroups));
                 _sharedConfigConnection.WriteString(_testDetails.SafeTestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), sbDatabase.ToString());
             }
         }
 
         /// <summary>
-        /// Add a new <see cref="IConfigItem"/> to the collection.
+        /// Reload the configuration data from persisted storage.
         /// </summary>
-        /// <param name="configItem">Config instance to add.</param>
-        void IConfigManager.Add(IConfigItem configItem)
+        /// <returns>A new <see cref="IConfigManager{T}"/> to manage the retrieved configuration data.</returns>
+        public void Reload()
         {
-            T cfg = configItem as T;
-            if (cfg != null)
-                Add(cfg);
-        }
+            XElement sharedXml = null;
 
-        public IConfigManager Reload()
-        {
-            _bindingSource.DataSource = GetConfigGroup(true);
-            return this;
+            if (_sharedConfigConnection != null)
+            {
+                string sharedConfigString;
+                var sharedConfigExists = _sharedConfigConnection.TryReadString(_testDetails.SafeTestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), out sharedConfigString);
+                if (sharedConfigExists)
+                {
+                    XDocument sharedXmlDoc = XDocument.Parse(sharedConfigString);
+                    sharedXml = sharedXmlDoc.Root;
+                    if (sharedXml == null)
+                        throw new InvalidConfigFileException(sharedXmlDoc);
+                }
+            }
+
+            string localConfigString;
+            bool localConfigexists = _localConfigConnection.TryReadString(_testDetails.SafeTestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), out localConfigString);
+            if (localConfigexists)
+            {
+                XDocument localXmlDoc = XDocument.Parse(localConfigString);
+                XElement localXml = localXmlDoc.Root;
+                if (localXml == null)
+                    throw new InvalidConfigFileException(localXmlDoc);
+
+                //Merge the shared config into the local config
+                if (sharedXml != null)
+                    localXml.ReplaceAll(sharedXml.Elements()
+                        .Union(localXml.Elements(), new ConfigXmlEqualityComparer(localXml, sharedXml)));
+
+                //If there are non-default configs, remove the defaults - they are no longer needed.
+                if (localXml.Elements().Any(e => e.Attribute("IsDefault").Value == "false"))
+                    localXml.Elements().Where(e => e.Attribute("IsDefault").Value == "true").Remove();
+
+                //Deserialize the merged config XML into the configs list
+                using (XmlReader reader = localXml.CreateReader())
+                    _configs = (List<T>)(_serializer.Deserialize(reader));
+            }
+            else if (sharedXml != null) //Deserialize the shared config XML into the configs list
+                using (XmlReader reader = sharedXml.CreateReader())
+                    _configs = (List<T>)(_serializer.Deserialize(reader));
+            else
+            {
+                T newCfg = new T
+                {
+                    Name = "Default" + typeof(T).Name,
+                    Details = _testDetails,
+                    IsDefault = true,
+                    StoreInDatabase = false
+                };
+                newCfg.InitializeDefaultValues();
+                _configs = new List<T> {newCfg};
+            }
+            _bindingSource.DataSource = _configs;
         }
 
         #region Equality Comparer
@@ -257,5 +254,8 @@ namespace TsdLib.Configuration
         }
 
         #endregion
+
+
+
     }
 }

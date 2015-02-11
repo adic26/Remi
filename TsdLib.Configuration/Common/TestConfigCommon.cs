@@ -7,7 +7,7 @@ namespace TsdLib.Configuration.Common
     /// Test config is used to parameterize the test sequence, allowing the same sequence to perform different test cases (ie. strict vs. relaxed or functional vs. parametric)
     /// </summary>
     [Serializable]
-    public abstract class TestConfigCommon : ConfigItem
+    public abstract class TestConfigCommon : ConfigItem, ITestConfig
     {
     }
 }

@@ -4,8 +4,14 @@ using TsdLib.UI.Controls.Base;
 
 namespace TsdLib.UI.Controls
 {
-    public partial class ConfigControl : ConfigControlBase
+    public partial class ConfigControl<TStationConfig, TProductConfig, TTestConfig> : ConfigControlBase<TStationConfig, TProductConfig, TTestConfig>
+        where TStationConfig : IStationConfig
+        where TProductConfig : IProductConfig
+        where TTestConfig : ITestConfig
     {
+        /// <summary>
+        /// Initialize a new <see cref="ConfigControl{TStationConfig, TProductConfig, TTestConfig}"/>
+        /// </summary>
         public ConfigControl()
         {
             InitializeComponent();
@@ -14,9 +20,9 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Sets the list of available Station Config instances.
         /// </summary>
-        public override IConfigManager StationConfigManager
+        public override IConfigManager<TStationConfig> StationConfigManager
         {
-            get { return (IConfigManager)comboBox_StationConfig.DataSource; }
+            get { return (IConfigManager<TStationConfig>)comboBox_StationConfig.DataSource; }
             set
             {
                 if (value == null) return;
@@ -26,9 +32,9 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Sets the list of available Product Config instances.
         /// </summary>
-        public override IConfigManager ProductConfigManager
+        public override IConfigManager<TProductConfig> ProductConfigManager
         {
-            get { return (IConfigManager)comboBox_ProductConfig.DataSource; }
+            get { return (IConfigManager<TProductConfig>)comboBox_ProductConfig.DataSource; }
             set
             {
                 if (value == null) return; 
@@ -38,9 +44,9 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Sets the list of available Test Config instances.
         /// </summary>
-        public override IConfigManager TestConfigManager
+        public override IConfigManager<TTestConfig> TestConfigManager
         {
-            get { return (IConfigManager)comboBox_TestConfig.DataSource; }
+            get { return (IConfigManager<TTestConfig>)comboBox_TestConfig.DataSource; }
             set
             {
                 if (value == null) return; 
@@ -50,9 +56,9 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Sets the list of available Sequence Config instances.
         /// </summary>
-        public override IConfigManager SequenceConfigManager
+        public override IConfigManager<ISequenceConfig> SequenceConfigManager
         {
-            get { return (IConfigManager)comboBox_SequenceConfig.DataSource; }
+            get { return (IConfigManager<ISequenceConfig>)comboBox_SequenceConfig.DataSource; }
             set
             {
                 if (value == null) return; 
@@ -63,35 +69,35 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Gets the selected station configuration instance.
         /// </summary>
-        public override IConfigItem[] SelectedStationConfig
+        public override TStationConfig[] SelectedStationConfig
         {
-            get { return new [] { (IConfigItem) comboBox_StationConfig.SelectedItem }; }
+            get { return new[] { (TStationConfig)comboBox_StationConfig.SelectedItem }; }
         }
         /// <summary>
         /// Gets the selected product configuration instance.
         /// </summary>
-        public override IConfigItem[] SelectedProductConfig
+        public override TProductConfig[] SelectedProductConfig
         {
-            get { return new[] { (IConfigItem)comboBox_ProductConfig.SelectedItem }; }
+            get { return new[] { (TProductConfig)comboBox_ProductConfig.SelectedItem }; }
         }
         /// <summary>
         /// Gets the selected test configuration instance.
         /// </summary>
-        public override IConfigItem[] SelectedTestConfig
+        public override TTestConfig[] SelectedTestConfig
         {
-            get { return new[] { (IConfigItem)comboBox_TestConfig.SelectedItem }; }
+            get { return new[] { (TTestConfig)comboBox_TestConfig.SelectedItem }; }
         }
         /// <summary>
         /// Gets the selected sequence configuration instance.
         /// </summary>
-        public override IConfigItem[] SelectedSequenceConfig
+        public override ISequenceConfig[] SelectedSequenceConfig
         {
-            get { return new[] { (IConfigItem)comboBox_SequenceConfig.SelectedItem }; }
+            get { return new[] { (ISequenceConfig)comboBox_SequenceConfig.SelectedItem }; }
         }
 
         private void button_ViewEditConfiguration_Click(object sender, EventArgs e)
         {
-            OnViewEditConfiguration(new []{StationConfigManager, ProductConfigManager, TestConfigManager, SequenceConfigManager});
+            OnViewEditConfiguration(new IConfigManager[] { StationConfigManager, ProductConfigManager, TestConfigManager, SequenceConfigManager });
         }
 
         private void config_SelectionChangeCommitted(object sender, EventArgs e)

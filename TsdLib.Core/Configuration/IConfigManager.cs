@@ -1,17 +1,17 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace TsdLib.Configuration
 {
     /// <summary>
-    /// Encapsulates configuration data and provides methods to save and retieve.
+    /// Encapsulates configuration data and provides methods to save configuration.
     /// </summary>
     public interface IConfigManager : IListSource
     {
         /// <summary>
-        /// Add a new <see cref="IConfigItem"/> to the configuration instances.
+        /// Gets the type of configuration for this <see cref="IConfigManager"/>. Useful when binding to a UI control.
         /// </summary>
-        /// <param name="item"><see cref="IConfigItem"/> to add.</param>
-        void Add(IConfigItem item);
+        string ConfigTypeName { get; }
 
         /// <summary>
         /// Saves the configuration data to persisted storage.
@@ -19,11 +19,32 @@ namespace TsdLib.Configuration
         void Save();
 
         /// <summary>
-        /// Gets the type of configuration for this <see cref="IConfigManager"/>. Useful when binding to a UI control.
+        /// Add a new <see cref="IConfigItem"/> to the configuration instances.
         /// </summary>
-        string ConfigTypeName { get; }
+        /// <param name="item"><see cref="IConfigItem"/> to add.</param>
+        void Add(IConfigItem item);
 
-        IConfigManager Reload();
+        /// <summary>
+        /// Reload the configuration data from persisted storage.
+        /// </summary>
+        void Reload();
+    }
+
+    /// <summary>
+    /// Encapsulates configuration data and provides methods to add and reload configuration.
+    /// </summary>
+    public interface IConfigManager<out T> : IConfigManager
+        where T : IConfigItem
+    {
+        ///// <summary>
+        ///// Add a new <see cref="IConfigItem"/> to the configuration instances.
+        ///// </summary>
+        ///// <param name="item"><see cref="IConfigItem"/> to add.</param>
+        //void Add(T item);
+
+        IEnumerable<T> GetConfigGroup();
+
+
     }
 
 }

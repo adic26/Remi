@@ -27,7 +27,7 @@ namespace TsdLib.TestSystem.Controller
     /// </summary>
     /// <typeparam name="TView">Type of the derived user interface.</typeparam>
     public abstract class ControllerBase<TView> : ControllerBase<TView, NullStationConfig, NullProductConfig, NullTestConfig>
-        where TView : IView, new()
+        where TView : IView<NullStationConfig, NullProductConfig, NullTestConfig>, new()
     {
         /// <summary>
         /// Initialize a new system controller.
@@ -50,7 +50,7 @@ namespace TsdLib.TestSystem.Controller
     /// <typeparam name="TProductConfig">Type of the derived product config.</typeparam>
     /// <typeparam name="TTestConfig">Type of the derived test config.</typeparam>
     public abstract class ControllerBase<TView, TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject
-        where TView : IView, new()
+        where TView : IView<TStationConfig, TProductConfig, TTestConfig>, new()
         where TStationConfig : StationConfigCommon, new()
         where TProductConfig : ProductConfigCommon, new()
         where TTestConfig : TestConfigCommon, new()
@@ -73,19 +73,19 @@ namespace TsdLib.TestSystem.Controller
         /// <summary>
         /// Gets a configuration manager for station config.
         /// </summary>
-        protected IConfigManager StationConfigManager { get; private set; }
+        protected IConfigManager<TStationConfig> StationConfigManager { get; private set; }
         /// <summary>
         /// Gets a configuration manager for product config.
         /// </summary>
-        protected IConfigManager ProductConfigManager { get; private set; }
+        protected IConfigManager<TProductConfig> ProductConfigManager { get; private set; }
         /// <summary>
         /// Gets a configuration manager for test config.
         /// </summary>
-        protected IConfigManager TestConfigManager { get; private set; }
+        protected IConfigManager<TTestConfig> TestConfigManager { get; private set; }
         /// <summary>
         /// Gets a configuration manager for sequence config.
         /// </summary>
-        protected IConfigManager SequenceConfigManager { get; private set; }
+        protected IConfigManager<ISequenceConfig> SequenceConfigManager { get; private set; }
         /// <summary>
         /// Gets a list of active tasks responsible for logging test results.
         /// </summary>
@@ -137,7 +137,7 @@ namespace TsdLib.TestSystem.Controller
             //subscribe to view events
             if (UI.ConfigControl != null)
             {
-                UI.ConfigControl.ViewEditConfiguration += EditConfigurationNew;
+                UI.ConfigControl.ViewEditConfiguration += EditConfiguration;
                 UI.ConfigControl.ConfigSelectionChanged += ConfigControlOnConfigSelectionChanged;
             }
             if (UI.TestDetailsControl != null)
@@ -164,10 +164,14 @@ namespace TsdLib.TestSystem.Controller
         {
             UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
             if (UI.ConfigControl == null) return;
-            UI.ConfigControl.StationConfigManager = StationConfigManager.Reload();
-            UI.ConfigControl.ProductConfigManager = ProductConfigManager.Reload();
-            UI.ConfigControl.TestConfigManager = TestConfigManager.Reload();
-            UI.ConfigControl.SequenceConfigManager = SequenceConfigManager.Reload();
+            StationConfigManager.Reload();
+            UI.ConfigControl.StationConfigManager = StationConfigManager;
+            ProductConfigManager.Reload();
+            UI.ConfigControl.ProductConfigManager = ProductConfigManager;
+            TestConfigManager.Reload();
+            UI.ConfigControl.TestConfigManager = TestConfigManager;
+            SequenceConfigManager.Reload();
+            UI.ConfigControl.SequenceConfigManager = SequenceConfigManager; //Can't use ISequenceConfig - needs parameterless constructor
         }
 
         /// <summary>
@@ -181,15 +185,15 @@ namespace TsdLib.TestSystem.Controller
 
             UI.SetState(State.TestInProgress);
 
-            TStationConfig stationConfig = (TStationConfig)UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? StationConfigManager.GetList()[0] as TStationConfig;
-            TProductConfig productConfig = (TProductConfig)UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? ProductConfigManager.GetList()[0] as TProductConfig;
-            TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig.Cast<TTestConfig>().ToArray();
+            TStationConfig stationConfig = UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? StationConfigManager.GetList()[0] as TStationConfig;
+            TProductConfig productConfig = UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? ProductConfigManager.GetList()[0] as TProductConfig;
+            TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig;
             if (!testConfigs.Any())
-                testConfigs = TestConfigManager.GetList().Cast<TTestConfig>().ToArray();
+                testConfigs = TestConfigManager.GetConfigGroup().ToArray();
 
-            SequenceConfigCommon[] sequenceConfigs = UI.ConfigControl.SelectedSequenceConfig.Cast<SequenceConfigCommon>().ToArray();
+            ISequenceConfig[] sequenceConfigs = UI.ConfigControl.SelectedSequenceConfig;
             if (!sequenceConfigs.Any())
-                sequenceConfigs = SequenceConfigManager.GetList().Cast<SequenceConfigCommon>().ToArray();
+                sequenceConfigs = SequenceConfigManager.GetConfigGroup().ToArray();
             bool publishResults = UI.TestSequenceControl.PublishResults;
 
             Trace.WriteLine(string.Format("Using {0} application domain", _localDomain ? "local" : "remote"));
@@ -198,13 +202,13 @@ namespace TsdLib.TestSystem.Controller
 
             ControllerProxy controllerProxy;
 
-            foreach (SequenceConfigCommon sequenceConfig in sequenceConfigs)
+            foreach (ISequenceConfig sequenceConfig in sequenceConfigs)
             {
                 try
                 {
                     DateTime startTime = DateTime.Now;
 
-                    SequenceConfigCommon config = sequenceConfig; //TODO: move this to another method and pass in the Sequence object
+                    ISequenceConfig config = sequenceConfig; //TODO: move this to another method and pass in the Sequence object
                     await Task.Run(() =>
                     {
                         if (_localDomain)
@@ -358,21 +362,8 @@ namespace TsdLib.TestSystem.Controller
         /// Default handler for the ViewBase.ViewEditConfiguration event.
         /// </summary>
         /// <param name="sender">Object that raised the exception. Should be a reference to the View/Edit Configuration button.</param>
-        /// <param name="e">Empty EventArgs object.</param>
-        protected virtual void EditConfiguration(object sender, EventArgs e)
-        {
-            using (ConfigManagerForm form = new ConfigManagerForm(Details.TestSystemName, Details.TestSystemVersion, true, new[] { StationConfigManager, ProductConfigManager, TestConfigManager, SequenceConfigManager }))
-                if (form.ShowDialog() == DialogResult.OK)
-                    foreach (IConfigManager modifiedConfig in form.ModifiedConfigs)
-                        modifiedConfig.Save();
-        }
-
-        /// <summary>
-        /// Default handler for the ViewBase.ViewEditConfiguration event.
-        /// </summary>
-        /// <param name="sender">Object that raised the exception. Should be a reference to the View/Edit Configuration button.</param>
         /// <param name="configManagers">An array of <see cref="IConfigManager"/> objects containing the configuration data.</param>
-        protected virtual void EditConfigurationNew(object sender, IConfigManager[] configManagers)
+        protected virtual void EditConfiguration(object sender, IConfigManager[] configManagers)
         {
             using (ConfigManagerForm form = new ConfigManagerForm(Details.TestSystemName, Details.TestSystemVersion, true, configManagers))
                 if (form.ShowDialog() == DialogResult.OK)
@@ -412,7 +403,7 @@ namespace TsdLib.TestSystem.Controller
         }
 
         /// <summary>
-        /// Default handler for the <see cref="TsdLib.UI.ITestSequenceControl.AbortTestSequence"/> event.
+        /// Default handler for the <see cref="TsdLib.UI.ITestSequenceControl{TStationConfig, TProductConfig, TTestConfig}.AbortTestSequence"/> event.
         /// </summary>
         /// <param name="sender">The <see cref="IView"/> that raised the event.</param>
         /// <param name="e">Empty event args.</param>

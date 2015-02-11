@@ -1,6 +1,6 @@
 ﻿namespace TsdLib.UI.Controls
 {
-    partial class TestSequenceControl
+    partial class TestSequenceControl<TStationConfig, TProductConfig, TTestConfig>
     {
         /// <summary> 
         /// Required designer variable.

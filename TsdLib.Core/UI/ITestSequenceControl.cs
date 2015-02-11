@@ -3,7 +3,10 @@ using TsdLib.Configuration;
 
 namespace TsdLib.UI
 {
-    public interface ITestSequenceControl : ITsdLibControl
+    public interface ITestSequenceControl<TStationConfig, TProductConfig, TTestConfig> : ITsdLibControl
+        where TStationConfig : IStationConfig
+        where TProductConfig : IProductConfig
+        where TTestConfig : ITestConfig
     {
         /// <summary>
         /// Event fired when requesting to execute the Test Sequence.
@@ -15,10 +18,10 @@ namespace TsdLib.UI
         /// </summary>
         event EventHandler AbortTestSequence;
 
-        IConfigItem[] SelectedStationConfig { get; set; }
-        IConfigItem[] SelectedProductConfig { get; set; }
-        IConfigItem[] SelectedTestConfig { get; set; }
-        IConfigItem[] SelectedSequenceConfig { get; set; }
+        TStationConfig[] SelectedStationConfig { get; set; }
+        TProductConfig[] SelectedProductConfig { get; set; }
+        TTestConfig[] SelectedTestConfig { get; set; }
+        ISequenceConfig[] SelectedSequenceConfig { get; set; }
         bool PublishResults { get; }
     }
 }

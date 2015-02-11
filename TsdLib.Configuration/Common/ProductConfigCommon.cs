@@ -7,7 +7,7 @@ namespace TsdLib.Configuration.Common
     /// Product config is used to parameterize the test sequence, customizing the sequence to operate on different DUT models.
     /// </summary>
     [Serializable]
-    public abstract class ProductConfigCommon : ConfigItem
+    public abstract class ProductConfigCommon : ConfigItem, IProductConfig
     {
 
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using TsdLib.Configuration;
 using TsdLib.UI.Controls.Base;
 
 namespace TsdLib.UI.Controls
@@ -6,7 +7,10 @@ namespace TsdLib.UI.Controls
     /// <summary>
     /// Contains functionality to start and stop a test sequence on the UI.
     /// </summary>
-    public partial class TestSequenceControl : TestSequenceControlBase
+    public partial class TestSequenceControl<TStationConfig, TProductConfig, TTestConfig> : TestSequenceControlBase<TStationConfig, TProductConfig, TTestConfig>
+        where TStationConfig : IStationConfig
+        where TProductConfig : IProductConfig
+        where TTestConfig : ITestConfig
     {
         /// <summary>
         /// Enables or disables the buttons depending on the state of the test system.

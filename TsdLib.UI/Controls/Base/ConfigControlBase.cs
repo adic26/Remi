@@ -8,7 +8,10 @@ namespace TsdLib.UI.Controls.Base
     /// <summary>
     /// Placeholder for a control to select, view or edit the test configuration on the UI.
     /// </summary>
-    public partial class ConfigControlBase : TsdLibControl, IConfigControl
+    public partial class ConfigControlBase<TStationConfig, TProductConfig, TTestConfig> : TsdLibControl, IConfigControl<TStationConfig, TProductConfig, TTestConfig>
+        where TStationConfig : IStationConfig
+        where TProductConfig : IProductConfig
+        where TTestConfig : ITestConfig
     {
         /// <summary>
         /// Initialize the control.
@@ -21,38 +24,36 @@ namespace TsdLib.UI.Controls.Base
         /// <summary>
         /// Override to get and set the station configuration manager. Suitable for binding to a ListControl/>.
         /// </summary>
-        public virtual IConfigManager StationConfigManager { get; set; }
+        public virtual IConfigManager<TStationConfig> StationConfigManager { get; set; }
         /// <summary>
         /// Override to get and set the product configuration manager. Suitable for binding to a ListControl/>.
         /// </summary>
-        public virtual IConfigManager ProductConfigManager { get; set; }
+        public virtual IConfigManager<TProductConfig> ProductConfigManager { get; set; }
         /// <summary>
         /// Override to get and set the test configuration manager. Suitable for binding to a ListControl/>.
         /// </summary>
-        public virtual IConfigManager TestConfigManager { get; set; }
+        public virtual IConfigManager<TTestConfig> TestConfigManager { get; set; }
         /// <summary>
         /// Override to get and set the sequence configuration manager. Suitable for binding to a ListControl/>.
         /// </summary>
-        public virtual IConfigManager SequenceConfigManager { get; set; }
-
-        private readonly IConfigItem[] _empty = new IConfigItem[0];
+        public virtual IConfigManager<ISequenceConfig> SequenceConfigManager { get; set; }
 
         /// <summary>
         /// Override to expose the selected station configuration instance(s).
         /// </summary>
-        public virtual IConfigItem[] SelectedStationConfig { get { return _empty; } }
+        public virtual TStationConfig[] SelectedStationConfig { get { return new TStationConfig[0]; } }
         /// <summary>
         /// Override to expose the selected product configuration instance(s).
         /// </summary>
-        public virtual IConfigItem[] SelectedProductConfig { get { return _empty; } }
+        public virtual TProductConfig[] SelectedProductConfig { get { return new TProductConfig[0]; } }
         /// <summary>
         /// Override to expose the selected test configuration instance(s).
         /// </summary>
-        public virtual IConfigItem[] SelectedTestConfig { get { return _empty; } }
+        public virtual TTestConfig[] SelectedTestConfig { get { return new TTestConfig[0]; } }
         /// <summary>
         /// Override to expose the selected sequence configuration instance(s).
         /// </summary>
-        public virtual IConfigItem[] SelectedSequenceConfig { get { return _empty; } }
+        public virtual ISequenceConfig[] SelectedSequenceConfig { get { return new ISequenceConfig[0]; } }
         
         /// <summary>
         /// Event fired when requesting to modify the test system configuration.

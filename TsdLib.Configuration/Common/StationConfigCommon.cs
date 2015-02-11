@@ -8,7 +8,7 @@ namespace TsdLib.Configuration.Common
     /// Station config is used to parameterize the test sequence, customizing the sequence to operate on different stations (ie. instruments with different addresses).
     /// </summary>
     [Serializable]
-    public abstract class StationConfigCommon : ConfigItem
+    public abstract class StationConfigCommon : ConfigItem, IStationConfig
     {
         /// <summary>
         /// Gets or sets a list of machine names that can use this station config item.

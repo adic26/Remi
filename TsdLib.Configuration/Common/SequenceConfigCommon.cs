@@ -15,7 +15,7 @@ namespace TsdLib.Configuration.Common
     /// Can be parameterized by StationConfig, ProductConfig, TestConfig.
     /// </summary>
     [Serializable]
-    public class SequenceConfigCommon : ConfigItem
+    public class SequenceConfigCommon : ConfigItem, ISequenceConfig
     {
         /// <summary>
         /// Gets or sets a list of assemblies needed to be referenced declared in the test sequence.
@@ -32,16 +32,25 @@ namespace TsdLib.Configuration.Common
         [Category("Test Sequence")]
         public string SourceCode { get; set; }
 
+        /// <summary>
+        /// Gets the namespace that the sequence class is defined in.
+        /// </summary>
         public string Namespace
         {
             get { return Regex.Match(SourceCode, @"(?<=namespace )[\w\.]+").Value; }
         }
 
+        /// <summary>
+        /// Gets the short name of the sequence class.
+        /// </summary>
         public string ClassName
         {
             get { return Regex.Match(SourceCode, @"(?<=class )\w+").Value; }
         }
 
+        /// <summary>
+        /// Gets the fully qualified name of the sequence class.
+        /// </summary>
         public string FullTypeName
         {
             get { return Namespace + "." + ClassName; }

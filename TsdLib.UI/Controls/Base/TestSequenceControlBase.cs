@@ -6,7 +6,10 @@ namespace TsdLib.UI.Controls.Base
     /// <summary>
     /// Placeholder for a control to start and stop a test sequence on the UI.
     /// </summary>
-    public partial class TestSequenceControlBase : TsdLibControl, ITestSequenceControl
+    public partial class TestSequenceControlBase<TStationConfig, TProductConfig, TTestConfig> : TsdLibControl, ITestSequenceControl<TStationConfig, TProductConfig, TTestConfig>
+        where TStationConfig : IStationConfig
+        where TProductConfig : IProductConfig
+        where TTestConfig : ITestConfig
     {
         public TestSequenceControlBase()
         {
@@ -37,10 +40,10 @@ namespace TsdLib.UI.Controls.Base
                 AbortTestSequence(this, EventArgs.Empty);
         }
 
-        public IConfigItem[] SelectedStationConfig { get; set; }
-        public IConfigItem[] SelectedProductConfig { get; set; }
-        public IConfigItem[] SelectedTestConfig { get; set; }
-        public IConfigItem[] SelectedSequenceConfig { get; set; }
+        public TStationConfig[] SelectedStationConfig { get; set; }
+        public TProductConfig[] SelectedProductConfig { get; set; }
+        public TTestConfig[] SelectedTestConfig { get; set; }
+        public ISequenceConfig[] SelectedSequenceConfig { get; set; }
         public virtual bool PublishResults { get { return false; } }
 
         /// <summary>
