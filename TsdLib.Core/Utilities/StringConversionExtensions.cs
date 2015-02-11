@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace TsdLib.Utilities.TypeConverters
+namespace TsdLib.Utilities
 {
     public static class StringConversionExtensions
     {

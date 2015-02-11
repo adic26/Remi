@@ -4,8 +4,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using TsdLib.Configuration;
 using TsdLib.Measurements;
-//TODO: make ViewBase the minimal implemtation of IView - return null - or maybe Base implementation - for all controls
-//nulls - ConfigControl, TestDetailsControl, TestSequenceControl, TraceListenerControl, TestInfoDisplayControl
+
 namespace TsdLib.UI.Forms
 {
     /// <summary>

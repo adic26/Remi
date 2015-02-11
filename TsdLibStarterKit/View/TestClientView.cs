@@ -2,7 +2,7 @@
 
 namespace $safeprojectname$.View
 {
-    public partial class $safeprojectname$View : ViewBase
+    public partial class $safeprojectname$View : ViewBase<StationConfig, ProductConfig, TestConfig>
     {
         public $safeprojectname$View()
         {

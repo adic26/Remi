@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using TsdLib.Configuration;
 
 namespace TsdLib.UI
-{
+{ 
+
     /// <summary>
     /// Defines methods and events required to control test configuration on the UI.
     /// </summary>

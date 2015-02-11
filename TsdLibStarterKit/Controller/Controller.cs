@@ -57,7 +57,7 @@ namespace $safeprojectname$
                             DBControl.remiAPI.ScanReturnData batchInformation = remiForm.RemiData[0];
                             Details.TestSystemName = batchInformation.SelectedTestName;
                             string[] qraNumber = batchInformation.QRANumber.Split('-');
-                            Details.JobNumber = string.Join("-", qraNumber, 0, qraNumber.Length - 1);
+                            Details.RequestNumber = string.Join("-", qraNumber, 0, qraNumber.Length - 1);
                             Details.TestStage = batchInformation.TestStageName;
                             Details.TestType = batchInformation.JobName;
                             Details.UnitNumber = (uint)batchInformation.UnitNumber;
@@ -80,7 +80,7 @@ namespace $safeprojectname$
                 throw new System.IO.DirectoryNotFoundException("The results folder does not exist on this machine.");
             System.Diagnostics.Trace.WriteLine("Uploading results to database...");
             DBControl.DAL.Results.UploadXML(xmlFile, path, System.IO.Path.Combine(path, "PublishFailed"), System.IO.Path.Combine(path, "Published"), false, true);
-            System.Diagnostics.Trace.WriteLine("Upload complete. Results can be viewed at " + results.Details.JobNumber);
+            System.Diagnostics.Trace.WriteLine("Upload complete. Results can be viewed at " + results.Details.RequestNumber);
         }
 #endif
 

@@ -69,6 +69,8 @@
     <Compile Include="SpecialFolders.cs" />
     <Compile Include="States.cs" />
     <Compile Include="TsdLibException.cs" />
+    <Compile Include="Utilities\EnumDescriptionConverter.cs" />
+    <Compile Include="Utilities\StringConversionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TsdLib.Core.nuspec" />

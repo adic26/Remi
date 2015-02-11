@@ -6,9 +6,9 @@ using System.Drawing.Design;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
-using TsdLib.Utilities.TypeConverters;
+using TsdLib.Utilities;
 
-namespace TsdLib.Utilities.TypeEditors
+namespace TsdLib.UI.TypeEditors
 {
     internal class ListBoxItem
     {

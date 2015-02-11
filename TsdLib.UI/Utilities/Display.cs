@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace TsdLib.Utilities.Display
+namespace TsdLib.UI.Utilities
 {
     /// <summary>
     /// Contains various utility methods related to how information or user interface elements are displayed.

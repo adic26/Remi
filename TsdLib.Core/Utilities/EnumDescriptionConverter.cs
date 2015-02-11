@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 
-namespace TsdLib.Utilities.TypeConverters
+namespace TsdLib.Utilities
 {
     public class EnumDescriptionConverter : EnumConverter
     {
