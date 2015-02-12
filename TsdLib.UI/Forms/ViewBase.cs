@@ -11,23 +11,15 @@ namespace TsdLib.UI.Forms
     /// Base UI form containing controls and code common to all TsdLib applications.
     /// Protected controls may be overridden in application implementations but private controls cannot be modified by derived UI classes.
     /// </summary>
-    public partial class ViewBase<TStationConfig, TProductConfig, TTestConfig> : Form, IView<TStationConfig, TProductConfig, TTestConfig>
-        where TStationConfig : IStationConfig
-        where TProductConfig : IProductConfig
-        where TTestConfig : ITestConfig
+    public partial class ViewBase : Form, IView
     {
-        /// <summary>
-        /// Event fired when the UI is about to close.
-        /// </summary>
-        public event EventHandler<CancelEventArgs> UIClosing;
-
-        public virtual IConfigControl<TStationConfig, TProductConfig, TTestConfig> ConfigControl { get { return multiConfigControl; } }
+        public virtual IConfigControl ConfigControl { get { return multiConfigControl; } }
 
         public virtual ITestInfoDisplayControl TestInfoDisplayControl { get { return testInfoDataGridViewControl; } }
 
         public virtual IMeasurementDisplayControl MeasurementDisplayControl { get { return measurementDataGridViewControl; } }
 
-        public virtual ITestSequenceControl<TStationConfig, TProductConfig, TTestConfig> TestSequenceControl { get { return testSequenceControl; } }
+        public virtual ITestSequenceControl TestSequenceControl { get { return testSequenceControl; } }
 
         public virtual ITestDetailsControl TestDetailsControl { get { return testDetailsControl; } }
 
@@ -96,5 +88,10 @@ namespace TsdLib.UI.Forms
         {
             Text = title;
         }
+
+        /// <summary>
+        /// Event fired when the UI is about to close.
+        /// </summary>
+        public event EventHandler<CancelEventArgs> UIClosing;
     }
 }

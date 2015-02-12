@@ -8,10 +8,7 @@ namespace TsdLib.UI.Controls.Base
     /// <summary>
     /// Placeholder for a control to select, view or edit the test configuration on the UI.
     /// </summary>
-    public partial class ConfigControlBase<TStationConfig, TProductConfig, TTestConfig> : TsdLibControl, IConfigControl<TStationConfig, TProductConfig, TTestConfig>
-        where TStationConfig : IStationConfig
-        where TProductConfig : IProductConfig
-        where TTestConfig : ITestConfig
+    public partial class ConfigControlBase : TsdLibControl, IConfigControl
     {
         /// <summary>
         /// Initialize the control.
@@ -22,34 +19,34 @@ namespace TsdLib.UI.Controls.Base
         }
 
         /// <summary>
-        /// Override to get and set the station configuration manager. Suitable for binding to a ListControl/>.
+        /// Override to get and set the station configuration manager. Suitable for binding to a ListControl.
         /// </summary>
-        public virtual IConfigManager<TStationConfig> StationConfigManager { get; set; }
+        public virtual IConfigManager<IStationConfig> StationConfigManager { get; set; }
         /// <summary>
-        /// Override to get and set the product configuration manager. Suitable for binding to a ListControl/>.
+        /// Override to get and set the product configuration manager. Suitable for binding to a ListControl.
         /// </summary>
-        public virtual IConfigManager<TProductConfig> ProductConfigManager { get; set; }
+        public virtual IConfigManager<IProductConfig> ProductConfigManager { get; set; }
         /// <summary>
-        /// Override to get and set the test configuration manager. Suitable for binding to a ListControl/>.
+        /// Override to get and set the test configuration manager. Suitable for binding to a ListControl.
         /// </summary>
-        public virtual IConfigManager<TTestConfig> TestConfigManager { get; set; }
+        public virtual IConfigManager<ITestConfig> TestConfigManager { get; set; }
         /// <summary>
-        /// Override to get and set the sequence configuration manager. Suitable for binding to a ListControl/>.
+        /// Override to get and set the sequence configuration manager. Suitable for binding to a ListControl.
         /// </summary>
         public virtual IConfigManager<ISequenceConfig> SequenceConfigManager { get; set; }
 
         /// <summary>
         /// Override to expose the selected station configuration instance(s).
         /// </summary>
-        public virtual TStationConfig[] SelectedStationConfig { get { return new TStationConfig[0]; } }
+        public virtual IStationConfig[] SelectedStationConfig { get { return new IStationConfig[0]; } }
         /// <summary>
         /// Override to expose the selected product configuration instance(s).
         /// </summary>
-        public virtual TProductConfig[] SelectedProductConfig { get { return new TProductConfig[0]; } }
+        public virtual IProductConfig[] SelectedProductConfig { get { return new IProductConfig[0]; } }
         /// <summary>
         /// Override to expose the selected test configuration instance(s).
         /// </summary>
-        public virtual TTestConfig[] SelectedTestConfig { get { return new TTestConfig[0]; } }
+        public virtual ITestConfig[] SelectedTestConfig { get { return new ITestConfig[0]; } }
         /// <summary>
         /// Override to expose the selected sequence configuration instance(s).
         /// </summary>

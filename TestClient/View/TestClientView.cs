@@ -1,9 +1,8 @@
-﻿using TestClient.Configuration;
-using TsdLib.UI.Forms;
+﻿using TsdLib.UI.Forms;
 
 namespace TestClient.View
 {
-    public partial class TestClientView : ViewBase<StationConfig, ProductConfig, TestConfig>
+    public partial class TestClientView : ViewBase
     {
         public TestClientView()
         {

@@ -4,7 +4,7 @@ using TsdLib.Configuration;
 
 namespace TsdLib.UI.Forms
 {
-    partial class ViewBase<TStationConfig, TProductConfig, TTestConfig>
+    partial class ViewBase
     {
         /// <summary>
         /// Required designer variable.
@@ -38,10 +38,10 @@ namespace TsdLib.UI.Forms
             this.UpperLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Result = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.progressControl1 = new TsdLib.UI.Controls.ProgressControl();
-            this.multiConfigControl = new TsdLib.UI.Controls.MultiConfigControl<TStationConfig, TProductConfig, TTestConfig>();
+            this.multiConfigControl = new TsdLib.UI.Controls.MultiConfigControl();
             this.traceListenerTextBoxControl = new TsdLib.UI.Controls.TraceListenerTextBoxControl();
             this.testDetailsControl = new TsdLib.UI.Controls.TestDetailsControl();
-            this.testSequenceControl = new TsdLib.UI.Controls.TestSequenceControl<TStationConfig, TProductConfig, TTestConfig>();
+            this.testSequenceControl = new TsdLib.UI.Controls.TestSequenceControl();
             this.testInfoDataGridViewControl = new TsdLib.UI.Controls.TestInfoDataGridViewControl();
             this.measurementDataGridViewControl = new TsdLib.UI.Controls.MeasurementDataGridViewControl();
             this.SuspendLayout();
@@ -193,10 +193,10 @@ namespace TsdLib.UI.Forms
         private System.Windows.Forms.DataGridViewTextBoxColumn Result;
         protected Controls.MeasurementDataGridViewControl measurementDataGridViewControl;
         protected Controls.TestInfoDataGridViewControl testInfoDataGridViewControl;
-        protected Controls.TestSequenceControl<TStationConfig, TProductConfig, TTestConfig> testSequenceControl;
+        protected Controls.TestSequenceControl testSequenceControl;
         protected Controls.TestDetailsControl testDetailsControl;
         protected Controls.TraceListenerTextBoxControl traceListenerTextBoxControl;
-        protected Controls.MultiConfigControl<TStationConfig, TProductConfig, TTestConfig> multiConfigControl;
+        protected Controls.MultiConfigControl multiConfigControl;
         private Controls.ProgressControl progressControl1;
     }
 }

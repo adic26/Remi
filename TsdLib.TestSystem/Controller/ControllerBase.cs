@@ -27,7 +27,7 @@ namespace TsdLib.TestSystem.Controller
     /// </summary>
     /// <typeparam name="TView">Type of the derived user interface.</typeparam>
     public abstract class ControllerBase<TView> : ControllerBase<TView, NullStationConfig, NullProductConfig, NullTestConfig>
-        where TView : IView<NullStationConfig, NullProductConfig, NullTestConfig>, new()
+        where TView : IView, new()
     {
         /// <summary>
         /// Initialize a new system controller.
@@ -50,7 +50,7 @@ namespace TsdLib.TestSystem.Controller
     /// <typeparam name="TProductConfig">Type of the derived product config.</typeparam>
     /// <typeparam name="TTestConfig">Type of the derived test config.</typeparam>
     public abstract class ControllerBase<TView, TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject
-        where TView : IView<TStationConfig, TProductConfig, TTestConfig>, new()
+        where TView : IView, new()
         where TStationConfig : StationConfigCommon, new()
         where TProductConfig : ProductConfigCommon, new()
         where TTestConfig : TestConfigCommon, new()
@@ -185,9 +185,10 @@ namespace TsdLib.TestSystem.Controller
 
             UI.SetState(State.TestInProgress);
 
-            TStationConfig stationConfig = UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? StationConfigManager.GetList()[0] as TStationConfig;
-            TProductConfig productConfig = UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? ProductConfigManager.GetList()[0] as TProductConfig;
-            TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig;
+
+            TStationConfig stationConfig = (TStationConfig) (UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? StationConfigManager.GetList()[0]);
+            TProductConfig productConfig = (TProductConfig) (UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? ProductConfigManager.GetList()[0]);
+            TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig.Cast<TTestConfig>().ToArray();
             if (!testConfigs.Any())
                 testConfigs = TestConfigManager.GetConfigGroup().ToArray();
 
@@ -403,7 +404,7 @@ namespace TsdLib.TestSystem.Controller
         }
 
         /// <summary>
-        /// Default handler for the <see cref="TsdLib.UI.ITestSequenceControl{TStationConfig, TProductConfig, TTestConfig}.AbortTestSequence"/> event.
+        /// Default handler for the <see cref="TsdLib.UI.ITestSequenceControl.AbortTestSequence"/> event.
         /// </summary>
         /// <param name="sender">The <see cref="IView"/> that raised the event.</param>
         /// <param name="e">Empty event args.</param>

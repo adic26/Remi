@@ -1,6 +1,6 @@
 ﻿namespace TsdLib.UI.Controls.Base
 {
-    partial class ConfigControlBase<TStationConfig, TProductConfig, TTestConfig>
+    partial class ConfigControlBase
     {
         /// <summary> 
         /// Required designer variable.

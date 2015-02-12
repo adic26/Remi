@@ -6,14 +6,11 @@ using TsdLib.UI.Controls.Base;
 
 namespace TsdLib.UI.Controls
 {
-    public partial class MultiConfigControl<TStationConfig, TProductConfig, TTestConfig> : ConfigControlBase<TStationConfig, TProductConfig, TTestConfig>
-        where TStationConfig : IStationConfig
-        where TProductConfig : IProductConfig
-        where TTestConfig : ITestConfig
+    public partial class MultiConfigControl : ConfigControlBase
     {
 
         /// <summary>
-        /// Initialize a new <see cref="MultiConfigControl{TStationConfig, TProductConfig, TTestConfig}"/>
+        /// Initialize a new <see cref="MultiConfigControl"/>
         /// </summary>
         public MultiConfigControl()
         {
@@ -23,9 +20,9 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Sets the list of available Station Config instances.
         /// </summary>
-        public override IConfigManager<TStationConfig> StationConfigManager
+        public override IConfigManager<IStationConfig> StationConfigManager
         {
-            get { return (IConfigManager<TStationConfig>)comboBox_StationConfig.DataSource; }
+            get { return (IConfigManager<IStationConfig>)comboBox_StationConfig.DataSource; }
             set
             {
                 if (value == null) return;
@@ -35,9 +32,9 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Sets the list of available Product Config instances.
         /// </summary>
-        public override IConfigManager<TProductConfig> ProductConfigManager
+        public override IConfigManager<IProductConfig> ProductConfigManager
         {
-            get { return (IConfigManager<TProductConfig>)comboBox_ProductConfig.DataSource; }
+            get { return (IConfigManager<IProductConfig>)comboBox_ProductConfig.DataSource; }
             set
             {
                 if (value == null) return;
@@ -47,9 +44,9 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Sets the list of available Test Config instances.
         /// </summary>
-        public override IConfigManager<TTestConfig> TestConfigManager
+        public override IConfigManager<ITestConfig> TestConfigManager
         {
-            get { return (IConfigManager<TTestConfig>)checkedListBox_TestConfig.DataSource; }
+            get { return (IConfigManager<ITestConfig>)checkedListBox_TestConfig.DataSource; }
             set
             {
                 if (value == null) return;
@@ -74,23 +71,23 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Gets the selected station configuration instance.
         /// </summary>
-        public override TStationConfig[] SelectedStationConfig
+        public override IStationConfig[] SelectedStationConfig
         {
-            get { return new[] { (TStationConfig)comboBox_StationConfig.SelectedItem }; }
+            get { return new[] { (IStationConfig)comboBox_StationConfig.SelectedItem }; }
         }
         /// <summary>
         /// Gets the selected product configuration instance.
         /// </summary>
-        public override TProductConfig[] SelectedProductConfig
+        public override IProductConfig[] SelectedProductConfig
         {
-            get { return new[] { (TProductConfig)comboBox_ProductConfig.SelectedItem }; }
+            get { return new[] { (IProductConfig)comboBox_ProductConfig.SelectedItem }; }
         }
         /// <summary>
         /// Gets the selected test configuration instance.
         /// </summary>
-        public override TTestConfig[] SelectedTestConfig
+        public override ITestConfig[] SelectedTestConfig
         {
-            get { return checkedListBox_TestConfig.CheckedItems.Cast<TTestConfig>().ToArray(); }
+            get { return checkedListBox_TestConfig.CheckedItems.Cast<ITestConfig>().ToArray(); }
         }
         /// <summary>
         /// Gets the selected sequence configuration instance.

@@ -1,6 +1,6 @@
 ﻿namespace TsdLib.UI.Controls
 {
-    partial class MultiConfigControl<TStationConfig, TProductConfig, TTestConfig>
+    partial class MultiConfigControl
     {
         /// <summary> 
         /// Required designer variable.
