@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace TsdLib.Configuration
 {
-    partial class ConfigItemCreateForm : Form
+    public partial class ConfigItemCreateForm : Form
     {
         public string ConfigItemName
         {

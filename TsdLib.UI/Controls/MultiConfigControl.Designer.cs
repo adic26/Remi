@@ -82,7 +82,6 @@
             this.comboBox_ProductConfig.Name = "comboBox_ProductConfig";
             this.comboBox_ProductConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_ProductConfig.TabIndex = 32;
-            this.comboBox_ProductConfig.SelectionChangeCommitted += new System.EventHandler(this.config_SelectionChangeCommitted);
             // 
             // comboBox_StationConfig
             // 
@@ -93,7 +92,6 @@
             this.comboBox_StationConfig.Name = "comboBox_StationConfig";
             this.comboBox_StationConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_StationConfig.TabIndex = 31;
-            this.comboBox_StationConfig.SelectionChangeCommitted += new System.EventHandler(this.config_SelectionChangeCommitted);
             // 
             // checkedListBox_SequenceConfig
             // 
@@ -104,7 +102,6 @@
             this.checkedListBox_SequenceConfig.Name = "checkedListBox_SequenceConfig";
             this.checkedListBox_SequenceConfig.Size = new System.Drawing.Size(174, 79);
             this.checkedListBox_SequenceConfig.TabIndex = 36;
-            this.checkedListBox_SequenceConfig.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.config_SelectionChangeCommittedCheckBox);
             // 
             // checkedListBox_TestConfig
             // 
@@ -116,7 +113,6 @@
             this.checkedListBox_TestConfig.Name = "checkedListBox_TestConfig";
             this.checkedListBox_TestConfig.Size = new System.Drawing.Size(174, 79);
             this.checkedListBox_TestConfig.TabIndex = 37;
-            this.checkedListBox_TestConfig.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.config_SelectionChangeCommittedCheckBox);
             // 
             // label_SequenceConfig
             // 
@@ -199,6 +195,10 @@
             this.Controls.Add(this.comboBox_ProductConfig);
             this.Controls.Add(this.comboBox_StationConfig);
             this.Name = "MultiConfigControl";
+            this.SelectedProductConfig = new TsdLib.Configuration.IProductConfig[0];
+            this.SelectedSequenceConfig = new TsdLib.Configuration.ISequenceConfig[0];
+            this.SelectedStationConfig = new TsdLib.Configuration.IStationConfig[0];
+            this.SelectedTestConfig = new TsdLib.Configuration.ITestConfig[0];
             this.Size = new System.Drawing.Size(387, 213);
             this.ResumeLayout(false);
             this.PerformLayout();

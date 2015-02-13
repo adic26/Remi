@@ -15,11 +15,6 @@ namespace TsdLib.UI
         event EventHandler<IConfigManager[]> ViewEditConfiguration;
 
         /// <summary>
-        /// Event fired when a selected configuration instance is changed.
-        /// </summary>
-        event EventHandler ConfigSelectionChanged;
-
-        /// <summary>
         /// Gets or sets the station configuration manager. Suitable for binding to a ListControl/>.
         /// </summary>
         IConfigManager<IStationConfig> StationConfigManager { get; set; }
@@ -39,18 +34,18 @@ namespace TsdLib.UI
         /// <summary>
         /// Gets the selected station configuration instance(s).
         /// </summary>
-        IStationConfig[] SelectedStationConfig { get; }
+        IStationConfig[] SelectedStationConfig { get; set; }
         /// <summary>
         /// Gets the selected product configuration instance(s).
         /// </summary>
-        IProductConfig[] SelectedProductConfig { get; }
+        IProductConfig[] SelectedProductConfig { get; set; }
         /// <summary>
         /// Gets the selected test configuration instance(s).
         /// </summary>
-        ITestConfig[] SelectedTestConfig { get; }
+        ITestConfig[] SelectedTestConfig { get; set; }
         /// <summary>
         /// Gets the selected sequence configuration instance(s).
         /// </summary>
-        ISequenceConfig[] SelectedSequenceConfig { get; }
+        ISequenceConfig[] SelectedSequenceConfig { get; set; }
     }
 }

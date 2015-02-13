@@ -1,6 +1,6 @@
 ﻿namespace TsdLib.Configuration
 {
-    partial class ConfigItemCreateForm
+    public partial class ConfigItemCreateForm
     {
         /// <summary>
         /// Required designer variable.

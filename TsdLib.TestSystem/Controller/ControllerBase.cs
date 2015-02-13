@@ -136,10 +136,7 @@ namespace TsdLib.TestSystem.Controller
 
             //subscribe to view events
             if (UI.ConfigControl != null)
-            {
                 UI.ConfigControl.ViewEditConfiguration += EditConfiguration;
-                UI.ConfigControl.ConfigSelectionChanged += ConfigControlOnConfigSelectionChanged;
-            }
             if (UI.TestDetailsControl != null)
             {
                 UI.TestDetailsControl.EditTestDetails += EditTestDetails;
@@ -149,15 +146,6 @@ namespace TsdLib.TestSystem.Controller
             UI.UIClosing += UIClosing;
 
             UI.SetState(State.ReadyToTest);
-        }
-
-        private void ConfigControlOnConfigSelectionChanged(object sender, EventArgs eventArgs)
-        {
-            if (UI.ConfigControl == null) return;
-            UI.TestSequenceControl.SelectedStationConfig = UI.ConfigControl.SelectedStationConfig;
-            UI.TestSequenceControl.SelectedProductConfig = UI.ConfigControl.SelectedProductConfig;
-            UI.TestSequenceControl.SelectedTestConfig = UI.ConfigControl.SelectedTestConfig;
-            UI.TestSequenceControl.SelectedSequenceConfig = UI.ConfigControl.SelectedSequenceConfig;
         }
 
         void configDetails_TestSystemIdentityChanged(object sender, string e)
@@ -209,7 +197,7 @@ namespace TsdLib.TestSystem.Controller
                 {
                     DateTime startTime = DateTime.Now;
 
-                    ISequenceConfig config = sequenceConfig; //TODO: move this to another method and pass in the Sequence object
+                    ISequenceConfig config = sequenceConfig;
                     await Task.Run(() =>
                     {
                         if (_localDomain)

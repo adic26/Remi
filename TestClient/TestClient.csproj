@@ -35,13 +35,13 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DBControl, Version=4.4.5515.22611, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="DBControl, Version=4.4.5521.35002, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DBControl.4.4-debug\lib\net45\DBControl.dll</HintPath>
+      <HintPath>..\packages\DBControl.4.4.5521.35002\lib\net45\DBControl.dll</HintPath>
     </Reference>
-    <Reference Include="DBControl.XmlSerializers, Version=4.4.5515.22611, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="DBControl.XmlSerializers, Version=4.4.5521.35002, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DBControl.4.4-debug\lib\net45\DBControl.XmlSerializers.dll</HintPath>
+      <HintPath>..\packages\DBControl.4.4.5521.35002\lib\net45\DBControl.XmlSerializers.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

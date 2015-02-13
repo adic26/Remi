@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using TsdLib.Configuration;
 
 namespace TsdLib.UI.Controls.Base
@@ -6,7 +7,7 @@ namespace TsdLib.UI.Controls.Base
     /// <summary>
     /// Placeholder for a control to start and stop a test sequence on the UI.
     /// </summary>
-    public partial class TestSequenceControlBase : TsdLibControl, ITestSequenceControl
+    public partial class TestSequenceControlBase : UserControl, ITestSequenceControl
     {
         public TestSequenceControlBase()
         {
@@ -47,9 +48,18 @@ namespace TsdLib.UI.Controls.Base
         /// Enables the control if the test system is ready to test. Otherwise disables.
         /// </summary>
         /// <param name="state">The current state of the test system.</param>
-        public override void SetState(State state)
+        public virtual void SetState(State state)
         {
-            Enabled = state.HasFlag(State.ReadyToTest);
+            
+        }
+
+        /// <summary>
+        /// Obtains a lifetime service object to control the lifetime policy for this instance.
+        /// </summary>
+        /// <returns>An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease"/> used to control the lifetime policy for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a new lifetime service object initialized to the value of the <see cref="P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime"/> property.</returns>
+        public override object InitializeLifetimeService()
+        {
+            return null;
         }
     }
 }

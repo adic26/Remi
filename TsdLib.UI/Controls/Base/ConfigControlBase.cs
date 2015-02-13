@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using TsdLib.Configuration;
 
 namespace TsdLib.UI.Controls.Base
@@ -8,7 +9,7 @@ namespace TsdLib.UI.Controls.Base
     /// <summary>
     /// Placeholder for a control to select, view or edit the test configuration on the UI.
     /// </summary>
-    public partial class ConfigControlBase : TsdLibControl, IConfigControl
+    public partial class ConfigControlBase : UserControl, IConfigControl
     {
         /// <summary>
         /// Initialize the control.
@@ -38,20 +39,36 @@ namespace TsdLib.UI.Controls.Base
         /// <summary>
         /// Override to expose the selected station configuration instance(s).
         /// </summary>
-        public virtual IStationConfig[] SelectedStationConfig { get { return new IStationConfig[0]; } }
+        public virtual IStationConfig[] SelectedStationConfig
+        {
+            get { return new IStationConfig[0]; }
+            set { }
+        }
         /// <summary>
         /// Override to expose the selected product configuration instance(s).
         /// </summary>
-        public virtual IProductConfig[] SelectedProductConfig { get { return new IProductConfig[0]; } }
+        public virtual IProductConfig[] SelectedProductConfig
+        {
+            get { return new IProductConfig[0]; }
+            set { }
+        }
         /// <summary>
         /// Override to expose the selected test configuration instance(s).
         /// </summary>
-        public virtual ITestConfig[] SelectedTestConfig { get { return new ITestConfig[0]; } }
+        public virtual ITestConfig[] SelectedTestConfig
+        {
+            get { return new ITestConfig[0]; }
+            set { }
+        }
         /// <summary>
         /// Override to expose the selected sequence configuration instance(s).
         /// </summary>
-        public virtual ISequenceConfig[] SelectedSequenceConfig { get { return new ISequenceConfig[0]; } }
-        
+        public virtual ISequenceConfig[] SelectedSequenceConfig
+        {
+            get { return new ISequenceConfig[0]; }
+            set { }
+        }
+
         /// <summary>
         /// Event fired when requesting to modify the test system configuration.
         /// </summary>
@@ -69,27 +86,21 @@ namespace TsdLib.UI.Controls.Base
         }
 
         /// <summary>
-        /// Event fired when a selected configuration instance is changed.
-        /// </summary>
-        public event EventHandler ConfigSelectionChanged;
-
-        /// <summary>
-        /// Fires the <see cref="E:ConfigSelectionChanged"/> event.
-        /// </summary>
-        protected virtual void OnConfigSelectionChanged()
-        {
-            EventHandler invoker = ConfigSelectionChanged;
-            if (invoker != null)
-                invoker(this, EventArgs.Empty);
-        }
-
-        /// <summary>
         /// Enables the control if the test system is ready to test. Otherwise disables.
         /// </summary>
         /// <param name="state">The current state of the test system.</param>
-        public override void SetState(State state)
+        public void SetState(State state)
         {
             Enabled = state.HasFlag(State.ReadyToTest);
+        }
+
+        /// <summary>
+        /// Obtains a lifetime service object to control the lifetime policy for this instance.
+        /// </summary>
+        /// <returns>An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease"/> used to control the lifetime policy for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a new lifetime service object initialized to the value of the <see cref="P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime"/> property.</returns>
+        public override object InitializeLifetimeService()
+        {
+            return null;
         }
     }
 }

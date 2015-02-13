@@ -56,7 +56,6 @@
             this.comboBox_SequenceConfig.Name = "comboBox_SequenceConfig";
             this.comboBox_SequenceConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_SequenceConfig.TabIndex = 28;
-            this.comboBox_SequenceConfig.SelectionChangeCommitted += new System.EventHandler(this.config_SelectionChangeCommitted);
             // 
             // comboBox_TestConfig
             // 
@@ -66,7 +65,6 @@
             this.comboBox_TestConfig.Name = "comboBox_TestConfig";
             this.comboBox_TestConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_TestConfig.TabIndex = 27;
-            this.comboBox_TestConfig.SelectionChangeCommitted += new System.EventHandler(this.config_SelectionChangeCommitted);
             // 
             // label_TestConfig
             // 
@@ -103,7 +101,6 @@
             this.comboBox_ProductConfig.Name = "comboBox_ProductConfig";
             this.comboBox_ProductConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_ProductConfig.TabIndex = 23;
-            this.comboBox_ProductConfig.SelectionChangeCommitted += new System.EventHandler(this.config_SelectionChangeCommitted);
             // 
             // comboBox_StationConfig
             // 
@@ -113,7 +110,6 @@
             this.comboBox_StationConfig.Name = "comboBox_StationConfig";
             this.comboBox_StationConfig.Size = new System.Drawing.Size(174, 21);
             this.comboBox_StationConfig.TabIndex = 22;
-            this.comboBox_StationConfig.SelectionChangeCommitted += new System.EventHandler(this.config_SelectionChangeCommitted);
             // 
             // button_ViewEditConfiguration
             // 
@@ -138,6 +134,10 @@
             this.Controls.Add(this.comboBox_ProductConfig);
             this.Controls.Add(this.comboBox_StationConfig);
             this.Name = "ConfigControl";
+            this.SelectedProductConfig = new TsdLib.Configuration.IProductConfig[0];
+            this.SelectedSequenceConfig = new TsdLib.Configuration.ISequenceConfig[0];
+            this.SelectedStationConfig = new TsdLib.Configuration.IStationConfig[0];
+            this.SelectedTestConfig = new TsdLib.Configuration.ITestConfig[0];
             this.Size = new System.Drawing.Size(320, 162);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -4,6 +4,9 @@ using TsdLib.UI.Controls.Base;
 
 namespace TsdLib.UI.Controls
 {
+    /// <summary>
+    /// Contains functionality to select and manage configuration on the UI.
+    /// </summary>
     public partial class ConfigControl : ConfigControlBase
     {
         /// <summary>
@@ -69,6 +72,7 @@ namespace TsdLib.UI.Controls
         public override IStationConfig[] SelectedStationConfig
         {
             get { return new[] { (IStationConfig)comboBox_StationConfig.SelectedItem }; }
+            set { comboBox_StationConfig.SelectedItem = value[0]; }
         }
         /// <summary>
         /// Gets the selected product configuration instance.
@@ -76,6 +80,7 @@ namespace TsdLib.UI.Controls
         public override IProductConfig[] SelectedProductConfig
         {
             get { return new[] { (IProductConfig)comboBox_ProductConfig.SelectedItem }; }
+            set { comboBox_ProductConfig.SelectedItem = value[0]; }
         }
         /// <summary>
         /// Gets the selected test configuration instance.
@@ -83,6 +88,7 @@ namespace TsdLib.UI.Controls
         public override ITestConfig[] SelectedTestConfig
         {
             get { return new[] { (ITestConfig)comboBox_TestConfig.SelectedItem }; }
+            set { comboBox_TestConfig.SelectedItem = value[0]; }
         }
         /// <summary>
         /// Gets the selected sequence configuration instance.
@@ -90,16 +96,12 @@ namespace TsdLib.UI.Controls
         public override ISequenceConfig[] SelectedSequenceConfig
         {
             get { return new[] { (ISequenceConfig)comboBox_SequenceConfig.SelectedItem }; }
+            set { comboBox_SequenceConfig.SelectedItem = value[0]; }
         }
 
         private void button_ViewEditConfiguration_Click(object sender, EventArgs e)
         {
             OnViewEditConfiguration(new IConfigManager[] { StationConfigManager, ProductConfigManager, TestConfigManager, SequenceConfigManager });
-        }
-
-        private void config_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            OnConfigSelectionChanged();
         }
     }
 }

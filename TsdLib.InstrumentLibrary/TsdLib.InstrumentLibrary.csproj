@@ -87,6 +87,7 @@
     <Content Include="Instruments\AIM4170C.xml">
       <Generator>InstrumentClassGenerator</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <LastGenOutput>AIM4170C.cs</LastGenOutput>
     </Content>
     <Content Include="Instruments\Aos_BCM4339.xml">
       <Generator>InstrumentClassGenerator</Generator>

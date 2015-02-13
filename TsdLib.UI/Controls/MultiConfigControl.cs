@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
-using System.Windows.Forms;
 using TsdLib.Configuration;
 using TsdLib.UI.Controls.Base;
 
 namespace TsdLib.UI.Controls
 {
+    /// <summary>
+    /// Contains functionality to select and manage configuration on the UI, supporting multiple test and sequence configs.
+    /// </summary>
     public partial class MultiConfigControl : ConfigControlBase
     {
 
@@ -74,6 +76,7 @@ namespace TsdLib.UI.Controls
         public override IStationConfig[] SelectedStationConfig
         {
             get { return new[] { (IStationConfig)comboBox_StationConfig.SelectedItem }; }
+            set { comboBox_StationConfig.SelectedItem = value[0]; }
         }
         /// <summary>
         /// Gets the selected product configuration instance.
@@ -81,6 +84,7 @@ namespace TsdLib.UI.Controls
         public override IProductConfig[] SelectedProductConfig
         {
             get { return new[] { (IProductConfig)comboBox_ProductConfig.SelectedItem }; }
+            set { comboBox_ProductConfig.SelectedItem = value[0]; }
         }
         /// <summary>
         /// Gets the selected test configuration instance.
@@ -88,6 +92,11 @@ namespace TsdLib.UI.Controls
         public override ITestConfig[] SelectedTestConfig
         {
             get { return checkedListBox_TestConfig.CheckedItems.Cast<ITestConfig>().ToArray(); }
+            set
+            {
+                for (int i = 0; i < checkedListBox_TestConfig.Items.Count; i++)
+                    checkedListBox_TestConfig.SetItemChecked(i, value.Contains(checkedListBox_TestConfig.Items[i]));
+            }
         }
         /// <summary>
         /// Gets the selected sequence configuration instance.
@@ -95,34 +104,17 @@ namespace TsdLib.UI.Controls
         public override ISequenceConfig[] SelectedSequenceConfig
         {
             get { return checkedListBox_SequenceConfig.CheckedItems.Cast<ISequenceConfig>().ToArray(); }
+            set
+            {
+                for (int i = 0; i < checkedListBox_SequenceConfig.Items.Count; i++)
+                    checkedListBox_SequenceConfig.SetItemChecked(i, value.Contains(checkedListBox_SequenceConfig.Items[i]));
+            }
+
         }
 
         private void button_ViewEditConfiguration_Click(object sender, EventArgs e)
         {
             OnViewEditConfiguration(new IConfigManager[] { StationConfigManager, ProductConfigManager, TestConfigManager, SequenceConfigManager });
-        }
-
-        private void config_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            OnConfigSelectionChanged();
-        }
-
-        private void config_SelectionChangeCommittedCheckBox(object sender, ItemCheckEventArgs e)
-        {
-            CheckedListBox checkedListBox = sender as CheckedListBox;
-            if (checkedListBox != null)
-            {
-                try
-                {
-                    checkedListBox.ItemCheck -= config_SelectionChangeCommittedCheckBox;
-                    checkedListBox.SetItemCheckState(e.Index, e.NewValue);
-                    OnConfigSelectionChanged();
-                }
-                finally
-                {
-                    checkedListBox.ItemCheck += config_SelectionChangeCommittedCheckBox;
-                }
-            }
         }
 
         private void button_SequenceConfigSelectAll_Click(object sender, EventArgs e)
