@@ -43,6 +43,7 @@
     <Compile Include="Configuration\IProductConfig.cs" />
     <Compile Include="Configuration\ISequenceConfig.cs" />
     <Compile Include="Configuration\IStationConfig.cs" />
+    <Compile Include="Configuration\ITestCase.cs" />
     <Compile Include="Configuration\ITestConfig.cs" />
     <Compile Include="UI\IConfigControl.cs" />
     <Compile Include="Configuration\IConfigItem.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Measurements\ITestSummary.cs" />
     <Compile Include="UI\IMeasurementDisplayControl.cs" />
     <Compile Include="UI\IProgressControl.cs" />
+    <Compile Include="UI\ITestCaseControl.cs" />
     <Compile Include="UI\ITestDetailsControl.cs" />
     <Compile Include="UI\ITestInfoDisplayControl.cs" />
     <Compile Include="UI\ITestSequenceControl.cs" />

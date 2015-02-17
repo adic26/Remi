@@ -11,7 +11,7 @@ namespace TsdLib
         /// <summary>
         /// A test is currently running.
         /// </summary>
-        TestInProgress = 1,
+        TestStarting = 1,
         /// <summary>
         /// The system is ready to configure or start a test. 
         /// </summary>

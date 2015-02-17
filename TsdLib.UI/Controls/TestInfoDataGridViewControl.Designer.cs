@@ -31,18 +31,10 @@
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.Column_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column_Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
-            this.splitContainer.Panel2.SuspendLayout();
-            this.splitContainer.SuspendLayout();
+            this.groupBox = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
+            this.groupBox.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // splitContainer
-            // 
-            // 
-            // splitContainer.Panel2
-            // 
-            this.splitContainer.Panel2.Controls.Add(this.dataGridView);
             // 
             // dataGridView
             // 
@@ -51,11 +43,11 @@
             this.Column_Name,
             this.Column_Value});
             this.dataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView.Location = new System.Drawing.Point(3, 16);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.ReadOnly = true;
             this.dataGridView.RowHeadersVisible = false;
-            this.dataGridView.Size = new System.Drawing.Size(680, 269);
+            this.dataGridView.Size = new System.Drawing.Size(301, 252);
             this.dataGridView.TabIndex = 1;
             // 
             // Column_Name
@@ -73,15 +65,26 @@
             this.Column_Value.Name = "Column_Value";
             this.Column_Value.ReadOnly = true;
             // 
+            // groupBox
+            // 
+            this.groupBox.Controls.Add(this.dataGridView);
+            this.groupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox.Location = new System.Drawing.Point(0, 0);
+            this.groupBox.Name = "groupBox";
+            this.groupBox.Size = new System.Drawing.Size(307, 271);
+            this.groupBox.TabIndex = 2;
+            this.groupBox.TabStop = false;
+            this.groupBox.Text = "Test Info";
+            // 
             // TestInfoDataGridViewControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBox);
             this.Name = "TestInfoDataGridViewControl";
-            this.splitContainer.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
-            this.splitContainer.ResumeLayout(false);
+            this.Size = new System.Drawing.Size(307, 271);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
+            this.groupBox.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -91,5 +94,6 @@
         private System.Windows.Forms.DataGridView dataGridView;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_Name;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_Value;
+        private System.Windows.Forms.GroupBox groupBox;
     }
 }

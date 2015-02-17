@@ -1,13 +1,14 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Windows.Forms;
 using TsdLib.Configuration;
-using TsdLib.UI.Controls.Base;
 
 namespace TsdLib.UI.Controls
 {
     /// <summary>
     /// Contains functionality to select and manage configuration on the UI.
     /// </summary>
-    public partial class ConfigControl : ConfigControlBase
+    public partial class ConfigControl : UserControl, IConfigControl
     {
         /// <summary>
         /// Initialize a new <see cref="ConfigControl"/>
@@ -20,8 +21,11 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Sets the list of available Station Config instances.
         /// </summary>
-        public override IConfigManager<IStationConfig> StationConfigManager
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IConfigManager<IStationConfig> StationConfigManager
         {
+
             get { return (IConfigManager<IStationConfig>)comboBox_StationConfig.DataSource; }
             set
             {
@@ -32,7 +36,9 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Sets the list of available Product Config instances.
         /// </summary>
-        public override IConfigManager<IProductConfig> ProductConfigManager
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IConfigManager<IProductConfig> ProductConfigManager
         {
             get { return (IConfigManager<IProductConfig>)comboBox_ProductConfig.DataSource; }
             set
@@ -44,7 +50,9 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Sets the list of available Test Config instances.
         /// </summary>
-        public override IConfigManager<ITestConfig> TestConfigManager
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IConfigManager<ITestConfig> TestConfigManager
         {
             get { return (IConfigManager<ITestConfig>)comboBox_TestConfig.DataSource; }
             set
@@ -56,7 +64,9 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Sets the list of available Sequence Config instances.
         /// </summary>
-        public override IConfigManager<ISequenceConfig> SequenceConfigManager
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IConfigManager<ISequenceConfig> SequenceConfigManager
         {
             get { return (IConfigManager<ISequenceConfig>)comboBox_SequenceConfig.DataSource; }
             set
@@ -69,39 +79,79 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Gets the selected station configuration instance.
         /// </summary>
-        public override IStationConfig[] SelectedStationConfig
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IStationConfig[] SelectedStationConfig
         {
             get { return new[] { (IStationConfig)comboBox_StationConfig.SelectedItem }; }
-            set { comboBox_StationConfig.SelectedItem = value[0]; }
+            set
+            {
+                if (value == null || value.Length == 0) return;
+                comboBox_StationConfig.SelectedItem = value[0];
+            }
         }
         /// <summary>
         /// Gets the selected product configuration instance.
         /// </summary>
-        public override IProductConfig[] SelectedProductConfig
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IProductConfig[] SelectedProductConfig
         {
             get { return new[] { (IProductConfig)comboBox_ProductConfig.SelectedItem }; }
-            set { comboBox_ProductConfig.SelectedItem = value[0]; }
+            set
+            {
+                if (value == null || value.Length == 0) return;
+                comboBox_ProductConfig.SelectedItem = value[0];
+            }
         }
         /// <summary>
         /// Gets the selected test configuration instance.
         /// </summary>
-        public override ITestConfig[] SelectedTestConfig
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public ITestConfig[] SelectedTestConfig
         {
             get { return new[] { (ITestConfig)comboBox_TestConfig.SelectedItem }; }
-            set { comboBox_TestConfig.SelectedItem = value[0]; }
+            set
+            {
+                if (value == null || value.Length == 0) return;
+                comboBox_TestConfig.SelectedItem = value[0];
+            }
         }
         /// <summary>
         /// Gets the selected sequence configuration instance.
         /// </summary>
-        public override ISequenceConfig[] SelectedSequenceConfig
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public ISequenceConfig[] SelectedSequenceConfig
         {
             get { return new[] { (ISequenceConfig)comboBox_SequenceConfig.SelectedItem }; }
-            set { comboBox_SequenceConfig.SelectedItem = value[0]; }
+            set
+            {
+                if (value == null || value.Length == 0) return;
+                comboBox_SequenceConfig.SelectedItem = value[0];
+            }
         }
 
         private void button_ViewEditConfiguration_Click(object sender, EventArgs e)
         {
-            OnViewEditConfiguration(new IConfigManager[] { StationConfigManager, ProductConfigManager, TestConfigManager, SequenceConfigManager });
+            EventHandler<IConfigManager[]> handler = ViewEditConfiguration;
+            if (handler != null)
+            {
+                var managers = new IConfigManager[] {StationConfigManager, ProductConfigManager, TestConfigManager, SequenceConfigManager};
+                handler(this, managers);
+            }
+
+        }
+
+        /// <summary>
+        /// Event fired when requesting to modify the test system configuration.
+        /// </summary>
+        public event EventHandler<IConfigManager[]> ViewEditConfiguration;
+
+        public void SetState(State state)
+        {
+            Enabled = state.HasFlag(State.ReadyToTest);
         }
     }
 }

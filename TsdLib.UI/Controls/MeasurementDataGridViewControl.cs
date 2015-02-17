@@ -1,17 +1,16 @@
 ﻿using System.Windows.Forms;
 using TsdLib.Measurements;
-using TsdLib.UI.Controls.Base;
 
 namespace TsdLib.UI.Controls
 {
-    public partial class MeasurementDataGridViewControl : MeasurementDisplayControlBase
+    public partial class MeasurementDataGridViewControl : UserControl, IMeasurementDisplayControl
     {
         public MeasurementDataGridViewControl()
         {
             InitializeComponent();
         }
 
-        public override void AddMeasurement(IMeasurement measurement)
+        public void AddMeasurement(IMeasurement measurement)
         {
             int newRowIndex = dataGridView.Rows.Add();
 
@@ -41,13 +40,13 @@ namespace TsdLib.UI.Controls
 
         }
 
-        public override void ClearMeasurements()
+        public void ClearMeasurements()
         {
             dataGridView.Rows.Clear();
         }
 
         private bool _limitsAndResultdisplayed = true;
-        public override bool DisplayLimitsAndResult
+        public bool DisplayLimitsAndResult
         {
             set
             {
@@ -57,6 +56,12 @@ namespace TsdLib.UI.Controls
                 _limitsAndResultdisplayed = value;
             }
             get { return _limitsAndResultdisplayed; }
+        }
+
+        public void SetState(State state)
+        {
+            if (state.HasFlag(State.TestStarting))
+                ClearMeasurements();
         }
     }
 }

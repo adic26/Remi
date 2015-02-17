@@ -75,8 +75,6 @@ namespace TsdLib.TestSystem.TestSequence
                 instrument.Dispose();
             }
         }
-        
-
 
         private readonly BindingList<ITestInfo> _testInfo;
         /// <summary>

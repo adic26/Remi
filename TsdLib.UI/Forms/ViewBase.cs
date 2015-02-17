@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
-using TsdLib.Configuration;
 using TsdLib.Measurements;
 
 namespace TsdLib.UI.Forms
@@ -13,6 +12,8 @@ namespace TsdLib.UI.Forms
     /// </summary>
     public partial class ViewBase : Form, IView
     {
+        public virtual ITestCaseControl TestCaseControl { get { return testCasesMenuItem; } }
+
         public virtual IConfigControl ConfigControl { get { return multiConfigControl; } }
 
         public virtual ITestInfoDisplayControl TestInfoDisplayControl { get { return testInfoDataGridViewControl; } }
@@ -25,7 +26,7 @@ namespace TsdLib.UI.Forms
 
         public virtual ITraceListenerControl TraceListenerControl { get { return traceListenerTextBoxControl; } }
 
-        public virtual IProgressControl ProgressControl { get { return progressControl1; } }
+        public virtual IProgressControl ProgressControl { get { return progressControl; } }
 
         /// <summary>
         /// Initializes a new instance of the base UI form.
@@ -33,6 +34,7 @@ namespace TsdLib.UI.Forms
         protected ViewBase()
         {
             InitializeComponent();
+
         }
 
         /// <summary>

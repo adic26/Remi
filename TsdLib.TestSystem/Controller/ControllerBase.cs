@@ -16,6 +16,7 @@ using TsdLib.Configuration;
 using TsdLib.Configuration.Common;
 using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Null;
+using TsdLib.Configuration.TestCases;
 using TsdLib.Measurements;
 using TsdLib.TestSystem.TestSequence;
 using TsdLib.UI;
@@ -59,6 +60,7 @@ namespace TsdLib.TestSystem.Controller
         private TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> _sequence;
         private readonly List<Task> _loggingTasks;
         private readonly TextWriterTraceListener _textWriterTraceListener;
+        private readonly TestCaseProvider _testCaseProvider;
 
         /// <summary>
         /// Gets a reference to the user interface.
@@ -100,15 +102,17 @@ namespace TsdLib.TestSystem.Controller
         /// <param name="localDomain">True to execute the test sequence in the local application domain. Disables dynamic sequence/instrument generation.</param>
         protected ControllerBase(ITestDetails testDetails, IConfigConnection configConnection, bool localDomain)
         {
+            Details = testDetails;
+
             Thread.CurrentThread.Name = "UI Thread";
             Trace.AutoFlush = true;
-            _textWriterTraceListener = new TextWriterTraceListener(SpecialFolders.GetTraceLogs(testDetails.SafeTestSystemName));
+            _textWriterTraceListener = new TextWriterTraceListener(SpecialFolders.GetTraceLogs(Details.SafeTestSystemName));
             Trace.Listeners.Add(_textWriterTraceListener);
+            
+            _testCaseProvider = new TestCaseProvider(Details.SafeTestSystemName);
 
             _loggingTasks = new List<Task>();
             LoggingTasks = new ReadOnlyCollection<Task>(_loggingTasks);
-
-            Details = testDetails;
 
             StationConfigManager = ConfigManager<TStationConfig>.GetConfigManager(Details, configConnection);
             ProductConfigManager = ConfigManager<TProductConfig>.GetConfigManager(Details, configConnection);
@@ -118,6 +122,8 @@ namespace TsdLib.TestSystem.Controller
 
             //set up view
             UI = new TView();
+            if (UI.TraceListenerControl != null)
+                Trace.Listeners.Add(UI.TraceListenerControl.Listener);
             UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
 
             Details.TestSystemIdentityChanged += configDetails_TestSystemIdentityChanged;
@@ -138,14 +144,39 @@ namespace TsdLib.TestSystem.Controller
             if (UI.ConfigControl != null)
                 UI.ConfigControl.ViewEditConfiguration += EditConfiguration;
             if (UI.TestDetailsControl != null)
-            {
                 UI.TestDetailsControl.EditTestDetails += EditTestDetails;
+            if (UI.TestSequenceControl != null)
+            {
                 UI.TestSequenceControl.ExecuteTestSequence += ExecuteTestSequence;
                 UI.TestSequenceControl.AbortTestSequence += AbortTestSequence;
+            }
+            if (UI.TestCaseControl != null)
+            {
+                UI.TestCaseControl.TestCaseSaved += TestCaseControl_TestCaseSaved;
+                UI.TestCaseControl.TestCaseSelected += TestCaseControl_TestCaseSelected;
+                UI.TestCaseControl.DisplayTestCases(_testCaseProvider.Load());
             }
             UI.UIClosing += UIClosing;
 
             UI.SetState(State.ReadyToTest);
+        }
+
+        void TestCaseControl_TestCaseSelected(object sender, string selectedTestCaseName)
+        {
+            IEnumerable<ITestCase> testCases = _testCaseProvider.Load();
+            ITestCase selected = testCases.FirstOrDefault(tc => tc.Name == selectedTestCaseName);
+            UI.ConfigControl.SelectedTestConfig = UI.ConfigControl.TestConfigManager.GetConfigGroup().Where(cfg => selected.TestConfigs.Contains(cfg.Name)).ToArray();
+            UI.ConfigControl.SelectedSequenceConfig = UI.ConfigControl.SequenceConfigManager.GetConfigGroup().Where(cfg => selected.Sequences.Contains(cfg.Name)).ToArray();
+        }
+
+        void TestCaseControl_TestCaseSaved(object sender, EventArgs e)
+        {
+            string testCaseName;
+            using (ConfigItemCreateForm form = new ConfigItemCreateForm(false))
+                testCaseName = form.ShowDialog() == DialogResult.OK ? form.ConfigItemName : "N/A";
+
+            TestCase testCase = new TestCase(testCaseName, UI.ConfigControl.SelectedTestConfig, UI.ConfigControl.SelectedSequenceConfig);
+            _testCaseProvider.Save(testCase);
         }
 
         void configDetails_TestSystemIdentityChanged(object sender, string e)
@@ -171,8 +202,7 @@ namespace TsdLib.TestSystem.Controller
         {
             AppDomain sequenceDomain = null;
 
-            UI.SetState(State.TestInProgress);
-
+            UI.SetState(State.TestStarting);
 
             TStationConfig stationConfig = (TStationConfig) (UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? StationConfigManager.GetList()[0]);
             TProductConfig productConfig = (TProductConfig) (UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? ProductConfigManager.GetList()[0]);

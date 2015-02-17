@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using TsdLib.Configuration;
+using TsdLib.UI.Controls;
 
 namespace TsdLib.UI.Forms
 {
@@ -31,19 +32,23 @@ namespace TsdLib.UI.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.MeasurementName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MeasuredValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Units = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LowerLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UpperLimit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Result = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.progressControl1 = new TsdLib.UI.Controls.ProgressControl();
-            this.multiConfigControl = new TsdLib.UI.Controls.MultiConfigControl();
             this.traceListenerTextBoxControl = new TsdLib.UI.Controls.TraceListenerTextBoxControl();
+            this.progressControl = new TsdLib.UI.Controls.ProgressControl();
+            this.multiConfigControl = new TsdLib.UI.Controls.MultiConfigControl();
             this.testDetailsControl = new TsdLib.UI.Controls.TestDetailsControl();
             this.testSequenceControl = new TsdLib.UI.Controls.TestSequenceControl();
             this.testInfoDataGridViewControl = new TsdLib.UI.Controls.TestInfoDataGridViewControl();
             this.measurementDataGridViewControl = new TsdLib.UI.Controls.MeasurementDataGridViewControl();
+            this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.testCasesMenuItem = new TsdLib.UI.Controls.TestCasesMenuItem(this.components);
+            this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // MeasurementName
@@ -94,88 +99,102 @@ namespace TsdLib.UI.Forms
             this.Result.Name = "Result";
             this.Result.ReadOnly = true;
             // 
-            // progressControl1
-            // 
-            this.progressControl1.Location = new System.Drawing.Point(12, 174);
-            this.progressControl1.Name = "progressControl1";
-            this.progressControl1.Size = new System.Drawing.Size(257, 61);
-            this.progressControl1.TabIndex = 7;
-            // 
-            // multiConfigControl
-            // 
-            this.multiConfigControl.Location = new System.Drawing.Point(291, 22);
-            this.multiConfigControl.Name = "multiConfigControl";
-            this.multiConfigControl.ProductConfigManager = null;
-            this.multiConfigControl.SequenceConfigManager = null;
-            this.multiConfigControl.Size = new System.Drawing.Size(387, 213);
-            this.multiConfigControl.StationConfigManager = null;
-            this.multiConfigControl.TabIndex = 6;
-            this.multiConfigControl.TestConfigManager = null;
-            // 
             // traceListenerTextBoxControl
             // 
             this.traceListenerTextBoxControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.traceListenerTextBoxControl.Location = new System.Drawing.Point(12, 499);
+            this.traceListenerTextBoxControl.Location = new System.Drawing.Point(12, 615);
             this.traceListenerTextBoxControl.Name = "traceListenerTextBoxControl";
-            this.traceListenerTextBoxControl.Size = new System.Drawing.Size(1032, 236);
+            this.traceListenerTextBoxControl.Size = new System.Drawing.Size(1032, 153);
             this.traceListenerTextBoxControl.TabIndex = 5;
+            // 
+            // progressControl
+            // 
+            this.progressControl.Location = new System.Drawing.Point(12, 568);
+            this.progressControl.Name = "progressControl";
+            this.progressControl.Size = new System.Drawing.Size(1032, 41);
+            this.progressControl.TabIndex = 7;
+            // 
+            // multiConfigControl
+            // 
+            this.multiConfigControl.FirstColumnSizePercent = 50F;
+            this.multiConfigControl.Location = new System.Drawing.Point(12, 38);
+            this.multiConfigControl.Name = "multiConfigControl";
+            this.multiConfigControl.Size = new System.Drawing.Size(387, 222);
+            this.multiConfigControl.TabIndex = 6;
             // 
             // testDetailsControl
             // 
-            this.testDetailsControl.Location = new System.Drawing.Point(57, 50);
+            this.testDetailsControl.Location = new System.Drawing.Point(448, 38);
             this.testDetailsControl.Name = "testDetailsControl";
-            this.testDetailsControl.Size = new System.Drawing.Size(140, 89);
+            this.testDetailsControl.Size = new System.Drawing.Size(188, 80);
             this.testDetailsControl.TabIndex = 4;
             // 
             // testSequenceControl
             // 
             this.testSequenceControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.testSequenceControl.Location = new System.Drawing.Point(767, 32);
+            this.testSequenceControl.Location = new System.Drawing.Point(448, 145);
             this.testSequenceControl.Name = "testSequenceControl";
-            this.testSequenceControl.SelectedProductConfig = null;
-            this.testSequenceControl.SelectedSequenceConfig = null;
-            this.testSequenceControl.SelectedStationConfig = null;
-            this.testSequenceControl.SelectedTestConfig = null;
-            this.testSequenceControl.Size = new System.Drawing.Size(188, 153);
+            this.testSequenceControl.Size = new System.Drawing.Size(188, 115);
             this.testSequenceControl.TabIndex = 3;
             // 
             // testInfoDataGridViewControl
             // 
             this.testInfoDataGridViewControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.testInfoDataGridViewControl.Location = new System.Drawing.Point(12, 241);
+            this.testInfoDataGridViewControl.Location = new System.Drawing.Point(679, 38);
             this.testInfoDataGridViewControl.Name = "testInfoDataGridViewControl";
-            this.testInfoDataGridViewControl.Size = new System.Drawing.Size(257, 252);
+            this.testInfoDataGridViewControl.Size = new System.Drawing.Size(365, 222);
             this.testInfoDataGridViewControl.TabIndex = 2;
             // 
             // measurementDataGridViewControl
             // 
             this.measurementDataGridViewControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.measurementDataGridViewControl.DisplayLimitsAndResult = true;
-            this.measurementDataGridViewControl.Location = new System.Drawing.Point(291, 241);
+            this.measurementDataGridViewControl.Location = new System.Drawing.Point(12, 280);
             this.measurementDataGridViewControl.Name = "measurementDataGridViewControl";
-            this.measurementDataGridViewControl.Size = new System.Drawing.Size(753, 252);
+            this.measurementDataGridViewControl.Size = new System.Drawing.Size(1032, 282);
             this.measurementDataGridViewControl.TabIndex = 1;
+            // 
+            // menuStrip
+            // 
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.testCasesMenuItem});
+            this.menuStrip.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(1056, 24);
+            this.menuStrip.TabIndex = 8;
+            this.menuStrip.Text = "menuStrip";
+            // 
+            // testCasesMenuItem
+            // 
+            this.testCasesMenuItem.Name = "testCasesMenuItem";
+            this.testCasesMenuItem.Size = new System.Drawing.Size(74, 20);
+            this.testCasesMenuItem.Text = "&Test Cases";
             // 
             // ViewBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1056, 748);
-            this.Controls.Add(this.progressControl1);
-            this.Controls.Add(this.multiConfigControl);
+            this.ClientSize = new System.Drawing.Size(1056, 780);
             this.Controls.Add(this.traceListenerTextBoxControl);
+            this.Controls.Add(this.progressControl);
+            this.Controls.Add(this.multiConfigControl);
             this.Controls.Add(this.testDetailsControl);
             this.Controls.Add(this.testSequenceControl);
             this.Controls.Add(this.testInfoDataGridViewControl);
             this.Controls.Add(this.measurementDataGridViewControl);
+            this.Controls.Add(this.menuStrip);
+            this.MainMenuStrip = this.menuStrip;
             this.MinimumSize = new System.Drawing.Size(1072, 751);
             this.Name = "ViewBase";
             this.Text = "TsdLib Generic Test System";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ViewBase_FormClosing);
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -184,7 +203,6 @@ namespace TsdLib.UI.Forms
         /// <summary>
         /// Displays measurements as they are generated by the Test Sequence.
         /// </summary>
-        //protected MeasurementDisplayControlDataGridView measurementDisplayControlDataGridView;
         private System.Windows.Forms.DataGridViewTextBoxColumn MeasurementName;
         private System.Windows.Forms.DataGridViewTextBoxColumn MeasuredValue;
         private System.Windows.Forms.DataGridViewTextBoxColumn Units;
@@ -197,6 +215,8 @@ namespace TsdLib.UI.Forms
         protected Controls.TestDetailsControl testDetailsControl;
         protected Controls.TraceListenerTextBoxControl traceListenerTextBoxControl;
         protected Controls.MultiConfigControl multiConfigControl;
-        private Controls.ProgressControl progressControl1;
+        protected Controls.ProgressControl progressControl;
+        protected System.Windows.Forms.MenuStrip menuStrip;
+        private TestCasesMenuItem testCasesMenuItem;
     }
 }

@@ -1,16 +1,16 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
+using System.Windows.Forms;
 using TsdLib.Configuration;
-using TsdLib.UI.Controls.Base;
 
 namespace TsdLib.UI.Controls
 {
     /// <summary>
     /// Contains functionality to select and manage configuration on the UI, supporting multiple test and sequence configs.
     /// </summary>
-    public partial class MultiConfigControl : ConfigControlBase
+    public partial class MultiConfigControl : UserControl, IConfigControl
     {
-
         /// <summary>
         /// Initialize a new <see cref="MultiConfigControl"/>
         /// </summary>
@@ -20,9 +20,20 @@ namespace TsdLib.UI.Controls
         }
 
         /// <summary>
+        /// Sets the width (in percent) of the first column.
+        /// </summary>
+        public float FirstColumnSizePercent
+        {
+            get { return tableLayoutPanel.ColumnStyles[0].Width; }
+            set { tableLayoutPanel.ColumnStyles[0] = new ColumnStyle(SizeType.Percent, value); }
+        }
+
+        /// <summary>
         /// Sets the list of available Station Config instances.
         /// </summary>
-        public override IConfigManager<IStationConfig> StationConfigManager
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IConfigManager<IStationConfig> StationConfigManager
         {
             get { return (IConfigManager<IStationConfig>)comboBox_StationConfig.DataSource; }
             set
@@ -34,7 +45,9 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Sets the list of available Product Config instances.
         /// </summary>
-        public override IConfigManager<IProductConfig> ProductConfigManager
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IConfigManager<IProductConfig> ProductConfigManager
         {
             get { return (IConfigManager<IProductConfig>)comboBox_ProductConfig.DataSource; }
             set
@@ -46,7 +59,9 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Sets the list of available Test Config instances.
         /// </summary>
-        public override IConfigManager<ITestConfig> TestConfigManager
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IConfigManager<ITestConfig> TestConfigManager
         {
             get { return (IConfigManager<ITestConfig>)checkedListBox_TestConfig.DataSource; }
             set
@@ -59,7 +74,9 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Sets the list of available Sequence Config instances.
         /// </summary>
-        public override IConfigManager<ISequenceConfig> SequenceConfigManager
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IConfigManager<ISequenceConfig> SequenceConfigManager
         {
             get { return (IConfigManager<ISequenceConfig>)checkedListBox_SequenceConfig.DataSource; }
             set
@@ -73,27 +90,42 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Gets the selected station configuration instance.
         /// </summary>
-        public override IStationConfig[] SelectedStationConfig
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IStationConfig[] SelectedStationConfig
         {
             get { return new[] { (IStationConfig)comboBox_StationConfig.SelectedItem }; }
-            set { comboBox_StationConfig.SelectedItem = value[0]; }
+            set
+            {
+                if (value == null || value.Length == 0) return;
+                comboBox_StationConfig.SelectedItem = value[0];
+            }
         }
         /// <summary>
         /// Gets the selected product configuration instance.
         /// </summary>
-        public override IProductConfig[] SelectedProductConfig
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IProductConfig[] SelectedProductConfig
         {
             get { return new[] { (IProductConfig)comboBox_ProductConfig.SelectedItem }; }
-            set { comboBox_ProductConfig.SelectedItem = value[0]; }
+            set
+            {
+                if (value == null || value.Length == 0) return;
+                comboBox_ProductConfig.SelectedItem = value[0];
+            }
         }
         /// <summary>
         /// Gets the selected test configuration instance.
         /// </summary>
-        public override ITestConfig[] SelectedTestConfig
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public ITestConfig[] SelectedTestConfig
         {
             get { return checkedListBox_TestConfig.CheckedItems.Cast<ITestConfig>().ToArray(); }
             set
             {
+                if (value == null || value.Length == 0) return;
                 for (int i = 0; i < checkedListBox_TestConfig.Items.Count; i++)
                     checkedListBox_TestConfig.SetItemChecked(i, value.Contains(checkedListBox_TestConfig.Items[i]));
             }
@@ -101,20 +133,18 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Gets the selected sequence configuration instance.
         /// </summary>
-        public override ISequenceConfig[] SelectedSequenceConfig
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public ISequenceConfig[] SelectedSequenceConfig
         {
             get { return checkedListBox_SequenceConfig.CheckedItems.Cast<ISequenceConfig>().ToArray(); }
             set
             {
+                if (value == null || value.Length == 0) return;
                 for (int i = 0; i < checkedListBox_SequenceConfig.Items.Count; i++)
                     checkedListBox_SequenceConfig.SetItemChecked(i, value.Contains(checkedListBox_SequenceConfig.Items[i]));
             }
 
-        }
-
-        private void button_ViewEditConfiguration_Click(object sender, EventArgs e)
-        {
-            OnViewEditConfiguration(new IConfigManager[] { StationConfigManager, ProductConfigManager, TestConfigManager, SequenceConfigManager });
         }
 
         private void button_SequenceConfigSelectAll_Click(object sender, EventArgs e)
@@ -139,6 +169,27 @@ namespace TsdLib.UI.Controls
         {
             foreach (int checkedIndex in checkedListBox_TestConfig.CheckedIndices)
                 checkedListBox_TestConfig.SetItemChecked(checkedIndex, false);
+        }
+
+        private void button_ViewEditConfiguration_Click(object sender, EventArgs e)
+        {
+            EventHandler<IConfigManager[]> handler = ViewEditConfiguration;
+            if (handler != null)
+            {
+                IConfigManager[] managers = { StationConfigManager, ProductConfigManager, TestConfigManager, SequenceConfigManager };
+                handler(this, managers);
+            }
+
+        }
+
+        /// <summary>
+        /// Event fired when requesting to modify the test system configuration.
+        /// </summary>
+        public event EventHandler<IConfigManager[]> ViewEditConfiguration;
+
+        public void SetState(State state)
+        {
+            Enabled = state.HasFlag(State.ReadyToTest);
         }
     }
 }

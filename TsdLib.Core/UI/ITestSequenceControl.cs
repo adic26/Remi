@@ -1,5 +1,4 @@
 ﻿using System;
-using TsdLib.Configuration;
 
 namespace TsdLib.UI
 {
@@ -15,10 +14,6 @@ namespace TsdLib.UI
         /// </summary>
         event EventHandler AbortTestSequence;
 
-        IStationConfig[] SelectedStationConfig { get; set; }
-        IProductConfig[] SelectedProductConfig { get; set; }
-        ITestConfig[] SelectedTestConfig { get; set; }
-        ISequenceConfig[] SelectedSequenceConfig { get; set; }
         bool PublishResults { get; }
     }
 }

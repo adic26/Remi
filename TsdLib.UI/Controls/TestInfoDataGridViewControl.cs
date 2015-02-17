@@ -1,9 +1,9 @@
-﻿using TsdLib.Measurements;
-using TsdLib.UI.Controls.Base;
+﻿using System.Windows.Forms;
+using TsdLib.Measurements;
 
 namespace TsdLib.UI.Controls
 {
-    public partial class TestInfoDataGridViewControl : TestInfoDisplayControlBase
+    public partial class TestInfoDataGridViewControl : UserControl, ITestInfoDisplayControl
     {
         public TestInfoDataGridViewControl()
         {
@@ -14,7 +14,7 @@ namespace TsdLib.UI.Controls
         /// Override to add test information to the data grid.
         /// </summary>
         /// <param name="testInfo">Test information to add.</param>
-        public override void AddTestInfo(ITestInfo testInfo)
+        public void AddTestInfo(ITestInfo testInfo)
         {
             dataGridView.Rows.Add(testInfo.Name, testInfo.Value);
         }
@@ -22,9 +22,15 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Clear the test information from the UI.
         /// </summary>
-        public override void ClearTestInfo()
+        public void ClearTestInfo()
         {
             dataGridView.Rows.Clear();
+        }
+
+        public void SetState(State state)
+        {
+            if (state.HasFlag(State.TestStarting))
+                ClearTestInfo();
         }
     }
 }

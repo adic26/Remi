@@ -2,18 +2,23 @@
 using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
-using TsdLib.UI.Controls.Base;
 
 namespace TsdLib.UI.Controls
 {
-    public partial class TraceListenerTextBoxControl : TraceListenerControlBase
+    /// <summary>
+    /// Contains functionality to display tracing information in a text box.
+    /// </summary>
+    public partial class TraceListenerTextBoxControl : UserControl, ITraceListenerControl
     {
         private readonly TextBoxTraceListener _listener;
-        public override TraceListener Listener
+        public TraceListener Listener
         {
             get { return _listener; }
         }
 
+        /// <summary>
+        /// Initialize a new <see cref="TraceListenerTextBoxControl"/>
+        /// </summary>
         public TraceListenerTextBoxControl()
         {
             InitializeComponent();
@@ -23,9 +28,15 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Clear the trace output from the trace listener's text box.
         /// </summary>
-        public override void Clear()
+        public void Clear()
         {
             _listener.TextBox.Clear();
+        }
+
+        public void SetState(State state)
+        {
+            if (state.HasFlag(State.TestStarting))
+                Clear();
         }
 
         #region nested TraceListener implementation
@@ -35,17 +46,8 @@ namespace TsdLib.UI.Controls
         /// </summary>
         private class TextBoxTraceListener : TraceListener
         {
-            public readonly TextBoxBase TextBox;
+            public TextBoxBase TextBox { get; private set; }
             readonly Action<string> _textBoxAppend;
-
-            /// <summary>
-            /// Returns null to ensure that the remote object's lifetime is as long as the hosting AppDomain.
-            /// </summary>
-            /// <returns>Null, which corresponds to an unlimited lease time.</returns>
-            public override object InitializeLifetimeService()
-            {
-                return null;
-            }
 
             private readonly StringBuilder _buffer;
 

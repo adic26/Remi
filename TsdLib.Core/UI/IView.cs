@@ -8,6 +8,8 @@ namespace TsdLib.UI
     /// </summary>
     public interface IView
     {
+        ITestCaseControl TestCaseControl { get; }
+
         IConfigControl ConfigControl { get; }
         
         ITestInfoDisplayControl TestInfoDisplayControl { get; }
