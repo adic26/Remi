@@ -12,6 +12,10 @@ using TsdLib.TestSystem.Controller;
 
 namespace TsdLib.TestSystem.TestSequence
 {
+
+
+
+
     /// <summary>
     /// Contains test sequence functionality common to all TsdLib applications.
     /// </summary>
@@ -269,7 +273,7 @@ namespace TsdLib.TestSystem.TestSequence
         }
 
 
-
+        
 
         /// <summary>
         /// Abort the test sequence due to user cancellation or error.

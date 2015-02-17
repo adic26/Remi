@@ -307,7 +307,10 @@ namespace TsdLib.TestSystem.Controller
                 catch (OperationCanceledException) //User cancellation and controller proxy errors are propagated as OperationCancelledException
                 {
                     if (_sequence.CancelledByUser)
+                    {
                         Trace.WriteLine("Test sequence was cancelled by user.");
+                        break;
+                    }
 
                     else if (_sequence.Error is TsdLibException)
                     {
