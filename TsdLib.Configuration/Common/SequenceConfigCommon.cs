@@ -7,12 +7,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 
 namespace TsdLib.Configuration.Common
 {
     /// <summary>
-    /// Conatains the step-by-step instrument control and measurement capturing instructions that make up a test sequence.
-    /// Can be parameterized by StationConfig, ProductConfig, TestConfig.
+    /// Conatains functionality to serialize test sequences as configuration items.
     /// </summary>
     [Serializable]
     public class SequenceConfigCommon : ConfigItem, ISequenceConfig
@@ -35,6 +35,7 @@ namespace TsdLib.Configuration.Common
         /// <summary>
         /// Gets the namespace that the sequence class is defined in.
         /// </summary>
+        [XmlIgnore]
         public string Namespace
         {
             get { return Regex.Match(SourceCode, @"(?<=namespace )[\w\.]+").Value; }
@@ -43,6 +44,7 @@ namespace TsdLib.Configuration.Common
         /// <summary>
         /// Gets the short name of the sequence class.
         /// </summary>
+        [XmlIgnore]
         public string ClassName
         {
             get { return Regex.Match(SourceCode, @"(?<=class )\w+").Value; }
@@ -51,6 +53,7 @@ namespace TsdLib.Configuration.Common
         /// <summary>
         /// Gets the fully qualified name of the sequence class.
         /// </summary>
+        [XmlIgnore]
         public string FullTypeName
         {
             get { return Namespace + "." + ClassName; }
@@ -91,7 +94,7 @@ namespace {0}.Sequences
         }
 
         /// <summary>
-        /// Initialize a new Sequence configuration instance from persisted settings.
+        /// Initialize a new Sequence configuration instance.
         /// </summary>
         public SequenceConfigCommon()
         {

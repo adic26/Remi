@@ -36,15 +36,11 @@ namespace TsdLib.Configuration
     public interface IConfigManager<out T> : IConfigManager
         where T : IConfigItem
     {
-        ///// <summary>
-        ///// Add a new <see cref="IConfigItem"/> to the configuration instances.
-        ///// </summary>
-        ///// <param name="item"><see cref="IConfigItem"/> to add.</param>
-        //void Add(T item);
-
+        /// <summary>
+        /// Gets the configuration objects handled by the config manager.
+        /// </summary>
+        /// <returns>The configuration objects.</returns>
         IEnumerable<T> GetConfigGroup();
-
-
     }
 
 }

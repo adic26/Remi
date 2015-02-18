@@ -15,20 +15,19 @@ namespace TsdLib.Configuration
     /// Encapsulates configuration data of a specified type and provides methods to save and retieve.
     /// </summary>
     /// <typeparam name="T">Type of configuration derived from <see cref="ConfigItem"/></typeparam>
-    public class ConfigManager<T> : IConfigManager<T>
-        where T : ConfigItem, new()
+    public class ConfigManager<T> : IConfigManager<T> where T : ConfigItem, new()
     {
-        private static ConfigManager<T> _instance;
-        /// <summary>
-        /// Uses the Singleton pattern to return a global instance of <see cref="IConfigManager{T}"/>.
-        /// </summary>
-        /// <param name="details">An <see cref="ITestDetails"/> object containing metadata information relevent to the test.</param>
-        /// <param name="sharedConfigConnection">An <see cref="IConfigConnection"/> object to control the connection with persisted storage.</param>
-        /// <returns></returns>
-        public static IConfigManager<T> GetConfigManager(ITestDetails details, IConfigConnection sharedConfigConnection)
-        {
-            return _instance ?? (_instance = new ConfigManager<T>(details, sharedConfigConnection));
-        }
+        //private static ConfigManager<T> _instance;
+        ///// <summary>
+        ///// Uses the Singleton pattern to return a global instance of <see cref="IConfigManager{T}"/>.
+        ///// </summary>
+        ///// <param name="details">An <see cref="ITestDetails"/> object containing metadata information relevent to the test.</param>
+        ///// <param name="sharedConfigConnection">An <see cref="IConfigConnection"/> object to control the connection with persisted storage.</param>
+        ///// <returns></returns>
+        //public static IConfigManager<T> GetConfigManager(ITestDetails details, IConfigConnection sharedConfigConnection)
+        //{
+        //    return _instance ?? (_instance = new ConfigManager<T>(details, sharedConfigConnection));
+        //}
 
         /// <summary>
         /// Gets the type of configuration for this <see cref="ConfigManager{T}"/>. Do not remove, it is used for binding to UI controls.
@@ -108,11 +107,8 @@ namespace TsdLib.Configuration
         /// <returns>A <see cref="ConfigItem"/> matching the name specified. Returns null if there is no matching ConfigItem.</returns>
         public T GetConfig(string name)
         {
-            return GetConfigGroup().FirstOrDefault(
-                cfg => cfg.Name == name &&
-                _testDetails.SafeTestSystemName == cfg.Details.SafeTestSystemName &&
-                _testDetails.TestSystemVersion == cfg.Details.TestSystemVersion &&
-                _testDetails.TestSystemMode == cfg.Details.TestSystemMode);
+            return GetConfigGroup()
+                .FirstOrDefault(cfg => cfg.Name == name);
         }
 
         /// <summary>
@@ -122,10 +118,10 @@ namespace TsdLib.Configuration
         {
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings
             {
-                Indent = true
+                Indent = true,
+                OmitXmlDeclaration = true
             };
 
-            //TODO: remove xml declaration
             StringBuilder sbLocal = new StringBuilder();
             using (XmlWriter xmlWriter = XmlWriter.Create(sbLocal, xmlWriterSettings))
                 _serializer.Serialize(xmlWriter, _configs);
@@ -194,7 +190,6 @@ namespace TsdLib.Configuration
                 T newCfg = new T
                 {
                     Name = "Default" + typeof(T).Name,
-                    Details = _testDetails,
                     IsDefault = true,
                     StoreInDatabase = false
                 };
@@ -202,6 +197,7 @@ namespace TsdLib.Configuration
                 _configs = new List<T> {newCfg};
             }
             _bindingSource.DataSource = _configs;
+            Save();
         }
 
         #region Equality Comparer

@@ -5,7 +5,7 @@ using TsdLib.TestSystem.TestSequence;
 
 namespace TestClient.Sequences
 {
-    public class AdbWlan : TestSequenceBase<StationConfig, ProductConfig, TestConfig>
+    public class AdbWlan : SequentialTestSequence<StationConfig, ProductConfig, TestConfig>
     {
         protected override void ExecuteTest(System.Threading.CancellationToken token, StationConfig stationConfig, ProductConfig productConfig, TestConfig testConfig)
         {

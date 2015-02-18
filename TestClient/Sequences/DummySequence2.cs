@@ -7,7 +7,7 @@ using TsdLib.TestSystem.TestSequence;
 
 namespace TestClient.Sequences
 {
-    public class DummySequence2 : TestSequenceBase<StationConfig, ProductConfig, TestConfig>
+    public class DummySequence2 : SequentialTestSequence<StationConfig, ProductConfig, TestConfig>
     {
         protected override void ExecuteTest(CancellationToken token, StationConfig stationConfig, ProductConfig productConfig, TestConfig testConfig)
         {
@@ -15,7 +15,8 @@ namespace TestClient.Sequences
             //System.Diagnostics.Debugger.Break();
 
             DummyPowerSupply ps = new DummyPowerSupply("addr");
-
+            stationConfig.PowerSupplyAddress = "GPIB0::22::INSTR";
+            stationConfig.Save();
             for (int i = 0; i < testConfig.LoopIterations; i++)
             {
                 foreach (double voltageSetting in testConfig.VoltageSettings)

@@ -45,6 +45,7 @@
     <Compile Include="Configuration\IStationConfig.cs" />
     <Compile Include="Configuration\ITestCase.cs" />
     <Compile Include="Configuration\ITestConfig.cs" />
+    <Compile Include="TestSystem\IInstrumentCollection.cs" />
     <Compile Include="UI\IConfigControl.cs" />
     <Compile Include="Configuration\IConfigItem.cs" />
     <Compile Include="Configuration\IConfigManager.cs" />
@@ -54,7 +55,7 @@
     <Compile Include="Measurements\IMeasurement.cs" />
     <Compile Include="Measurements\IMeasurementParameter.cs" />
     <Compile Include="Measurements\ITestInfo.cs" />
-    <Compile Include="TestSystem\ITestSequence.cs" />
+    <Compile Include="TestSystem\ICancellationManager.cs" />
     <Compile Include="Measurements\ITestResults.cs" />
     <Compile Include="Measurements\ITestSummary.cs" />
     <Compile Include="UI\IMeasurementDisplayControl.cs" />

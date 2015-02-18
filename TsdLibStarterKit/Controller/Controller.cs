@@ -9,7 +9,7 @@ using TsdLib.TestSystem.Controller;
 
 namespace $safeprojectname$
 {
-    public class Controller : ControllerBase<$safeprojectname$View, StationConfig, ProductConfig, TestConfig>
+    public class Controller : ControllerBase<$safeprojectname$View, SequentialTestSequence<StationConfig, ProductConfig, TestConfig>, StationConfig, ProductConfig, TestConfig>
     {
         public Controller(ITestDetails testDetails, IConfigConnection databaseConnection, bool localDomain)
             : base(testDetails, databaseConnection, localDomain)

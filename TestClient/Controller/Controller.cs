@@ -5,10 +5,11 @@ using TsdLib.CodeGenerator;
 using TsdLib.Configuration;
 using TsdLib.Configuration.Connections;
 using TsdLib.TestSystem.Controller;
+using TsdLib.TestSystem.TestSequence;
 
 namespace TestClient
 {
-    public class Controller : ControllerBase<TestClientView, StationConfig, ProductConfig, TestConfig>
+    public class Controller : ControllerBase<TestClientView, SequentialTestSequence<StationConfig, ProductConfig, TestConfig>,  StationConfig, ProductConfig, TestConfig>
     {
         public Controller(ITestDetails testDetails, IConfigConnection databaseConnection, bool localDomain)
             : base(testDetails, databaseConnection, localDomain)

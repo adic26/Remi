@@ -101,8 +101,8 @@ namespace TsdLib.Configuration
     [Serializable]
     public class InvalidConfigTypeException : TsdLibException
     {
-        public InvalidConfigTypeException(Type configType, Exception inner = null)
-            : base("The configuration type: " + configType.Name + " is invalid", inner) { }
+        public InvalidConfigTypeException(Type configType, string message = "", Exception inner = null)
+            : base(string.Format("The configuration type: {0} is invalid.{1}{2}", configType.Name, Environment.NewLine, message), inner) { }
 
         /// <summary>
         /// Deserialization constructor used by the .NET Framework to initialize an instance of the <see cref="InvalidConfigTypeException"/> class from serialized data.

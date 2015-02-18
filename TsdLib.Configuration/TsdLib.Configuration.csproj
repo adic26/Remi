@@ -61,6 +61,7 @@
     <Compile Include="ConfigManagerForm.Designer.cs">
       <DependentUpon>ConfigManagerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConfigManagerProvider.cs" />
     <Compile Include="DesignerVerbSite.cs" />
     <Compile Include="FilePath.cs" />
     <Compile Include="Connections\FileSystemConnection.cs" />

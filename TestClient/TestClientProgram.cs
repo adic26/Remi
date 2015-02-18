@@ -15,11 +15,6 @@ namespace TestClient
 {
     class TestClientProgram
     {
-
-
-
-
-
 #if DEBUG
         private const OperatingMode DefaultMode = OperatingMode.Engineering;
 #else

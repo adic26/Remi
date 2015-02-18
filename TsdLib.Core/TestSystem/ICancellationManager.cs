@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Threading;
 
 namespace TsdLib.TestSystem
 {
     /// <summary>
     /// Contains operations related to cancellation.
     /// </summary>
-    public interface ICancellable : IDisposable
+    public interface ICancellationManager
     {   
         /// <summary>
         /// Abort the test sequence due to user cancellation or error.
@@ -19,6 +20,8 @@ namespace TsdLib.TestSystem
         /// <summary>
         /// Gets the internal error responsible for test sequence cancellation.
         /// </summary>
-        Exception Error { get; }
+        Exception Error { get; set; }
+
+        CancellationToken Token { get; }
     }
 }

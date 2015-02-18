@@ -7,7 +7,7 @@ using TsdLib.TestSystem.TestSequence;
 
 namespace $safeprojectname$.Sequences
 {
-    public class DummySequence : TestSequenceBase<StationConfig, ProductConfig, TestConfig>
+    public class DummySequence : SequentialTestSequence<StationConfig, ProductConfig, TestConfig>
     {
         protected override void ExecuteTest(CancellationToken token, StationConfig stationConfig, ProductConfig productConfig, TestConfig testConfig)
         {

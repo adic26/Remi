@@ -27,8 +27,10 @@ namespace TsdLib.TestSystem.Controller
     /// Contains base functionality for the system controller without station/product/test configuration.
     /// </summary>
     /// <typeparam name="TView">Type of the derived user interface.</typeparam>
-    public abstract class ControllerBase<TView> : ControllerBase<TView, NullStationConfig, NullProductConfig, NullTestConfig>
+    /// <typeparam name="TSequence">Type of the derived test sequence.</typeparam>
+    public abstract class ControllerBase<TView, TSequence> : ControllerBase<TView, TSequence, NullStationConfig, NullProductConfig, NullTestConfig>
         where TView : IView, new()
+        where TSequence : ConfigurableTestSequence<NullStationConfig, NullProductConfig, NullTestConfig>, new()
     {
         /// <summary>
         /// Initialize a new system controller.
@@ -47,17 +49,19 @@ namespace TsdLib.TestSystem.Controller
     /// Contains base functionality for the system controller.
     /// </summary>
     /// <typeparam name="TView">Type of the derived user interface.</typeparam>
+    /// <typeparam name="TSequence">Type of the derived test sequence.</typeparam>
     /// <typeparam name="TStationConfig">Type of the derived station config.</typeparam>
     /// <typeparam name="TProductConfig">Type of the derived product config.</typeparam>
     /// <typeparam name="TTestConfig">Type of the derived test config.</typeparam>
-    public abstract class ControllerBase<TView, TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject
+    public abstract class ControllerBase<TView, TSequence, TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject
         where TView : IView, new()
         where TStationConfig : StationConfigCommon, new()
         where TProductConfig : ProductConfigCommon, new()
         where TTestConfig : TestConfigCommon, new()
+        where TSequence : ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>
     {
         private readonly bool _localDomain;
-        private TestSequenceBase<TStationConfig, TProductConfig, TTestConfig> _sequence;
+        private TSequence _sequence;
         private readonly List<Task> _loggingTasks;
         private readonly TextWriterTraceListener _textWriterTraceListener;
         private readonly TestCaseProvider _testCaseProvider;
@@ -114,11 +118,11 @@ namespace TsdLib.TestSystem.Controller
             _loggingTasks = new List<Task>();
             LoggingTasks = new ReadOnlyCollection<Task>(_loggingTasks);
 
-            StationConfigManager = ConfigManager<TStationConfig>.GetConfigManager(Details, configConnection);
-            ProductConfigManager = ConfigManager<TProductConfig>.GetConfigManager(Details, configConnection);
-            TestConfigManager = ConfigManager<TTestConfig>.GetConfigManager(Details, configConnection);
+            StationConfigManager = ConfigManagerProvider.GetConfigManager<TStationConfig>(Details, configConnection);
+            ProductConfigManager = ConfigManagerProvider.GetConfigManager<TProductConfig>(Details, configConnection);
+            TestConfigManager = ConfigManagerProvider.GetConfigManager<TTestConfig>(Details, configConnection);
             //TODO: if local domain, config manager should just reflect the entry assembly to get baked-in sequences and make Sequence read-only in editor form
-            SequenceConfigManager = ConfigManager<SequenceConfigCommon>.GetConfigManager(Details, configConnection);
+            SequenceConfigManager = ConfigManagerProvider.GetConfigManager<SequenceConfigCommon>(Details, configConnection);
 
             //set up view
             UI = new TView();
@@ -204,6 +208,8 @@ namespace TsdLib.TestSystem.Controller
 
             UI.SetState(State.TestStarting);
 
+            Trace.WriteLine(Details);
+
             TStationConfig stationConfig = (TStationConfig) (UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? StationConfigManager.GetList()[0]);
             TProductConfig productConfig = (TProductConfig) (UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? ProductConfigManager.GetList()[0]);
             TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig.Cast<TTestConfig>().ToArray();
@@ -232,8 +238,8 @@ namespace TsdLib.TestSystem.Controller
                     {
                         if (_localDomain)
                         {
-                            _sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)Activator.CreateInstance(Assembly.GetEntryAssembly().GetType(config.FullTypeName));
-                            controllerProxy = (ControllerProxy) Activator.CreateInstance(typeof (ControllerProxy), BindingFlags.CreateInstance, null, new object[] {UI, _sequence}, CultureInfo.CurrentCulture);
+                            _sequence = (TSequence)Activator.CreateInstance(Assembly.GetEntryAssembly().GetType(config.FullTypeName));
+                            controllerProxy = (ControllerProxy) Activator.CreateInstance(typeof (ControllerProxy), BindingFlags.CreateInstance, null, new object[] {UI, _sequence.CancellationManager}, CultureInfo.CurrentCulture);
                         }
                         else
                         {
@@ -247,8 +253,8 @@ namespace TsdLib.TestSystem.Controller
                             sequenceDomain = AppDomain.CreateDomain("Sequence Domain");
 
 
-                            _sequence = (TestSequenceBase<TStationConfig, TProductConfig, TTestConfig>)sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, config.FullTypeName);
-                            controllerProxy = (ControllerProxy) sequenceDomain.CreateInstanceAndUnwrap(typeof (ControllerProxy).Assembly.FullName, typeof (ControllerProxy).FullName, false, BindingFlags.CreateInstance, null, new object[] {UI, _sequence}, CultureInfo.CurrentCulture, null);
+                            _sequence = (TSequence)sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, config.FullTypeName);
+                            controllerProxy = (ControllerProxy) sequenceDomain.CreateInstanceAndUnwrap(typeof (ControllerProxy).Assembly.FullName, typeof (ControllerProxy).FullName, false, BindingFlags.CreateInstance, null, new object[] {UI, _sequence.CancellationManager}, CultureInfo.CurrentCulture, null);
 
                             if (UI.TraceListenerControl != null)
                                 _sequence.AddTraceListener(UI.TraceListenerControl.Listener);
@@ -256,6 +262,7 @@ namespace TsdLib.TestSystem.Controller
                             _sequence.AddTraceListener(_textWriterTraceListener);
                         }
 
+                        //TODO: can we create the event proxies on the test sequence and just attach to them here?
                         EventProxy<ITestInfo> infoEventHandler = new EventProxy<ITestInfo>();
                         _sequence.InfoEventProxy = infoEventHandler;
                         infoEventHandler.Attach(controllerProxy.InfoAdded, uiContext);
@@ -304,33 +311,26 @@ namespace TsdLib.TestSystem.Controller
                     );
 
                 }
+                //TODO: use AggregateException?
                 catch (OperationCanceledException) //User cancellation and controller proxy errors are propagated as OperationCancelledException
                 {
-                    if (_sequence.CancelledByUser)
+                    if (_sequence.CancellationManager.CancelledByUser)
                     {
                         Trace.WriteLine("Test sequence was cancelled by user.");
                         break;
                     }
 
-                    else if (_sequence.Error is TsdLibException)
+                    else if (_sequence.CancellationManager.Error != null)
                     {
-                        Trace.WriteLine("TsdLibException: " + _sequence.Error.GetType().Name + " came from controller proxy or other client code");
-                        DialogResult result = MessageBox.Show(_sequence.Error.GetType().Name + Environment.NewLine + _sequence.Error.Message + Environment.NewLine + "Would you like to view help for this error?", "Error occurred in test sequence", MessageBoxButtons.YesNo);
-                        if (result == DialogResult.Yes)
-                            Process.Start(_sequence.Error.HelpLink);
-                    }
-
-                    else if (_sequence.Error != null)
-                    {
-                        Trace.WriteLine("System exception: " + _sequence.Error.GetType().Name + " came from controller proxy or other client code");
-                        MessageBox.Show(_sequence.Error.GetType().Name + Environment.NewLine + _sequence.Error + Environment.NewLine + "This error was unexpected and not handled by the TsdLib Application. Please contact TSD for support.", "Unexpected error occurred in test sequence");
+                        Trace.WriteLine(string.Format("Exception:{0} was thrown from client code in the primary AppDomain", _sequence.CancellationManager.Error.GetType().Name));
+                        throw _sequence.CancellationManager.Error;
                     }
 
                     //Test test sequence did not set the Error property - this should never happen
                     else
                     {
                         Trace.WriteLine("Test test sequence did not set the Error property - this should never happen");
-                        MessageBox.Show("An undescribed error has occurred and was not reported by the test sequence. Please contact TSD for support.", "Unknown Error:");
+                        MessageBox.Show("An undescribed error has occurred but the test sequence Error prperty was not set. Please contact TSD for support.", "Unknown Error:");
                     }
                 }
                 catch (Exception ex)
@@ -361,15 +361,16 @@ namespace TsdLib.TestSystem.Controller
 
         private void displayError(Exception ex, string sequenceName)
         {
+            Trace.WriteLine(ex);
             Task.Run(() =>
             {
-                bool tsdLibException = ex is TsdLibException;
+                bool helpLinkPresent = ex.HelpLink != null;
                 DialogResult result = MessageBox.Show(string.Join(Environment.NewLine,
                         "Error: " + ex.GetType().Name,
                         "Message: " + ex.Message,
-                        tsdLibException ? "Would you like to view help for this error?" : ""),
+                        helpLinkPresent ? "Would you like to view help for this error?" : ""),
                     "Error occurred in " + sequenceName,
-                    tsdLibException ? MessageBoxButtons.YesNo : MessageBoxButtons.OK);
+                    helpLinkPresent ? MessageBoxButtons.YesNo : MessageBoxButtons.OK);
 
                 if (result == DialogResult.Yes)
                     Process.Start(ex.HelpLink);
@@ -432,7 +433,7 @@ namespace TsdLib.TestSystem.Controller
         protected virtual void AbortTestSequence(object sender, EventArgs e)
         {
             if (_sequence != null)
-                _sequence.Abort();
+                _sequence.CancellationManager.Abort();
         }
 
         /// <summary>

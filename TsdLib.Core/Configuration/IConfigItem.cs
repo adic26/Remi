@@ -27,5 +27,10 @@
         /// </summary>
         /// <returns>A new IConfigItem object.</returns>
         IConfigItem Clone();
+
+        /// <summary>
+        /// Save the configuration item to persisted storage.
+        /// </summary>
+        void Save();
     }
 }

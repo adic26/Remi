@@ -27,7 +27,7 @@ namespace TsdLib.Configuration.Utilities
             }
             catch (Exception ex)
             {
-                throw new InvalidConfigTypeException(configType, ex);
+                throw new InvalidConfigTypeException(configType, "Couldn't find a base type ending with 'Common'", ex);
             }
 
         }
@@ -48,7 +48,7 @@ namespace TsdLib.Configuration.Utilities
             }
             catch (Exception ex)
             {
-                throw new InvalidConfigTypeException(configType, ex);
+                throw new InvalidConfigTypeException(configType, "Couldn't find a base type ending with 'Common'", ex);
             }
         }
 

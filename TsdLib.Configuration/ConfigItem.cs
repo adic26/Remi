@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization;
@@ -23,8 +24,6 @@ namespace TsdLib.Configuration
         [Browsable(true)]
         [Description("Initialize configuration values to their defaults")]
         public abstract void InitializeDefaultValues();
-
-        internal ITestDetails Details { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the configuration item.
@@ -59,24 +58,6 @@ namespace TsdLib.Configuration
         }
 
         /// <summary>
-        /// Initialize a new ConfigItem. Should only be used by the serialization engine.
-        /// </summary>
-        protected ConfigItem() { }
-
-        /// <summary>
-        /// Initialize a new ConfigItem.
-        /// </summary>
-        /// <param name="name">Name to assign to the new config item.</param>
-        /// <param name="storeInDatabase">True if the config item will be stored in the shared config location.</param>
-        /// <param name="isDefault">True if the config item is auto-generated, and should be excluded when 'real' configs are present.</param>
-        protected ConfigItem(string name, bool storeInDatabase, bool isDefault)
-        {
-            Name = name;
-            StoreInDatabase = storeInDatabase;
-            IsDefault = isDefault;
-        }
-
-        /// <summary>
         /// Performs a deep clone of the IConfigItem object.
         /// </summary>
         /// <returns>A new IConfigItem object.</returns>
@@ -91,6 +72,17 @@ namespace TsdLib.Configuration
             }
         }
 
+        /// <summary>
+        /// Save the configuration item to persisted storage.
+        /// </summary>
+        public void Save()
+        {
+            IConfigManager manager = ConfigManagerProvider.GetConfigManager(GetType());
+            if (manager != null)
+                manager.Save();
+            else
+                Trace.WriteLine("Could not save configuration");
+        }
 
         /// <summary>
         /// Gets the name of the common base type.
