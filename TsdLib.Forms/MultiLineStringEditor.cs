@@ -5,7 +5,7 @@ using System.Drawing.Design;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
-namespace TsdLib.Configuration
+namespace TsdLib.Forms
 {
     /// <summary>
     /// UI that can be used to edit a multi-line string at design time or from a PropertyGrid.
@@ -31,7 +31,7 @@ namespace TsdLib.Configuration
         }
     }
 
-    class MultiLineStringEditor : UITypeEditor
+    public class MultiLineStringEditor : UITypeEditor
     {
         public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
         {

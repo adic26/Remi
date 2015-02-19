@@ -15,7 +15,8 @@ namespace TsdLib.Configuration.Connections
         /// <param name="testSystemMode">An <see cref="OperatingMode"/> describing the use-case of the test system.</param>
         /// <param name="configType">The type used to encapsulate the configuration data.</param>
         /// <param name="data">Data to write to the storage location.</param>
-        void WriteString(string testSystemName, Version testSystemVersion, OperatingMode testSystemMode, Type configType, string data);
+        /// <returns>True on success; False otherwise.</returns>
+        bool WriteString(string testSystemName, Version testSystemVersion, OperatingMode testSystemMode, Type configType, string data);
 
         /// <summary>
         /// Read a string from the storage location using the name/version/mode of the test system and dataDescription as indexes.

@@ -1,4 +1,4 @@
-﻿namespace TsdLib.Configuration
+﻿namespace TsdLib.Forms
 {
     partial class MultiLineStringEditorForm
     {

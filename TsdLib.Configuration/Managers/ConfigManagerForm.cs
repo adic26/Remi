@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using TsdLib.Forms;
 
-namespace TsdLib.Configuration
+namespace TsdLib.Configuration.Managers
 {
     /// <summary>
     /// User interface for viewing or editing configuration.
@@ -19,7 +20,7 @@ namespace TsdLib.Configuration
         public HashSet<IConfigManager> ModifiedConfigs { get; private set; }
 
         /// <summary>
-        /// Initialize a new <see cref="TsdLib.Configuration.ConfigManagerForm"/> to view or edit the configuration at a specified location.
+        /// Initialize a new <see cref="ConfigManagerForm"/> to view or edit the configuration at a specified location.
         /// </summary>
         /// <param name="settingsLocation">Path to the folder or network share containing the configuration to view or edit.</param>
         /// <param name="editable">True to allow editing. False to make the configuration read-only.</param>

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace TsdLib.Configuration
 {
-    [Obsolete]
+    [Obsolete("Should use FileInfo")]
     class FilePath
     {
         private readonly bool _stripExtension;

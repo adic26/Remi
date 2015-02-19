@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using TsdLib.Configuration.Exceptions;
 
 namespace TsdLib.Configuration.Utilities
 {
     /// <summary>
     /// Contains static methods to retrieve additional information about config items and types.
     /// </summary>
-    public static class ConfigUtilities
+    public static class ConfigExtensions
     {
         /// <summary>
         /// Gets the common base type name of the specified config type.

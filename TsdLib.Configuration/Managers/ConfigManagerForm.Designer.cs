@@ -1,4 +1,4 @@
-﻿namespace TsdLib.Configuration
+﻿namespace TsdLib.Configuration.Managers
 {
     partial class ConfigManagerForm
     {

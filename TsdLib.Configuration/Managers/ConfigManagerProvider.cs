@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TsdLib.Configuration.Connections;
 
-namespace TsdLib.Configuration
+namespace TsdLib.Configuration.Managers
 {
     public static class ConfigManagerProvider
     {

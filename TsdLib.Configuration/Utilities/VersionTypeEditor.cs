@@ -4,8 +4,11 @@ using System.Drawing.Design;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
-namespace TsdLib.Configuration
+namespace TsdLib.Configuration.Utilities
 {
+    /// <summary>
+    /// A <see cref="UITypeEditor"/> used to edit <see cref="Version"/> objects in a <see cref="PropertyGrid"/>.
+    /// </summary>
     public class VersionTypeEditor : UITypeEditor
     {
         public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)

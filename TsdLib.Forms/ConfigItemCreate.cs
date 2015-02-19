@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace TsdLib.Configuration
+namespace TsdLib.Forms
 {
     public partial class ConfigItemCreateForm : Form
     {
@@ -26,6 +26,7 @@ namespace TsdLib.Configuration
         {
             radioButton_StoreInDatabase.Checked = storeInDatabase;
             radioButton_StoreInDatabase.Enabled = false;
+            radioButton_LocalOnly.Checked = !storeInDatabase;
             radioButton_LocalOnly.Enabled = false;
         }
 

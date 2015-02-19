@@ -8,8 +8,9 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using TsdLib.Configuration.Connections;
+using TsdLib.Configuration.Exceptions;
 
-namespace TsdLib.Configuration
+namespace TsdLib.Configuration.Managers
 {
     /// <summary>
     /// Encapsulates configuration data of a specified type and provides methods to save and retieve.
@@ -17,18 +18,6 @@ namespace TsdLib.Configuration
     /// <typeparam name="T">Type of configuration derived from <see cref="ConfigItem"/></typeparam>
     public class ConfigManager<T> : IConfigManager<T> where T : ConfigItem, new()
     {
-        //private static ConfigManager<T> _instance;
-        ///// <summary>
-        ///// Uses the Singleton pattern to return a global instance of <see cref="IConfigManager{T}"/>.
-        ///// </summary>
-        ///// <param name="details">An <see cref="ITestDetails"/> object containing metadata information relevent to the test.</param>
-        ///// <param name="sharedConfigConnection">An <see cref="IConfigConnection"/> object to control the connection with persisted storage.</param>
-        ///// <returns></returns>
-        //public static IConfigManager<T> GetConfigManager(ITestDetails details, IConfigConnection sharedConfigConnection)
-        //{
-        //    return _instance ?? (_instance = new ConfigManager<T>(details, sharedConfigConnection));
-        //}
-
         /// <summary>
         /// Gets the type of configuration for this <see cref="ConfigManager{T}"/>. Do not remove, it is used for binding to UI controls.
         /// </summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using TsdLib.Configuration.Exceptions;
 
 namespace TsdLib.Configuration.Connections
 {
@@ -43,12 +44,15 @@ namespace TsdLib.Configuration.Connections
         /// <param name="testSystemMode">An <see cref="OperatingMode"/> describing the use-case of the test system.</param>
         /// <param name="configType">The type used to encapsulate the configuration data.</param>
         /// <param name="data">Data to write to the file system.</param>
-        public void WriteString(string testSystemName, Version testSystemVersion, OperatingMode testSystemMode, Type configType, string data)
+        /// <returns>True on success; False otherwise.</returns>
+        public bool WriteString(string testSystemName, Version testSystemVersion, OperatingMode testSystemMode, Type configType, string data)
         {
             //string file = Path.Combine(getDirectory(testSystemName, testSystemVersion, testSystemMode), configType.Name + ".xml");
             string file = Path.Combine(getDirectoryInfo(testSystemName, testSystemVersion, testSystemMode), configType.Name + ".xml");
             
             File.WriteAllText(file, data);
+
+            return true;
         }
 
         /// <summary>
@@ -86,7 +90,7 @@ namespace TsdLib.Configuration.Connections
         {
             string fileName = Path.GetFileName(sourceFilePath);
             if (fileName == null)
-                throw new InvalidFileException(sourceFilePath);
+                throw new FileUploadException(sourceFilePath);
 
             string destinationFilePath = Path.Combine(getDirectoryInfo(testSystemName, testSystemVersion, testSystemMode), fileName);
 

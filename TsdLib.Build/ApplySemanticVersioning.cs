@@ -97,7 +97,7 @@ namespace TsdLib.Build
 
         public string AssemblyVersionReadRegEx()
         {
-            return @"(?<=\[assembly: AssemblyVersion\("")\d+\.\d+(?=""\)\])";
+            return @"(?<=\[assembly: AssemblyVersion\("")\d+\.\d+(?=.*""\)\])";
         }
 
         public string AssemblyVersionReplacementRegEx()
@@ -112,7 +112,7 @@ namespace TsdLib.Build
 
         public string AssemblyFileVersionReadRegEx()
         {
-            return @"(?<=\[assembly: AssemblyFileVersion\("")\d+\.\d+\.\d+(?=""\)\])";
+            return @"(?<=\[assembly: AssemblyFileVersion\("")\d+\.\d+\.\d+(?=.*""\)\])";
         }
 
         public string AssemblyFileVersionReplacementRegEx()

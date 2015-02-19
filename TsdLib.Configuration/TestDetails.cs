@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
+using TsdLib.Configuration.Utilities;
+using TsdLib.Forms;
 
 namespace TsdLib.Configuration
 {
@@ -241,7 +243,7 @@ namespace TsdLib.Configuration
         public void Edit()
         {
             _identityChanged = false;
-            using (TestDetailsEditor editor = new TestDetailsEditor(this))
+            using (PropertyGridEditor editor = new PropertyGridEditor(this))
             {
                 _supressChangedEvent = true;
                 DialogResult dialogResult = editor.ShowDialog();

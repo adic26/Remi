@@ -1,6 +1,6 @@
-﻿namespace TsdLib.Configuration
+﻿namespace TsdLib.Forms
 {
-    partial class TestDetailsEditor
+    partial class PropertyGridEditor
     {
         /// <summary>
         /// Required designer variable.
@@ -43,7 +43,7 @@
             this.propertyGrid.Location = new System.Drawing.Point(0, 0);
             this.propertyGrid.Name = "propertyGrid";
             this.propertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.propertyGrid.Size = new System.Drawing.Size(556, 610);
+            this.propertyGrid.Size = new System.Drawing.Size(556, 609);
             this.propertyGrid.TabIndex = 0;
             // 
             // button_OK
@@ -52,7 +52,7 @@
             this.button_OK.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button_OK.Location = new System.Drawing.Point(0, 0);
             this.button_OK.Name = "button_OK";
-            this.button_OK.Size = new System.Drawing.Size(556, 56);
+            this.button_OK.Size = new System.Drawing.Size(556, 57);
             this.button_OK.TabIndex = 1;
             this.button_OK.Text = "OK";
             this.button_OK.UseVisualStyleBackColor = true;
@@ -72,18 +72,18 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.button_OK);
             this.splitContainer1.Size = new System.Drawing.Size(556, 670);
-            this.splitContainer1.SplitterDistance = 610;
+            this.splitContainer1.SplitterDistance = 609;
             this.splitContainer1.TabIndex = 2;
             // 
-            // TestDetailsEditor
+            // PropertyGridEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(556, 670);
             this.ControlBox = false;
             this.Controls.Add(this.splitContainer1);
-            this.Name = "TestDetailsEditor";
-            this.Text = "TestDetailsEditor";
+            this.Name = "PropertyGridEditor";
+            this.Text = "Object Editor";
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();

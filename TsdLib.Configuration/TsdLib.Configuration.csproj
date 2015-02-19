@@ -46,32 +46,23 @@
     <Compile Include="Common\SequenceConfigCommon.cs" />
     <Compile Include="Common\StationConfigCommon.cs" />
     <Compile Include="Common\TestConfigCommon.cs" />
-    <Compile Include="ConfigExceptions.cs" />
-    <Compile Include="ConfigItemCreate.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ConfigItemCreate.Designer.cs">
-      <DependentUpon>ConfigItemCreate.cs</DependentUpon>
-    </Compile>
     <Compile Include="ConfigItem.cs" />
-    <Compile Include="ConfigManager.cs" />
-    <Compile Include="ConfigManagerForm.cs">
+    <Compile Include="Exceptions\InvalidConfigTypeException.cs" />
+    <Compile Include="Exceptions\InvalidDirectoryException.cs" />
+    <Compile Include="Exceptions\FileUploadException.cs" />
+    <Compile Include="Exceptions\InvalidConfigFileException.cs" />
+    <Compile Include="Managers\ConfigManager.cs" />
+    <Compile Include="Managers\ConfigManagerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConfigManagerForm.Designer.cs">
+    <Compile Include="Managers\ConfigManagerForm.Designer.cs">
       <DependentUpon>ConfigManagerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConfigManagerProvider.cs" />
+    <Compile Include="Managers\ConfigManagerProvider.cs" />
     <Compile Include="DesignerVerbSite.cs" />
     <Compile Include="FilePath.cs" />
     <Compile Include="Connections\FileSystemConnection.cs" />
     <Compile Include="Connections\IConfigConnection.cs" />
-    <Compile Include="MultiLineStringEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MultiLineStringEditor.Designer.cs">
-      <DependentUpon>MultiLineStringEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Null\NullProductConfig.cs" />
     <Compile Include="Null\NullStationConfig.cs" />
     <Compile Include="Null\NullTestConfig.cs" />
@@ -79,33 +70,22 @@
     <Compile Include="TestCases\TestCase.cs" />
     <Compile Include="TestCases\TestCaseProvider.cs" />
     <Compile Include="TestDetails.cs" />
-    <Compile Include="TestDetailsEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TestDetailsEditor.Designer.cs">
-      <DependentUpon>TestDetailsEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Utilities\ConfigUtilities.cs" />
-    <Compile Include="VersionTypeEditor.cs" />
+    <Compile Include="Utilities\ConfigExtensions.cs" />
+    <Compile Include="Utilities\VersionTypeEditor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ConfigItemCreate.resx">
-      <DependentUpon>ConfigItemCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ConfigManagerForm.resx">
+    <EmbeddedResource Include="Managers\ConfigManagerForm.resx">
       <DependentUpon>ConfigManagerForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MultiLineStringEditor.resx">
-      <DependentUpon>MultiLineStringEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TestDetailsEditor.resx">
-      <DependentUpon>TestDetailsEditor.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TsdLib.Core\TsdLib.Core.csproj">
       <Project>{512BEDDC-2B71-42F0-9C1B-6D37497F5DA7}</Project>
       <Name>TsdLib.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Forms\TsdLib.Forms.csproj">
+      <Project>{6661080f-e8c7-4b33-a963-2b3cedba72e4}</Project>
+      <Name>TsdLib.Forms</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

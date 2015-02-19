@@ -7,10 +7,10 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
+using TsdLib.Configuration.Managers;
 using TsdLib.Configuration.Utilities;
 
 namespace TsdLib.Configuration
-
 {
     /// <summary>
     /// Base class for a specific instance of a configuration.
@@ -89,7 +89,7 @@ namespace TsdLib.Configuration
         /// </summary>
         public string CommonBaseTypeName
         {
-            get { return ConfigUtilities.GetBaseTypeName(GetType()); }
+            get { return ConfigExtensions.GetBaseTypeName(GetType()); }
         }
 
 

@@ -65,6 +65,10 @@
       <Project>{512beddc-2b71-42f0-9c1b-6d37497f5da7}</Project>
       <Name>TsdLib.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Forms\TsdLib.Forms.csproj">
+      <Project>{6661080F-E8C7-4B33-A963-2B3CEDBA72E4}</Project>
+      <Name>TsdLib.Forms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TsdLib.Measurements\TsdLib.Measurements.csproj">
       <Project>{183FCB65-FF95-4BDA-8B9C-C93CE029E9CC}</Project>
       <Name>TsdLib.Measurements</Name>

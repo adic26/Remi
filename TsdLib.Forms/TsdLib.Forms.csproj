@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{512BEDDC-2B71-42F0-9C1B-6D37497F5DA7}</ProjectGuid>
+    <ProjectGuid>{6661080F-E8C7-4B33-A963-2B3CEDBA72E4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TsdLib</RootNamespace>
-    <AssemblyName>TsdLib.Core</AssemblyName>
+    <RootNamespace>TsdLib.Forms</RootNamespace>
+    <AssemblyName>TsdLib.Forms</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,8 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
-    <DocumentationFile>bin\Debug\TsdLib.Core.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,59 +28,53 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\TsdLib.Core.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Drawing">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BasicCodeParser.cs" />
-    <Compile Include="Configuration\Enums.cs" />
-    <Compile Include="Configuration\IProductConfig.cs" />
-    <Compile Include="Configuration\ISequenceConfig.cs" />
-    <Compile Include="Configuration\IStationConfig.cs" />
-    <Compile Include="Configuration\ITestCase.cs" />
-    <Compile Include="Configuration\ITestConfig.cs" />
-    <Compile Include="TestSystem\IInstrumentCollection.cs" />
-    <Compile Include="UI\IConfigControl.cs" />
-    <Compile Include="Configuration\IConfigItem.cs" />
-    <Compile Include="Configuration\IConfigManager.cs" />
-    <Compile Include="Configuration\ITestDetails.cs" />
-    <Compile Include="Instrument\InstrumentEvents.cs" />
-    <Compile Include="Instrument\IInstrument.cs" />
-    <Compile Include="Measurements\IMeasurement.cs" />
-    <Compile Include="Measurements\IMeasurementParameter.cs" />
-    <Compile Include="Measurements\ITestInfo.cs" />
-    <Compile Include="TestSystem\ICancellationManager.cs" />
-    <Compile Include="Measurements\ITestResults.cs" />
-    <Compile Include="Measurements\ITestSummary.cs" />
-    <Compile Include="UI\IMeasurementDisplayControl.cs" />
-    <Compile Include="UI\IProgressControl.cs" />
-    <Compile Include="UI\ITestCaseControl.cs" />
-    <Compile Include="UI\ITestDetailsControl.cs" />
-    <Compile Include="UI\ITestInfoDisplayControl.cs" />
-    <Compile Include="UI\ITestSequenceControl.cs" />
-    <Compile Include="UI\ITraceListenerControl.cs" />
-    <Compile Include="UI\ITsdLibControl.cs" />
-    <Compile Include="UI\IView.cs" />
-    <Compile Include="Measurements\MeasurmentResult.cs" />
+    <Compile Include="ConfigItemCreate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigItemCreate.Designer.cs">
+      <DependentUpon>ConfigItemCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MultiLineStringEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MultiLineStringEditor.Designer.cs">
+      <DependentUpon>MultiLineStringEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyGridEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PropertyGridEditor.Designer.cs">
+      <DependentUpon>PropertyGridEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SpecialFolders.cs" />
-    <Compile Include="States.cs" />
-    <Compile Include="TsdLibException.cs" />
-    <Compile Include="Utilities\EnumDescriptionConverter.cs" />
-    <Compile Include="Utilities\StringConversionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="TsdLib.Core.nuspec" />
+    <EmbeddedResource Include="ConfigItemCreate.resx">
+      <DependentUpon>ConfigItemCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MultiLineStringEditor.resx">
+      <DependentUpon>MultiLineStringEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertyGridEditor.resx">
+      <DependentUpon>PropertyGridEditor.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TsdLib.Forms.nuspec">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
