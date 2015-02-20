@@ -72,17 +72,16 @@ namespace TsdLib.Configuration
             }
         }
 
-        /// <summary>
-        /// Save the configuration item to persisted storage.
-        /// </summary>
-        public void Save()
-        {
-            IConfigManager manager = ConfigManagerProvider.GetConfigManager(GetType());
-            if (manager != null)
-                manager.Save();
-            else
-                Trace.WriteLine("Could not save configuration");
-        }
+        ///// <summary>
+        ///// Save the configuration item to persisted storage.
+        ///// </summary>
+        //public void Save(IConfigManager configManager)
+        //{
+        //    if (configManager != null)
+        //        configManager.Save();
+        //    else
+        //        Trace.WriteLine("Could not save configuration");
+        //}
 
         /// <summary>
         /// Gets the name of the common base type.

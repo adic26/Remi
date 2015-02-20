@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using TestClient.Configuration;
 using TestClient.View;
-using TsdLib.CodeGenerator;
 using TsdLib.Configuration;
 using TsdLib.Configuration.Connections;
 using TsdLib.TestSystem.Controller;
@@ -26,7 +25,7 @@ namespace TestClient
                 return new System.CodeDom.CodeCompileUnit[0];
 
             string[] instrumentXmlFiles = System.IO.Directory.GetFiles("Instruments", "*.xml");
-            TsdLib.InstrumentLibraryTools.InstrumentParser instrumentXmlParser = new TsdLib.InstrumentLibraryTools.InstrumentParser(nameSpace, Language.CSharp.ToString());
+            TsdLib.InstrumentLibraryTools.InstrumentParser instrumentXmlParser = new TsdLib.InstrumentLibraryTools.InstrumentParser(nameSpace, TsdLib.CodeGenerator.Language.CSharp.ToString());
             codeCompileUnits.AddRange(instrumentXmlFiles.Select(xmlFile => instrumentXmlParser.Parse(new System.IO.StreamReader(xmlFile))));
 
             if (System.IO.Directory.Exists(@"Instruments\Helpers"))
@@ -100,7 +99,7 @@ namespace TestClient
                             DBControl.remiAPI.ScanReturnData batchInformation = remiForm.RemiData[0];
                             Details.TestSystemName = batchInformation.SelectedTestName;
                             string[] qraNumber = batchInformation.QRANumber.Split('-');
-                            Details.JobNumber = string.Join("-", qraNumber, 0, qraNumber.Length - 1);
+                            Details.RequestNumber = string.Join("-", qraNumber, 0, qraNumber.Length - 1);
                             Details.TestStage = batchInformation.TestStageName;
                             Details.TestType = batchInformation.JobName;
                             Details.UnitNumber = (uint)batchInformation.UnitNumber;

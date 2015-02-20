@@ -57,6 +57,7 @@
     <None Include="plink_resources\public.key">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="TsdLib.Instrument.Ssh.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TsdLib.Core\TsdLib.Core.csproj">

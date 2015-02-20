@@ -18,11 +18,13 @@ namespace TsdLib.Configuration
         /// </summary>
         void Save();
 
-        /// <summary>
-        /// Add a new <see cref="IConfigItem"/> to the configuration instances.
-        /// </summary>
-        /// <param name="item"><see cref="IConfigItem"/> to add.</param>
-        void Add(IConfigItem item);
+        ///// <summary>
+        ///// Add a new <see cref="IConfigItem"/> to the configuration instances.
+        ///// </summary>
+        ///// <param name="item"><see cref="IConfigItem"/> to add.</param>
+        //void Add(IConfigItem item);
+
+        
 
         /// <summary>
         /// Reload the configuration data from persisted storage.
@@ -33,6 +35,7 @@ namespace TsdLib.Configuration
     /// <summary>
     /// Encapsulates configuration data and provides methods to add and reload configuration.
     /// </summary>
+    //public interface IConfigManager<out T> : IConfigManager
     public interface IConfigManager<out T> : IConfigManager
         where T : IConfigItem
     {
@@ -41,6 +44,17 @@ namespace TsdLib.Configuration
         /// </summary>
         /// <returns>The configuration objects.</returns>
         IEnumerable<T> GetConfigGroup();
+
+        /// <summary>
+        /// Gets a specific configuration object by name.
+        /// </summary>
+        /// <param name="name">Name of the configuration object.</param>
+        /// <returns>The configuration object with the specified name.</returns>
+        T GetConfig(string name);
+
+        //void Add(T item);
+
+        T Add(string name, bool storeInDatabase);
     }
 
 }

@@ -13,6 +13,7 @@ namespace TsdLib.Measurements
         IEnumerable<IMeasurement> Measurements { get; }
         string SchemaFile { get; }
 
+        //TODO: move this to ITestResultsSaver
         string SaveXml();
         string SaveXml(DirectoryInfo directory);
         string SaveCsv();

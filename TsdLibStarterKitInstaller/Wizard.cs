@@ -85,21 +85,39 @@ namespace TsdLibStarterKitInstaller
 
                 foreach (var repoKvp in _packageRepositories)
                 {
-                    //If using OData repository, use the IPackage.IsLatestVersion property - should also try reading tags
                     IPackageRepository repo = PackageRepositoryFactory.Default.CreateRepository(repoKvp.Value);
 
-                    //IQueryable<IPackage> packages = repo.GetPackages()
-                    //    .GroupBy(p => p.Id)
-                    //    .Select(g => g.OrderBy(p => p.Version)
-                    //    .Last());
-
-                    IQueryable<IPackage> packages = repo.GetPackages().Where(p => p.IsLatestVersion);
-
-                    using (SelectPackagesForm form = new SelectPackagesForm(repoKvp.Key, packages))
+                    if (repo.Source.StartsWith("http") && repo.SupportsPrereleasePackages) //It is an OData feed
                     {
-                        form.ShowDialog();
-                        foreach (IPackage selectedPackage in form.SelectedPackages)
-                            NuGetPackageInstaller.InstallPackage(repo, project, selectedPackage.Id, selectedPackage.Version.ToString(), false, false);
+                        //If using OData repository, use the IPackage.IsLatestVersion property - should also try reading tags
+#if DEBUG
+                        IQueryable<IPackage> packages = repo.GetPackages().Where(p => p.IsAbsoluteLatestVersion);
+#else
+                        IQueryable<IPackage> packages = repo.GetPackages().Where(p => p.IsLatestVersion);
+#endif
+                        foreach (IPackage requiredPackage in packages.Where(p => p.Tags.Contains("starterkit-required")))
+                            NuGetPackageInstaller.InstallPackage(repo, project, requiredPackage.Id, requiredPackage.Version.ToString(), false, false);
+
+                        using (SelectPackagesForm form = new SelectPackagesForm(repoKvp.Key, packages.Where(p => p.Tags.Contains("starterkit-optional"))))
+                        {
+                            form.ShowDialog();
+                            foreach (IPackage selectedPackage in form.SelectedPackages)
+                                NuGetPackageInstaller.InstallPackage(repo, project, selectedPackage.Id, selectedPackage.Version.ToString(), false, false);
+                        }
+                    }
+                    else //It is a network share - can't use IsLatestVersion or Tags
+                    {
+                        IQueryable<IPackage> packages = repo.GetPackages()
+                            .GroupBy(p => p.Id)
+                            .Select(g => g.OrderBy(p => p.Version)
+                            .Last());
+
+                        using (SelectPackagesForm form = new SelectPackagesForm(repoKvp.Key, packages))
+                        {
+                            form.ShowDialog();
+                            foreach (IPackage selectedPackage in form.SelectedPackages)
+                                NuGetPackageInstaller.InstallPackage(repo, project, selectedPackage.Id, selectedPackage.Version.ToString(), false, false);
+                        }
                     }
                 }
             }

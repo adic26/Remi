@@ -97,7 +97,10 @@
   </Target>
   <Target Name="AfterBuild">
     <NuGetPack OutputFolder="$(TargetDir)" TargetFile="$(ProjectPath)" Configuration="$(ConfigurationName)">
-      <Output TaskParameter="OutputPackage" ItemName="NuGetPackage" />
+      <Output TaskParameter="OutputPackage" PropertyName="NuGetPackage" />
+      <Output TaskParameter="NuGetOutput" PropertyName="NuGetOutputMessage" />
     </NuGetPack>
+    <Message Text="NuGet Output: $(NuGetOutputMessage)" Importance="High" />
+	<Warning Text="Failed to create NuGet package: $(NuGetOutputMessage)" Condition="$(NuGetPackage) == 'N/A'" />
   </Target>
 </Project>

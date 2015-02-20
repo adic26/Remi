@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using TsdLib.Configuration.Common;
+using TsdLib.Configuration.Managers;
 using TsdLib.Instrument;
 using TsdLib.Measurements;
 using TsdLib.TestSystem.Controller;
@@ -22,6 +23,11 @@ namespace TsdLib.TestSystem.TestSequence
         /// Gets a collection of instruments currently controlled used by the test sequence.
         /// </summary>
         public IInstrumentCollection Instruments { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the <see cref="ConfigManagerProvider"/> that can be used to access configuration data from inside the test sequence.
+        /// </summary>
+        public ConfigManagerProvider Config { get; set; }
 
         /// <summary>
         /// Gets or sets an EventProxy object that can be used to send measurement events across AppDomain boundaries.

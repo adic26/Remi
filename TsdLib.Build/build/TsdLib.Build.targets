@@ -18,6 +18,7 @@
       <Output TaskParameter="OutputPackage" PropertyName="NuGetPackage" />
       <Output TaskParameter="NuGetOutput" PropertyName="NuGetOutputMessage" />
     </NuGetPack>
-    <Message Text="$(NuGetOutputMessage)" Importance="High"/>
+    <Message Text="NuGet Output: $(NuGetOutputMessage)" Importance="High" />
+    <Warning Text="Failed to create NuGet package: $(NuGetOutputMessage)" Condition="$(NuGetPackage) == 'N/A'" />
   </Target>
 </Project>

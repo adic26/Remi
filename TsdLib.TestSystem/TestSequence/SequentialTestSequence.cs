@@ -27,7 +27,6 @@ namespace TsdLib.TestSystem.TestSequence
         /// <param name="testConfig">Test config instance containing test-specific configuration.</param>
         protected abstract void ExecuteTest(CancellationToken token, TStationConfig stationConfig, TProductConfig productConfig, TTestConfig testConfig);
 
-
         /// <summary>
         /// Start execution of the test sequence with the specified configuration objects.
         /// </summary>

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace TsdLib.Configuration.Managers
     /// Encapsulates configuration data of a specified type and provides methods to save and retieve.
     /// </summary>
     /// <typeparam name="T">Type of configuration derived from <see cref="ConfigItem"/></typeparam>
-    public class ConfigManager<T> : IConfigManager<T> where T : ConfigItem, new()
+    public class ConfigManager<T> : MarshalByRefObject, IConfigManager<T> where T : ConfigItem, new()
     {
         /// <summary>
         /// Gets the type of configuration for this <see cref="ConfigManager{T}"/>. Do not remove, it is used for binding to UI controls.
@@ -67,15 +68,18 @@ namespace TsdLib.Configuration.Managers
             _configs.Add(configItem);
         }
 
-        /// <summary>
-        /// Add a new <see cref="ConfigItem"/> to the collection.
-        /// </summary>
-        /// <param name="item">Config instance to add.</param>
-        void IConfigManager.Add(IConfigItem item)
+        public T Add(string name, bool storeInDatabase)
         {
-            T cfg = item as T;
-            if (cfg != null)
-                Add(cfg);
+            T configItem = new T
+            {
+                Name = name,
+                StoreInDatabase = storeInDatabase,
+                IsDefault = false
+            };
+
+            Add(configItem);
+            configItem.InitializeDefaultValues();
+            return configItem;
         }
 
         /// <summary>
@@ -240,7 +244,9 @@ namespace TsdLib.Configuration.Managers
 
         #endregion
 
-
-
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
     }
 }

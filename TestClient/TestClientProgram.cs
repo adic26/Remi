@@ -98,15 +98,15 @@ namespace TestClient
             foreach (string fileName in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll").Select(Path.GetFileName))
                 assemblyReferences.Add(fileName);
 
-            foreach (SequenceConfigCommon sequence in sequenceConfigManager.GetConfigGroup().Where(seq => !seq.IsDefault))
-            {
-                string vsFile = Path.Combine(sequenceFolder, sequence.Name + ".cs");
-                if (!File.Exists(vsFile))
-                    File.WriteAllText(vsFile, sequence.SourceCode);
-            }
+            //foreach (SequenceConfigCommon sequence in sequenceConfigManager.GetConfigGroup().Where(seq => !seq.IsDefault))
+            //{
+            //    string vsFile = Path.Combine(sequenceFolder, sequence.Name + ".cs");
+            //    if (!File.Exists(vsFile))
+            //        File.WriteAllText(vsFile, sequence.SourceCode);
+            //}
             foreach (string seqFile in Directory.EnumerateFiles(sequenceFolder))
             {
-                Trace.WriteLine("Found" + seqFile);
+                Trace.WriteLine("Found " + seqFile);
                 //TODO: only replace if newer?
                 sequenceConfigManager.Add(new SequenceConfigCommon(seqFile, storeInDatabase, assemblyReferences));
             }

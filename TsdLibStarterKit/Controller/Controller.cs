@@ -1,11 +1,12 @@
 ﻿using System.Linq;
 using $safeprojectname$.Configuration;
 using $safeprojectname$.View;
-using TsdLib;
 using TsdLib.Configuration;
+using TsdLib.Configuration.Connections;
 using TsdLib.Measurements;
 using TsdLib.CodeGenerator;
 using TsdLib.TestSystem.Controller;
+using TsdLib.TestSystem.TestSequence;
 
 namespace $safeprojectname$
 {
