@@ -29,10 +29,8 @@ namespace TsdLib.TestSystem.Controller
     /// Contains base functionality for the system controller without station/product/test configuration.
     /// </summary>
     /// <typeparam name="TView">Type of the derived user interface.</typeparam>
-    /// <typeparam name="TSequence">Type of the derived test sequence.</typeparam>
-    public abstract class ControllerBase<TView, TSequence> : ControllerBase<TView, TSequence, NullStationConfig, NullProductConfig, NullTestConfig>
+    public abstract class ControllerBase<TView> : ControllerBase<TView, NullStationConfig, NullProductConfig, NullTestConfig>
         where TView : IView, new()
-        where TSequence : ConfigurableTestSequence<NullStationConfig, NullProductConfig, NullTestConfig>, new()
     {
         /// <summary>
         /// Initialize a new system controller.
@@ -51,18 +49,16 @@ namespace TsdLib.TestSystem.Controller
     /// Contains base functionality for the system controller.
     /// </summary>
     /// <typeparam name="TView">Type of the derived user interface.</typeparam>
-    /// <typeparam name="TSequence">Type of the derived test sequence.</typeparam>
     /// <typeparam name="TStationConfig">Type of the derived station config.</typeparam>
     /// <typeparam name="TProductConfig">Type of the derived product config.</typeparam>
     /// <typeparam name="TTestConfig">Type of the derived test config.</typeparam>
-    public abstract class ControllerBase<TView, TSequence, TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject
+    public abstract class ControllerBase<TView, TStationConfig, TProductConfig, TTestConfig> : MarshalByRefObject
         where TView : IView, new()
         where TStationConfig : StationConfigCommon, new()
         where TProductConfig : ProductConfigCommon, new()
         where TTestConfig : TestConfigCommon, new()
-        where TSequence : ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>
     {
-        private TSequence _activeSequence;
+        private ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig> _activeSequence;
         private readonly bool _localDomain;
         private readonly List<Task> _loggingTasks;
         private readonly TextWriterTraceListener _textWriterTraceListener;
@@ -156,8 +152,11 @@ namespace TsdLib.TestSystem.Controller
         {
             IEnumerable<ITestCase> testCases = _testCaseProvider.Load();
             ITestCase selected = testCases.FirstOrDefault(tc => tc.Name == selectedTestCaseName);
-            UI.ConfigControl.SelectedTestConfig = UI.ConfigControl.TestConfigManager.GetConfigGroup().Where(cfg => selected.TestConfigs.Contains(cfg.Name)).ToArray();
-            UI.ConfigControl.SelectedSequenceConfig = UI.ConfigControl.SequenceConfigManager.GetConfigGroup().Where(cfg => selected.Sequences.Contains(cfg.Name)).ToArray();
+            if (selected != null)
+            {
+                UI.ConfigControl.SelectedTestConfig = UI.ConfigControl.TestConfigManager.GetConfigGroup().Where(cfg => selected.TestConfigs.Contains(cfg.Name)).ToArray();
+                UI.ConfigControl.SelectedSequenceConfig = UI.ConfigControl.SequenceConfigManager.GetConfigGroup().Where(cfg => selected.Sequences.Contains(cfg.Name)).ToArray();
+            }
         }
 
         void TestCaseControl_TestCaseSaved(object sender, EventArgs e)
@@ -231,7 +230,7 @@ namespace TsdLib.TestSystem.Controller
                     {
                         if (_localDomain)
                         {
-                            _activeSequence = (TSequence)Activator.CreateInstance(Assembly.GetEntryAssembly().GetType(config.FullTypeName));
+                            _activeSequence = (ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>)Activator.CreateInstance(Assembly.GetEntryAssembly().GetType(config.FullTypeName));
 
                             controllerProxy = (ControllerProxy)Activator.CreateInstance(typeof(ControllerProxy), BindingFlags.CreateInstance, null, new object[] { UI, _activeSequence.CancellationManager }, CultureInfo.CurrentCulture);
                         }
@@ -246,7 +245,7 @@ namespace TsdLib.TestSystem.Controller
 
                             sequenceDomain = AppDomain.CreateDomain("Sequence Domain");
 
-                            _activeSequence = (TSequence)sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, config.FullTypeName);
+                            _activeSequence = (ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>)sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, config.FullTypeName);
                             controllerProxy = (ControllerProxy) sequenceDomain.CreateInstanceAndUnwrap(typeof (ControllerProxy).Assembly.FullName, typeof (ControllerProxy).FullName, false, BindingFlags.CreateInstance, null, new object[] {UI, _activeSequence.CancellationManager}, CultureInfo.CurrentCulture, null);
 
                             if (UI.TraceListenerControl != null)

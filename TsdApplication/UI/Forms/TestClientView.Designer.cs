@@ -1,6 +1,6 @@
-﻿namespace TsdLib.UI.Forms
+﻿namespace $safeprojectname$.UI.Forms
 {
-    partial class ViewBase
+    partial class $safeprojectname$View
     {
         /// <summary>
         /// Required designer variable.

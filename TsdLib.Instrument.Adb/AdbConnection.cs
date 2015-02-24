@@ -4,9 +4,9 @@ using System.Text;
 
 namespace TsdLib.Instrument.Adb
 {
-    ///// <summary>
-    ///// Contains functionality to communicate with an instrument using adb.exe.
-    ///// </summary>
+    /// <summary>
+    /// Contains functionality to communicate with an instrument using adb.exe.
+    /// </summary>
     public class AdbConnection : ConnectionBase
     {
         private readonly string _adbExe;

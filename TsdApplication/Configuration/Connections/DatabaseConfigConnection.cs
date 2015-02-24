@@ -6,7 +6,7 @@ using TsdLib.Configuration;
 using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Utilities;
 
-namespace TestClient.Configuration.Connections
+namespace $safeprojectname$.Configuration.Connections
 {
     class DatabaseConfigConnection : IConfigConnection
     {

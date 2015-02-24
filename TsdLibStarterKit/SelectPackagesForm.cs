@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using NuGet;
 
-namespace TsdLibStarterKitInstaller
+namespace TsdLibStarterKit
 {
     public sealed partial class SelectPackagesForm : Form
     {
@@ -31,6 +31,18 @@ namespace TsdLibStarterKitInstaller
             foreach (int checkedIndex in listView_Packages.CheckedItems.Cast<ListViewItem>().Select(i => i.Index))
                 SelectedPackages.Add(_packages.ElementAt(checkedIndex));
             Close();
+        }
+
+        private void button_SelectAll_Click(object sender, System.EventArgs e)
+        {
+            foreach (ListViewItem checkedIndex in listView_Packages.Items)
+                checkedIndex.Checked = true;
+        }
+
+        private void button_SelectNone_Click(object sender, System.EventArgs e)
+        {
+            foreach (ListViewItem checkedIndex in listView_Packages.CheckedItems)
+                checkedIndex.Checked = false;
         }
     }
 }

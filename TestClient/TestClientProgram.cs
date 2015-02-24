@@ -54,9 +54,11 @@ namespace TestClient
                 string settingsLocation = getConfigValue(SettingsLocationArg) ?? @"C:\temp\TsdLibSettings";
 
                 ITestDetails testDetails = new TestDetails(testSystemName, testSystemVersion, testSystemMode);
-
-                //IConfigConnection sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation), testSystemVersionMask);
+#if REMICONTROL
                 IConfigConnection sharedConfigConnection = new DatabaseConfigConnection(testSystemVersionMask);
+#else
+                IConfigConnection sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation), testSystemVersionMask);
+#endif
 
                 if (args.Contains(SeqFolderArg))
                 {
@@ -113,4 +115,5 @@ namespace TestClient
             sequenceConfigManager.Save();
         }
     }
+
 }

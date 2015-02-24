@@ -2,9 +2,11 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)..\</SolutionDir>
+    <BuildDllLocation Condition="Exists('$(MSBuildThisFileDirectory)..\TsdLib.Build.dll')" >$(MSBuildThisFileDirectory)..\TsdLib.Build.dll</BuildDllLocation>
+    <BuildDllLocation Condition="'$(BuildDllLocation)' == ''">$(SolutionDir)\TsdLib.Build\bin\$(ConfigurationName)\TsdLib.Build.dll</BuildDllLocation>
   </PropertyGroup>
-  <UsingTask TaskName="ApplySemanticVersioning" AssemblyFile="$(MSBuildThisFileDirectory)..\TsdLib.Build.dll"/>
-  <UsingTask TaskName="NuGetPack" AssemblyFile="$(MSBuildThisFileDirectory)..\TsdLib.Build.dll"/>
+  <UsingTask TaskName="ApplySemanticVersioning" AssemblyFile="$(BuildDllLocation)"/>
+  <UsingTask TaskName="NuGetPack" AssemblyFile="$(BuildDllLocation)"/>
   <Target Name="Versioning" BeforeTargets="CoreCompile" Condition="'$(BuildServer)' != 'true'">
     <Message Text="Applying semantic versioning"  Importance="High"/>
     <ApplySemanticVersioning AssemblyInfoFilePath="$(ProjectDir)Properties\AssemblyInfo.cs">

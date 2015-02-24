@@ -143,8 +143,10 @@ namespace TsdLib.Configuration
 
         #endregion
 
-
-        //Can't use MarshalByRefObject, since it gives problems casting to and from the IConfigItem between the UI and Controller.
+        /// <summary>
+        /// Obtains a lifetime service object to control the lifetime policy for this instance.
+        /// </summary>
+        /// <returns>null</returns>
         public override object InitializeLifetimeService()
         {
             return null;

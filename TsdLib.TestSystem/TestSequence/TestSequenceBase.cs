@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using TsdLib.Configuration.Common;
 using TsdLib.Configuration.Managers;
 using TsdLib.Instrument;
 using TsdLib.Measurements;
@@ -12,7 +11,7 @@ namespace TsdLib.TestSystem.TestSequence
     /// <summary>
     /// Contains functionality to connect a test sequence to the system controller
     /// </summary>
-    public abstract class TestSequenceBase : SequenceConfigCommon
+    public abstract class TestSequenceBase : MarshalByRefObject, IDisposable
     {
         /// <summary>
         /// Gets an <see cref="ICancellationManager"/> object responsible for cancelling the test sequence due to error or user abort.
@@ -147,15 +146,33 @@ namespace TsdLib.TestSystem.TestSequence
             _testInfo.Add(new TestInfo(instrumentType + " " + instrument.FirmwareVersionDescriptor, instrument.FirmwareVersion));
         }
 
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         /// <summary>
         /// Dispose of the <see cref="IInstrumentCollection"/>
         /// </summary>
-        /// <param name="disposing">True to dispose manaeged resources.</param>
-        protected override void Dispose(bool disposing)
+        /// <param name="disposing">True to dispose managed resources.</param>
+        protected virtual void Dispose(bool disposing)
         {
             if (disposing && Instruments != null)
                 Instruments.Dispose();
-            base.Dispose(disposing);
+        }
+
+        /// <summary>
+        /// Obtains a lifetime service object to control the lifetime policy for this instance.
+        /// </summary>
+        /// <returns>null</returns>
+        public override object InitializeLifetimeService()
+        {
+            return null;
         }
     }
 }

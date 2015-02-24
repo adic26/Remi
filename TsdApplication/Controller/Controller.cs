@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using $safeprojectname$.Configuration;
-using $safeprojectname$.View;
+using $safeprojectname$.UI.Forms;
 using TsdLib.Configuration;
 using TsdLib.Configuration.Connections;
 using TsdLib.Measurements;
@@ -10,7 +10,7 @@ using TsdLib.TestSystem.TestSequence;
 
 namespace $safeprojectname$
 {
-    public class Controller : ControllerBase<$safeprojectname$View, SequentialTestSequence<StationConfig, ProductConfig, TestConfig>, StationConfig, ProductConfig, TestConfig>
+    public class Controller : ControllerBase<$safeprojectname$View, StationConfig, ProductConfig, TestConfig>
     {
         public Controller(ITestDetails testDetails, IConfigConnection databaseConnection, bool localDomain)
             : base(testDetails, databaseConnection, localDomain)
@@ -34,7 +34,7 @@ namespace $safeprojectname$
             {
                 string[] instrumentHelperCsFiles = System.IO.Directory.GetFiles(@"Instruments\Helpers", "*.cs");
                 string[] instrumentHelperVbFiles = System.IO.Directory.GetFiles(@"Instruments\Helpers", "*.vb");
-                BasicCodeParser instrumentHelperParser = new BasicCodeParser();
+                TsdLib.BasicCodeParser instrumentHelperParser = new TsdLib.BasicCodeParser();
                 codeCompileUnits.AddRange(instrumentHelperCsFiles.Concat(instrumentHelperVbFiles).Select(xmlFile => instrumentHelperParser.Parse(new System.IO.StreamReader(xmlFile))));
             }
 

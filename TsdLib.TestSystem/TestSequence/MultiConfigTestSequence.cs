@@ -42,7 +42,7 @@ namespace TsdLib.TestSystem.TestSequence
                 AddTestInfo(new TestInfo(productConfig.CommonBaseTypeName, productConfig.Name));
                 foreach (TTestConfig testConfig in testConfigs)
                     AddTestInfo(new TestInfo(testConfig.CommonBaseTypeName, testConfig.Name));
-                AddTestInfo(new TestInfo(CommonBaseTypeName, GetType().Name));
+                AddTestInfo(new TestInfo("SequenceConfigCommon", GetType().Name));
 
                 Trace.WriteLine("Starting pre-test at " + DateTime.Now);
 

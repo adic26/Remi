@@ -1,4 +1,4 @@
-﻿namespace TsdLibStarterKitInstaller
+﻿namespace TsdLibStarterKit
 {
     partial class SelectPackagesForm
     {
@@ -33,6 +33,8 @@
             this.columnHeader_PackageVersion = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader_Description = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button_OK = new System.Windows.Forms.Button();
+            this.button_SelectAll = new System.Windows.Forms.Button();
+            this.button_SelectNone = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listView_Packages
@@ -47,7 +49,7 @@
             this.columnHeader_Description});
             this.listView_Packages.Location = new System.Drawing.Point(12, 12);
             this.listView_Packages.Name = "listView_Packages";
-            this.listView_Packages.Size = new System.Drawing.Size(745, 236);
+            this.listView_Packages.Size = new System.Drawing.Size(745, 234);
             this.listView_Packages.TabIndex = 0;
             this.listView_Packages.UseCompatibleStateImageBehavior = false;
             this.listView_Packages.View = System.Windows.Forms.View.Details;
@@ -69,14 +71,37 @@
             // 
             // button_OK
             // 
+            this.button_OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.button_OK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button_OK.Location = new System.Drawing.Point(12, 254);
+            this.button_OK.Location = new System.Drawing.Point(12, 252);
             this.button_OK.Name = "button_OK";
             this.button_OK.Size = new System.Drawing.Size(101, 32);
             this.button_OK.TabIndex = 1;
             this.button_OK.Text = "OK";
             this.button_OK.UseVisualStyleBackColor = true;
             this.button_OK.Click += new System.EventHandler(this.button_OK_Click);
+            // 
+            // button_SelectAll
+            // 
+            this.button_SelectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.button_SelectAll.Location = new System.Drawing.Point(549, 253);
+            this.button_SelectAll.Name = "button_SelectAll";
+            this.button_SelectAll.Size = new System.Drawing.Size(101, 31);
+            this.button_SelectAll.TabIndex = 2;
+            this.button_SelectAll.Text = "Select All";
+            this.button_SelectAll.UseVisualStyleBackColor = true;
+            this.button_SelectAll.Click += new System.EventHandler(this.button_SelectAll_Click);
+            // 
+            // button_SelectNone
+            // 
+            this.button_SelectNone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.button_SelectNone.Location = new System.Drawing.Point(656, 253);
+            this.button_SelectNone.Name = "button_SelectNone";
+            this.button_SelectNone.Size = new System.Drawing.Size(101, 31);
+            this.button_SelectNone.TabIndex = 3;
+            this.button_SelectNone.Text = "Select None";
+            this.button_SelectNone.UseVisualStyleBackColor = true;
+            this.button_SelectNone.Click += new System.EventHandler(this.button_SelectNone_Click);
             // 
             // SelectPackagesForm
             // 
@@ -85,6 +110,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(769, 296);
             this.ControlBox = false;
+            this.Controls.Add(this.button_SelectNone);
+            this.Controls.Add(this.button_SelectAll);
             this.Controls.Add(this.button_OK);
             this.Controls.Add(this.listView_Packages);
             this.Name = "SelectPackagesForm";
@@ -100,5 +127,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader_PackageName;
         private System.Windows.Forms.ColumnHeader columnHeader_PackageVersion;
         private System.Windows.Forms.ColumnHeader columnHeader_Description;
+        private System.Windows.Forms.Button button_SelectAll;
+        private System.Windows.Forms.Button button_SelectNone;
     }
 }

@@ -63,10 +63,8 @@
     <None Include="TsdLib.Instrument.Telnet.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
+  <Import Project="$(SolutionDir)\TsdLib.Build\build\TsdLib.Build.targets" />
+
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -79,14 +77,4 @@
     <Exec Command="nuget push $(ProjectName).%(AssemblyVersion.Version).nupkg -source \\fsg52ykf\ReliabilityTSD\TsdLib\Packages_Experimental\" WorkingDirectory="$(TargetDir)" />
   </Target>
     -->
-  <UsingTask AssemblyFile="C:\Users\jmckee\Source\Repos\TsdLib\TsdLib.Build\bin\$(Configuration)\TsdLib.Build.dll" TaskName="ApplySemanticVersioning" />
-  <UsingTask AssemblyFile="C:\Users\jmckee\Source\Repos\TsdLib\TsdLib.Build\bin\$(Configuration)\TsdLib.Build.dll" TaskName="NuGetPack" />
-  <Target Name="BeforeBuild">
-    <ApplySemanticVersioning AssemblyInfoFilePath="$(ProjectDir)Properties\AssemblyInfo.cs" />
-  </Target>
-  <Target Name="AfterBuild">
-    <NuGetPack OutputFolder="$(TargetDir)" TargetFile="$(ProjectPath)" Configuration="$(ConfigurationName)">
-      <Output TaskParameter="OutputPackage" ItemName="NuGetPackage" />
-    </NuGetPack>
-  </Target>
 </Project>

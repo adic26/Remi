@@ -76,7 +76,6 @@
     <Compile Include="Configuration\StationConfig.cs" />
     <Compile Include="Sequences\AdbWlan.cs" />
     <Compile Include="Sequences\DummySequence2.cs" />
-    <Compile Include="Sequences\InvalidConfigFileException.cs" />
     <Compile Include="Sequences\TelnetWiFiTest.cs" />
     <Compile Include="TestClientProgram.cs" />
     <Compile Include="Configuration\TestConfig.cs" />

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using TsdLib.Configuration;
+using System.Configuration;
+//using $safeprojectname$.Configuration.Connections;
 using TsdLib.Configuration.Common;
 using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Managers;
@@ -54,8 +55,11 @@ namespace $safeprojectname$
 
                 ITestDetails testDetails = new TestDetails(testSystemName, testSystemVersion, testSystemMode);
 
+#if REMICONTROL
+                IConfigConnection sharedConfigConnection = new $safeprojectname$.Configuration.Connections.DatabaseConfigConnection(testSystemVersionMask);
+#else
                 IConfigConnection sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation), testSystemVersionMask);
-
+#endif
                 if (args.Contains(SeqFolderArg))
                 {
                     synchronizeSequences(testDetails, sharedConfigConnection, getConfigValue(SeqFolderArg), true);
@@ -104,7 +108,7 @@ namespace $safeprojectname$
             //}
             foreach (string seqFile in Directory.EnumerateFiles(sequenceFolder))
             {
-                Trace.WriteLine("Found" + seqFile);
+                Trace.WriteLine("Found " + seqFile);
                 //TODO: only replace if newer?
                 sequenceConfigManager.Add(new SequenceConfigCommon(seqFile, storeInDatabase, assemblyReferences));
             }

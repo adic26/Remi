@@ -16,14 +16,15 @@ using EnvDTE;
 using NuGet;
 using NuGet.VisualStudio;
 
-namespace TsdLibStarterKitInstaller
+namespace TsdLibStarterKit
 {
-    public class Wizard : IWizard
+    public class TsdLibStarterKitWizard : IWizard
     {
         [Import]
         internal IVsPackageInstaller NuGetPackageInstaller { get; set; }
 
-        private Dictionary<string,string> _packageRepositories; 
+        //private Dictionary<string,string> _packageRepositories;
+        private List<PackageRepository> _packageRepositoryStructs; 
 
         public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
         {
@@ -38,10 +39,10 @@ namespace TsdLibStarterKitInstaller
                 
                 XmlSchema schema;
                 
-                using (Stream schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TsdLibStarterKitInstaller.WizardData.xsd"))
+                using (Stream schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TsdLibStarterKit.WizardData.xsd"))
                 {
                     if (schemaStream == null)
-                        throw new WizardBackoutException("The XML schema: WizardData.xsd is missing from TsdLibStarterKitInstaller.dll");
+                        throw new WizardBackoutException("The XML schema: WizardData.xsd is missing from TsdLibStarterKit.dll");
                     schema = XmlSchema.Read(schemaStream, null);
                 }
                 XNamespace ns = schema.TargetNamespace;
@@ -55,8 +56,17 @@ namespace TsdLibStarterKitInstaller
 
                 wizardRootElement.Validate(schemaObject, schemaSet, (o, e) => Debug.Fail("TsdLibStarterKit.vstemplate could not be validated against schema: TsdLib.WizardData.xsd."));
 
-                _packageRepositories = wizardRootElement.Elements(ns + "NuGetPackageRepository")
-                    .ToDictionary(e => e.Attribute("Name").Value, e => e.Attribute("Path").Value);
+                //_packageRepositories = wizardRootElement.Elements(ns + "NuGetPackageRepository")
+                //    .ToDictionary(e => e.Attribute("Name").Value, e => e.Attribute("Location").Value);
+
+                _packageRepositoryStructs = new List<PackageRepository>();
+                foreach (XElement repositoryElement in wizardRootElement.Elements(ns + "NuGetPackageRepository"))
+                {
+                    PackageRepository repositoryStruct = new PackageRepository(repositoryElement.Attribute("Name").Value, repositoryElement.Attribute("Location").Value);
+                    foreach (XElement packageElement in repositoryElement.Elements(ns + "NuGetPackage"))
+                        repositoryStruct.Packages.Add(packageElement.Attribute("Name").Value);
+                    _packageRepositoryStructs.Add(repositoryStruct);
+                }
             }
             catch (Exception ex)
             {
@@ -71,34 +81,48 @@ namespace TsdLibStarterKitInstaller
             {
                 if (NuGetPackageInstaller == null)
                 {
-                    MessageBox.Show("NuGet Package Manager not available. Please add packages manually from the following locations: " + string.Join(Environment.NewLine, _packageRepositories));
+                    MessageBox.Show("NuGet Package Manager not available. Please add packages manually from the following locations: " + string.Join(Environment.NewLine, _packageRepositoryStructs.Select(r => r.Name + ":" + r.Location)));
                     return;
                 }
 
                 Settings nugetSettings = new Settings(new PhysicalFileSystem(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NuGet")));
                 nugetSettings.SetValue("packageRestore", "enabled", "True");
                 nugetSettings.SetValue("packageRestore", "automatic", "True");
-                nugetSettings.SetValues("packageSources", _packageRepositories.ToList());
+                nugetSettings.SetValues("packageSources", _packageRepositoryStructs.ToDictionary(r => r.Name, r => r.Location).ToList());
                 nugetSettings.GetValues("activePackageSource", false);
                 nugetSettings.DeleteValue("activePackageSource", nugetSettings.GetValues("activePackageSource", false).First().Key);
-                nugetSettings.SetValue("activePackageSource", _packageRepositories.First().Key, _packageRepositories.First().Value);
+                nugetSettings.SetValue("activePackageSource", _packageRepositoryStructs.First().Name, _packageRepositoryStructs.First().Location);
 
-                foreach (var repoKvp in _packageRepositories)
+                foreach (PackageRepository packageRepository in _packageRepositoryStructs)
                 {
-                    IPackageRepository repo = PackageRepositoryFactory.Default.CreateRepository(repoKvp.Value);
+                    IPackageRepository repo = PackageRepositoryFactory.Default.CreateRepository(packageRepository.Location);
 
-                    if (repo.Source.StartsWith("http") && repo.SupportsPrereleasePackages) //It is an OData feed
+                    if (repo.Source.StartsWith("http") && repo.SupportsPrereleasePackages) //It is an OData feed, we can read parameters on the IPackages
                     {
-                        //If using OData repository, use the IPackage.IsLatestVersion property - should also try reading tags
 #if DEBUG
                         IQueryable<IPackage> packages = repo.GetPackages().Where(p => p.IsAbsoluteLatestVersion);
 #else
                         IQueryable<IPackage> packages = repo.GetPackages().Where(p => p.IsLatestVersion);
 #endif
+
+                        //This expression isn't supported on the server, so we need to iterate the packages and use if statements
+                        //TODO: figure out a different expression that doesn't require the server to perform evaluations
+                        //foreach (IPackage requiredPackage in packages.Where(p => packagesSpecifiedInTemplate.Contains(p.Id)))
+                        //    NuGetPackageInstaller.InstallPackage(repo, project, requiredPackage.Id, requiredPackage.Version.ToString(), false, false);
+
+                        //this is very slow, requiring server-side evaluations
+                        //List<string> packagesSpecifiedInTemplate = packageRepository.Packages;
+                        //foreach (IPackage package in packages)
+                        //{
+                        //    if ((package.Tags != null && package.Tags.Contains("starterkit-required"))/* || packagesSpecifiedInTemplate.Contains(package.Id)*/)
+                        //        NuGetPackageInstaller.InstallPackage(repo, project, package.Id, package.Version.ToString(), false, false);
+                        //}
+
                         foreach (IPackage requiredPackage in packages.Where(p => p.Tags.Contains("starterkit-required")))
                             NuGetPackageInstaller.InstallPackage(repo, project, requiredPackage.Id, requiredPackage.Version.ToString(), false, false);
 
-                        using (SelectPackagesForm form = new SelectPackagesForm(repoKvp.Key, packages.Where(p => p.Tags.Contains("starterkit-optional"))))
+
+                        using (SelectPackagesForm form = new SelectPackagesForm(packageRepository.Name, packages.Where(p => p.Tags.Contains("starterkit-optional"))))
                         {
                             form.ShowDialog();
                             foreach (IPackage selectedPackage in form.SelectedPackages)
@@ -112,7 +136,7 @@ namespace TsdLibStarterKitInstaller
                             .Select(g => g.OrderBy(p => p.Version)
                             .Last());
 
-                        using (SelectPackagesForm form = new SelectPackagesForm(repoKvp.Key, packages))
+                        using (SelectPackagesForm form = new SelectPackagesForm(packageRepository.Name, packages))
                         {
                             form.ShowDialog();
                             foreach (IPackage selectedPackage in form.SelectedPackages)
@@ -142,6 +166,20 @@ namespace TsdLibStarterKitInstaller
         public bool ShouldAddProjectItem(string filePath) { return true; }
 
         #endregion
+    }
+
+    struct PackageRepository
+    {
+        public string Name;
+        public string Location;
+        public List<string> Packages;
+
+        public PackageRepository(string name, string location)
+        {
+            Name = name;
+            Location = location;
+            Packages = new List<string>();
+        }
     }
  
 }
