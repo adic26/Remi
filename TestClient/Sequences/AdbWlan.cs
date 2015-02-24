@@ -1,44 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestClient.Configuration;
+﻿using TestClient.Configuration;
 using TestClient.Instruments;
 using TsdLib.Measurements;
 using TsdLib.TestSystem.TestSequence;
 
 namespace TestClient.Sequences
 {
-    public class AdbWlan : TestSequenceBase<StationConfig, ProductConfig, TestConfig>
+    public class AdbWlan : SequentialTestSequence<StationConfig, ProductConfig, TestConfig>
     {
         protected override void ExecuteTest(System.Threading.CancellationToken token, StationConfig stationConfig, ProductConfig productConfig, TestConfig testConfig)
         {
-            var BlackBerryWlan = Aos_BCM4339.Connect();
+            var blackBerryWlan = Aos_BCM4339.Connect();
 
-            TestInfo.Add(new TestInfo("WLAN Chipset Firmware Version", BlackBerryWlan.GetChipsetFirmwareVersion()));
+            AddTestInfo(new TestInfo("WLAN Chipset Firmware Version", blackBerryWlan.GetChipsetFirmwareVersion()));
 
-            BlackBerryWlan.DisableWlan();
-            BlackBerryWlan.EnableWlan();
-            BlackBerryWlan.StopTx();
-            BlackBerryWlan.DisableDriver();
-            BlackBerryWlan.DisableMinimumPowerControl();
-            BlackBerryWlan.DisableWatchdog();
-            BlackBerryWlan.EnableDriver();
+            blackBerryWlan.DisableWlan();
+            blackBerryWlan.EnableWlan();
+            blackBerryWlan.StopTx();
+            blackBerryWlan.DisableDriver();
+            blackBerryWlan.DisableMinimumPowerControl();
+            blackBerryWlan.DisableWatchdog();
+            blackBerryWlan.EnableDriver();
 
-            BlackBerryWlan.SetCountryCode("US");
-            BlackBerryWlan.GetCountry();
-            BlackBerryWlan.SetBand("b");
-            BlackBerryWlan.SetRate(2, "r", 1, 20);
-            BlackBerryWlan.SetChannel(1, 20);
+            blackBerryWlan.SetCountryCode("US");
+            blackBerryWlan.GetCountry();
+            blackBerryWlan.SetBand("b");
+            blackBerryWlan.SetRate(2, "r", 1, 20);
+            blackBerryWlan.SetChannel(1, 20);
 
-            BlackBerryWlan.EnableForceCal();
-            BlackBerryWlan.GetActivecal();
-            BlackBerryWlan.EnableScanSuppress();
-            BlackBerryWlan.EnableClosedLoopPowerControl();
-            BlackBerryWlan.SetTxPowerDefault();
-            BlackBerryWlan.StartTx();
-            BlackBerryWlan.StopTx();
+            blackBerryWlan.EnableForceCal();
+            blackBerryWlan.GetActivecal();
+            blackBerryWlan.EnableScanSuppress();
+            blackBerryWlan.EnableClosedLoopPowerControl();
+            blackBerryWlan.SetTxPowerDefault();
+            blackBerryWlan.StartTx();
+            blackBerryWlan.StopTx();
         }
     }
 }

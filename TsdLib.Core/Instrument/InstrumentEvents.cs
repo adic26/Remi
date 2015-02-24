@@ -15,12 +15,28 @@ namespace TsdLib.Instrument
         /// <summary>
         /// Fire the Connected event.
         /// </summary>
-        /// <param name="sender">Factory responsible for raising the event. Should pass 'this'.</param>
+        /// <param name="sender">Factory responsible for raising the event.</param>
         /// <param name="instrument">Newly connected instrument object.</param>
         public static void FireConnected(object sender, IInstrument instrument)
         {
             if (Connected != null)
                 Connected(sender, instrument);
+        }
+
+        /// <summary>
+        /// Event fired when a new instrument is attached to the system.
+        /// </summary>
+        public static event EventHandler<string> Attached;
+
+        /// <summary>
+        /// Fire the Attached event.
+        /// </summary>
+        /// <param name="sender">Mechanism responsible for raising the event.</param>
+        /// <param name="address">Newly connected instrument object.</param>
+        public static void FireAttached(object sender, string address)
+        {
+            if (Attached != null)
+                Attached(sender, address);
         }
     }
 }

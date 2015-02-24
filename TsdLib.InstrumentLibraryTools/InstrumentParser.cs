@@ -33,6 +33,11 @@ namespace TsdLib.InstrumentLibraryTools
             _language = language;
         }
 
+        /// <summary>
+        /// Generates source code from the specified XML instrument definition file(s).
+        /// </summary>
+        /// <param name="file">An xml source code file to be converted to code.</param>
+        /// <returns>A string containing the source code.</returns>
         public string GenerateSourceCode(TextReader file)
         {
             CodeDomProvider provider = CodeDomProvider.CreateProvider(_language);

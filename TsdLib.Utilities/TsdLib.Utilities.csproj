@@ -38,27 +38,15 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Display\Display.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TypeConverters\EnumDescriptionConverter.cs" />
-    <Compile Include="TypeConverters\StringConversionExtensions.cs" />
-    <Compile Include="TypeEditors\EnumTypeEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TsdLib.Utilities.nuspec" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>call "$(SolutionDir)NuGetPostBuild.bat" $(ProjectPath) $(ConfigurationName)</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -66,4 +54,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <UsingTask AssemblyFile="C:\Users\jmckee\Source\Repos\TsdLib\TsdLib.Build\bin\$(Configuration)\TsdLib.Build.dll" TaskName="ApplySemanticVersioning" />
+  <UsingTask AssemblyFile="C:\Users\jmckee\Source\Repos\TsdLib\TsdLib.Build\bin\$(Configuration)\TsdLib.Build.dll" TaskName="NuGetPack" />
+  <Target Name="BeforeBuild">
+    <ApplySemanticVersioning AssemblyInfoFilePath="$(ProjectDir)Properties\AssemblyInfo.cs" />
+  </Target>
+  <Target Name="AfterBuild">
+    <NuGetPack OutputFolder="$(TargetDir)" TargetFile="$(ProjectPath)" Configuration="$(ConfigurationName)">
+      <Output TaskParameter="OutputPackage" ItemName="NuGetPackage" />
+    </NuGetPack>
+  </Target>
 </Project>

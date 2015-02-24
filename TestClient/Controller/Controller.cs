@@ -1,9 +1,8 @@
 ﻿using System.Linq;
 using TestClient.Configuration;
 using TestClient.View;
-//using TsdLib;
 using TsdLib.Configuration;
-using TsdLib.TestSystem.CodeGenerator;
+using TsdLib.Configuration.Connections;
 using TsdLib.TestSystem.Controller;
 
 namespace TestClient
@@ -25,7 +24,7 @@ namespace TestClient
                 return new System.CodeDom.CodeCompileUnit[0];
 
             string[] instrumentXmlFiles = System.IO.Directory.GetFiles("Instruments", "*.xml");
-            TsdLib.InstrumentLibraryTools.InstrumentParser instrumentXmlParser = new TsdLib.InstrumentLibraryTools.InstrumentParser(nameSpace, Language.CSharp.ToString());
+            TsdLib.InstrumentLibraryTools.InstrumentParser instrumentXmlParser = new TsdLib.InstrumentLibraryTools.InstrumentParser(nameSpace, TsdLib.CodeGenerator.Language.CSharp.ToString());
             codeCompileUnits.AddRange(instrumentXmlFiles.Select(xmlFile => instrumentXmlParser.Parse(new System.IO.StreamReader(xmlFile))));
 
             if (System.IO.Directory.Exists(@"Instruments\Helpers"))
@@ -56,7 +55,7 @@ namespace TestClient
                             DBControl.remiAPI.ScanReturnData batchInformation = remiForm.RemiData[0];
                             Details.TestSystemName = batchInformation.SelectedTestName;
                             string[] qraNumber = batchInformation.QRANumber.Split('-');
-                            Details.JobNumber = string.Join("-", qraNumber, 0, qraNumber.Length - 1);
+                            Details.RequestNumber = string.Join("-", qraNumber, 0, qraNumber.Length - 1);
                             Details.TestStage = batchInformation.TestStageName;
                             Details.TestType = batchInformation.JobName;
                             Details.UnitNumber = (uint)batchInformation.UnitNumber;
@@ -73,13 +72,13 @@ namespace TestClient
 
         protected override void PublishResults(TsdLib.Measurements.ITestResults results)
         {
-            string xmlFile = TsdLib.SpecialFolders.GetResultsFileName(results.Details, results.Summary, "xml");
+            string xmlFile = System.IO.Path.Combine(TsdLib.SpecialFolders.GetResultsFolder(results.Details.SafeTestSystemName).FullName, TsdLib.SpecialFolders.GetResultsFileName(results.Details, results.Summary, "xml"));
             string path = System.IO.Path.GetDirectoryName(xmlFile);
-            if (path == null)
+            if (string.IsNullOrWhiteSpace(path))
                 throw new System.IO.DirectoryNotFoundException("The results folder does not exist on this machine.");
             System.Diagnostics.Trace.WriteLine("Uploading results to database...");
             DBControl.DAL.Results.UploadXML(xmlFile, path, System.IO.Path.Combine(path, "PublishFailed"), System.IO.Path.Combine(path, "Published"), false, true);
-            System.Diagnostics.Trace.WriteLine("Upload complete. Results can be viewed at " + results.Details.JobNumber);
+            System.Diagnostics.Trace.WriteLine("Upload complete. Results can be viewed at " + results.Details.RequestNumber);
         }
 #endif
 
@@ -99,7 +98,7 @@ namespace TestClient
                             DBControl.remiAPI.ScanReturnData batchInformation = remiForm.RemiData[0];
                             Details.TestSystemName = batchInformation.SelectedTestName;
                             string[] qraNumber = batchInformation.QRANumber.Split('-');
-                            Details.JobNumber = string.Join("-", qraNumber, 0, qraNumber.Length - 1);
+                            Details.RequestNumber = string.Join("-", qraNumber, 0, qraNumber.Length - 1);
                             Details.TestStage = batchInformation.TestStageName;
                             Details.TestType = batchInformation.JobName;
                             Details.UnitNumber = (uint)batchInformation.UnitNumber;

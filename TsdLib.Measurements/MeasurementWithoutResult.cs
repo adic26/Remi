@@ -26,7 +26,7 @@ namespace TsdLib.Measurements
         /// <param name="comments">OPTIONAL: Any comments to include additional information.</param>
         /// <param name="description">OPTIONAL: A detailed description of the measurement.</param>
         /// <param name="parameters">OPTIONAL: A collection of MeasurementParameter objects describing the measurement conditions.</param>
-        public MeasurementWithoutResult(string measurementName, object measuredValue, string units, string[] files = null, string comments = "", string description = "", params MeasurementParameter[] parameters)
+        public MeasurementWithoutResult(string measurementName, object measuredValue, string units, string[] files = null, string comments = "", string description = "", params IMeasurementParameter[] parameters)
             : base(measurementName, measuredValue.ToString(), units, "n/a", "n/a", files, comments, description, parameters)
         {
 

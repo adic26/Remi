@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Instruments xmlns="TsdLib.Instruments.xsd">
+  <Instrument Name="Aos_BCM4339" ConnectionType="Adb" CommandDelay="200" Interfaces="IBlackBerryWlan" InitCommands="netcfg wlan0 up">
+
+    <!--Discovery-->
+    <IdQuery Response="Avengers"/>
+
+    <!--Identification-->
+    <ModelNumber Message="cat /system/build.prop | grep ro.build.id" RegEx="(?&lt;=ro.build.id=)\w+"/>
+    <SerialNumber Message="cat /system/build.prop | grep ro.build.date.utc" RegEx="(?&lt;=ro.build.date.utc=)\d+"/>
+    <FirmwareVersion Message="cat /system/build.prop | grep ro.build.version.incremental" RegEx="(?&lt;=ro.build.version.incremental=)\w+"/>
+
+    <Command Name="DisableWlan" Message="netcfg wlan0 down">
+    </Command>
+    <Command Name="EnableWlan" Message="netcfg wlan0 up">
+    </Command>
+    <Command Name="StartTx" Message="/vendor/firmware/wlutil pkteng_start 00:11:22:33:44:55 tx 100 1024 0">
+    </Command>
+    <Command Name="StopTx" Message="/vendor/firmware/wlutil pkteng_stop tx">
+    </Command>
+    <Command Name="StartRx" Message="/vendor/firmware/wlutil pkteng_start 00:00:00:C0:FF:EE rxwithack">
+    </Command>
+    <Command Name="StopRx" Message="/vendor/firmware/wlutil pkteng_stop rx">
+    </Command>
+    <Command Name="EnableDriver" Message="/vendor/firmware/wlutil up">
+    </Command>
+    <Command Name="DisableDriver" Message="/vendor/firmware/wlutil down">
+    </Command>
+    <Command Name="DisableMinimumPowerControl" Message="/vendor/firmware/wlutil mpc 0">
+    </Command>
+    <Command Name="DisableWatchdog" Message="/vendor/firmware/wlutil phy_watchdog 0">
+    </Command>
+    <Command Name="SetCountryCode" Message="/vendor/firmware/wlutil country {0}">
+      <Parameter Name="countryCode" Type="String"/>
+    </Command>
+    <Command Name="SetBand" Message="/vendor/firmware/wlutil band {0}">
+      <Parameter Name="band_try_auto" Type="String"/>
+    </Command>
+    <Command Name="SetRate" Message="/vendor/firmware/wlutil {0}g_rate -{1} {2} -b {3}">
+      <Parameter Name="band" Type="Int32"/>
+      <!--2,5-->
+      <Parameter Name="rateType" Type="String"/>
+      <!--r, h, v    add -s 1 parameter for 1 spatial stream-->
+      <Parameter Name="rate" Type="Double"/>
+      <Parameter Name="bandwidth" Type="Int32"/>
+    </Command>
+    <Command Name="SetChannel" Message="/vendor/firmware/wlutil chanspec {0}/{1}">
+      <!--try adding this after for auto band select;/vendor/firmware/wlutil band {0}-->
+      <Parameter Name="channel" Type="Int32"/>
+      <Parameter Name="bandwidth" Type="Int32"/>
+    </Command>
+    <Command Name="EnableForceCal" Message="/vendor/firmware/wlutil phy_forcecal 1">
+    </Command>
+    <Command Name="EnableScanSuppress" Message="/vendor/firmware/wlutil scansuppress 1">
+    </Command>
+    <Command Name="EnableClosedLoopPowerControl" Message="/vendor/firmware/wlutil phy_txpwrctrl 1">
+    </Command>
+    <Command Name="SetMimoTxBw" Message="/vendor/firmware/wlutil mimo_txbw {0}">
+      <Parameter Name="bandwidth" Type="Int32"/>
+    </Command>
+    <Command Name="SetTxPowerDefault" Message="/vendor/firmware/wlutil txpwr1 -1">
+    </Command>
+    <Command Name="SetTxPower" Message="/vendor/firmware/wlutil txpwr1 -d {0}">
+      <Parameter Name="powerLevel" Type="Double"/>
+    </Command>
+    <Command Name="SetTxPowerOverrideLimits" Message="/vendor/firmware/wlutil txpwr1 -d {0} -o">
+      <Parameter Name="powerLevel" Type="Double"/>
+    </Command>
+    <Command Name="ResetCounter" Message="/vendor/firmware/wlutil reset_cnts">
+    </Command>
+
+    <Query Name="GetChipsetFamily" Message="/vendor/firmware/wlutil revinfo | grep chipnum" RegEx="(?&lt;=chipnum 0x)\d+" ReturnType="String">
+    </Query>
+    <Query Name="GetChipsetFirmwareType" Message="/vendor/firmware/wlutil ver" RegEx="(?&lt;=version (\d+\.){3}\d+ \().*(?=\))" ReturnType="String">
+    </Query>
+    <Query Name="GetChipsetFirmwareVersion" Message="/vendor/firmware/wlutil ver" RegEx="(?&lt;=version )(\d+\.){3}\d+" ReturnType="String">
+    </Query>
+    <Query Name="IsDriverEnabled" Message="/vendor/firmware/wlutil isup" ReturnType="Boolean">
+    </Query>
+    <Query Name="GetCountry" Message="/vendor/firmware/wlutil country" ReturnType="String">
+    </Query>
+    <Query Name="GetActivecal" Message="/vendor/firmware/wlutil phy_activecal" ReturnType="Boolean">
+    </Query>
+    <Query Name="GetRxFrameCount" Message="/vendor/firmware/wlutil counters | grep rxdfrmmcast" RegEx="(?&lt;=rxdfrmmcast )\d+" ReturnType="Int32">
+    </Query>
+
+  </Instrument>
+</Instruments>

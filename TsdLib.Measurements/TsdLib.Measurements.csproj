@@ -36,14 +36,18 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoolMeasurement.cs" />
+    <Compile Include="MeasurementBase.cs" />
+    <Compile Include="MeasurementParameter.cs" />
     <Compile Include="MeasurementWithoutResult.cs" />
     <Compile Include="Measurement{T}.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestInfo.cs" />
+    <Compile Include="TestResultsCollection.cs" />
+    <Compile Include="TestSummary.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TsdLib.Core\TsdLib.Core.csproj">
@@ -57,12 +61,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="TsdLib.Measurements.nuspec" />
+    <None Include="TsdLib.Measurements.nuspec">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>call "$(SolutionDir)NuGetPostBuild.bat" $(ProjectPath) $(ConfigurationName)</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -70,4 +73,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <UsingTask AssemblyFile="C:\Users\jmckee\Source\Repos\TsdLib\TsdLib.Build\bin\$(Configuration)\TsdLib.Build.dll" TaskName="ApplySemanticVersioning" />
+  <UsingTask AssemblyFile="C:\Users\jmckee\Source\Repos\TsdLib\TsdLib.Build\bin\$(Configuration)\TsdLib.Build.dll" TaskName="NuGetPack" />
+  <Target Name="BeforeBuild">
+    <ApplySemanticVersioning AssemblyInfoFilePath="$(ProjectDir)Properties\AssemblyInfo.cs" />
+  </Target>
+  <Target Name="AfterBuild">
+    <NuGetPack OutputFolder="$(TargetDir)" TargetFile="$(ProjectPath)" Configuration="$(ConfigurationName)">
+      <Output TaskParameter="OutputPackage" ItemName="NuGetPackage" />
+    </NuGetPack>
+  </Target>
 </Project>

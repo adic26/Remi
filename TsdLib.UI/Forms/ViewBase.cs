@@ -3,8 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 using TsdLib.Measurements;
-//TODO: make ViewBase the minimal implemtation of IView - return null - or maybe Base implementation - for all controls
-//nulls - ConfigControl, TestDetailsControl, TestSequenceControl, TraceListenerControl, TestInfoDisplayControl
+
 namespace TsdLib.UI.Forms
 {
     /// <summary>
@@ -13,7 +12,7 @@ namespace TsdLib.UI.Forms
     /// </summary>
     public partial class ViewBase : Form, IView
     {
-        public event EventHandler<CancelEventArgs> UIClosing;
+        public virtual ITestCaseControl TestCaseControl { get { return testCasesMenuItem; } }
 
         public virtual IConfigControl ConfigControl { get { return multiConfigControl; } }
 
@@ -27,7 +26,7 @@ namespace TsdLib.UI.Forms
 
         public virtual ITraceListenerControl TraceListenerControl { get { return traceListenerTextBoxControl; } }
 
-        public virtual IProgressControl ProgressControl { get { return null; } }
+        public virtual IProgressControl ProgressControl { get { return progressControl; } }
 
         /// <summary>
         /// Initializes a new instance of the base UI form.
@@ -35,6 +34,7 @@ namespace TsdLib.UI.Forms
         protected ViewBase()
         {
             InitializeComponent();
+
         }
 
         /// <summary>
@@ -52,10 +52,10 @@ namespace TsdLib.UI.Forms
         }
 
         /// <summary>
-        /// Add a <see cref="MeasurementBase"/> to the DataGridView.
+        /// Add an <see cref="IMeasurement"/> to the DataGridView.
         /// </summary>
         /// <param name="measurement">Measurement to add.</param>
-        public virtual void AddMeasurement(MeasurementBase measurement)
+        public virtual void AddMeasurement(IMeasurement measurement)
         {
             measurementDataGridViewControl.AddMeasurement(measurement);
         }
@@ -64,9 +64,15 @@ namespace TsdLib.UI.Forms
         /// Add a general data object to the UI. Override to perform specific operations based on the type of the internal data value.
         /// </summary>
         /// <param name="data">Data to add.</param>
-        public virtual void AddData(object data)
+        public void AddData(object data)
         {
-            Trace.WriteLine("Received data: " + data);
+            addData((dynamic)data);
+        }
+
+        private void addData(object data)
+        {
+            Trace.WriteLine(string.Format("Unsupported data type received: {0}", data.GetType().Name));
+            Trace.WriteLine(string.Format("String representation: {0}", data));
         }
 
         private void ViewBase_FormClosing(object sender, FormClosingEventArgs e)
@@ -84,5 +90,10 @@ namespace TsdLib.UI.Forms
         {
             Text = title;
         }
+
+        /// <summary>
+        /// Event fired when the UI is about to close.
+        /// </summary>
+        public event EventHandler<CancelEventArgs> UIClosing;
     }
 }

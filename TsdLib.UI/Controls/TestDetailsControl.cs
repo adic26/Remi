@@ -1,9 +1,9 @@
 ﻿using System;
-using TsdLib.UI.Controls.Base;
+using System.Windows.Forms;
 
 namespace TsdLib.UI.Controls
 {
-    public partial class TestDetailsControl : TestDetailsControlBase
+    public partial class TestDetailsControl : UserControl, ITestDetailsControl
     {
         public TestDetailsControl()
         {
@@ -12,7 +12,16 @@ namespace TsdLib.UI.Controls
 
         private void button_EditTestDetails_Click(object sender, EventArgs e)
         {
-            OnEditTestDetails(checkBox_DetailsFromDatabase.Checked);
+            EventHandler<bool> handler = EditTestDetails;
+            if (handler != null)
+                handler(this, checkBox_DetailsFromDatabase.Checked);
         }
+
+        public void SetState(State state)
+        {
+            Enabled = state.HasFlag(State.ReadyToTest);
+        }
+
+        public event EventHandler<bool> EditTestDetails;
     }
 }

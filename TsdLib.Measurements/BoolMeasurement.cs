@@ -26,7 +26,7 @@ namespace TsdLib.Measurements
         /// <param name="comments">OPTIONAL: Any comments to include additional information.</param>
         /// <param name="description">OPTIONAL: A detailed description of the measurement.</param>
         /// <param name="parameters">OPTIONAL: A collection of MeasurementParameter objects describing the measurement conditions.</param>
-        public BoolMeasurement(string measurementName, bool measuredValue, bool expectedValue, string[] files = null, string comments = null, string description = null, params MeasurementParameter[] parameters)
+        public BoolMeasurement(string measurementName, bool measuredValue, bool expectedValue, string[] files = null, string comments = null, string description = null, params IMeasurementParameter[] parameters)
             : base(measurementName, measuredValue, "Boolean", expectedValue, expectedValue, files, comments, description, parameters) { }
     }
 }

@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace TsdLib.Instrument.Adb
 {
+    /// <summary>
+    /// Contains functionality to discover and connect to instruments via adb.exe.
+    /// </summary>
     public class AdbFactory : FactoryBase<AdbConnection>
     {
         private const string AdbFileLocation = @"platform-tools\adb.exe";
@@ -50,7 +52,17 @@ namespace TsdLib.Instrument.Adb
 
         protected override AdbConnection CreateConnection(string address, int defaultDelay, params ConnectionSettingAttribute[] attributes)
         {
-            using (Process rootProcess = Process.Start(AdbFileLocation, "root"))
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                FileName = AdbFileLocation,
+                Arguments = "root",
+                RedirectStandardError = true,
+                RedirectStandardOutput = true
+            };
+
+            using (Process rootProcess = Process.Start(startInfo))
             {
                 if (rootProcess == null)
                     throw new AdbConnectException("Could not start adb.exe to send the root command");
@@ -58,7 +70,7 @@ namespace TsdLib.Instrument.Adb
                 if (!rootProcess.HasExited)
                     throw new AdbConnectException("Root process did not terminate");
             }
-            AdbConnection conn = new AdbConnection(address);
+            AdbConnection conn = new AdbConnection(address, AdbFileLocation);
 
             return conn;
         }

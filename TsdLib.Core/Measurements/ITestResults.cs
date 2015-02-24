@@ -10,11 +10,14 @@ namespace TsdLib.Measurements
         ITestDetails Details { get; }
         ITestSummary Summary { get; }
         List<ITestInfo> TestInfo { get; }
-        IEnumerable<MeasurementBase> Measurements { get; }
+        IEnumerable<IMeasurement> Measurements { get; }
         string SchemaFile { get; }
 
+        //TODO: move this to ITestResultsSaver
         string SaveXml();
+        string SaveXml(DirectoryInfo directory);
         string SaveCsv();
+        string SaveCsv(DirectoryInfo directory);
         string SaveBinary(DirectoryInfo directory);
     }
 

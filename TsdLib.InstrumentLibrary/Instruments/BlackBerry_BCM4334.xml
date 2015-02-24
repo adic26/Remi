@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Instruments xmlns="TsdLib.Instruments.xsd">
+  <Instrument Name="BlackBerry_BCM4334" ConnectionType="Telnet" CommandDelay="200" Interfaces="IBlackBerryWlan" InitCommands="echo fw_pltenable::1>>/pps/services/wifi/escreen">
+    
+    <!--Discovery-->
+    <IdQuery Response="BlackBerry Device"/>
+    
+    <!--Identification-->
+    <ModelNumber Message="cat /pps/services/hw_info/inventory | grep Board_Type::" RegEx="(?&lt;=Board_Type::).*"/>
+    <SerialNumber Message="cat /pps/system/nvram/deviceinfo | grep BSN::" RegEx="(?&lt;=BSN::).*"/>
+    <FirmwareVersion Message="cat /pps/services/deviceproperties | grep scmbundle::" RegEx="(?&lt;=scmbundle::).*"/>
+
+    <Command Name="DisableWlan" Message="ifconfig bcm0 down">
+    </Command>
+    <Command Name="EnableWlan" Message="ifconfig bcm0 up">
+    </Command>
+    <Command Name="StartTx" Message="wl_bcm4334 pkteng_start 00:11:22:33:44:55 tx 100 1024 0">
+    </Command>
+    <Command Name="StopTx" Message="wl_bcm4334 pkteng_stop tx">
+    </Command>
+    <Command Name="StartRx" Message="wl_bcm4334 pkteng_start 00:00:00:C0:FF:EE rxwithack">
+    </Command>
+    <Command Name="StopRx" Message="wl_bcm4334 pkteng_stop rx">
+    </Command>
+    <Command Name="EnableDriver" Message="wl_bcm4334 up">
+    </Command>
+    <Command Name="DisableDriver" Message="wl_bcm4334 down">
+    </Command>
+    <Command Name="DisableMinimumPowerControl" Message="wl_bcm4334 mpc 0">
+    </Command>
+    <Command Name="DisableWatchdog" Message="">
+    </Command>
+    <Command Name="SetCountryCode" Message="wl_bcm4334 country {0}">
+      <Parameter Name="countryCode" Type="String"/>
+    </Command>
+    <Command Name="SetBand" Message="wl_bcm4334 band {0}">
+      <Parameter Name="band" Type="String"/>
+    </Command>
+    <Command Name="SetRate" Message="wl_bcm4334 {1} {2}">
+      <Parameter Name="band" Type="Int32"/>
+      <!--2,5-->
+      <Parameter Name="rateType" Type="String"/>
+      <!--rate for b/g/a, nrate -m for n-->
+      <Parameter Name="rate" Type="Double"/>
+      <Parameter Name="bandwidth" Type="Int32"/>
+    </Command>
+    <!--Need to come up with a plan for HT40-->
+    <Command Name="SetChannel" Message="wl_bcm4334 channel {0}">
+      <Parameter Name="channel" Type="Int32"/>
+      <Parameter Name="bandwidth" Type="Int32"/>
+    </Command>
+    <Command Name="EnableForceCal" Message="">
+    </Command>
+    <Command Name="EnableScanSuppress" Message="wl_bcm4334 scansuppress 1">
+    </Command>
+    <Command Name="EnableClosedLoopPowerControl" Message="">
+    </Command>
+    <Command Name="SetMimoTxBw" Message="wl_bcm4334 mimio_txbw {0}">
+      <Parameter Name="bandwidth" Type="Int32"/>
+    </Command>
+    <Command Name="SetTxPowerDefault" Message="wl_bcm4334 txpwr1 -1">
+    </Command>
+    <Command Name="SetTxPower" Message="wl_bcm4334 txpwr1 -d {0}">
+      <Parameter Name="powerLevel" Type="Double"/>
+    </Command>
+    <Command Name="SetTxPowerOverrideLimits" Message="wl_bcm4334 txpwr1 -d {0} -o">
+      <Parameter Name="powerLevel" Type="Double"/>
+    </Command>
+    <Command Name="ResetCounter" Message="wl_bcm4334 reset_cnts">
+    </Command>
+
+    <Command Name="EnableMimoBwCap" Message="wl_bcm4334 mimo_bw_cap 1">
+      </Command>
+    <Command Name="SetChannel" Message="wl_bcm4334 chanspec –c {0} -b {1} -w {2} -s 1">
+      <Parameter Name="channel" Type="Int32"/>
+      <Parameter Name="band" Type="Int32"/>
+      <Parameter Name="bandwidth" Type="Int32"/>
+    </Command>
+    <Command Name="DisableMimoPreamble" Message="wl_bcm4334 mimo_preamble 0">
+      </Command>
+    <Command Name="DisableShortGuardInterval" Message="wl_bcm4334 sgi_tx 0">
+      </Command>
+    <Command Name="SetRate" Message="wl_bcm4334 nrate -m {0} -s {1}">
+      <Parameter Name="rate" Type="Double"/>
+      <Parameter Name="stfMode" Type="Int32"/>
+    </Command>
+    <Command Name="SetTxPowerIndex" Message="wl_bcm4334  phy_txpwrindex {0}">
+      <Parameter Name="powerIndex" Type="Int32"/>
+    </Command>
+    
+    
+    
+    <Query Name="GetChipsetFamily" Message="wl_bcm_dhd revinfo | grep chipnum" RegEx="(?&lt;=chipnum 0x)\d+" ReturnType="String">
+    </Query>
+    <Query Name="GetChipsetFirmwareType" Message="wl_bcm4334 ver" RegEx="(?&lt;=version (\d+\.){3}\d+ \().*(?=\))" ReturnType="String">
+    </Query>
+    <Query Name="GetChipsetFirmwareVersion" Message="wl_bcm4334 ver" RegEx="(?&lt;=version )(\d+\.){3}\d+" ReturnType="String">
+    </Query>
+    <Query Name="IsDriverEnabled" Message="wl_bcm4334 isup" ReturnType="Boolean">
+    </Query>
+    <Query Name="GetCountry" Message="wl_bcm4334 country" ReturnType="String">
+    </Query>
+    <Query Name="GetActivecal" Message="wl_bcm4334 phy_activecal" ReturnType="Boolean">
+    </Query>
+    <Query Name="GetRxFrameCount" Message="wl_bcm4334 counters | grep rxdfrmmcast" RegEx="(?&lt;=rxdfrmmcast )\d+" ReturnType="Int32">
+    </Query>
+
+    <Query Name="GetCurrentPower" Message="wl_bcm4334 curpower" ReturnType="String">
+      </Query>
+    <Query Name="GetTxPowerIndex" Message="wl_bcm4334  phy_txpwrindex" ReturnType="Int32">
+      </Query>
+  </Instrument>
+</Instruments>

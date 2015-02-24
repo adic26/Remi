@@ -1,11 +1,18 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Windows.Forms;
 using TsdLib.Configuration;
-using TsdLib.UI.Controls.Base;
 
 namespace TsdLib.UI.Controls
 {
-    public partial class ConfigControl : ConfigControlBase
+    /// <summary>
+    /// Contains functionality to select and manage configuration on the UI.
+    /// </summary>
+    public partial class ConfigControl : UserControl, IConfigControl
     {
+        /// <summary>
+        /// Initialize a new <see cref="ConfigControl"/>
+        /// </summary>
         public ConfigControl()
         {
             InitializeComponent();
@@ -14,73 +21,137 @@ namespace TsdLib.UI.Controls
         /// <summary>
         /// Sets the list of available Station Config instances.
         /// </summary>
-        public override IConfigManager StationConfigManager
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IConfigManager<IStationConfig> StationConfigManager
         {
-            get { return (IConfigManager)comboBox_StationConfig.DataSource; }
-            set { comboBox_StationConfig.DataSource = value; }
+
+            get { return (IConfigManager<IStationConfig>)comboBox_StationConfig.DataSource; }
+            set
+            {
+                if (value == null) return;
+                comboBox_StationConfig.DataSource = value;
+            }
         }
         /// <summary>
         /// Sets the list of available Product Config instances.
         /// </summary>
-        public override IConfigManager ProductConfigManager
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IConfigManager<IProductConfig> ProductConfigManager
         {
-            get { return (IConfigManager)comboBox_ProductConfig.DataSource; }
-            set { comboBox_ProductConfig.DataSource = value; }
+            get { return (IConfigManager<IProductConfig>)comboBox_ProductConfig.DataSource; }
+            set
+            {
+                if (value == null) return; 
+                comboBox_ProductConfig.DataSource = value;
+            }
         }
         /// <summary>
         /// Sets the list of available Test Config instances.
         /// </summary>
-        public override IConfigManager TestConfigManager
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IConfigManager<ITestConfig> TestConfigManager
         {
-            get { return (IConfigManager)comboBox_TestConfig.DataSource; }
-            set { comboBox_TestConfig.DataSource = value; }
+            get { return (IConfigManager<ITestConfig>)comboBox_TestConfig.DataSource; }
+            set
+            {
+                if (value == null) return; 
+                comboBox_TestConfig.DataSource = value;
+            }
         }
         /// <summary>
         /// Sets the list of available Sequence Config instances.
         /// </summary>
-        public override IConfigManager SequenceConfigManager
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IConfigManager<ISequenceConfig> SequenceConfigManager
         {
-            get { return (IConfigManager)comboBox_SequenceConfig.DataSource; }
-            set { comboBox_SequenceConfig.DataSource = value; }
+            get { return (IConfigManager<ISequenceConfig>)comboBox_SequenceConfig.DataSource; }
+            set
+            {
+                if (value == null) return; 
+                comboBox_SequenceConfig.DataSource = value;
+            }
         }
 
         /// <summary>
         /// Gets the selected station configuration instance.
         /// </summary>
-        public override IConfigItem[] SelectedStationConfig
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IStationConfig[] SelectedStationConfig
         {
-            get { return new [] { (IConfigItem) comboBox_StationConfig.SelectedItem }; }
+            get { return new[] { (IStationConfig)comboBox_StationConfig.SelectedItem }; }
+            set
+            {
+                if (value == null || value.Length == 0) return;
+                comboBox_StationConfig.SelectedItem = value[0];
+            }
         }
         /// <summary>
         /// Gets the selected product configuration instance.
         /// </summary>
-        public override IConfigItem[] SelectedProductConfig
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public IProductConfig[] SelectedProductConfig
         {
-            get { return new[] { (IConfigItem)comboBox_ProductConfig.SelectedItem }; }
+            get { return new[] { (IProductConfig)comboBox_ProductConfig.SelectedItem }; }
+            set
+            {
+                if (value == null || value.Length == 0) return;
+                comboBox_ProductConfig.SelectedItem = value[0];
+            }
         }
         /// <summary>
         /// Gets the selected test configuration instance.
         /// </summary>
-        public override IConfigItem[] SelectedTestConfig
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public ITestConfig[] SelectedTestConfig
         {
-            get { return new[] { (IConfigItem)comboBox_TestConfig.SelectedItem }; }
+            get { return new[] { (ITestConfig)comboBox_TestConfig.SelectedItem }; }
+            set
+            {
+                if (value == null || value.Length == 0) return;
+                comboBox_TestConfig.SelectedItem = value[0];
+            }
         }
         /// <summary>
         /// Gets the selected sequence configuration instance.
         /// </summary>
-        public override IConfigItem[] SelectedSequenceConfig
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public ISequenceConfig[] SelectedSequenceConfig
         {
-            get { return new[] { (IConfigItem)comboBox_SequenceConfig.SelectedItem }; }
+            get { return new[] { (ISequenceConfig)comboBox_SequenceConfig.SelectedItem }; }
+            set
+            {
+                if (value == null || value.Length == 0) return;
+                comboBox_SequenceConfig.SelectedItem = value[0];
+            }
         }
 
         private void button_ViewEditConfiguration_Click(object sender, EventArgs e)
         {
-            OnViewEditConfiguration(new []{StationConfigManager, ProductConfigManager, TestConfigManager, SequenceConfigManager});
+            EventHandler<IConfigManager[]> handler = ViewEditConfiguration;
+            if (handler != null)
+            {
+                var managers = new IConfigManager[] {StationConfigManager, ProductConfigManager, TestConfigManager, SequenceConfigManager};
+                handler(this, managers);
+            }
+
         }
 
-        private void config_SelectionChangeCommitted(object sender, EventArgs e)
+        /// <summary>
+        /// Event fired when requesting to modify the test system configuration.
+        /// </summary>
+        public event EventHandler<IConfigManager[]> ViewEditConfiguration;
+
+        public void SetState(State state)
         {
-            OnConfigSelectionChanged(e);
+            Enabled = state.HasFlag(State.ReadyToTest);
         }
     }
 }

@@ -82,7 +82,8 @@ namespace TsdLib.Instrument.Visa
         /// <param name="disposing">True to dispose of unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
-            _session.Dispose();
+            if (disposing)
+                _session.Dispose();
             base.Dispose(disposing);
         }
     }

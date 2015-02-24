@@ -1,23 +1,24 @@
-﻿using TsdLib.UI.Controls.Base;
+﻿using System.Windows.Forms;
 
 namespace TsdLib.UI.Controls
 {
-    public partial class ProgressControl : ProgressControlBase
+    public partial class ProgressControl : UserControl, IProgressControl
     {
         public ProgressControl()
         {
             InitializeComponent();
         }
 
-        public override void UpdateProgress(int currentStep, int numberOfSteps)
+        public void UpdateProgress(int currentStep, int numberOfSteps)
         {
             progressBar.Maximum = numberOfSteps;
             progressBar.Value = currentStep;
         }
 
-        public override void SetMaxValue(int maxValue)
+        public void SetState(State state)
         {
-            progressBar.Maximum = maxValue;
+            if (state.HasFlag(State.TestStarting))
+                UpdateProgress(0, 1);
         }
     }
 }

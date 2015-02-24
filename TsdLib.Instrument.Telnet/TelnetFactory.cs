@@ -6,7 +6,7 @@ using System.Net.Sockets;
 namespace TsdLib.Instrument.Telnet
 {
     /// <summary>
-    /// Contains functionality to discover and connect to Telnet-based instruments.
+    /// Contains functionality to discover and connect to instruments via the Telnet protocol.
     /// </summary>
     public class TelnetFactory : FactoryBase<TelnetConnection>
     {

@@ -7,7 +7,7 @@ using TsdLib.TestSystem.TestSequence;
 
 namespace TestClient.Sequences
 {
-    public class DummySequence : TestSequenceBase<StationConfig, ProductConfig, TestConfig>
+    public class DummySequence : SequentialTestSequence<StationConfig, ProductConfig, TestConfig>
     {
         protected override void ExecuteTest(CancellationToken token, StationConfig stationConfig, ProductConfig productConfig, TestConfig testConfig)
         {
@@ -18,20 +18,21 @@ namespace TestClient.Sequences
 
             for (int i = 0; i < testConfig.LoopIterations; i++)
             {
+                UpdateProgress(i, testConfig.LoopIterations);
                 foreach (double voltageSetting in testConfig.VoltageSettings)
                 {
                     token.ThrowIfCancellationRequested();
                     ps.SetVoltage(voltageSetting);
                     Thread.Sleep(productConfig.SettlingTime);
 
-                    MeasurementParameter[] measurementParameters =
+                    IMeasurementParameter[] measurementParameters =
                     {
                         new MeasurementParameter("Loop Iteration", i),
                         new MeasurementParameter("Voltage", voltageSetting),
                         new MeasurementParameter("Temperature", 22.5)
                     };
                     Measurement<double> measurement = new Measurement<double>("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: measurementParameters);
-                    Measurements.Add(measurement);
+                    AddMeasurement(measurement);
                 }
             }
             

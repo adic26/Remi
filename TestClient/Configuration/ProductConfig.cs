@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using TsdLib.Configuration;
+using TsdLib.Configuration.Common;
 
 namespace TestClient.Configuration
 {

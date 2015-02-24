@@ -33,6 +33,7 @@
     <DocumentationFile>bin\Release\TsdLib.UI.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -41,35 +42,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\Base\ProgressControlBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\Base\ProgressControlBase.Designer.cs">
-      <DependentUpon>ProgressControlBase.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ConfigControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\ConfigControl.Designer.cs">
       <DependentUpon>ConfigControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Base\ConfigControlBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\Base\ConfigControlBase.Designer.cs">
-      <DependentUpon>ConfigControlBase.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\MeasurementDataGridViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\MeasurementDataGridViewControl.Designer.cs">
       <DependentUpon>MeasurementDataGridViewControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Base\MeasurementDisplayControlBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\Base\MeasurementDisplayControlBase.Designer.cs">
-      <DependentUpon>MeasurementDisplayControlBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\MultiConfigControl.cs">
       <SubType>UserControl</SubType>
@@ -83,17 +66,17 @@
     <Compile Include="Controls\ProgressControl.Designer.cs">
       <DependentUpon>ProgressControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TestCasesMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TestCasesMenuItem.Designer.cs">
+      <DependentUpon>TestCasesMenuItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TestDetailsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\TestDetailsControl.Designer.cs">
       <DependentUpon>TestDetailsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Base\TestDetailsControlBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\Base\TestDetailsControlBase.Designer.cs">
-      <DependentUpon>TestDetailsControlBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\TestInfoDataGridViewControl.cs">
       <SubType>UserControl</SubType>
@@ -101,29 +84,11 @@
     <Compile Include="Controls\TestInfoDataGridViewControl.Designer.cs">
       <DependentUpon>TestInfoDataGridViewControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Base\TestInfoDisplayControlBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\Base\TestInfoDisplayControlBase.Designer.cs">
-      <DependentUpon>TestInfoDisplayControlBase.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\TestSequenceControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\TestSequenceControl.Designer.cs">
       <DependentUpon>TestSequenceControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Base\TestSequenceControlBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\Base\TestSequenceControlBase.Designer.cs">
-      <DependentUpon>TestSequenceControlBase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Base\TraceListenerControlBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\Base\TraceListenerControlBase.Designer.cs">
-      <DependentUpon>TraceListenerControlBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\TraceListenerTextBoxControl.cs">
       <SubType>UserControl</SubType>
@@ -138,26 +103,25 @@
       <DependentUpon>ViewBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypeEditors\EnumTypeEditor.cs" />
+    <Compile Include="Utilities\Display.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\ConfigControl.resx">
       <DependentUpon>ConfigControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Base\ConfigControlBase.resx">
-      <DependentUpon>ConfigControlBase.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controls\MeasurementDataGridViewControl.resx">
       <DependentUpon>MeasurementDataGridViewControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Base\MeasurementDisplayControlBase.resx">
-      <DependentUpon>MeasurementDisplayControlBase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\MultiConfigControl.resx">
       <DependentUpon>MultiConfigControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ProgressControl.resx">
       <DependentUpon>ProgressControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TestCasesMenuItem.resx">
+      <DependentUpon>TestCasesMenuItem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\TestDetailsControl.resx">
       <DependentUpon>TestDetailsControl.cs</DependentUpon>
@@ -187,9 +151,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>call "$(SolutionDir)NuGetPostBuild.bat" $(ProjectPath) $(ConfigurationName)</PostBuildEvent>
-  </PropertyGroup>
+  <Import Project="$(SolutionDir)\TsdLib.Build\build\TsdLib.Build.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -197,4 +159,22 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <!--<UsingTask AssemblyFile="C:\Users\jmckee\Source\Repos\TsdLib\TsdLib.Build\bin\$(Configuration)\TsdLib.Build.dll" TaskName="ApplySemanticVersioning" />
+  <UsingTask AssemblyFile="C:\Users\jmckee\Source\Repos\TsdLib\TsdLib.Build\bin\$(Configuration)\TsdLib.Build.dll" TaskName="NuGetPack" />
+  <Target Name="Versioning" BeforeTargets="CoreCompile" Condition="'$(BuildServer)' != 'true'">
+    <Message Text="Applying semantic versioning"  Importance="High"/>
+    <ApplySemanticVersioning AssemblyInfoFilePath="$(ProjectDir)Properties\AssemblyInfo.cs">
+      <Output TaskParameter="Result" PropertyName="VersioningResult"/>
+    </ApplySemanticVersioning>
+    <Message Text="$(VersioningResult)"  Importance="High"/>
+  </Target>
+  <Target Name="NuGet" AfterTargets="Build">
+    <Message Text="Creating NuGet package"  Importance="High"/>
+    <NuGetPack OutputFolder="$(TargetDir)" TargetFile="$(ProjectPath)" Configuration="$(ConfigurationName)">
+      <Output TaskParameter="OutputPackage" PropertyName="NuGetPackage" />
+      <Output TaskParameter="NuGetOutput" PropertyName="NuGetOutputMessage" />
+    </NuGetPack>
+    <Message Text="NuGet Output: $(NuGetOutputMessage)" Importance="High" />
+    <Warning Text="Failed to create NuGet package: $(NuGetOutputMessage)" Condition="$(NuGetPackage) == 'N/A'" />
+  </Target>-->
 </Project>

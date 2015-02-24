@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Instruments xmlns="TsdLib.Instruments.xsd">
+  <Instrument Name="Agilent6632B" ConnectionType="Visa" Interfaces="IPowerSupply" InitCommands="*RST;*CLS">
+    <IdQuery Command="*IDN?" Response="6632B"/>
+	
+	<ModelNumber Message="*IDN?" RegEx="(?&lt;=(.*,){1}).*(?=(,.*){2})"/>
+	<SerialNumber Message="*IDN?" RegEx="(?&lt;=.*,.*,).*(?=,)"/>
+	<FirmwareVersion Message="*IDN?" RegEx="(?&lt;=(.*,){3}).*" />
+	
+  </Instrument>
+</Instruments>

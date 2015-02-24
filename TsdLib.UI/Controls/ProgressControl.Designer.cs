@@ -29,36 +29,37 @@
         private void InitializeComponent()
         {
             this.progressBar = new System.Windows.Forms.ProgressBar();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
-            this.splitContainer.Panel2.SuspendLayout();
-            this.splitContainer.SuspendLayout();
+            this.groupBox = new System.Windows.Forms.GroupBox();
+            this.groupBox.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // splitContainer
-            // 
-            // 
-            // splitContainer.Panel2
-            // 
-            this.splitContainer.Panel2.Controls.Add(this.progressBar);
-            this.splitContainer.Size = new System.Drawing.Size(414, 72);
             // 
             // progressBar
             // 
             this.progressBar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.progressBar.Location = new System.Drawing.Point(0, 0);
+            this.progressBar.Location = new System.Drawing.Point(3, 16);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(414, 43);
+            this.progressBar.Size = new System.Drawing.Size(411, 21);
             this.progressBar.TabIndex = 0;
+            // 
+            // groupBox
+            // 
+            this.groupBox.Controls.Add(this.progressBar);
+            this.groupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox.Location = new System.Drawing.Point(0, 0);
+            this.groupBox.Name = "groupBox";
+            this.groupBox.Size = new System.Drawing.Size(417, 40);
+            this.groupBox.TabIndex = 1;
+            this.groupBox.TabStop = false;
+            this.groupBox.Text = "Progress";
             // 
             // ProgressControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBox);
             this.Name = "ProgressControl";
-            this.Size = new System.Drawing.Size(414, 72);
-            this.splitContainer.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
-            this.splitContainer.ResumeLayout(false);
+            this.Size = new System.Drawing.Size(417, 40);
+            this.groupBox.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -66,6 +67,7 @@
         #endregion
 
         private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.GroupBox groupBox;
 
     }
 }
