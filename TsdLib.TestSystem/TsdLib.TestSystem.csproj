@@ -79,6 +79,7 @@
     <None Include="TsdLib.TestSystem.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\TsdLib.Build\build\TsdLib.Build.targets" />
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
@@ -90,17 +91,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <UsingTask AssemblyFile="C:\Users\jmckee\Source\Repos\TsdLib\TsdLib.Build\bin\$(Configuration)\TsdLib.Build.dll" TaskName="ApplySemanticVersioning" />
-  <UsingTask AssemblyFile="C:\Users\jmckee\Source\Repos\TsdLib\TsdLib.Build\bin\$(Configuration)\TsdLib.Build.dll" TaskName="NuGetPack" />
-  <Target Name="BeforeBuild">
-    <ApplySemanticVersioning AssemblyInfoFilePath="$(ProjectDir)Properties\AssemblyInfo.cs" />
-  </Target>
-  <Target Name="AfterBuild">
-    <NuGetPack OutputFolder="$(TargetDir)" TargetFile="$(ProjectPath)" Configuration="$(ConfigurationName)">
-      <Output TaskParameter="OutputPackage" PropertyName="NuGetPackage" />
-      <Output TaskParameter="NuGetOutput" PropertyName="NuGetOutputMessage" />
-    </NuGetPack>
-    <Message Text="NuGet Output: $(NuGetOutputMessage)" Importance="High" />
-	<Warning Text="Failed to create NuGet package: $(NuGetOutputMessage)" Condition="$(NuGetPackage) == 'N/A'" />
-  </Target>
 </Project>

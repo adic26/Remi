@@ -36,14 +36,17 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplySemanticVersioning.cs" />
     <Compile Include="NuGetPack.cs" />
     <Compile Include="NuGetPush.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ApplySemanticVersioning.cs" />
+    <Compile Include="ApplySemanticVersioning_old.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TsdLib.Build.nuspec" />
-    <None Include="build\TsdLib.Build.targets" />
+    <None Include="build\TsdLib.Build.targets">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

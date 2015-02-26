@@ -21,10 +21,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("2ee612a4-f5ef-4112-981a-7960e66362e2")]
-[assembly: AssemblyVersion("1.0")]
-[assembly: AssemblyFileVersion("1.0.98")]
-#if DEBUG
-[assembly: AssemblyInformationalVersion("1.0.98-debug")]
-#else
-[assembly: AssemblyInformationalVersion("1.0.98")]
-#endif
+
+
+
+//Please use the Version.txt file to update assembly version

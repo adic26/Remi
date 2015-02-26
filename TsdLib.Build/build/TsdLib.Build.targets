@@ -1,26 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)..\</SolutionDir>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)\..\</SolutionDir>
     <BuildDllLocation Condition="Exists('$(MSBuildThisFileDirectory)..\TsdLib.Build.dll')" >$(MSBuildThisFileDirectory)..\TsdLib.Build.dll</BuildDllLocation>
-    <BuildDllLocation Condition="'$(BuildDllLocation)' == ''">$(SolutionDir)\TsdLib.Build\bin\$(ConfigurationName)\TsdLib.Build.dll</BuildDllLocation>
+    <BuildDllLocation Condition="'$(BuildDllLocation)' == ''">$(SolutionDir)TsdLib.Build\bin\$(ConfigurationName)\TsdLib.Build.dll</BuildDllLocation>
   </PropertyGroup>
   <UsingTask TaskName="ApplySemanticVersioning" AssemblyFile="$(BuildDllLocation)"/>
   <UsingTask TaskName="NuGetPack" AssemblyFile="$(BuildDllLocation)"/>
   <Target Name="Versioning" BeforeTargets="CoreCompile" Condition="'$(BuildServer)' != 'true'">
     <Message Text="Applying semantic versioning"  Importance="High"/>
-    <ApplySemanticVersioning AssemblyInfoFilePath="$(ProjectDir)Properties\AssemblyInfo.cs">
-      <Output TaskParameter="Result" PropertyName="VersioningResult"/>
+    <ApplySemanticVersioning AssemblyInfoFilePath="$(ProjectDir)Properties\AssemblyInfo.cs" VersionFilePath="$(ProjectDir)Properties\Version.txt" FullVersionFilePath="$(ProjectDir)Properties\FullVersion.txt" IntermediateVersionFilePath="$(ProjectDir)obj\$(ConfigurationName)\Version.cs">
+      <Output TaskParameter="Success" PropertyName="VersioningResultSuccess"/>
+      <Output TaskParameter="ResultMessage" PropertyName="VersioningResultMessage"/>
+      <Output TaskParameter="OutputVersionFilePath" PropertyName="VersionFilePath"/>
     </ApplySemanticVersioning>
-    <Message Text="$(VersioningResult)"  Importance="High"/>
+    <Message Text="$(VersioningResultMessage)"  Importance="High" Condition="$(VersioningResultSuccess) == 'true'" />
+    <Warning Text="$(VersioningResultMessage)" Condition="$(VersioningResultSuccess) == 'false'" />
+    <ItemGroup>
+      <Compile Include="$(VersionFilePath)" />
+    </ItemGroup>
   </Target>
   <Target Name="NuGet" AfterTargets="Build">
     <Message Text="Creating NuGet package"  Importance="High"/>
     <NuGetPack OutputFolder="$(TargetDir)" TargetFile="$(ProjectPath)" Configuration="$(ConfigurationName)">
       <Output TaskParameter="OutputPackage" PropertyName="NuGetPackage" />
       <Output TaskParameter="NuGetOutput" PropertyName="NuGetOutputMessage" />
+      <Output TaskParameter="Success" PropertyName="NuGetResultSuccess"/>
     </NuGetPack>
-    <Message Text="NuGet Output: $(NuGetOutputMessage)" Importance="High" />
-    <Warning Text="Failed to create NuGet package: $(NuGetOutputMessage)" Condition="$(NuGetPackage) == 'N/A'" />
+    <Message Text="$(NuGetOutputMessage)"  Importance="High" Condition="$(NuGetResultSuccess) == 'true'" />
+    <Warning Text="$(NuGetOutputMessage)" Condition="$(NuGetResultSuccess) == 'false'" />
   </Target>
 </Project>
