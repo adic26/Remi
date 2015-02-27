@@ -9,7 +9,7 @@ namespace TsdLib.CodeGenerator
     /// Exception due to an error compiling input source code.
     /// </summary>
     [Serializable]
-    public class CompilerException : TsdLibException
+    public class CompilerException : Exception// TsdLibException
     {
         /// <summary>
         /// Initialize a new CompilerException with the specified collection of complier errors.
