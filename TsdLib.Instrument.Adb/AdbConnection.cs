@@ -26,10 +26,11 @@ namespace TsdLib.Instrument.Adb
         {
             _output.Clear();
             _error.Clear();
+            string arguments = message.StartsWith("adb") ? message : string.Format(@"/c {0} -s {1} shell ""{2}""", _adbExe, Address, message);
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 FileName = "cmd.exe",
-                Arguments = string.Format(@"/c {0} -s {1} shell ""{2}""", _adbExe, Address, message),
+                Arguments = arguments,
                 CreateNoWindow = true,
                 UseShellExecute = false,
                 RedirectStandardError = true,

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using TsdLib.CodeGenerator;
 
 namespace TsdLib.InstrumentLibrary
 {
@@ -16,7 +15,7 @@ namespace TsdLib.InstrumentLibrary
         private void button_RefreshInstruments_Click(object sender, EventArgs e)
         {
             _instrumentProvider = new InstrumentProvider();
-            comboBox_Instrument.DataSource = _instrumentProvider.GetInstrumentsAssembly(Language.CSharp);
+            comboBox_Instrument.DataSource = _instrumentProvider.GetInstrumentsAssembly("CSharp");
         }
     }
 }

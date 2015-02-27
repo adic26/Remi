@@ -112,14 +112,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TsdLib.CodeGenerator\TsdLib.CodeGenerator.csproj">
-      <Project>{EEDD0176-678D-4AAC-B622-A96EB2488D22}</Project>
-      <Name>TsdLib.CodeGenerator</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Core\TsdLib.Core.csproj">
-      <Project>{512beddc-2b71-42f0-9c1b-6d37497f5da7}</Project>
-      <Name>TsdLib.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TsdLib.InstrumentLibraryTools\TsdLib.InstrumentLibraryTools.csproj">
       <Project>{80C459F9-6A11-4BCC-B453-151BCF954E4F}</Project>
       <Name>TsdLib.InstrumentLibraryTools</Name>
