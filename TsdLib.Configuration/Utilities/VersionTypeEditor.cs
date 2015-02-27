@@ -25,7 +25,7 @@ namespace TsdLib.Configuration.Utilities
             if (edSvc == null)
                 return base.EditValue(context, provider, value);
 
-            MaskedTextBox maskedTextBox = new MaskedTextBox("##0.##0.###0.####0");
+            MaskedTextBox maskedTextBox = new MaskedTextBox("##0.##0.###0");
             edSvc.DropDownControl(maskedTextBox);
 
             Version newValue;

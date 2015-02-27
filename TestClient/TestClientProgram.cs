@@ -56,6 +56,9 @@ namespace TestClient
 
                 IConfigConnection sharedConfigConnection = getConfigConnection(settingsLocation, testSystemVersionMask);
 
+                return;
+
+
                 if (args.Contains(SeqFolderArg))
                 {
                     synchronizeSequences(testDetails, sharedConfigConnection, getConfigValue(SeqFolderArg), true);
@@ -69,6 +72,12 @@ namespace TestClient
             {
                 MessageBox.Show(ex.ToString(), ex.GetType().Name);
             }
+        }
+
+        private static Version getVersion(string folder)
+        {
+
+            return new Version();
         }
 
         private static IConfigConnection getConfigConnection(string settingsLocation, string testSystemVersionMask)

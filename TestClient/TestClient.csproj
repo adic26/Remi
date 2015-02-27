@@ -162,8 +162,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\TsdLib.Build\build\TsdLib.Build.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(TargetPath) -seq $(ProjectDir)Sequences true -testSystemMode Developer 
+    <PostBuildEvent>rem $(TargetPath) -seq $(ProjectDir)Sequences true -testSystemMode Developer 
 
 </PostBuildEvent>
   </PropertyGroup>

@@ -183,6 +183,7 @@
             this.button_PromoteVersion.TabIndex = 22;
             this.button_PromoteVersion.Text = "Promote";
             this.button_PromoteVersion.UseVisualStyleBackColor = true;
+            this.button_PromoteVersion.Click += new System.EventHandler(this.button_PromoteVersion_Click);
             // 
             // button_PromoteMode
             // 
@@ -193,6 +194,7 @@
             this.button_PromoteMode.TabIndex = 23;
             this.button_PromoteMode.Text = "Promote";
             this.button_PromoteMode.UseVisualStyleBackColor = true;
+            this.button_PromoteMode.Click += new System.EventHandler(this.button_PromoteMode_Click);
             // 
             // comboBox_ConfigType
             // 

@@ -70,6 +70,18 @@
     <Compile Include="FilePath.cs" />
     <Compile Include="Connections\FileSystemConnection.cs" />
     <Compile Include="Connections\IConfigConnection.cs" />
+    <Compile Include="Managers\PromoteModeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Managers\PromoteModeForm.Designer.cs">
+      <DependentUpon>PromoteModeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Managers\PromoteVersionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Managers\PromoteVersionForm.Designer.cs">
+      <DependentUpon>PromoteVersionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Null\NullProductConfig.cs" />
     <Compile Include="Null\NullStationConfig.cs" />
     <Compile Include="Null\NullTestConfig.cs" />
@@ -86,6 +98,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Managers\ConfigManagerForm2.resx">
       <DependentUpon>ConfigManagerForm2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Managers\PromoteModeForm.resx">
+      <DependentUpon>PromoteModeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Managers\PromoteVersionForm.resx">
+      <DependentUpon>PromoteVersionForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

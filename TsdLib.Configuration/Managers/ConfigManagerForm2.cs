@@ -33,5 +33,31 @@ namespace TsdLib.Configuration.Managers
             propertyGrid_Settings.CommandsVisibleIfAvailable = true;
             propertyGrid_Settings.Leave += (s, o) => ModifiedConfigs.Add((IConfigManager)comboBox_ConfigType.SelectedItem);
         }
+
+        private void button_PromoteVersion_Click(object sender, EventArgs e)
+        {
+            using (PromoteVersionForm form = new PromoteVersionForm())
+            {
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    Version newVersion = form.TargetVersion;
+                    //TODO: publish to new version
+                    //TODO: switch version in TestDetails??
+                }
+            }
+        }
+
+        private void button_PromoteMode_Click(object sender, EventArgs e)
+        {
+            using (PromoteModeForm form = new PromoteModeForm())
+            {
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    OperatingMode newMode = form.TargetMode;
+                    //TODO: publish to new 
+                    //TODO: switch OperatingMode in TestDetails??
+                }
+            }
+        }
     }
 }
