@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -58,6 +59,12 @@
     <Compile Include="Managers\ConfigManagerForm.Designer.cs">
       <DependentUpon>ConfigManagerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Managers\ConfigManagerForm2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Managers\ConfigManagerForm2.Designer.cs">
+      <DependentUpon>ConfigManagerForm2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Managers\ConfigManagerProvider.cs" />
     <Compile Include="DesignerVerbSite.cs" />
     <Compile Include="FilePath.cs" />
@@ -76,6 +83,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Managers\ConfigManagerForm.resx">
       <DependentUpon>ConfigManagerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Managers\ConfigManagerForm2.resx">
+      <DependentUpon>ConfigManagerForm2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

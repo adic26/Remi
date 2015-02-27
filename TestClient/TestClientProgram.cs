@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Windows.Forms;
 using TsdLib.Configuration;
 using System.Configuration;
-using TestClient.Configuration.Connections;
 using TsdLib.Configuration.Common;
 using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Managers;
@@ -54,11 +53,8 @@ namespace TestClient
                 string settingsLocation = getConfigValue(SettingsLocationArg) ?? @"C:\temp\TsdLibSettings";
 
                 ITestDetails testDetails = new TestDetails(testSystemName, testSystemVersion, testSystemMode);
-#if REMICONTROL
-                IConfigConnection sharedConfigConnection = new DatabaseConfigConnection(testSystemVersionMask);
-#else
-                IConfigConnection sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation), testSystemVersionMask);
-#endif
+
+                IConfigConnection sharedConfigConnection = getConfigConnection(settingsLocation, testSystemVersionMask);
 
                 if (args.Contains(SeqFolderArg))
                 {
@@ -73,6 +69,20 @@ namespace TestClient
             {
                 MessageBox.Show(ex.ToString(), ex.GetType().Name);
             }
+        }
+
+        private static IConfigConnection getConfigConnection(string settingsLocation, string testSystemVersionMask)
+        {
+            IConfigConnection sharedConfigConnection;
+#if REMICONTROL
+            if (string.IsNullOrWhiteSpace(settingsLocation))
+                sharedConfigConnection = new Configuration.Connections.DatabaseConfigConnection(testSystemVersionMask);
+            else
+                sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation), testSystemVersionMask);
+#else
+            sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation), testSystemVersionMask);
+#endif
+            return sharedConfigConnection;
         }
 
         private static string getConfigValue(string key)

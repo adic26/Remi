@@ -38,10 +38,10 @@
             this.panel_EditControls = new System.Windows.Forms.Panel();
             this.propertyGrid_Settings = new System.Windows.Forms.PropertyGrid();
             this.button_CreateNew = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.comboBox_ConfigItem = new System.Windows.Forms.ComboBox();
             this.button_OK = new System.Windows.Forms.Button();
             this.button_Cancel = new System.Windows.Forms.Button();
+            this.comboBox_ConfigItem = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.panel_SelectControls.SuspendLayout();
             this.panel_EditControls.SuspendLayout();
             this.SuspendLayout();
@@ -155,25 +155,6 @@
             this.button_CreateNew.UseVisualStyleBackColor = true;
             this.button_CreateNew.Click += new System.EventHandler(this.button_CreateNew_Click);
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 3);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(60, 13);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "Config Item";
-            // 
-            // comboBox_ConfigItem
-            // 
-            this.comboBox_ConfigItem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox_ConfigItem.FormattingEnabled = true;
-            this.comboBox_ConfigItem.Location = new System.Drawing.Point(6, 19);
-            this.comboBox_ConfigItem.Name = "comboBox_ConfigItem";
-            this.comboBox_ConfigItem.Size = new System.Drawing.Size(187, 21);
-            this.comboBox_ConfigItem.TabIndex = 3;
-            this.comboBox_ConfigItem.SelectedValueChanged += new System.EventHandler(this.comboBox_ConfigItem_SelectedValueChanged);
-            // 
             // button_OK
             // 
             this.button_OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -195,6 +176,25 @@
             this.button_Cancel.TabIndex = 13;
             this.button_Cancel.Text = "Cancel";
             this.button_Cancel.UseVisualStyleBackColor = true;
+            // 
+            // comboBox_ConfigItem
+            // 
+            this.comboBox_ConfigItem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_ConfigItem.FormattingEnabled = true;
+            this.comboBox_ConfigItem.Location = new System.Drawing.Point(6, 19);
+            this.comboBox_ConfigItem.Name = "comboBox_ConfigItem";
+            this.comboBox_ConfigItem.Size = new System.Drawing.Size(187, 21);
+            this.comboBox_ConfigItem.TabIndex = 3;
+            this.comboBox_ConfigItem.SelectedValueChanged += new System.EventHandler(this.comboBox_ConfigItem_SelectedValueChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(3, 3);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(60, 13);
+            this.label5.TabIndex = 4;
+            this.label5.Text = "Config Item";
             // 
             // ConfigManagerForm
             // 
@@ -228,10 +228,10 @@
         private System.Windows.Forms.Panel panel_EditControls;
         private System.Windows.Forms.PropertyGrid propertyGrid_Settings;
         private System.Windows.Forms.Button button_CreateNew;
-        private System.Windows.Forms.ComboBox comboBox_ConfigItem;
         private System.Windows.Forms.Button button_OK;
         private System.Windows.Forms.Button button_Cancel;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox comboBox_ConfigItem;
 
     }
 }

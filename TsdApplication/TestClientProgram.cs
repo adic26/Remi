@@ -75,6 +75,20 @@ namespace $safeprojectname$
             }
         }
 
+        private static IConfigConnection getConfigConnection(string settingsLocation, string testSystemVersionMask)
+        {
+            IConfigConnection sharedConfigConnection;
+#if REMICONTROL
+            if (string.IsNullOrWhiteSpace(settingsLocation))
+                sharedConfigConnection = new Configuration.Connections.DatabaseConfigConnection(testSystemVersionMask);
+            else
+                sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation), testSystemVersionMask);
+#else
+            sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation), testSystemVersionMask);
+#endif
+            return sharedConfigConnection;
+        }
+
         private static string getConfigValue(string key)
         {
             try
