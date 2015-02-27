@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using TsdLib.Configuration.Connections;
 
 namespace TsdLib.Configuration.Managers
 {
-    public class ConfigManagerProvider : MarshalByRefObject
+    public class ConfigManagerProvider : MarshalByRefObject, IListSource
     {
         private readonly List<IConfigManager> _configManagers = new List<IConfigManager>();
-        private readonly ITestDetails _testDetails;
+        internal readonly ITestDetails _testDetails;
         private readonly IConfigConnection _sharedConfigConnection;
         
         /// <summary>
@@ -39,12 +40,6 @@ namespace TsdLib.Configuration.Managers
             return manager;
         }
 
-        public void Reload()
-        {
-            foreach (IConfigManager configManager in _configManagers)
-                configManager.Reload();
-        }
-
         /// <summary>
         /// Gets an instance of a configuration manager used to save and recall configuration data. Returns null if one is not yet present.
         /// </summary>
@@ -55,6 +50,12 @@ namespace TsdLib.Configuration.Managers
             return _configManagers.FirstOrDefault(m => m.ConfigTypeName == configItemType.Name);
         }
 
+        public void Reload()
+        {
+            foreach (IConfigManager configManager in _configManagers)
+                configManager.Reload();
+        }
+
         /// <summary>
         /// Allows the remote proxy to stay alive in a remote Application Domain.
         /// </summary>
@@ -62,6 +63,16 @@ namespace TsdLib.Configuration.Managers
         public override object InitializeLifetimeService()
         {
             return null;
+        }
+
+        public bool ContainsListCollection
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public System.Collections.IList GetList()
+        {
+            return _configManagers;
         }
     }
 }
