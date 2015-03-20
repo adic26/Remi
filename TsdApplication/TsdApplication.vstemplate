@@ -17,6 +17,8 @@
       <ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$Program.cs">TestClientProgram.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="App.config">TestClientApp.config</ProjectItem>
+      <ProjectItem>.gitignore</ProjectItem>
+      <ProjectItem>.gitattributes</ProjectItem>
       <Folder Name="Configuration">
         <Folder Name="Connections">
           <ProjectItem ReplaceParameters="true">DatabaseConfigConnection.cs</ProjectItem>

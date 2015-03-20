@@ -385,6 +385,9 @@ namespace TsdLib.TestSystem.Controller
                 if (form.ShowDialog() == DialogResult.OK)
                     foreach (IConfigManager modifiedConfig in form.ModifiedConfigs)
                         modifiedConfig.Save();
+                else
+                    foreach (IConfigManager modifiedConfig in form.ModifiedConfigs)
+                        modifiedConfig.Reload();
         }
 
         /// <summary>

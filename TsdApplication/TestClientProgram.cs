@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using TsdLib.Configuration;
 using System.Configuration;
-//using $safeprojectname$.Configuration.Connections;
+using $safeprojectname$.Configuration.Connections;
 using TsdLib.Configuration.Common;
 using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Managers;

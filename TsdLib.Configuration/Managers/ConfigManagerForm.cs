@@ -151,8 +151,10 @@ namespace TsdLib.Configuration.Managers
                     newCfgItem.StoreInDatabase = form.StoreInDatabase;
                     newCfgItem.IsDefault = false;
                     IConfigManager manager = (IConfigManager) comboBox_ConfigType.SelectedItem;
-                    //manager.Add(newCfgItem);
+                    manager.Add(newCfgItem);
+                    comboBox_ConfigItem.DataSource = manager.GetList();
                     comboBox_ConfigItem.SelectedIndex = comboBox_ConfigItem.Items.Count - 1;
+                    ModifiedConfigs.Add(manager);
                 }
             }
         }

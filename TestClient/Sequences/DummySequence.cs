@@ -1,7 +1,9 @@
 
+using System;
 using System.Threading;
 using TestClient.Configuration;
 using TestClient.Instruments;
+using TsdLib;
 using TsdLib.Measurements;
 using TsdLib.TestSystem.TestSequence;
 
@@ -15,6 +17,8 @@ namespace TestClient.Sequences
             //System.Diagnostics.Debugger.Break();
 
             DummyPowerSupply ps = new DummyPowerSupply("addr");
+            //SendDataByValue(2.2);
+            SendDataByReference(new DataContainer<DataObject>(new DataObject(5, 2.5)));
 
             for (int i = 0; i < testConfig.LoopIterations; i++)
             {
@@ -33,9 +37,24 @@ namespace TestClient.Sequences
                     };
                     Measurement<double> measurement = new Measurement<double>("Current", ps.GetCurrent(), "Amps", 0.1, 0.8, parameters: measurementParameters);
                     AddMeasurement(measurement);
+
                 }
             }
             
         }
     }
+
+    public class DataObject
+    {
+        public int TheInt { get; private set; }
+        public double TheDouble { get; private set; }
+
+        public DataObject(int theInt, double theDouble)
+        {
+            TheInt = theInt;
+            TheDouble = theDouble;
+        }
+    }
+
+
 }

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Instruments xmlns="TsdLib.Instruments.xsd">
+  <Instrument Name="AOS" ConnectionType="Adb" Interfaces="IBlackBerry" InitCommands="netcfg wlan0 up">
+
+    <!--Discovery-->
+    <IdQuery Response="Avengers"/>
+
+    <!--Identification-->
+    <ModelNumber Message="getprop | grep ro.product.board" RegEx="(?&lt;=: \[)\w+(?=\])"/>
+    <SerialNumber Message="getprop | grep ro.nvram.boardid.bsn" RegEx="(?&lt;=: \[)\d+(?=\])" Descriptor="BSN"/>
+    <FirmwareVersion Message="getprop | grep ro.build.version.incremental" RegEx="(?&lt;=: \[)\w+(?=\])" Descriptor="OS Version"/>
+
+    <!--General-->
+    <Query Name="GetImei" Message="cat /pps/system/nvram/deviceinfo | grep IMEI::" RegEx="(?&lt;=IMEI::).*(?=\r\nInProduction)" ReturnType="String"/>
+    <Query Name="GetChipsetFamily" Message="/vendor/firmware/wlutil revinfo | grep chipnum" RegEx="(?&lt;=chipnum 0x)\d+" ReturnType="String"/>
+
+  </Instrument>
+</Instruments>

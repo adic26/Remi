@@ -80,6 +80,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Instruments\AOS.xml" />
     <Content Include="Instruments\Agilent6632B.xml">
       <Generator>InstrumentClassGenerator</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -118,5 +119,4 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\TsdLib.Build\build\TsdLib.Build.targets" />
 </Project>

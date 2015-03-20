@@ -69,5 +69,4 @@
     <None Include="readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\TsdLib.Build\build\TsdLib.Build.targets" />
 </Project>

@@ -50,14 +50,16 @@ namespace TestClient
                 string testSystemVersionMask = getConfigValue(TestSystemVersionMaskArg) ?? @"\d+\.\d+";
                 OperatingMode testSystemMode = (OperatingMode)Enum.Parse(typeof(OperatingMode), getConfigValue(TestSystemModeArg) ?? DefaultMode.ToString());
                 bool localDomain = bool.Parse(getConfigValue(LocalDomainArg) ?? "false");
-                string settingsLocation = getConfigValue(SettingsLocationArg) ?? @"C:\temp\TsdLibSettings";
+                string settingsLocation = getConfigValue(SettingsLocationArg) ?? @"";
+
+                //bool retval = DBControl.DAL.Config.CloneConfigMode(testSystemName, "2.1", testSystemMode.ToString(), "StationConfigCommon", "Production");
+                //DBControl.DAL.Config.CloneConfigVersion(testSystemName, testSystemVersion.ToString(2), testSystemMode.ToString(), "StationConfigCommon", "2.1");
+                //bool retval = DBControl.DAL.Config.CloneConfigVersion(testSystemName, testSystemVersion.ToString(2), testSystemMode.ToString(), "StationConfigCommon", "2.1");
+                //return;
 
                 ITestDetails testDetails = new TestDetails(testSystemName, testSystemVersion, testSystemMode);
 
                 IConfigConnection sharedConfigConnection = getConfigConnection(settingsLocation, testSystemVersionMask);
-
-                return;
-
 
                 if (args.Contains(SeqFolderArg))
                 {
@@ -72,12 +74,6 @@ namespace TestClient
             {
                 MessageBox.Show(ex.ToString(), ex.GetType().Name);
             }
-        }
-
-        private static Version getVersion(string folder)
-        {
-
-            return new Version();
         }
 
         private static IConfigConnection getConfigConnection(string settingsLocation, string testSystemVersionMask)

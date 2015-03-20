@@ -18,11 +18,11 @@ namespace TsdLib.Configuration
         /// </summary>
         void Save();
 
-        ///// <summary>
-        ///// Add a new <see cref="IConfigItem"/> to the configuration instances.
-        ///// </summary>
-        ///// <param name="item"><see cref="IConfigItem"/> to add.</param>
-        //void Add(IConfigItem item);
+        /// <summary>
+        /// Add a new <see cref="IConfigItem"/> to the configuration instances.
+        /// </summary>
+        /// <param name="item"><see cref="IConfigItem"/> to add.</param>
+        void Add(IConfigItem item);
 
         
 

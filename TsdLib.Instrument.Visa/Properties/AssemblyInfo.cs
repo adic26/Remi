@@ -24,4 +24,4 @@ using System.Runtime.InteropServices;
 
 
 
-//Please use the Version.txt file to update assembly version
+[assembly: AssemblyVersion("2.0")]

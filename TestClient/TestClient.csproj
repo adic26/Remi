@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props" Condition="Exists('..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -37,12 +38,16 @@
   <ItemGroup>
     <Reference Include="DBControl, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DBControl.4.5.102\lib\net45\DBControl.dll</HintPath>
+      <HintPath>..\packages\DBControl.4.5.228\lib\net45\DBControl.dll</HintPath>
     </Reference>
     <Reference Include="DBControl.XmlSerializers, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DBControl.4.5.102\lib\net45\DBControl.XmlSerializers.dll</HintPath>
+      <HintPath>..\packages\DBControl.4.5.228\lib\net45\DBControl.XmlSerializers.dll</HintPath>
     </Reference>
+    <Reference Include="LibGit2Sharp">
+      <HintPath>..\packages\LibGit2Sharp.0.21.0.176\lib\net40\LibGit2Sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -82,16 +87,18 @@
     <Compile Include="Configuration\TestConfig.cs" />
     <Compile Include="Sequences\DummySequence.cs" />
     <Compile Include="TestPrograms\AdbTest.cs" />
-    <Compile Include="View\TestClientView.cs">
+    <Compile Include="UI\Forms\TestClientView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\TestClientView.Designer.cs">
+    <Compile Include="UI\Forms\TestClientView.Designer.cs">
       <DependentUpon>TestClientView.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TsdLib.CodeGenerator\TsdLib.CodeGenerator.csproj">
@@ -157,20 +164,39 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="View\TestClientView.resx">
+    <EmbeddedResource Include="UI\Forms\TestClientView.resx">
       <DependentUpon>TestClientView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI\Controls\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\TsdLib.Build\build\TsdLib.Build.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rem $(TargetPath) -seq $(ProjectDir)Sequences true -testSystemMode Developer 
+    <PostBuildEvent>$(TargetPath) -seq $(ProjectDir)Sequences true -testSystemMode Developer 
 
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>rmdir /S /Q $(TargetDir)Instruments</PreBuildEvent>
   </PropertyGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\TsdLib.Build.NuGet.2.0.0\build\TsdLib.Build.NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\TsdLib.Build.NuGet.2.0.0\build\TsdLib.Build.NuGet.targets'))" />
+    <Error Condition="!Exists('..\packages\TsdLib.Build.Versioning.2.8.0\build\TsdLib.Build.Versioning.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\TsdLib.Build.Versioning.2.8.0\build\TsdLib.Build.Versioning.targets'))" />
+  </Target>
+  <Import Project="..\packages\TsdLib.Build.NuGet.2.0.0\build\TsdLib.Build.NuGet.targets" Condition="Exists('..\packages\TsdLib.Build.NuGet.2.0.0\build\TsdLib.Build.NuGet.targets')" />
+  <Import Project="..\packages\TsdLib.Build.Versioning.2.8.0\build\TsdLib.Build.Versioning.targets" Condition="Exists('..\packages\TsdLib.Build.Versioning.2.8.0\build\TsdLib.Build.Versioning.targets')" />
+  <!--<Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\TsdLib.Build.NuGet.2.0.0-debug\build\TsdLib.Build.NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\TsdLib.Build.NuGet.2.0.0-debug\build\TsdLib.Build.NuGet.targets'))" />
+    <Error Condition="!Exists('..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props'))" />
+  </Target>
+  <Import Project="..\packages\TsdLib.Build.NuGet.2.0.0-debug\build\TsdLib.Build.NuGet.targets" Condition="Exists('..\packages\TsdLib.Build.NuGet.2.0.0-debug\build\TsdLib.Build.NuGet.targets')" />-->
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -68,6 +68,14 @@ namespace TsdLib.Configuration.Managers
             _configs.Add(configItem);
         }
 
+
+        public void Add(IConfigItem item)
+        {
+            T newItem = item as T;
+            if (newItem != null)
+                Add(newItem);
+        }
+
         public T Add(string name, bool storeInDatabase)
         {
             T configItem = new T
@@ -138,6 +146,7 @@ namespace TsdLib.Configuration.Managers
         /// <returns>A new <see cref="IConfigManager{T}"/> to manage the retrieved configuration data.</returns>
         public void Reload()
         {
+            Trace.WriteLine("Reloading " + typeof(T).Name);
             XElement sharedXml = null;
 
             if (_sharedConfigConnection != null)
@@ -248,5 +257,7 @@ namespace TsdLib.Configuration.Managers
         {
             return null;
         }
+
+
     }
 }

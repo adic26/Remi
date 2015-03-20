@@ -23,5 +23,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("9245c486-c17d-4e07-b8a9-b1f8f53809bf")]
 
 
-
-//Please use the Version.txt file to update assembly version
+[assembly: AssemblyVersion("2.0")]

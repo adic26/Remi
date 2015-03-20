@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using TestClient.Configuration;
-using TestClient.View;
+using TestClient.UI.Forms;
 using TsdLib.Configuration;
 using TsdLib.Configuration.Connections;
 using TsdLib.TestSystem.Controller;

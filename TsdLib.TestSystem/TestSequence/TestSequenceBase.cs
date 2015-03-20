@@ -124,10 +124,20 @@ namespace TsdLib.TestSystem.TestSequence
         /// Send data to the application controller.
         /// </summary>
         /// <param name="data">Data that can be marshalled across AppDomain boundaries as a value type.</param>
-        protected void SendData<T>(T data) where T : struct
+        protected void SendDataByValue<T>(T data) where T : struct
         {
             if (DataEventProxy != null)
                 DataEventProxy.FireEvent(this, data);
+        }
+
+        /// <summary>
+        /// Send data to the application controller.
+        /// </summary>
+        /// <param name="dataContainer">Data that can be marshalled across AppDomain boundaries as a reference type.</param>
+        protected void SendDataByReference<T>(DataContainer<T> dataContainer)
+        {
+            if (DataEventProxy != null)
+                DataEventProxy.FireEvent(this, dataContainer);
         }
 
         /// <summary>
