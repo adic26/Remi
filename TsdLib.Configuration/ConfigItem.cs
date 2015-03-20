@@ -16,7 +16,7 @@ namespace TsdLib.Configuration
     /// Base class for a specific instance of a configuration.
     /// </summary>
     [Serializable]
-    public abstract class ConfigItem : MarshalByRefObject, IConfigItem, IComponent
+    public abstract class ConfigItem : MarshalByRefObject, IConfigItem//, IComponent
     {
         /// <summary>
         /// Initialize the configuration properties to default values.
@@ -72,17 +72,6 @@ namespace TsdLib.Configuration
             }
         }
 
-        ///// <summary>
-        ///// Save the configuration item to persisted storage.
-        ///// </summary>
-        //public void Save(IConfigManager configManager)
-        //{
-        //    if (configManager != null)
-        //        configManager.Save();
-        //    else
-        //        Trace.WriteLine("Could not save configuration");
-        //}
-
         /// <summary>
         /// Gets the name of the common base type.
         /// </summary>
@@ -90,8 +79,6 @@ namespace TsdLib.Configuration
         {
             get { return ConfigExtensions.GetBaseTypeName(GetType()); }
         }
-
-
 
         /// <summary>
         /// Gets the name of the <see cref="ConfigItem"/>
@@ -102,8 +89,12 @@ namespace TsdLib.Configuration
             return Name;
         }
 
-        #region IComponent implementation
-
+        #region IComponent implementation - used to attach to DesignerVerbSite - currently disabled, as this is causing exceptions on other clients when getting DesignerVerbSite.Name
+        /*
+         * Could try returning null or empty string for get_Name?
+         * 
+         * 
+         * 
         /// <summary>
         /// Gets the <see cref="ISite"/> of the <see cref="IComponent"/>
         /// </summary>
@@ -140,7 +131,7 @@ namespace TsdLib.Configuration
         {
 
         }
-
+        */
         #endregion
 
         /// <summary>
