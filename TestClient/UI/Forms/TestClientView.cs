@@ -84,10 +84,10 @@ namespace TestClient.UI.Forms
         //    MessageBox.Show("Got data: " + obj.TheDataObject.TheInt + " " + obj.TheDataObject.TheDouble);
         //}
 
-        //private void addData(DataContainer<Sequences.DataObject> obj)
-        //{
-        //    MessageBox.Show("Got data: " + obj.DataObject.TheInt + " " + obj.DataObject.TheDouble);
-        //}
+        private void addData(DataContainer<Sequences.DataObject> obj)
+        {
+            MessageBox.Show("Got data: " + obj.DataObject.TheInt + " " + obj.DataObject.TheDouble);
+        }
 
         private void ViewBase_FormClosing(object sender, FormClosingEventArgs e)
         {

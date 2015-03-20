@@ -18,6 +18,7 @@ namespace TestClient.Sequences
 
             DummyPowerSupply ps = new DummyPowerSupply("addr");
             //SendDataByValue(2.2);
+            
             SendDataByReference(new DataContainer<DataObject>(new DataObject(5, 2.5)));
 
             for (int i = 0; i < testConfig.LoopIterations; i++)

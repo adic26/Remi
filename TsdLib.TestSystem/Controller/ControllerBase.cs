@@ -232,7 +232,7 @@ namespace TsdLib.TestSystem.Controller
                         {
                             _activeSequence = (ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>)Activator.CreateInstance(Assembly.GetEntryAssembly().GetType(config.FullTypeName));
 
-                            controllerProxy = (ControllerProxy)Activator.CreateInstance(typeof(ControllerProxy), BindingFlags.CreateInstance, null, new object[] { UI, _activeSequence.CancellationManager }, CultureInfo.CurrentCulture);
+                            controllerProxy = (ControllerProxy)Activator.CreateInstance(typeof(ControllerProxy), BindingFlags.CreateInstance, null, new object[] { UI, _activeSequence.CancellationManager, _localDomain }, CultureInfo.CurrentCulture);
                         }
                         else
                         {
@@ -246,7 +246,7 @@ namespace TsdLib.TestSystem.Controller
                             sequenceDomain = AppDomain.CreateDomain("Sequence Domain");
 
                             _activeSequence = (ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>)sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, config.FullTypeName);
-                            controllerProxy = (ControllerProxy) sequenceDomain.CreateInstanceAndUnwrap(typeof (ControllerProxy).Assembly.FullName, typeof (ControllerProxy).FullName, false, BindingFlags.CreateInstance, null, new object[] {UI, _activeSequence.CancellationManager}, CultureInfo.CurrentCulture, null);
+                            controllerProxy = (ControllerProxy) sequenceDomain.CreateInstanceAndUnwrap(typeof (ControllerProxy).Assembly.FullName, typeof (ControllerProxy).FullName, false, BindingFlags.CreateInstance, null, new object[] {UI, _activeSequence.CancellationManager, _localDomain}, CultureInfo.CurrentCulture, null);
 
                             if (UI.TraceListenerControl != null)
                                 _activeSequence.AddTraceListener(UI.TraceListenerControl.Listener);

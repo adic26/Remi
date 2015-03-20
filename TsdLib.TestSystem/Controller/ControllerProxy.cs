@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using TsdLib.Measurements;
 using TsdLib.UI;
 
@@ -16,17 +17,24 @@ namespace TsdLib.TestSystem.Controller
         /// </summary>
         public IView ViewProxy { get; private set; }
 
+        /// <summary>
+        /// Gets a reference to the object used to cancel/abort the test sequence.
+        /// </summary>
         public ICancellationManager TestSequence { get; private set;}
 
+        private readonly bool _localDomain;
+
         /// <summary>
-        /// Initialize a new 
+        /// Initialize a new ControllerProxy.
         /// </summary>
         /// <param name="view">An instance of <see cref="IView"/> that will be used to handle UI events.</param>
         /// <param name="testSequenceCancellationManager">Reference to the test sequence cancellation manager.</param>
-        public ControllerProxy(IView view, ICancellationManager testSequenceCancellationManager)
+        /// <param name="localDomain">True if using a single application domain.</param>
+        public ControllerProxy(IView view, ICancellationManager testSequenceCancellationManager, bool localDomain)
         {
             ViewProxy = view;
             TestSequence = testSequenceCancellationManager;
+            _localDomain = localDomain;
         }
 
         /// <summary>
@@ -90,7 +98,10 @@ namespace TsdLib.TestSystem.Controller
         /// <param name="data">The data that was captured.</param>
         public void DataAdded(object sender, object data)
         {
-            ViewProxy.AddData(data);
+            if (data is MarshalByRefObject && !_localDomain)
+                Trace.WriteLine("Attempted to send " + data.GetType().Name + " , but this is not yet supported when using multiple AppDomains.");
+            else
+                ViewProxy.AddData(data);
         }
 
         public override object InitializeLifetimeService()
