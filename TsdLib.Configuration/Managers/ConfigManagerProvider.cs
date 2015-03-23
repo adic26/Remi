@@ -10,7 +10,7 @@ namespace TsdLib.Configuration.Managers
     {
         private readonly List<IConfigManager> _configManagers = new List<IConfigManager>();
         internal readonly ITestDetails _testDetails;
-        private readonly IConfigConnection _sharedConfigConnection;
+        internal readonly IConfigConnection _sharedConfigConnection;
         
         /// <summary>
         /// Initialize the ConfigurationManagerProvider by providing the test details and connection information required to save and recal configuration data.

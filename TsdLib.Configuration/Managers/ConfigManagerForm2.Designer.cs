@@ -31,15 +31,15 @@
             this.button_OK = new System.Windows.Forms.Button();
             this.button_Cancel = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.comboBox_TestSystemName = new System.Windows.Forms.ComboBox();
-            this.comboBox_TestSystemVersion = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.comboBox_TestSystemMode = new System.Windows.Forms.ComboBox();
             this.groupBox_TestSystemIdentity = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel_TestSystemIdentity = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.button_PromoteVersion = new System.Windows.Forms.Button();
             this.button_PromoteMode = new System.Windows.Forms.Button();
+            this.textBox_TestSystemName = new System.Windows.Forms.TextBox();
+            this.textBox_TestSystemVersion = new System.Windows.Forms.TextBox();
+            this.textBox_TestSystemMode = new System.Windows.Forms.TextBox();
             this.comboBox_ConfigType = new System.Windows.Forms.ComboBox();
             this.propertyGrid_Settings = new System.Windows.Forms.PropertyGrid();
             this.comboBox_ConfigItem = new System.Windows.Forms.ComboBox();
@@ -86,26 +86,6 @@
             this.label3.TabIndex = 18;
             this.label3.Text = "Version";
             // 
-            // comboBox_TestSystemName
-            // 
-            this.comboBox_TestSystemName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboBox_TestSystemName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox_TestSystemName.FormattingEnabled = true;
-            this.comboBox_TestSystemName.Location = new System.Drawing.Point(75, 3);
-            this.comboBox_TestSystemName.Name = "comboBox_TestSystemName";
-            this.comboBox_TestSystemName.Size = new System.Drawing.Size(220, 21);
-            this.comboBox_TestSystemName.TabIndex = 15;
-            // 
-            // comboBox_TestSystemVersion
-            // 
-            this.comboBox_TestSystemVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboBox_TestSystemVersion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox_TestSystemVersion.FormattingEnabled = true;
-            this.comboBox_TestSystemVersion.Location = new System.Drawing.Point(75, 30);
-            this.comboBox_TestSystemVersion.Name = "comboBox_TestSystemVersion";
-            this.comboBox_TestSystemVersion.Size = new System.Drawing.Size(220, 21);
-            this.comboBox_TestSystemVersion.TabIndex = 17;
-            // 
             // label2
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -115,16 +95,6 @@
             this.label2.Size = new System.Drawing.Size(35, 13);
             this.label2.TabIndex = 16;
             this.label2.Text = "Name";
-            // 
-            // comboBox_TestSystemMode
-            // 
-            this.comboBox_TestSystemMode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboBox_TestSystemMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox_TestSystemMode.FormattingEnabled = true;
-            this.comboBox_TestSystemMode.Location = new System.Drawing.Point(75, 57);
-            this.comboBox_TestSystemMode.Name = "comboBox_TestSystemMode";
-            this.comboBox_TestSystemMode.Size = new System.Drawing.Size(220, 21);
-            this.comboBox_TestSystemMode.TabIndex = 19;
             // 
             // groupBox_TestSystemIdentity
             // 
@@ -146,13 +116,13 @@
             this.tableLayoutPanel_TestSystemIdentity.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel_TestSystemIdentity.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 108F));
             this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.label1, 0, 2);
-            this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.comboBox_TestSystemMode, 1, 2);
             this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.label2, 0, 0);
-            this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.comboBox_TestSystemVersion, 1, 1);
-            this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.comboBox_TestSystemName, 1, 0);
             this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.label3, 0, 1);
             this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.button_PromoteVersion, 2, 1);
             this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.button_PromoteMode, 2, 2);
+            this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.textBox_TestSystemName, 1, 0);
+            this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.textBox_TestSystemVersion, 1, 1);
+            this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.textBox_TestSystemMode, 1, 2);
             this.tableLayoutPanel_TestSystemIdentity.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel_TestSystemIdentity.Location = new System.Drawing.Point(3, 16);
             this.tableLayoutPanel_TestSystemIdentity.MinimumSize = new System.Drawing.Size(324, 80);
@@ -196,6 +166,33 @@
             this.button_PromoteMode.UseVisualStyleBackColor = true;
             this.button_PromoteMode.Click += new System.EventHandler(this.button_PromoteMode_Click);
             // 
+            // textBox_TestSystemName
+            // 
+            this.textBox_TestSystemName.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox_TestSystemName.Location = new System.Drawing.Point(75, 3);
+            this.textBox_TestSystemName.Name = "textBox_TestSystemName";
+            this.textBox_TestSystemName.ReadOnly = true;
+            this.textBox_TestSystemName.Size = new System.Drawing.Size(220, 20);
+            this.textBox_TestSystemName.TabIndex = 24;
+            // 
+            // textBox_TestSystemVersion
+            // 
+            this.textBox_TestSystemVersion.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox_TestSystemVersion.Location = new System.Drawing.Point(75, 30);
+            this.textBox_TestSystemVersion.Name = "textBox_TestSystemVersion";
+            this.textBox_TestSystemVersion.ReadOnly = true;
+            this.textBox_TestSystemVersion.Size = new System.Drawing.Size(220, 20);
+            this.textBox_TestSystemVersion.TabIndex = 25;
+            // 
+            // textBox_TestSystemMode
+            // 
+            this.textBox_TestSystemMode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox_TestSystemMode.Location = new System.Drawing.Point(75, 57);
+            this.textBox_TestSystemMode.Name = "textBox_TestSystemMode";
+            this.textBox_TestSystemMode.ReadOnly = true;
+            this.textBox_TestSystemMode.Size = new System.Drawing.Size(220, 20);
+            this.textBox_TestSystemMode.TabIndex = 26;
+            // 
             // comboBox_ConfigType
             // 
             this.comboBox_ConfigType.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -205,6 +202,7 @@
             this.comboBox_ConfigType.Name = "comboBox_ConfigType";
             this.comboBox_ConfigType.Size = new System.Drawing.Size(220, 21);
             this.comboBox_ConfigType.TabIndex = 21;
+            this.comboBox_ConfigType.SelectedIndexChanged += new System.EventHandler(this.comboBox_ConfigType_SelectedIndexChanged);
             // 
             // propertyGrid_Settings
             // 
@@ -226,6 +224,7 @@
             this.comboBox_ConfigItem.Name = "comboBox_ConfigItem";
             this.comboBox_ConfigItem.Size = new System.Drawing.Size(220, 21);
             this.comboBox_ConfigItem.TabIndex = 24;
+            this.comboBox_ConfigItem.SelectedIndexChanged += new System.EventHandler(this.comboBox_ConfigItem_SelectedIndexChanged);
             // 
             // button_CreateNew
             // 
@@ -302,7 +301,7 @@
             this.Controls.Add(this.button_Cancel);
             this.Controls.Add(this.button_OK);
             this.Name = "ConfigManagerForm2";
-            this.Text = "ConfigManagerForm2";
+            this.Text = "Config Manager";
             this.groupBox_TestSystemIdentity.ResumeLayout(false);
             this.tableLayoutPanel_TestSystemIdentity.ResumeLayout(false);
             this.tableLayoutPanel_TestSystemIdentity.PerformLayout();
@@ -318,10 +317,7 @@
         private System.Windows.Forms.Button button_OK;
         private System.Windows.Forms.Button button_Cancel;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox comboBox_TestSystemName;
-        private System.Windows.Forms.ComboBox comboBox_TestSystemVersion;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox_TestSystemMode;
         private System.Windows.Forms.GroupBox groupBox_TestSystemIdentity;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_TestSystemIdentity;
@@ -335,5 +331,8 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_ConfigSelection;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox textBox_TestSystemName;
+        private System.Windows.Forms.TextBox textBox_TestSystemVersion;
+        private System.Windows.Forms.TextBox textBox_TestSystemMode;
     }
 }

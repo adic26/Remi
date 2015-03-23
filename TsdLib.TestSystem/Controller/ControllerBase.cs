@@ -381,7 +381,8 @@ namespace TsdLib.TestSystem.Controller
         /// <param name="configManagers">An array of <see cref="IConfigManager"/> objects containing the configuration data.</param>
         protected virtual void EditConfiguration(object sender, IConfigManager[] configManagers)
         {
-            using (ConfigManagerForm form = new ConfigManagerForm(Details.TestSystemName, Details.TestSystemVersion, true, configManagers))
+            //using (ConfigManagerForm form = new ConfigManagerForm(Details.TestSystemName, Details.TestSystemVersion, true, configManagers))
+            using (ConfigManagerForm2 form = new ConfigManagerForm2(configManagerProvider))
                 if (form.ShowDialog() == DialogResult.OK)
                     foreach (IConfigManager modifiedConfig in form.ModifiedConfigs)
                         modifiedConfig.Save();

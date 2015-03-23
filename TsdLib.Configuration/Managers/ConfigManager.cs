@@ -198,7 +198,7 @@ namespace TsdLib.Configuration.Managers
                 newCfg.InitializeDefaultValues();
                 _configs = new List<T> {newCfg};
             }
-            _bindingSource.DataSource = _configs;
+            _bindingSource.DataSource = _configs.Where(cfg => cfg.IsValid);
             Save();
         }
 

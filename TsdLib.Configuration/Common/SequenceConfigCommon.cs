@@ -22,7 +22,7 @@ namespace TsdLib.Configuration.Common
         /// Gets or sets a list of assemblies needed to be referenced declared in the test sequence.
         /// </summary>
         [Editor(typeof(MultiLineStringEditor), typeof(UITypeEditor))]
-        [TypeConverter(typeof(HashSetConverter))]
+        [TypeConverter(typeof(MultiLineStringConverter))]
         [Category("Dependencies")]
         public HashSet<string> AssemblyReferences { get; set; }
 

@@ -57,7 +57,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsdApplication", "TsdApplic
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{DCC328A8-A754-44DD-B282-82DE6D81769B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InstrumentLibrary", "InstrumentLibrary", "{04516186-C40E-4942-ACE5-DCCF4E930F91}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "moved_InstrumentLibrary", "moved_InstrumentLibrary", "{04516186-C40E-4942-ACE5-DCCF4E930F91}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

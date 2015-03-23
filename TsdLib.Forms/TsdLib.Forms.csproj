@@ -44,6 +44,7 @@
     <Compile Include="ConfigItemCreate.Designer.cs">
       <DependentUpon>ConfigItemCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="MultiLineStringConverter.cs" />
     <Compile Include="MultiLineStringEditor.cs">
       <SubType>Form</SubType>
     </Compile>

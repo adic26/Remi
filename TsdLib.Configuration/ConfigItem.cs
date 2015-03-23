@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
-using TsdLib.Configuration.Managers;
 using TsdLib.Configuration.Utilities;
 
 namespace TsdLib.Configuration
@@ -141,17 +137,6 @@ namespace TsdLib.Configuration
         public override object InitializeLifetimeService()
         {
             return null;
-        }
-    }
-
-    internal class HashSetConverter : TypeConverter
-    {
-        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
-        {
-            HashSet<string> v = value as HashSet<string>;
-            if (v != null && destinationType == typeof (string))
-                return string.Join(Environment.NewLine, v);
-            return base.ConvertTo(context, culture, value, destinationType);
         }
     }
 }

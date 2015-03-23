@@ -28,6 +28,28 @@ namespace TsdLib.Configuration.Connections
         /// <param name="data">Data read from the storage location.</param>
         /// <returns>True if read was successful; false otherwise.</returns>
         bool TryReadString(string testSystemName, Version testSystemVersion, OperatingMode testSystemMode, Type configType, out string data);
+
+        /// <summary>
+        /// Clone the current configuration to a different operating mode.
+        /// </summary>
+        /// <param name="testSystemName">Name of the test system.</param>
+        /// <param name="testSystemVersion">Version of the test system.</param>
+        /// <param name="testSystemMode">An <see cref="OperatingMode"/> describing the use-case of the test system.</param>
+        /// <param name="configType">The type used to encapsulate the configuration data.</param>
+        /// <param name="newMode">Operating mode to clone current configuration to.</param>
+        /// <returns>True if read was successful; false otherwise.</returns>
+        bool CloneMode(string testSystemName, Version testSystemVersion, OperatingMode testSystemMode, Type configType, OperatingMode newMode);
+
+        /// <summary>
+        /// Clone the current configuration to a different operating version.
+        /// </summary>
+        /// <param name="testSystemName">Name of the test system.</param>
+        /// <param name="testSystemVersion">Version of the test system.</param>
+        /// <param name="testSystemMode">An <see cref="OperatingMode"/> describing the use-case of the test system.</param>
+        /// <param name="configType">The type used to encapsulate the configuration data.</param>
+        /// <param name="newVersion">New version to clone current configuration to.</param>
+        /// <returns>True if read was successful; false otherwise.</returns>
+        bool CloneVersion(string testSystemName, Version testSystemVersion, OperatingMode testSystemMode, Type configType, Version newVersion);
     }
 
     /// <summary>

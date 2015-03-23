@@ -49,6 +49,7 @@
     <Compile Include="Common\TestConfigCommon.cs" />
     <Compile Include="ConfigItem.cs" />
     <Compile Include="Exceptions\InvalidConfigTypeException.cs" />
+    <Compile Include="Exceptions\MissingConfigTypeException.cs" />
     <Compile Include="Exceptions\InvalidDirectoryException.cs" />
     <Compile Include="Exceptions\FileUploadException.cs" />
     <Compile Include="Exceptions\InvalidConfigFileException.cs" />
