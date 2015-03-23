@@ -24,7 +24,7 @@ namespace TestClient
                 return new System.CodeDom.CodeCompileUnit[0];
 
             string[] instrumentXmlFiles = System.IO.Directory.GetFiles("Instruments", "*.xml");
-            TsdLib.InstrumentLibraryTools.InstrumentParser instrumentXmlParser = new TsdLib.InstrumentLibraryTools.InstrumentParser(nameSpace, TsdLib.CodeGenerator.Language.CSharp.ToString());
+            TsdLib.InstrumentLibrary.Tools.InstrumentParser instrumentXmlParser = new TsdLib.InstrumentLibrary.Tools.InstrumentParser(nameSpace, TsdLib.CodeGenerator.Language.CSharp.ToString());
             codeCompileUnits.AddRange(instrumentXmlFiles.Select(xmlFile => instrumentXmlParser.Parse(new System.IO.StreamReader(xmlFile))));
 
             if (System.IO.Directory.Exists(@"Instruments\Helpers"))
