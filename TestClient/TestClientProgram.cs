@@ -10,6 +10,7 @@ using System.Configuration;
 using TsdLib.Configuration.Common;
 using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Managers;
+using TsdLib.DataAccess;
 
 namespace TestClient
 {
@@ -52,11 +53,6 @@ namespace TestClient
                 bool localDomain = bool.Parse(getConfigValue(LocalDomainArg) ?? "false");
                 string settingsLocation = getConfigValue(SettingsLocationArg) ?? @"";
 
-                //bool retval = DBControl.DAL.Config.CloneConfigMode(testSystemName, "2.1", testSystemMode.ToString(), "StationConfigCommon", "Production");
-                //DBControl.DAL.Config.CloneConfigVersion(testSystemName, testSystemVersion.ToString(2), testSystemMode.ToString(), "StationConfigCommon", "2.1");
-                //bool retval = DBControl.DAL.Config.CloneConfigVersion(testSystemName, testSystemVersion.ToString(2), testSystemMode.ToString(), "StationConfigCommon", "2.1");
-                //return;
-
                 ITestDetails testDetails = new TestDetails(testSystemName, testSystemVersion, testSystemMode);
 
                 IConfigConnection sharedConfigConnection = getConfigConnection(settingsLocation, testSystemVersionMask);
@@ -81,7 +77,7 @@ namespace TestClient
             IConfigConnection sharedConfigConnection;
 #if REMICONTROL
             if (string.IsNullOrWhiteSpace(settingsLocation))
-                sharedConfigConnection = new Configuration.Connections.DatabaseConfigConnection(testSystemVersionMask);
+                sharedConfigConnection = new DatabaseConfigConnection(testSystemVersionMask);
             else
                 sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation), testSystemVersionMask);
 #else

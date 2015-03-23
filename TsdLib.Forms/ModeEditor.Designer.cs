@@ -1,6 +1,6 @@
-﻿namespace TsdLib.Configuration.Managers
+﻿namespace TsdLib.Forms
 {
-    partial class PromoteModeForm
+    partial class ModeEditorForm
     {
         /// <summary>
         /// Required designer variable.
@@ -37,7 +37,7 @@
             // 
             this.button_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button_Cancel.Location = new System.Drawing.Point(175, 89);
+            this.button_Cancel.Location = new System.Drawing.Point(193, 89);
             this.button_Cancel.Name = "button_Cancel";
             this.button_Cancel.Size = new System.Drawing.Size(84, 23);
             this.button_Cancel.TabIndex = 3;
@@ -57,18 +57,20 @@
             // 
             // comboBox
             // 
+            this.comboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox.FormattingEnabled = true;
             this.comboBox.Location = new System.Drawing.Point(26, 31);
             this.comboBox.Name = "comboBox";
-            this.comboBox.Size = new System.Drawing.Size(233, 21);
+            this.comboBox.Size = new System.Drawing.Size(251, 21);
             this.comboBox.TabIndex = 4;
             // 
             // PromoteModeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(326, 124);
+            this.ClientSize = new System.Drawing.Size(289, 124);
             this.Controls.Add(this.comboBox);
             this.Controls.Add(this.button_Cancel);
             this.Controls.Add(this.button_OK);

@@ -1,14 +1,13 @@
-﻿#if REMICONTROL
-
-using System;
+﻿using System;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using TsdLib.Configuration;
 using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Utilities;
 
-namespace TestClient.Configuration.Connections
+namespace TsdLib.DataAccess
 {
-    class DatabaseConfigConnection : IConfigConnection
+    public class DatabaseConfigConnection : IConfigConnection
     {
         private readonly string _appVersionFilter;
 
@@ -21,6 +20,7 @@ namespace TestClient.Configuration.Connections
         {
             string baseTypeName = ConfigExtensions.GetBaseTypeName(configType);
             string appVersion = applyVersionFilter(testSystemVersion);
+            Trace.WriteLine("Writing " + configType.Name + " to database");
             return DBControl.DAL.Config.SaveConfig(testSystemName, appVersion, testSystemMode.ToString(), baseTypeName, data);
         }
 
@@ -56,5 +56,3 @@ namespace TestClient.Configuration.Connections
         }
     }
 }
-
-#endif

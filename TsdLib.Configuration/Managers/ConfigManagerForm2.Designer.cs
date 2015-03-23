@@ -151,7 +151,7 @@
             this.button_PromoteVersion.Name = "button_PromoteVersion";
             this.button_PromoteVersion.Size = new System.Drawing.Size(102, 21);
             this.button_PromoteVersion.TabIndex = 22;
-            this.button_PromoteVersion.Text = "Promote";
+            this.button_PromoteVersion.Text = "Clone";
             this.button_PromoteVersion.UseVisualStyleBackColor = true;
             this.button_PromoteVersion.Click += new System.EventHandler(this.button_PromoteVersion_Click);
             // 
@@ -162,7 +162,7 @@
             this.button_PromoteMode.Name = "button_PromoteMode";
             this.button_PromoteMode.Size = new System.Drawing.Size(102, 21);
             this.button_PromoteMode.TabIndex = 23;
-            this.button_PromoteMode.Text = "Promote";
+            this.button_PromoteMode.Text = "Clone";
             this.button_PromoteMode.UseVisualStyleBackColor = true;
             this.button_PromoteMode.Click += new System.EventHandler(this.button_PromoteMode_Click);
             // 

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using TsdLib.Configuration.Common;
 using TsdLib.Configuration.Exceptions;
+using TsdLib.Forms;
 
 namespace TsdLib.Configuration.Managers
 {
@@ -12,9 +14,9 @@ namespace TsdLib.Configuration.Managers
     /// </summary>
     public partial class ConfigManagerForm2 : Form
     {
-        private ConfigManagerProvider _configProvider;
+        private readonly ConfigManagerProvider _configProvider;
 
-        private IConfigManager _selectedConfigManager
+        private IConfigManager SelectedConfigManager
         {
             get { return (IConfigManager) comboBox_ConfigType.SelectedItem; }
         }
@@ -46,18 +48,18 @@ namespace TsdLib.Configuration.Managers
             propertyGrid_Settings.Enabled = !_configProvider._testDetails.TestSystemMode.HasFlag(OperatingMode.Production);
 
             propertyGrid_Settings.CommandsVisibleIfAvailable = true;
-            propertyGrid_Settings.Leave += (s, o) => ModifiedConfigs.Add(_selectedConfigManager);
+            propertyGrid_Settings.Leave += (s, o) => ModifiedConfigs.Add(SelectedConfigManager);
         }
 
         private void button_PromoteVersion_Click(object sender, EventArgs e)
         {
-            using (PromoteVersionForm form = new PromoteVersionForm())
+            using (VersionEditorForm form = new VersionEditorForm(_configProvider._testDetails.TestSystemVersion))
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
-                    _selectedConfigManager.Save();
+                    SelectedConfigManager.Save();
                     Version newVersion = form.TargetVersion;
-                    string typeName = _selectedConfigManager.ConfigTypeName;
+                    string typeName = SelectedConfigManager.ConfigTypeName;
                     Assembly entryAssembly = Assembly.GetEntryAssembly();
                     Type configType = Assembly.GetEntryAssembly().GetTypes().FirstOrDefault(type => type.Name == typeName);
                     if (configType == null)
@@ -72,17 +74,25 @@ namespace TsdLib.Configuration.Managers
 
         private void button_PromoteMode_Click(object sender, EventArgs e)
         {
-            using (PromoteModeForm form = new PromoteModeForm())
+            using (ModeEditorForm form = new ModeEditorForm())
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
-                    _selectedConfigManager.Save();
+                    SelectedConfigManager.Save();
                     OperatingMode newMode = form.TargetMode;
-                    string typeName = _selectedConfigManager.ConfigTypeName;
-                    Assembly entryAssembly = Assembly.GetEntryAssembly();
-                    Type configType = entryAssembly.GetTypes().FirstOrDefault(type => type.Name == typeName);
-                    if (configType == null)
-                        throw new MissingConfigTypeException("Assembly name = " + entryAssembly.GetName().Name);
+                    string typeName = SelectedConfigManager.ConfigTypeName;
+                    Type configType;
+                    if (typeName == "SequenceConfigCommon")
+                    {
+                        configType = typeof (SequenceConfigCommon);
+                    }
+                    else
+                    {
+                        Assembly entryAssembly = Assembly.GetEntryAssembly();
+                        configType = entryAssembly.GetTypes().FirstOrDefault(type => type.Name == typeName);
+                        if (configType == null)
+                            throw new MissingConfigTypeException("Assembly name = " + entryAssembly.GetName().Name);
+                    }
 
                     _configProvider._sharedConfigConnection.CloneMode(_configProvider._testDetails.SafeTestSystemName, _configProvider._testDetails.TestSystemVersion, _configProvider._testDetails.TestSystemMode, configType, newMode);
                     _configProvider._testDetails.TestSystemMode = newMode;
@@ -93,7 +103,7 @@ namespace TsdLib.Configuration.Managers
 
         private void comboBox_ConfigType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            comboBox_ConfigItem.DataSource = _selectedConfigManager;
+            comboBox_ConfigItem.DataSource = SelectedConfigManager;
         }
 
         private void comboBox_ConfigItem_SelectedIndexChanged(object sender, EventArgs e)

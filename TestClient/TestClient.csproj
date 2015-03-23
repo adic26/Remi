@@ -60,7 +60,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\Connections\DatabaseConfigConnection.cs" />
     <Compile Include="Controller\Controller.cs" />
     <Compile Include="Configuration\ProductConfig.cs" />
     <Compile Include="Instruments\Aos_BCM4339.cs">
@@ -115,6 +114,10 @@
     <ProjectReference Include="..\TsdLib.Core\TsdLib.Core.csproj">
       <Project>{512BEDDC-2B71-42F0-9C1B-6D37497F5DA7}</Project>
       <Name>TsdLib.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.DataAccess\TsdLib.DataAccess.csproj">
+      <Project>{7ac84096-9dfe-4654-bb39-73e14fea188a}</Project>
+      <Name>TsdLib.DataAccess</Name>
     </ProjectReference>
     <ProjectReference Include="..\TsdLib.Instrument.Adb\TsdLib.Instrument.Adb.csproj">
       <Project>{5dff1b05-a2d6-4313-94ab-546e4ad88377}</Project>
