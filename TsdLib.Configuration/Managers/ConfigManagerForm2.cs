@@ -55,6 +55,7 @@ namespace TsdLib.Configuration.Managers
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
+                    _selectedConfigManager.Save();
                     Version newVersion = form.TargetVersion;
                     string typeName = _selectedConfigManager.ConfigTypeName;
                     Assembly entryAssembly = Assembly.GetEntryAssembly();
@@ -75,6 +76,7 @@ namespace TsdLib.Configuration.Managers
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
+                    _selectedConfigManager.Save();
                     OperatingMode newMode = form.TargetMode;
                     string typeName = _selectedConfigManager.ConfigTypeName;
                     Assembly entryAssembly = Assembly.GetEntryAssembly();
