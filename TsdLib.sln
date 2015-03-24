@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TsdLib_Developers_Guide.html = TsdLib_Developers_Guide.html
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StarterKit", "StarterKit", "{7D3E0D66-0881-4ED3-AF14-85E3810AF580}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "moved_StarterKit", "moved_StarterKit", "{7D3E0D66-0881-4ED3-AF14-85E3810AF580}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionSync", "VersionSync\VersionSync.csproj", "{F2A44688-E60E-47BB-AB58-21C4F06C9ABB}"
 EndProject
