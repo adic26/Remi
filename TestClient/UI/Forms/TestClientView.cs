@@ -1,10 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows.Forms;
-using TestClient.Sequences;
 using TsdLib;
 using TsdLib.Measurements;
+using TsdLib.TestSystem;
 using TsdLib.UI;
 
 namespace TestClient.UI.Forms
@@ -69,7 +70,19 @@ namespace TestClient.UI.Forms
         /// <param name="data">Data to add.</param>
         public void AddData(object data)
         {
-            addData((dynamic)data);
+            var context = SynchronizationContext.Current;
+
+            TransientData transientData = data as TransientData;
+            if (transientData != null)
+            {
+                transientData.Context.Post(addData((dynamic)data), null);
+
+            }
+            else
+            {
+                addData((dynamic)data);
+                
+            }
         }
 
         private void addData(object data)
@@ -78,15 +91,11 @@ namespace TestClient.UI.Forms
             Trace.WriteLine(string.Format("String representation: {0}", data));
         }
 
-        //private void addData(MarshalByRefObject objd)
-        //{
-        //    DataObjectContainer obj = (DataObjectContainer)objd;
-        //    MessageBox.Show("Got data: " + obj.TheDataObject.TheInt + " " + obj.TheDataObject.TheDouble);
-        //}
-
-        private void addData(DataContainer<Sequences.DataObject> obj)
+        private void addData(Tuple<int, string> data)
         {
-            MessageBox.Show("Got data: " + obj.DataObject.TheInt + " " + obj.DataObject.TheDouble);
+            MessageBox.Show("Int = " + data.Item1 + " String = " + data.Item2);
+            ConfigControl.SetState(State.ReadyToTest);
+
         }
 
         private void ViewBase_FormClosing(object sender, FormClosingEventArgs e)

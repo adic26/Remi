@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using TsdLib.Measurements;
 using TsdLib.UI;
 
@@ -10,8 +11,41 @@ namespace TsdLib.TestSystem.Controller
     /// These event handlers will be executed on the UI thread.
     /// </summary>
     //[Serializable]
-    internal class ControllerProxy : MarshalByRefObject
+    internal class ControllerProxy : MarshalByRefObject, IObserver<TransientData<object>>
     {
+
+
+
+        public AppDomain CallbackDomain { get; private set; }
+
+
+        public void OnCompleted()
+        {
+
+        }
+
+        public void OnError(Exception error)
+        {
+
+        }
+
+        public void OnNext(TransientData<object> data)
+        {
+            if (SynchronizationContext.Current == null)
+            {
+                //Trace.WriteLine("Attempted to send " + data.GetType().Name + " , but this is not yet supported when using multiple AppDomains.");
+                data.Context.Post(ViewProxy.AddData, data.Data);
+
+
+            }
+            else
+                ViewProxy.AddData(data.Data);
+        }
+
+
+
+
+
         /// <summary>
         /// Gets a reference to the View object, representing the user interface.
         /// </summary>
@@ -30,11 +64,12 @@ namespace TsdLib.TestSystem.Controller
         /// <param name="view">An instance of <see cref="IView"/> that will be used to handle UI events.</param>
         /// <param name="testSequenceCancellationManager">Reference to the test sequence cancellation manager.</param>
         /// <param name="localDomain">True if using a single application domain.</param>
-        public ControllerProxy(IView view, ICancellationManager testSequenceCancellationManager, bool localDomain)
+        public ControllerProxy(IView view, ICancellationManager testSequenceCancellationManager, bool localDomain, AppDomain callBackDomain)
         {
             ViewProxy = view;
             TestSequence = testSequenceCancellationManager;
             _localDomain = localDomain;
+            CallbackDomain = callBackDomain;
         }
 
         /// <summary>

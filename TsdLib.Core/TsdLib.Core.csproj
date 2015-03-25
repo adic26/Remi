@@ -45,7 +45,6 @@
     <Compile Include="Configuration\IStationConfig.cs" />
     <Compile Include="Configuration\ITestCase.cs" />
     <Compile Include="Configuration\ITestConfig.cs" />
-    <Compile Include="DataContainer.cs" />
     <Compile Include="TestSystem\IInstrumentCollection.cs" />
     <Compile Include="UI\IConfigControl.cs" />
     <Compile Include="Configuration\IConfigItem.cs" />

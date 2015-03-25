@@ -1,18 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using TsdLib.Configuration.Managers;
 using TsdLib.Instrument;
 using TsdLib.Measurements;
 using TsdLib.TestSystem.Controller;
+using TsdLib.TestSystem.Observer;
 
 namespace TsdLib.TestSystem.TestSequence
 {
     /// <summary>
     /// Contains functionality to connect a test sequence to the system controller
     /// </summary>
-    public abstract class TestSequenceBase : MarshalByRefObject, IDisposable
+    public abstract class TestSequenceBase : MarshalByRefObject, IDisposable, IObservable<TransientData<object>>
     {
+        public AppDomain CallbackDomain { get; set; }
+
+
+        private readonly HashSet<IObserver<TransientData<object>>> _observers = new HashSet<IObserver<TransientData<object>>>();
+        public IDisposable Subscribe(IObserver<TransientData<object>> observer)
+        {
+            _observers.Add(observer);
+
+            return new Unsubscriber<TransientData<object>>(_observers, observer);
+        }
+
+        public void SendData(object data)
+        {
+            foreach (IObserver<TransientData<object>> observer in _observers)
+            {
+                observer.OnNext(new TransientData<object>(SynchronizationContext.Current, CallbackDomain ?? AppDomain.CurrentDomain, data));
+            }
+        }
+
+
+
         /// <summary>
         /// Gets an <see cref="ICancellationManager"/> object responsible for cancelling the test sequence due to error or user abort.
         /// </summary>
@@ -128,16 +151,6 @@ namespace TsdLib.TestSystem.TestSequence
         {
             if (DataEventProxy != null)
                 DataEventProxy.FireEvent(this, data);
-        }
-
-        /// <summary>
-        /// Send data to the application controller.
-        /// </summary>
-        /// <param name="dataContainer">Data that can be marshalled across AppDomain boundaries as a reference type.</param>
-        protected void SendDataByReference<T>(DataContainer<T> dataContainer)
-        {
-            if (DataEventProxy != null)
-                DataEventProxy.FireEvent(this, dataContainer);
         }
 
         /// <summary>
