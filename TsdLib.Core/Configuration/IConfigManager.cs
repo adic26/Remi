@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace TsdLib.Configuration
@@ -12,6 +13,11 @@ namespace TsdLib.Configuration
         /// Gets the type of configuration for this <see cref="IConfigManager"/>. Useful when binding to a UI control.
         /// </summary>
         string ConfigTypeName { get; }
+
+        /// <summary>
+        /// Gets the type of configuration for this <see cref="IConfigManager"/>.
+        /// </summary>
+        Type ConfigType { get; }
 
         /// <summary>
         /// Saves the configuration data to persisted storage.

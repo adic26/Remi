@@ -7,10 +7,10 @@ using System.Reflection;
 using System.Windows.Forms;
 using TsdLib.Configuration;
 using System.Configuration;
+using TsdLib;
 using TsdLib.Configuration.Common;
 using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Managers;
-using TsdLib.DataAccess;
 
 namespace TestClient
 {
@@ -77,7 +77,7 @@ namespace TestClient
             IConfigConnection sharedConfigConnection;
 #if REMICONTROL
             if (string.IsNullOrWhiteSpace(settingsLocation))
-                sharedConfigConnection = new DatabaseConfigConnection(testSystemVersionMask);
+                sharedConfigConnection = new TsdLib.DataAccess.DatabaseConfigConnection(testSystemVersionMask);
             else
                 sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation), testSystemVersionMask);
 #else

@@ -35,8 +35,8 @@
             this.groupBox_TestSystemIdentity = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel_TestSystemIdentity = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
-            this.button_PromoteVersion = new System.Windows.Forms.Button();
-            this.button_PromoteMode = new System.Windows.Forms.Button();
+            this.button_CloneVersion = new System.Windows.Forms.Button();
+            this.button_CloneMode = new System.Windows.Forms.Button();
             this.textBox_TestSystemName = new System.Windows.Forms.TextBox();
             this.textBox_TestSystemVersion = new System.Windows.Forms.TextBox();
             this.textBox_TestSystemMode = new System.Windows.Forms.TextBox();
@@ -69,7 +69,7 @@
             // 
             this.button_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button_Cancel.Location = new System.Drawing.Point(300, 586);
+            this.button_Cancel.Location = new System.Drawing.Point(375, 586);
             this.button_Cancel.Name = "button_Cancel";
             this.button_Cancel.Size = new System.Drawing.Size(124, 39);
             this.button_Cancel.TabIndex = 14;
@@ -80,7 +80,7 @@
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 34);
+            this.label3.Location = new System.Drawing.Point(3, 32);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(42, 13);
             this.label3.TabIndex = 18;
@@ -90,7 +90,7 @@
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 7);
+            this.label2.Location = new System.Drawing.Point(3, 6);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(35, 13);
             this.label2.TabIndex = 16;
@@ -104,22 +104,20 @@
             this.groupBox_TestSystemIdentity.Location = new System.Drawing.Point(12, 12);
             this.groupBox_TestSystemIdentity.MinimumSize = new System.Drawing.Size(330, 100);
             this.groupBox_TestSystemIdentity.Name = "groupBox_TestSystemIdentity";
-            this.groupBox_TestSystemIdentity.Size = new System.Drawing.Size(412, 100);
+            this.groupBox_TestSystemIdentity.Size = new System.Drawing.Size(487, 100);
             this.groupBox_TestSystemIdentity.TabIndex = 20;
             this.groupBox_TestSystemIdentity.TabStop = false;
             this.groupBox_TestSystemIdentity.Text = "Test System Identity";
             // 
             // tableLayoutPanel_TestSystemIdentity
             // 
-            this.tableLayoutPanel_TestSystemIdentity.ColumnCount = 3;
+            this.tableLayoutPanel_TestSystemIdentity.ColumnCount = 2;
             this.tableLayoutPanel_TestSystemIdentity.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 72F));
             this.tableLayoutPanel_TestSystemIdentity.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_TestSystemIdentity.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 108F));
+            this.tableLayoutPanel_TestSystemIdentity.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.label1, 0, 2);
             this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.label2, 0, 0);
             this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.label3, 0, 1);
-            this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.button_PromoteVersion, 2, 1);
-            this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.button_PromoteMode, 2, 2);
             this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.textBox_TestSystemName, 1, 0);
             this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.textBox_TestSystemVersion, 1, 1);
             this.tableLayoutPanel_TestSystemIdentity.Controls.Add(this.textBox_TestSystemMode, 1, 2);
@@ -131,40 +129,40 @@
             this.tableLayoutPanel_TestSystemIdentity.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel_TestSystemIdentity.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel_TestSystemIdentity.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel_TestSystemIdentity.Size = new System.Drawing.Size(406, 81);
+            this.tableLayoutPanel_TestSystemIdentity.Size = new System.Drawing.Size(481, 81);
             this.tableLayoutPanel_TestSystemIdentity.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 61);
+            this.label1.Location = new System.Drawing.Point(3, 60);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(34, 13);
             this.label1.TabIndex = 21;
             this.label1.Text = "Mode";
             // 
-            // button_PromoteVersion
+            // button_CloneVersion
             // 
-            this.button_PromoteVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_PromoteVersion.Location = new System.Drawing.Point(301, 30);
-            this.button_PromoteVersion.Name = "button_PromoteVersion";
-            this.button_PromoteVersion.Size = new System.Drawing.Size(102, 21);
-            this.button_PromoteVersion.TabIndex = 22;
-            this.button_PromoteVersion.Text = "Clone";
-            this.button_PromoteVersion.UseVisualStyleBackColor = true;
-            this.button_PromoteVersion.Click += new System.EventHandler(this.button_PromoteVersion_Click);
+            this.button_CloneVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button_CloneVersion.Location = new System.Drawing.Point(284, 3);
+            this.button_CloneVersion.Name = "button_CloneVersion";
+            this.button_CloneVersion.Size = new System.Drawing.Size(94, 21);
+            this.button_CloneVersion.TabIndex = 22;
+            this.button_CloneVersion.Text = "Clone Version";
+            this.button_CloneVersion.UseVisualStyleBackColor = true;
+            this.button_CloneVersion.Click += new System.EventHandler(this.button_PromoteVersion_Click);
             // 
-            // button_PromoteMode
+            // button_CloneMode
             // 
-            this.button_PromoteMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_PromoteMode.Location = new System.Drawing.Point(301, 57);
-            this.button_PromoteMode.Name = "button_PromoteMode";
-            this.button_PromoteMode.Size = new System.Drawing.Size(102, 21);
-            this.button_PromoteMode.TabIndex = 23;
-            this.button_PromoteMode.Text = "Clone";
-            this.button_PromoteMode.UseVisualStyleBackColor = true;
-            this.button_PromoteMode.Click += new System.EventHandler(this.button_PromoteMode_Click);
+            this.button_CloneMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.button_CloneMode.Location = new System.Drawing.Point(384, 3);
+            this.button_CloneMode.Name = "button_CloneMode";
+            this.button_CloneMode.Size = new System.Drawing.Size(94, 21);
+            this.button_CloneMode.TabIndex = 23;
+            this.button_CloneMode.Text = "Clone Mode";
+            this.button_CloneMode.UseVisualStyleBackColor = true;
+            this.button_CloneMode.Click += new System.EventHandler(this.button_PromoteMode_Click);
             // 
             // textBox_TestSystemName
             // 
@@ -172,25 +170,25 @@
             this.textBox_TestSystemName.Location = new System.Drawing.Point(75, 3);
             this.textBox_TestSystemName.Name = "textBox_TestSystemName";
             this.textBox_TestSystemName.ReadOnly = true;
-            this.textBox_TestSystemName.Size = new System.Drawing.Size(220, 20);
+            this.textBox_TestSystemName.Size = new System.Drawing.Size(403, 20);
             this.textBox_TestSystemName.TabIndex = 24;
             // 
             // textBox_TestSystemVersion
             // 
             this.textBox_TestSystemVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox_TestSystemVersion.Location = new System.Drawing.Point(75, 30);
+            this.textBox_TestSystemVersion.Location = new System.Drawing.Point(75, 29);
             this.textBox_TestSystemVersion.Name = "textBox_TestSystemVersion";
             this.textBox_TestSystemVersion.ReadOnly = true;
-            this.textBox_TestSystemVersion.Size = new System.Drawing.Size(220, 20);
+            this.textBox_TestSystemVersion.Size = new System.Drawing.Size(403, 20);
             this.textBox_TestSystemVersion.TabIndex = 25;
             // 
             // textBox_TestSystemMode
             // 
             this.textBox_TestSystemMode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox_TestSystemMode.Location = new System.Drawing.Point(75, 57);
+            this.textBox_TestSystemMode.Location = new System.Drawing.Point(75, 55);
             this.textBox_TestSystemMode.Name = "textBox_TestSystemMode";
             this.textBox_TestSystemMode.ReadOnly = true;
-            this.textBox_TestSystemMode.Size = new System.Drawing.Size(220, 20);
+            this.textBox_TestSystemMode.Size = new System.Drawing.Size(403, 20);
             this.textBox_TestSystemMode.TabIndex = 26;
             // 
             // comboBox_ConfigType
@@ -200,7 +198,7 @@
             this.comboBox_ConfigType.FormattingEnabled = true;
             this.comboBox_ConfigType.Location = new System.Drawing.Point(75, 3);
             this.comboBox_ConfigType.Name = "comboBox_ConfigType";
-            this.comboBox_ConfigType.Size = new System.Drawing.Size(220, 21);
+            this.comboBox_ConfigType.Size = new System.Drawing.Size(203, 21);
             this.comboBox_ConfigType.TabIndex = 21;
             this.comboBox_ConfigType.SelectedIndexChanged += new System.EventHandler(this.comboBox_ConfigType_SelectedIndexChanged);
             // 
@@ -212,7 +210,7 @@
             this.propertyGrid_Settings.Location = new System.Drawing.Point(12, 211);
             this.propertyGrid_Settings.Name = "propertyGrid_Settings";
             this.propertyGrid_Settings.PropertySort = System.Windows.Forms.PropertySort.Categorized;
-            this.propertyGrid_Settings.Size = new System.Drawing.Size(412, 369);
+            this.propertyGrid_Settings.Size = new System.Drawing.Size(487, 369);
             this.propertyGrid_Settings.TabIndex = 23;
             // 
             // comboBox_ConfigItem
@@ -222,16 +220,17 @@
             this.comboBox_ConfigItem.FormattingEnabled = true;
             this.comboBox_ConfigItem.Location = new System.Drawing.Point(75, 30);
             this.comboBox_ConfigItem.Name = "comboBox_ConfigItem";
-            this.comboBox_ConfigItem.Size = new System.Drawing.Size(220, 21);
+            this.comboBox_ConfigItem.Size = new System.Drawing.Size(203, 21);
             this.comboBox_ConfigItem.TabIndex = 24;
             this.comboBox_ConfigItem.SelectedIndexChanged += new System.EventHandler(this.comboBox_ConfigItem_SelectedIndexChanged);
             // 
             // button_CreateNew
             // 
-            this.button_CreateNew.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.button_CreateNew.Location = new System.Drawing.Point(301, 30);
+            this.tableLayoutPanel_ConfigSelection.SetColumnSpan(this.button_CreateNew, 2);
+            this.button_CreateNew.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button_CreateNew.Location = new System.Drawing.Point(284, 30);
             this.button_CreateNew.Name = "button_CreateNew";
-            this.button_CreateNew.Size = new System.Drawing.Size(102, 20);
+            this.button_CreateNew.Size = new System.Drawing.Size(194, 21);
             this.button_CreateNew.TabIndex = 26;
             this.button_CreateNew.Text = "Create New";
             this.button_CreateNew.UseVisualStyleBackColor = true;
@@ -245,20 +244,23 @@
             this.groupBox_ConfigSelection.Margin = new System.Windows.Forms.Padding(3, 10, 3, 10);
             this.groupBox_ConfigSelection.MinimumSize = new System.Drawing.Size(0, 71);
             this.groupBox_ConfigSelection.Name = "groupBox_ConfigSelection";
-            this.groupBox_ConfigSelection.Size = new System.Drawing.Size(412, 73);
+            this.groupBox_ConfigSelection.Size = new System.Drawing.Size(487, 73);
             this.groupBox_ConfigSelection.TabIndex = 28;
             this.groupBox_ConfigSelection.TabStop = false;
             this.groupBox_ConfigSelection.Text = "Config Selection";
             // 
             // tableLayoutPanel_ConfigSelection
             // 
-            this.tableLayoutPanel_ConfigSelection.ColumnCount = 3;
+            this.tableLayoutPanel_ConfigSelection.ColumnCount = 4;
             this.tableLayoutPanel_ConfigSelection.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 72F));
             this.tableLayoutPanel_ConfigSelection.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_ConfigSelection.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 108F));
+            this.tableLayoutPanel_ConfigSelection.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tableLayoutPanel_ConfigSelection.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tableLayoutPanel_ConfigSelection.Controls.Add(this.comboBox_ConfigItem, 1, 1);
             this.tableLayoutPanel_ConfigSelection.Controls.Add(this.button_CreateNew, 2, 1);
             this.tableLayoutPanel_ConfigSelection.Controls.Add(this.comboBox_ConfigType, 1, 0);
+            this.tableLayoutPanel_ConfigSelection.Controls.Add(this.button_CloneMode, 3, 0);
+            this.tableLayoutPanel_ConfigSelection.Controls.Add(this.button_CloneVersion, 2, 0);
             this.tableLayoutPanel_ConfigSelection.Controls.Add(this.label4, 0, 0);
             this.tableLayoutPanel_ConfigSelection.Controls.Add(this.label5, 0, 1);
             this.tableLayoutPanel_ConfigSelection.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -267,7 +269,7 @@
             this.tableLayoutPanel_ConfigSelection.RowCount = 2;
             this.tableLayoutPanel_ConfigSelection.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel_ConfigSelection.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel_ConfigSelection.Size = new System.Drawing.Size(406, 54);
+            this.tableLayoutPanel_ConfigSelection.Size = new System.Drawing.Size(481, 54);
             this.tableLayoutPanel_ConfigSelection.TabIndex = 0;
             // 
             // label4
@@ -294,7 +296,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(439, 637);
+            this.ClientSize = new System.Drawing.Size(514, 637);
             this.Controls.Add(this.groupBox_ConfigSelection);
             this.Controls.Add(this.propertyGrid_Settings);
             this.Controls.Add(this.groupBox_TestSystemIdentity);
@@ -321,8 +323,8 @@
         private System.Windows.Forms.GroupBox groupBox_TestSystemIdentity;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_TestSystemIdentity;
-        private System.Windows.Forms.Button button_PromoteVersion;
-        private System.Windows.Forms.Button button_PromoteMode;
+        private System.Windows.Forms.Button button_CloneVersion;
+        private System.Windows.Forms.Button button_CloneMode;
         private System.Windows.Forms.ComboBox comboBox_ConfigType;
         private System.Windows.Forms.PropertyGrid propertyGrid_Settings;
         private System.Windows.Forms.ComboBox comboBox_ConfigItem;

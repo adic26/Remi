@@ -21,6 +21,8 @@ namespace TsdLib.Configuration.Managers
             get { return (IConfigManager) comboBox_ConfigType.SelectedItem; }
         }
 
+        private readonly ControlFilter _controlFilter;
+
         /// <summary>
         /// Gets a collection of IConfigGroup objects that have been modified.
         /// </summary>
@@ -45,10 +47,20 @@ namespace TsdLib.Configuration.Managers
             comboBox_ConfigType.DisplayMember = "ConfigTypeName";
             comboBox_ConfigType.DataSource = _configProvider;
 
-            propertyGrid_Settings.Enabled = !_configProvider._testDetails.TestSystemMode.HasFlag(OperatingMode.Production);
 
             propertyGrid_Settings.CommandsVisibleIfAvailable = true;
             propertyGrid_Settings.Leave += (s, o) => ModifiedConfigs.Add(SelectedConfigManager);
+
+            _controlFilter = new ControlFilter(new Dictionary<Control, OperatingMode>
+            {
+                { propertyGrid_Settings, OperatingMode.Engineering },
+                { button_CloneMode, OperatingMode.Engineering },
+                { button_CloneVersion, OperatingMode.Engineering },
+                { button_CreateNew, OperatingMode.Engineering },
+            },_configProvider._testDetails);
+
+            //propertyGrid_Settings.Enabled = !_configProvider._testDetails.TestSystemMode.HasFlag(OperatingMode.Production);
+            //button_PromoteMode.Enabled = button_PromoteVersion.Enabled = button_CreateNew.Enabled = !_configProvider._testDetails.TestSystemMode.HasFlag(OperatingMode.Production);
         }
 
         private void button_PromoteVersion_Click(object sender, EventArgs e)
@@ -59,13 +71,8 @@ namespace TsdLib.Configuration.Managers
                 {
                     SelectedConfigManager.Save();
                     Version newVersion = form.TargetVersion;
-                    string typeName = SelectedConfigManager.ConfigTypeName;
-                    Assembly entryAssembly = Assembly.GetEntryAssembly();
-                    Type configType = Assembly.GetEntryAssembly().GetTypes().FirstOrDefault(type => type.Name == typeName);
-                    if (configType == null)
-                        throw new MissingConfigTypeException("Assembly name = " + entryAssembly.GetName().Name);
 
-                    _configProvider._sharedConfigConnection.CloneVersion(_configProvider._testDetails.SafeTestSystemName, _configProvider._testDetails.TestSystemVersion, _configProvider._testDetails.TestSystemMode, configType, newVersion);
+                    _configProvider._sharedConfigConnection.CloneVersion(_configProvider._testDetails.SafeTestSystemName, _configProvider._testDetails.TestSystemVersion, _configProvider._testDetails.TestSystemMode, SelectedConfigManager.ConfigType, newVersion);
                     _configProvider._testDetails.TestSystemVersion = newVersion;
                     textBox_TestSystemVersion.Text = newVersion.ToString(2);
                 }
@@ -80,21 +87,8 @@ namespace TsdLib.Configuration.Managers
                 {
                     SelectedConfigManager.Save();
                     OperatingMode newMode = form.TargetMode;
-                    string typeName = SelectedConfigManager.ConfigTypeName;
-                    Type configType;
-                    if (typeName == "SequenceConfigCommon")
-                    {
-                        configType = typeof (SequenceConfigCommon);
-                    }
-                    else
-                    {
-                        Assembly entryAssembly = Assembly.GetEntryAssembly();
-                        configType = entryAssembly.GetTypes().FirstOrDefault(type => type.Name == typeName);
-                        if (configType == null)
-                            throw new MissingConfigTypeException("Assembly name = " + entryAssembly.GetName().Name);
-                    }
 
-                    _configProvider._sharedConfigConnection.CloneMode(_configProvider._testDetails.SafeTestSystemName, _configProvider._testDetails.TestSystemVersion, _configProvider._testDetails.TestSystemMode, configType, newMode);
+                    _configProvider._sharedConfigConnection.CloneMode(_configProvider._testDetails.SafeTestSystemName, _configProvider._testDetails.TestSystemVersion, _configProvider._testDetails.TestSystemMode, SelectedConfigManager.ConfigType, newMode);
                     _configProvider._testDetails.TestSystemMode = newMode;
                     textBox_TestSystemMode.Text = newMode.ToString();
                 }

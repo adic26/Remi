@@ -75,6 +75,7 @@
     <Compile Include="Null\NullStationConfig.cs" />
     <Compile Include="Null\NullTestConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SequenceSync.cs" />
     <Compile Include="TestCases\TestCase.cs" />
     <Compile Include="TestCases\TestCaseProvider.cs" />
     <Compile Include="TestDetails.cs" />

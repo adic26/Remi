@@ -20,11 +20,19 @@ namespace TsdLib.Configuration.Managers
     public class ConfigManager<T> : MarshalByRefObject, IConfigManager<T> where T : ConfigItem, new()
     {
         /// <summary>
-        /// Gets the type of configuration for this <see cref="ConfigManager{T}"/>. Do not remove, it is used for binding to UI controls.
+        /// Gets the type of configuration for this <see cref="ConfigManager{T}"/>.
+        /// </summary>
+        public Type ConfigType
+        {
+            get { return typeof (T); }
+        }
+
+        /// <summary>
+        /// Gets the type name of configuration for this <see cref="ConfigManager{T}"/>.
         /// </summary>
         public string ConfigTypeName
         {
-            get { return typeof (T).Name; }
+            get { return ConfigType.Name; }
         }
 
         private readonly ITestDetails _testDetails;
