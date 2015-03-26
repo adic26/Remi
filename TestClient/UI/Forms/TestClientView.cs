@@ -5,8 +5,7 @@ using System.Threading;
 using System.Windows.Forms;
 using TsdLib;
 using TsdLib.Measurements;
-using TsdLib.TestSystem;
-using TsdLib.TestSystem.Observer;
+using TsdLib.Observer;
 using TsdLib.UI;
 
 namespace TestClient.UI.Forms

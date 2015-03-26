@@ -42,9 +42,7 @@
   <ItemGroup>
     <Compile Include="Controller\ControllerBase.cs" />
     <Compile Include="Controller\ControllerProxy.cs" />
-    <Compile Include="Observer\Unsubscriber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controller\EventProxy.cs" />
     <Compile Include="TestSequence\ConfigurableTestSequence.cs" />
     <Compile Include="TestSequence\MultiConfigTestSequence.cs" />
     <Compile Include="TestSequence\SequentialTestSequence.cs" />
@@ -52,7 +50,6 @@
     <Compile Include="TestSequence\TestSequenceCancellationManager.cs" />
     <Compile Include="TestSequence\TestSequenceException.cs" />
     <Compile Include="TestSequence\TestSequenceInstrumentCollection.cs" />
-    <Compile Include="Observer\DataContainer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TsdLib.CodeGenerator\TsdLib.CodeGenerator.csproj">

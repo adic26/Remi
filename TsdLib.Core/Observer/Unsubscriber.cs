@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TsdLib.TestSystem.Observer
+namespace TsdLib.Observer
 {
     public class Unsubscriber<T> : MarshalByRefObject, IDisposable
     {
         private readonly HashSet<IObserver<T>> _observers;
         private readonly IObserver<T> _observer;
 
-        internal Unsubscriber(HashSet<IObserver<T>> observers, IObserver<T> observer)
+        public Unsubscriber(HashSet<IObserver<T>> observers, IObserver<T> observer)
         {
             _observers = observers;
             _observer = observer;

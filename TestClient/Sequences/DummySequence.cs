@@ -3,7 +3,6 @@ using System;
 using System.Threading;
 using TestClient.Configuration;
 using TestClient.Instruments;
-using TsdLib;
 using TsdLib.Measurements;
 using TsdLib.TestSystem.TestSequence;
 
@@ -17,10 +16,8 @@ namespace TestClient.Sequences
             //System.Diagnostics.Debugger.Break();
 
             DummyPowerSupply ps = new DummyPowerSupply("addr");
-            //SendDataByValue(2.2);
-
-            SendDataByReference(new Tuple<int, string>(1, "2"));
-            SendDataByValue(5);
+            
+            SendData(new Tuple<int, string>(1, "2"));
             
             for (int i = 0; i < testConfig.LoopIterations; i++)
             {
@@ -42,21 +39,6 @@ namespace TestClient.Sequences
 
                 }
             }
-            
         }
     }
-
-    //public class DataObj
-    //{
-    //    public int TheInt { get; private set; }
-    //    public double TheDouble { get; private set; }
-
-    //    public DataObj(int theInt, double theDouble)
-    //    {
-    //        TheInt = theInt;
-    //        TheDouble = theDouble;
-    //    }
-    //}
-
-
 }

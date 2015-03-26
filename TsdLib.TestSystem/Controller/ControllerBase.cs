@@ -215,8 +215,6 @@ namespace TsdLib.TestSystem.Controller
 
             Trace.WriteLine(string.Format("Using {0} application domain", _localDomain ? "local" : "remote"));
 
-            SynchronizationContext uiContext = SynchronizationContext.Current;
-
             ControllerProxy controllerProxy;
 
             foreach (SequenceConfigCommon sequenceConfig in sequenceConfigs)
@@ -226,53 +224,55 @@ namespace TsdLib.TestSystem.Controller
                     DateTime startTime = DateTime.Now;
 
                     SequenceConfigCommon config = sequenceConfig;
+
+                    if (_localDomain)
+                    {
+                        _activeSequence = CreateSequenceObject(config.FullTypeName);
+                        controllerProxy = CreateControllerProxy(UI, _activeSequence.CancellationManager);
+                    }
+                    else
+                    {
+                        List<CodeCompileUnit> codeCompileUnits = new List<CodeCompileUnit> { new BasicCodeParser(config.AssemblyReferences.ToArray()).Parse(new StringReader(config.SourceCode)) };
+
+                        IEnumerable<CodeCompileUnit> additionalCodeCompileUnits = GenerateAdditionalCodeCompileUnits(config.Namespace.Replace(".Sequences", ""));
+
+                        DynamicCompiler generator = new DynamicCompiler(Language.CSharp, AppDomain.CurrentDomain.BaseDirectory);
+                        string sequenceAssembly = generator.Compile(codeCompileUnits.Concat(additionalCodeCompileUnits));
+
+                        sequenceDomain = AppDomain.CreateDomain("Sequence Domain");
+
+                        _activeSequence = CreateSequenceObject(config.FullTypeName, sequenceAssembly, sequenceDomain);
+                        controllerProxy = CreateControllerProxy(UI, _activeSequence.CancellationManager);
+
+                        foreach (TraceListener listener in Trace.Listeners)
+                            _activeSequence.AddTraceListener(listener);
+                    }
+
                     await Task.Run(() =>
                     {
-                        if (_localDomain)
-                        {
-                            _activeSequence = (ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>)Activator.CreateInstance(Assembly.GetEntryAssembly().GetType(config.FullTypeName));
-
-                            controllerProxy = (ControllerProxy)Activator.CreateInstance(typeof(ControllerProxy), BindingFlags.CreateInstance, null, new object[] { UI, _activeSequence.CancellationManager, _localDomain }, CultureInfo.CurrentCulture);
-                        }
-                        else
-                        {
-                            List<CodeCompileUnit> codeCompileUnits = new List<CodeCompileUnit> { new BasicCodeParser(config.AssemblyReferences.ToArray()).Parse(new StringReader(config.SourceCode)) };
-
-                            IEnumerable<CodeCompileUnit> additionalCodeCompileUnits = GenerateAdditionalCodeCompileUnits(config.Namespace.Replace(".Sequences", ""));
-
-                            DynamicCompiler generator = new DynamicCompiler(Language.CSharp, AppDomain.CurrentDomain.BaseDirectory);
-                            string sequenceAssembly = generator.Compile(codeCompileUnits.Concat(additionalCodeCompileUnits));
-
-                            sequenceDomain = AppDomain.CreateDomain("Sequence Domain");
-
-                            _activeSequence = (ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>)sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, config.FullTypeName);
-                            controllerProxy = (ControllerProxy)sequenceDomain.CreateInstanceAndUnwrap(typeof(ControllerProxy).Assembly.FullName, typeof(ControllerProxy).FullName, false, BindingFlags.CreateInstance, null, new object[] { UI, _activeSequence.CancellationManager, _localDomain }, CultureInfo.CurrentCulture, null);
-
-                            if (UI.TraceListenerControl != null)
-                                _activeSequence.AddTraceListener(UI.TraceListenerControl.Listener);
-
-                            _activeSequence.AddTraceListener(_textWriterTraceListener);
-                        }
-
                         //TODO: can we create the event proxies on the test sequence and just attach to them here?
                         //TODO: should use observer pattern instead
-                        EventProxy<ITestInfo> infoEventHandler = new EventProxy<ITestInfo>();
-                        _activeSequence.InfoEventProxy = infoEventHandler;
-                        infoEventHandler.Attach(controllerProxy.InfoAdded, uiContext);
+                        //EventProxy<ITestInfo> infoEventHandler = new EventProxy<ITestInfo>();
+                        //_activeSequence.InfoEventProxy = infoEventHandler;
+                        //infoEventHandler.Attach(controllerProxy.InfoAdded, uiContext);
 
-                        EventProxy<IMeasurement> measurementEventHandler = new EventProxy<IMeasurement>();
-                        _activeSequence.MeasurementEventProxy = measurementEventHandler;
-                        measurementEventHandler.Attach(controllerProxy.MeasurementAdded, uiContext);
+                        //EventProxy<IMeasurement> measurementEventHandler = new EventProxy<IMeasurement>();
+                        //_activeSequence.MeasurementEventProxy = measurementEventHandler;
+                        //measurementEventHandler.Attach(controllerProxy.MeasurementAdded, uiContext);
 
-                        EventProxy<Tuple<int, int>> progressEventHandler = new EventProxy<Tuple<int, int>>();
-                        _activeSequence.ProgressEventProxy = progressEventHandler;
-                        progressEventHandler.Attach(controllerProxy.ProgressUpdated, uiContext);
+                        //EventProxy<Tuple<int, int>> progressEventHandler = new EventProxy<Tuple<int, int>>();
+                        //_activeSequence.ProgressEventProxy = progressEventHandler;
+                        //progressEventHandler.Attach(controllerProxy.ProgressUpdated, uiContext);
 
-                        EventProxy<object> dataEventHandler = new EventProxy<object>();
-                        _activeSequence.DataEventProxy = dataEventHandler;
-                        dataEventHandler.Attach(controllerProxy.DataAdded, uiContext);
+                        //EventProxy<object> dataEventHandler = new EventProxy<object>();
+                        //_activeSequence.DataEventProxy = dataEventHandler;
+                        //dataEventHandler.Attach(controllerProxy.DataAdded, uiContext);
+                        //IObservable<IMeasurement>, IObservable<ITestInfo>, IObservable<Tuple<int, int>>
+                        _activeSequence.Subscribe((IObserver<MarshalByRefObject>)controllerProxy);
+                        _activeSequence.Subscribe((IObserver<IMeasurement>)controllerProxy);
+                        _activeSequence.Subscribe((IObserver<ITestInfo>)controllerProxy);
+                        _activeSequence.Subscribe((IObserver<Tuple<int, int>>)controllerProxy);
 
-                        _activeSequence.Subscribe(controllerProxy);
 
                         _activeSequence.Config = configManagerProvider;
 
@@ -443,6 +443,26 @@ namespace TsdLib.TestSystem.Controller
         protected virtual IEnumerable<CodeCompileUnit> GenerateAdditionalCodeCompileUnits(string nameSpace)
         {
             return new CodeCompileUnit[0];
+        }
+
+        protected virtual ControllerProxy CreateControllerProxy(IView view, ICancellationManager testSequenceCancellationManager)
+        {
+            return new ControllerProxy(view, testSequenceCancellationManager);
+        }
+
+        protected virtual ControllerProxy CreateControllerProxy(IView view, ICancellationManager testSequenceCancellationManager, AppDomain appDomain)
+        {
+            return (ControllerProxy)appDomain.CreateInstanceAndUnwrap(typeof(ControllerProxy).Assembly.FullName, typeof(ControllerProxy).FullName, false, BindingFlags.CreateInstance, null, new object[] { view, testSequenceCancellationManager }, CultureInfo.CurrentCulture, null);
+        }
+
+        protected virtual ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig> CreateSequenceObject(string sequenceName)
+        {
+            return (ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>)Activator.CreateInstance(Assembly.GetEntryAssembly().GetType(sequenceName));
+        }
+
+        protected virtual ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig> CreateSequenceObject(string sequenceName, string sequenceAssembly, AppDomain appDomain)
+        {
+            return (ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>)appDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, sequenceName);
         }
 
         /// <summary>
