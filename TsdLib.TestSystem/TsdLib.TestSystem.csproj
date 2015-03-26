@@ -52,7 +52,7 @@
     <Compile Include="TestSequence\TestSequenceCancellationManager.cs" />
     <Compile Include="TestSequence\TestSequenceException.cs" />
     <Compile Include="TestSequence\TestSequenceInstrumentCollection.cs" />
-    <Compile Include="TransientData.cs" />
+    <Compile Include="Observer\DataContainer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TsdLib.CodeGenerator\TsdLib.CodeGenerator.csproj">

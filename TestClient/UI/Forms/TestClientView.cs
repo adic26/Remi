@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using TsdLib;
 using TsdLib.Measurements;
 using TsdLib.TestSystem;
+using TsdLib.TestSystem.Observer;
 using TsdLib.UI;
 
 namespace TestClient.UI.Forms
@@ -32,13 +33,14 @@ namespace TestClient.UI.Forms
 
         public virtual IProgressControl ProgressControl { get { return progressControl; } }
 
+        private SynchronizationContext context;
         /// <summary>
         /// Initializes a new instance of the UI form.
         /// </summary>
         public TestClientView()
         {
             InitializeComponent();
-
+            context = SynchronizationContext.Current;
         }
 
         /// <summary>
@@ -70,19 +72,11 @@ namespace TestClient.UI.Forms
         /// <param name="data">Data to add.</param>
         public void AddData(object data)
         {
-            var context = SynchronizationContext.Current;
-
-            TransientData transientData = data as TransientData;
+            DataContainer transientData = data as DataContainer;
             if (transientData != null)
-            {
-                transientData.Context.Post(addData((dynamic)data), null);
-
-            }
+                context.Post(s => addData((dynamic)transientData.Data), null);
             else
-            {
-                addData((dynamic)data);
-                
-            }
+                context.Post(s => addData((dynamic)data), null);
         }
 
         private void addData(object data)
@@ -94,8 +88,12 @@ namespace TestClient.UI.Forms
         private void addData(Tuple<int, string> data)
         {
             MessageBox.Show("Int = " + data.Item1 + " String = " + data.Item2);
-            ConfigControl.SetState(State.ReadyToTest);
 
+        }
+
+        private void addData(int data)
+        {
+            MessageBox.Show("Int = " + data);
         }
 
         private void ViewBase_FormClosing(object sender, FormClosingEventArgs e)

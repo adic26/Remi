@@ -19,10 +19,9 @@ namespace TestClient.Sequences
             DummyPowerSupply ps = new DummyPowerSupply("addr");
             //SendDataByValue(2.2);
 
-            //SendData(new Tuple<int, string>(1, "2") );
-
-            SendData(new DataObject(3, 4.5));
-
+            SendDataByReference(new Tuple<int, string>(1, "2"));
+            SendDataByValue(5);
+            
             for (int i = 0; i < testConfig.LoopIterations; i++)
             {
                 UpdateProgress(i, testConfig.LoopIterations);
@@ -47,17 +46,17 @@ namespace TestClient.Sequences
         }
     }
 
-    public class DataObject
-    {
-        public int TheInt { get; private set; }
-        public double TheDouble { get; private set; }
+    //public class DataObj
+    //{
+    //    public int TheInt { get; private set; }
+    //    public double TheDouble { get; private set; }
 
-        public DataObject(int theInt, double theDouble)
-        {
-            TheInt = theInt;
-            TheDouble = theDouble;
-        }
-    }
+    //    public DataObj(int theInt, double theDouble)
+    //    {
+    //        TheInt = theInt;
+    //        TheDouble = theDouble;
+    //    }
+    //}
 
 
 }

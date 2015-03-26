@@ -13,28 +13,30 @@ namespace TsdLib.TestSystem.TestSequence
     /// <summary>
     /// Contains functionality to connect a test sequence to the system controller
     /// </summary>
-    public abstract class TestSequenceBase : MarshalByRefObject, IDisposable, IObservable<TransientData<object>>
+    public abstract class TestSequenceBase : MarshalByRefObject, IDisposable, IObservable<MarshalByRefObject>
     {
-        public AppDomain CallbackDomain { get; set; }
-
-
-        private readonly HashSet<IObserver<TransientData<object>>> _observers = new HashSet<IObserver<TransientData<object>>>();
-        public IDisposable Subscribe(IObserver<TransientData<object>> observer)
+        private readonly HashSet<IObserver<MarshalByRefObject>> _observers = new HashSet<IObserver<MarshalByRefObject>>();
+        public IDisposable Subscribe(IObserver<MarshalByRefObject> observer)
         {
             _observers.Add(observer);
 
-            return new Unsubscriber<TransientData<object>>(_observers, observer);
+            return new Unsubscriber<MarshalByRefObject>(_observers, observer);
         }
 
-        public void SendData(object data)
+        /// <summary>
+        /// Send data to the application controller. NOTE: The object must either be decorated with the <see cref="SerializableAttribute"/> or be derived from <see cref="MarshalByRefObject"/>
+        /// </summary>
+        /// <param name="data">Object to send.</param>
+        public void SendDataByReference(object data)
         {
-            foreach (IObserver<TransientData<object>> observer in _observers)
-            {
-                observer.OnNext(new TransientData<object>(SynchronizationContext.Current, CallbackDomain ?? AppDomain.CurrentDomain, data));
-            }
+            MarshalByRefObject transferrableData = data as MarshalByRefObject;
+            if (transferrableData != null)
+                foreach (IObserver<MarshalByRefObject> observer in _observers)
+                    observer.OnNext(transferrableData);
+            else
+                foreach (IObserver<MarshalByRefObject> observer in _observers)
+                    observer.OnNext(new DataContainer(data));
         }
-
-
 
         /// <summary>
         /// Gets an <see cref="ICancellationManager"/> object responsible for cancelling the test sequence due to error or user abort.

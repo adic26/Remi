@@ -226,12 +226,13 @@ namespace TsdLib.TestSystem.Controller
                     DateTime startTime = DateTime.Now;
 
                     SequenceConfigCommon config = sequenceConfig;
-
+                    await Task.Run(() =>
+                    {
                         if (_localDomain)
                         {
                             _activeSequence = (ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>)Activator.CreateInstance(Assembly.GetEntryAssembly().GetType(config.FullTypeName));
 
-                            controllerProxy = (ControllerProxy)Activator.CreateInstance(typeof(ControllerProxy), BindingFlags.CreateInstance, null, new object[] { UI, _activeSequence.CancellationManager, _localDomain, AppDomain.CurrentDomain }, CultureInfo.CurrentCulture);
+                            controllerProxy = (ControllerProxy)Activator.CreateInstance(typeof(ControllerProxy), BindingFlags.CreateInstance, null, new object[] { UI, _activeSequence.CancellationManager, _localDomain }, CultureInfo.CurrentCulture);
                         }
                         else
                         {
@@ -245,7 +246,7 @@ namespace TsdLib.TestSystem.Controller
                             sequenceDomain = AppDomain.CreateDomain("Sequence Domain");
 
                             _activeSequence = (ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>)sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, config.FullTypeName);
-                            controllerProxy = (ControllerProxy)sequenceDomain.CreateInstanceAndUnwrap(typeof(ControllerProxy).Assembly.FullName, typeof(ControllerProxy).FullName, false, BindingFlags.CreateInstance, null, new object[] { UI, _activeSequence.CancellationManager, _localDomain, AppDomain.CurrentDomain }, CultureInfo.CurrentCulture, null);
+                            controllerProxy = (ControllerProxy)sequenceDomain.CreateInstanceAndUnwrap(typeof(ControllerProxy).Assembly.FullName, typeof(ControllerProxy).FullName, false, BindingFlags.CreateInstance, null, new object[] { UI, _activeSequence.CancellationManager, _localDomain }, CultureInfo.CurrentCulture, null);
 
                             if (UI.TraceListenerControl != null)
                                 _activeSequence.AddTraceListener(UI.TraceListenerControl.Listener);
@@ -254,6 +255,7 @@ namespace TsdLib.TestSystem.Controller
                         }
 
                         //TODO: can we create the event proxies on the test sequence and just attach to them here?
+                        //TODO: should use observer pattern instead
                         EventProxy<ITestInfo> infoEventHandler = new EventProxy<ITestInfo>();
                         _activeSequence.InfoEventProxy = infoEventHandler;
                         infoEventHandler.Attach(controllerProxy.InfoAdded, uiContext);
@@ -266,16 +268,14 @@ namespace TsdLib.TestSystem.Controller
                         _activeSequence.ProgressEventProxy = progressEventHandler;
                         progressEventHandler.Attach(controllerProxy.ProgressUpdated, uiContext);
 
-                        _activeSequence.CallbackDomain = AppDomain.CurrentDomain;
+                        EventProxy<object> dataEventHandler = new EventProxy<object>();
+                        _activeSequence.DataEventProxy = dataEventHandler;
+                        dataEventHandler.Attach(controllerProxy.DataAdded, uiContext);
+
                         _activeSequence.Subscribe(controllerProxy);
-                        
-                        //EventProxy<object> dataEventHandler = new EventProxy<object>();
-                        //_activeSequence.DataEventProxy = dataEventHandler;
-                        //dataEventHandler.Attach(controllerProxy.DataAdded, uiContext);
 
                         _activeSequence.Config = configManagerProvider;
-                    await Task.Run(() =>
-                        {
+
                         _activeSequence.ExecuteSequence(stationConfig, productConfig, testConfigs);
                     });
 
