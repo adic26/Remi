@@ -58,6 +58,10 @@ namespace TsdLib.TestSystem.Controller
 
         }
 
+        /// <summary>
+        /// Provides the observer with new data.
+        /// </summary>
+        /// <param name="measurement">The measurement information.</param>
         public virtual void OnNext(IMeasurement measurement)
         {
             try
