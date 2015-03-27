@@ -12,17 +12,17 @@ namespace TsdLib.TestSystem.TestSequence
     /// <summary>
     /// Contains functionality to connect a test sequence to the system controller
     /// </summary>
-    public abstract class TestSequenceBase : MarshalByRefObject, IDisposable, IObservable<MarshalByRefObject>, IObservable<IMeasurement>, IObservable<ITestInfo>, IObservable<Tuple<int, int>>
+    public abstract class TestSequenceBase : MarshalByRefObject, IDisposable, IObservable<DataContainer>, IObservable<IMeasurement>, IObservable<ITestInfo>, IObservable<Tuple<int, int>>
     {
         private bool _runningInRemoteDomain;
 
         private readonly HashSet<IDisposable> _disposables;
 
-        private readonly HashSet<IObserver<MarshalByRefObject>> _observers = new HashSet<IObserver<MarshalByRefObject>>();
-        public IDisposable Subscribe(IObserver<MarshalByRefObject> observer)
+        private readonly HashSet<IObserver<DataContainer>> _observers = new HashSet<IObserver<DataContainer>>();
+        public IDisposable Subscribe(IObserver<DataContainer> observer)
         {
             _observers.Add(observer);
-            IDisposable unsubscriber = new Unsubscriber<MarshalByRefObject>(_observers, observer);
+            IDisposable unsubscriber = new Unsubscriber<DataContainer>(_observers, observer);
             _disposables.Add(unsubscriber);
             return unsubscriber;
         }
@@ -70,7 +70,7 @@ namespace TsdLib.TestSystem.TestSequence
                     return;
             }
 
-            foreach (IObserver<MarshalByRefObject> observer in _observers)
+            foreach (IObserver<DataContainer> observer in _observers)
                 observer.OnNext(new DataContainer(data));
         }
 
@@ -147,7 +147,7 @@ namespace TsdLib.TestSystem.TestSequence
         /// Adds the specified TraceListener to the Trace Listeners collection. Useful if running the test sequence from a separate application domain.
         /// </summary>
         /// <param name="listener">TraceListener to add to the Trace Listeners collection.</param>
-        public void AddTraceListener( TraceListener listener)
+        public void AddTraceListener(TraceListener listener)
         {
             Trace.Listeners.Add(listener);
         }

@@ -168,7 +168,7 @@
             this.testCasesMenuItem.Size = new System.Drawing.Size(74, 20);
             this.testCasesMenuItem.Text = "&Test Cases";
             // 
-            // ViewBase
+            // TestClientView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -183,9 +183,7 @@
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
             this.MinimumSize = new System.Drawing.Size(1072, 751);
-            this.Name = "ViewBase";
-            this.Text = "TsdLib Generic Test System";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ViewBase_FormClosing);
+            this.Name = "TestClientView";
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.ResumeLayout(false);

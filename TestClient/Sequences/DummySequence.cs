@@ -17,6 +17,7 @@ namespace TestClient.Sequences
 
             DummyPowerSupply ps = new DummyPowerSupply("addr");
             
+            SendData(55);
             SendData(new Tuple<int, string>(1, "2"));
             
             for (int i = 0; i < testConfig.LoopIterations; i++)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using TsdLib.Observer;
 
 namespace TsdLib.UI
 {
@@ -47,6 +48,6 @@ namespace TsdLib.UI
         /// Add user-defined data to the UI display.
         /// </summary>
         /// <param name="data">Data object to add.</param>
-        void AddData(object data);
+        void AddData(DataContainer data);
     }
 }

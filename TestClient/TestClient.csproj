@@ -82,6 +82,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\StationConfig.cs" />
     <Compile Include="Sequences\AdbWlan.cs" />
+    <Compile Include="Sequences\UiDeadlockTest.cs" />
     <Compile Include="Sequences\DummySequence3.cs" />
     <Compile Include="Sequences\DummySequence2.cs" />
     <Compile Include="Sequences\TelnetWiFiTest.cs" />

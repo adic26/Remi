@@ -20,6 +20,7 @@ using TsdLib.Configuration.Null;
 using TsdLib.Configuration.TestCases;
 using TsdLib.Forms;
 using TsdLib.Measurements;
+using TsdLib.Observer;
 using TsdLib.TestSystem.TestSequence;
 using TsdLib.UI;
 
@@ -268,7 +269,7 @@ namespace TsdLib.TestSystem.Controller
                         //_activeSequence.DataEventProxy = dataEventHandler;
                         //dataEventHandler.Attach(controllerProxy.DataAdded, uiContext);
                         //IObservable<IMeasurement>, IObservable<ITestInfo>, IObservable<Tuple<int, int>>
-                        _activeSequence.Subscribe((IObserver<MarshalByRefObject>)controllerProxy);
+                        _activeSequence.Subscribe((IObserver<DataContainer>)controllerProxy);
                         _activeSequence.Subscribe((IObserver<IMeasurement>)controllerProxy);
                         _activeSequence.Subscribe((IObserver<ITestInfo>)controllerProxy);
                         _activeSequence.Subscribe((IObserver<Tuple<int, int>>)controllerProxy);
