@@ -325,6 +325,7 @@ namespace TsdLib.TestSystem.Controller
             });
         }
 
+        //TODO: abstract to ConfigEditor class - allow changing the config editor without changing the ControllerBase, expose a virtual CreateConfigEditor to allow client to redefine
         /// <summary>
         /// Default handler for the ViewBase.ViewEditConfiguration event.
         /// </summary>
@@ -332,7 +333,6 @@ namespace TsdLib.TestSystem.Controller
         /// <param name="configManagers">An array of <see cref="IConfigManager"/> objects containing the configuration data.</param>
         protected virtual void EditConfiguration(object sender, IConfigManager[] configManagers)
         {
-            //using (ConfigManagerForm form = new ConfigManagerForm(Details.TestSystemName, Details.TestSystemVersion, true, configManagers))
             using (ConfigManagerForm2 form = new ConfigManagerForm2(configManagerProvider))
                 if (form.ShowDialog() == DialogResult.OK)
                     foreach (IConfigManager modifiedConfig in form.ModifiedConfigs)
@@ -342,6 +342,8 @@ namespace TsdLib.TestSystem.Controller
                         modifiedConfig.Reload();
         }
 
+        //TODO: use TestDetailsEditor to handle to editing - expose a virtual CreateTestDetailsEditor to allow client to redefine
+        //Edit behaviour should not be tied to details state
         /// <summary>
         /// Default handler for the ViewBase.ViewEditConfiguration event.
         /// </summary>
@@ -388,10 +390,12 @@ namespace TsdLib.TestSystem.Controller
                 _activeSequence.CancellationManager.Abort();
         }
 
+        //TODO: abstract to CodeCompileUnitGenerator
         /// <summary>
         /// Generates a sequence of <see cref="CodeCompileUnit"/> objects to be dynamically compiled for the test sequence. Not used when the -localDomain command-line switch is used.
         /// </summary>
         /// <returns>A sequence of <see cref="CodeCompileUnit"/> objects.</returns>
+        [Obsolete("This functionality will soon be abstracted to CodeCompileUnitGenerator")]
         protected virtual IEnumerable<CodeCompileUnit> GenerateAdditionalCodeCompileUnits(string nameSpace)
         {
             return new CodeCompileUnit[0];
