@@ -239,6 +239,7 @@ namespace TsdLib.Configuration
         /// <summary>
         /// Edit the test details using a PropertyGrid user interface. Fires the <see cref="TestSystemIdentityChanged"/> event if the changes require a configuration refresh.
         /// </summary>
+        [Obsolete("Should move this to TestDetailsHandler class")]
         public void Edit()
         {
             _identityChanged = false;

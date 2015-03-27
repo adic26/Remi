@@ -11,8 +11,9 @@ namespace TsdLib.Forms
         public PropertyGridEditor(object obj)
         {
             InitializeComponent();
-            
+
             propertyGrid.SelectedObject = obj;
+            propertyGrid.Leave += (s, o) => Modified = true;
 
             Text = obj.GetType().Name + " Editor";
         }
@@ -22,5 +23,7 @@ namespace TsdLib.Forms
             get { return base.Text; }
             set { base.Text = value; }
         }
+
+        public bool Modified { get; private set; }
     }
 }

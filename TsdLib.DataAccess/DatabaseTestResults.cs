@@ -8,9 +8,9 @@ namespace TsdLib.DataAccess
     {
         public static void PublishResults(ITestResults results)
         {
-            string xmlFile = SpecialFolders.GetResultsFileName(results.Details, results.Summary, "xml");
+            string xmlFile = Path.Combine(SpecialFolders.GetResultsFolder(results.Details.SafeTestSystemName).FullName, SpecialFolders.GetResultsFileName(results.Details, results.Summary, "xml"));
             string path = Path.GetDirectoryName(xmlFile);
-            if (path == null)
+            if (string.IsNullOrWhiteSpace(path))
                 throw new DirectoryNotFoundException("The results folder does not exist on this machine.");
             Trace.WriteLine("Uploading results to database...");
             DBControl.DAL.Results.UploadXML(xmlFile, path, Path.Combine(path, "PublishFailed"), Path.Combine(path, "Published"), false, true);

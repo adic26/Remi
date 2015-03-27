@@ -1,7 +1,6 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -61,8 +60,6 @@ namespace TsdLib.TestSystem.Controller
     {
         private ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig> _activeSequence;
         private readonly bool _localDomain;
-        private readonly List<Task> _loggingTasks;
-        private readonly TextWriterTraceListener _textWriterTraceListener;
         private readonly TestCaseProvider _testCaseProvider;
 
         /// <summary>
@@ -75,10 +72,7 @@ namespace TsdLib.TestSystem.Controller
         /// </summary>
         protected ITestDetails Details { get; private set; }
 
-        /// <summary>
-        /// Gets a list of active tasks responsible for logging test results.
-        /// </summary>
-        protected ReadOnlyCollection<Task> LoggingTasks { get; private set; }
+
 
         /// <summary>
         /// Gets a provider that can be used to retrieve configuration manager instances for modifying, storing and recalling configuration data.
@@ -97,13 +91,10 @@ namespace TsdLib.TestSystem.Controller
 
             Thread.CurrentThread.Name = "UI Thread";
             Trace.AutoFlush = true;
-            _textWriterTraceListener = new TextWriterTraceListener(SpecialFolders.GetTraceLogs(Details.SafeTestSystemName));
-            Trace.Listeners.Add(_textWriterTraceListener);
+            var textWriterTraceListener = new TextWriterTraceListener(SpecialFolders.GetTraceLogs(Details.SafeTestSystemName));
+            Trace.Listeners.Add(textWriterTraceListener);
             
             _testCaseProvider = new TestCaseProvider(Details.SafeTestSystemName);
-
-            _loggingTasks = new List<Task>();
-            LoggingTasks = new ReadOnlyCollection<Task>(_loggingTasks);
 
             configManagerProvider = new ConfigManagerProvider(Details, configConnection);
             //TODO: if local domain, config manager should just reflect the entry assembly to get baked-in sequences and make Sequence read-only in editor form
@@ -195,7 +186,7 @@ namespace TsdLib.TestSystem.Controller
         /// </summary>
         /// <param name="sender">Object that raised the exception. Should be a reference to the Execute Test Sequence button.</param>
         /// <param name="e">An emptry EventArgs object.</param>
-        protected async void ExecuteTestSequence(object sender, EventArgs e)
+        protected virtual async void ExecuteTestSequence(object sender, EventArgs e)
         {
             AppDomain sequenceDomain = null;
 
@@ -203,20 +194,12 @@ namespace TsdLib.TestSystem.Controller
 
             Trace.WriteLine(Details);
 
-            TStationConfig stationConfig = (TStationConfig) (UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TStationConfig>().GetList()[0]);
-            TProductConfig productConfig = (TProductConfig)(UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TProductConfig>().GetList()[0]);
-            TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig.Cast<TTestConfig>().ToArray();
-            if (!testConfigs.Any())
-                testConfigs = configManagerProvider.GetConfigManager<TTestConfig>().GetConfigGroup().ToArray();
-
             var sequenceConfigs = UI.ConfigControl.SelectedSequenceConfig.Cast<SequenceConfigCommon>().ToArray();
             if (!sequenceConfigs.Any())
                 sequenceConfigs = configManagerProvider.GetConfigManager<SequenceConfigCommon>().GetConfigGroup().ToArray();
             bool publishResults = UI.TestSequenceControl.PublishResults;
 
             Trace.WriteLine(string.Format("Using {0} application domain", _localDomain ? "local" : "remote"));
-
-            ControllerProxy controllerProxy;
 
             foreach (SequenceConfigCommon sequenceConfig in sequenceConfigs)
             {
@@ -226,6 +209,7 @@ namespace TsdLib.TestSystem.Controller
 
                     SequenceConfigCommon config = sequenceConfig;
 
+                    ControllerProxy controllerProxy;
                     if (_localDomain)
                     {
                         _activeSequence = CreateSequenceObject(config.FullTypeName);
@@ -248,68 +232,30 @@ namespace TsdLib.TestSystem.Controller
                         foreach (TraceListener listener in Trace.Listeners)
                             _activeSequence.AddTraceListener(listener);
                     }
+                    
+                    TStationConfig stationConfig = (TStationConfig)(UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TStationConfig>().GetList()[0]);
+                    TProductConfig productConfig = (TProductConfig)(UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TProductConfig>().GetList()[0]);
+                    TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig.Cast<TTestConfig>().ToArray();
+                    if (!testConfigs.Any())
+                        testConfigs = configManagerProvider.GetConfigManager<TTestConfig>().GetConfigGroup().ToArray();
 
-                    await Task.Run(() =>
-                    {
-                        //TODO: can we create the event proxies on the test sequence and just attach to them here?
-                        //TODO: should use observer pattern instead
-                        //EventProxy<ITestInfo> infoEventHandler = new EventProxy<ITestInfo>();
-                        //_activeSequence.InfoEventProxy = infoEventHandler;
-                        //infoEventHandler.Attach(controllerProxy.InfoAdded, uiContext);
+                    _activeSequence.Subscribe((IObserver<DataContainer>)controllerProxy);
+                    _activeSequence.Subscribe((IObserver<IMeasurement>)controllerProxy);
+                    _activeSequence.Subscribe((IObserver<ITestInfo>)controllerProxy);
+                    _activeSequence.Subscribe((IObserver<Tuple<int, int>>)controllerProxy);
 
-                        //EventProxy<IMeasurement> measurementEventHandler = new EventProxy<IMeasurement>();
-                        //_activeSequence.MeasurementEventProxy = measurementEventHandler;
-                        //measurementEventHandler.Attach(controllerProxy.MeasurementAdded, uiContext);
+                    _activeSequence.Config = configManagerProvider;
 
-                        //EventProxy<Tuple<int, int>> progressEventHandler = new EventProxy<Tuple<int, int>>();
-                        //_activeSequence.ProgressEventProxy = progressEventHandler;
-                        //progressEventHandler.Attach(controllerProxy.ProgressUpdated, uiContext);
+                    //TODO: ExecuteSequenceAsync
+                    await Task.Run(() => _activeSequence.ExecuteSequence(stationConfig, productConfig, testConfigs));
 
-                        //EventProxy<object> dataEventHandler = new EventProxy<object>();
-                        //_activeSequence.DataEventProxy = dataEventHandler;
-                        //dataEventHandler.Attach(controllerProxy.DataAdded, uiContext);
-                        //IObservable<IMeasurement>, IObservable<ITestInfo>, IObservable<Tuple<int, int>>
-                        _activeSequence.Subscribe((IObserver<DataContainer>)controllerProxy);
-                        _activeSequence.Subscribe((IObserver<IMeasurement>)controllerProxy);
-                        _activeSequence.Subscribe((IObserver<ITestInfo>)controllerProxy);
-                        _activeSequence.Subscribe((IObserver<Tuple<int, int>>)controllerProxy);
-
-
-                        _activeSequence.Config = configManagerProvider;
-
-                        _activeSequence.ExecuteSequence(stationConfig, productConfig, testConfigs);
-                    });
-
-                    DateTime endTime = DateTime.Now;
-
-                    string overallResult;
-                    if (!_activeSequence.Measurements.Any() || _activeSequence.Measurements.All(m => m.Result == MeasurementResult.Undefined))
-                        overallResult = "Undefined";
-                    else
-                        overallResult = _activeSequence.Measurements.All(m => m.Result == MeasurementResult.Pass) ? "Pass" : "Fail";
-                    ITestResults testResults = new TestResultCollection(Details, _activeSequence.Measurements, new TestSummary(overallResult, startTime, endTime), _activeSequence.TestInfo);
-
-
-                    _loggingTasks.Add(Task.Run(() =>
-                    {
-                        ITestResults localTestResults = testResults; //Create a local reference in case they are overwritten by the next sequence before the logging is complete.
-                        if (Thread.CurrentThread.Name != null)
-                            Thread.CurrentThread.Name = "Result Handler Thread";
-                        Thread.CurrentThread.IsBackground = false;
-                        SaveResults(localTestResults);
-                        if (publishResults)
-                            PublishResults(localTestResults);
-                    }).ContinueWith(t =>
-                        {
-                            _loggingTasks.Remove(t);
-                            if (t.IsFaulted && t.Exception != null)
-                                Trace.WriteLine("Failed to log test results!" + Environment.NewLine + string.Join(Environment.NewLine, t.Exception.Flatten().InnerExceptions));
-                        })
-                    );
-
+                    IResultHandler resultHandler = CreateResultHandler(Details);
+                    if (resultHandler != null)
+                        resultHandler.SaveResults(_activeSequence.TestInfo.ToArray(), _activeSequence.Measurements.ToArray(), startTime, DateTime.Now, publishResults);
                 }
-                //TODO: use AggregateException?
+                //TODO: simplify by using AggregateException?
                 catch (OperationCanceledException) //User cancellation and controller proxy errors are propagated as OperationCancelledException
+                //TODO: controller proxy errors shouldn't be propagated as OperationCancelledException
                 {
                     if (_activeSequence.CancellationManager.CancelledByUser)
                     {
@@ -356,6 +302,7 @@ namespace TsdLib.TestSystem.Controller
             UI.SetState(State.ReadyToTest);
         }
 
+        //TODO: abstract to ErrorHandler class
         private void displayError(Exception ex, string sequenceName)
         {
             Trace.WriteLine(ex);
@@ -409,11 +356,12 @@ namespace TsdLib.TestSystem.Controller
         /// Saves the specified <see cref="ITestResults"/> as xml and csv to the TsdLib.SpecialFolders location.
         /// </summary>
         /// <param name="results">The <see cref="ITestResults"/> that was captured by the test sequence.</param>
+        [Obsolete("This functionality has been abstracted to ResultHandler")]
         protected virtual void SaveResults(ITestResults results)
         {
             results.SaveXml();
             string csvResultsFile = results.SaveCsv();
-            
+
             Trace.WriteLine("CSV results saved to " + csvResultsFile);
         }
 
@@ -421,10 +369,13 @@ namespace TsdLib.TestSystem.Controller
         /// Override to published the specified <see cref="ITestResults"/> to a database or user-defined location.
         /// </summary>
         /// <param name="results">The <see cref="ITestResults"/> that was captured by the test sequence.</param>
+        [Obsolete("This functionality has been abstracted to ResultHandler")]
         protected virtual void PublishResults(ITestResults results)
         {
 
         }
+
+
 
         /// <summary>
         /// Default handler for the <see cref="TsdLib.UI.ITestSequenceControl.AbortTestSequence"/> event.
@@ -444,6 +395,13 @@ namespace TsdLib.TestSystem.Controller
         protected virtual IEnumerable<CodeCompileUnit> GenerateAdditionalCodeCompileUnits(string nameSpace)
         {
             return new CodeCompileUnit[0];
+        }
+
+        #region Controller proxy and Test Sequence creation - maybe better to use strategy pattern to expose these as settable properties? Either way, we need a default implementation - nice to have them as overloadable, so developers can just type 'overload' and see teaking behaviour
+
+        protected virtual void CreateTestDetailsHandler()
+        {
+
         }
 
         protected virtual ControllerProxy CreateControllerProxy(IView view, ICancellationManager testSequenceCancellationManager)
@@ -466,6 +424,13 @@ namespace TsdLib.TestSystem.Controller
             return (ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>)appDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, sequenceName);
         }
 
+        protected virtual IResultHandler CreateResultHandler(ITestDetails testDetails)
+        {
+            return new ResultHandlerBase(testDetails);
+        }
+
+        #endregion
+
         /// <summary>
         /// Default handler for the <see cref="TsdLib.UI.IView.UIClosing"/> event.
         /// </summary>
@@ -473,17 +438,17 @@ namespace TsdLib.TestSystem.Controller
         /// <param name="e">A <see cref="CancelEventArgs"/> object to provide an opportunity to cancel the closing operation.</param>
         protected virtual void UIClosing(object sender, CancelEventArgs e)
         {
-            if (LoggingTasks.Count > 0)
-            {
-                Trace.WriteLine(string.Format("There are currently {0} test result logging operations in progress", LoggingTasks.Count));
-                //Currently, the logging operations are run on background threads, so there is no need to cancel the close or wait for the tasks to complete
+            //if (LoggingTasks.Count > 0)
+            //{
+            //    Trace.WriteLine(string.Format("There are currently {0} test result logging operations in progress", LoggingTasks.Count));
+            //    Currently, the logging operations are run on foreground worker threads, so there is no need to cancel the close or wait for the tasks to complete
 
-                //Option 1: This will cancel the close and keep the UI open
-                //e.Cancel = true;
+            //    Option 1: This will cancel the close and keep the UI open
+            //    e.Cancel = true;
 
-                //Option 2: This will keep the application open until all logging is complete.
-                //Task.WaitAll(LoggingTasks.ToArray());
-            }
+            //    Option 2: This will keep the application open until all logging is complete.
+            //    Task.WaitAll(LoggingTasks.ToArray());
+            //}
         }
     }
 }

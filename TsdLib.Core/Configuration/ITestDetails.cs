@@ -10,7 +10,7 @@ namespace TsdLib.Configuration
         string SafeTestSystemName { get; }
         Version TestSystemVersion { get; set; }
         OperatingMode TestSystemMode { get; set; }
-        [Obsolete("Need to use a Dictionary<string,Version> for all loaded assemblies beginning with TsdLib.")]
+        [Obsolete("Need to use a bundle version.")]
         Version TsdFrameworkVersion { get; set; }
         string RequestNumber { get; set; }
         uint UnitNumber { get; set; }

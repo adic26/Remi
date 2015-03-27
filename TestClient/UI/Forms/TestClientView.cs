@@ -47,7 +47,7 @@ namespace TestClient.UI.Forms
 
         public void addData(Tuple<int, string> data)
         {
-            MessageBox.Show("Int = " + data.Item1 + " String = " + data.Item2);
+            MessageBox.Show("Int = " + data.Item1 + " String = " + data.Item2, "Example of user-defined data from test sequence");
         }
     }
 }

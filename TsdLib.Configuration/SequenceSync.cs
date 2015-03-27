@@ -40,6 +40,10 @@ namespace TsdLib.Configuration
                         File.WriteAllText(vsFile, sequence.SourceCode);
                 }
             }
+            //TODO: improve this - only try to create a sequence if it is a valid sequence class - could run into problems if there are helper classes or extra files in the directory
+            //how to tell, since the sequences can derive from different base classes (SequentialTestSequence, ParallelTestSequence, etc)
+            //use an attribute? Requires changes to all client code
+            //maybe better to stick with one-sequence-per-file
             foreach (string seqFile in Directory.EnumerateFiles(sequenceFolder))
             {
                 Trace.WriteLine("Found " + seqFile);

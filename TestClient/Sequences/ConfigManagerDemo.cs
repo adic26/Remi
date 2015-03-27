@@ -11,7 +11,7 @@ using TsdLib.TestSystem.TestSequence;
 
 namespace TestClient.Sequences
 {
-    public class DummySequence2 : SequentialTestSequence<StationConfig, ProductConfig, TestConfig>
+    public class ConfigManagerDemo : SequentialTestSequence<StationConfig, ProductConfig, TestConfig>
     {
         protected override void ExecuteTest(CancellationToken token, StationConfig stationConfig, ProductConfig productConfig, TestConfig testConfig)
         {

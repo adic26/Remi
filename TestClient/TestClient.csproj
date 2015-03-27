@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;INSTRUMENT_LIBRARY;REMICONTROL;INSTRUMENT_LIBRARY</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;INSTRUMENT_LIBRARY;REMICONTROL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Controller\Controller.cs" />
     <Compile Include="Configuration\ProductConfig.cs" />
+    <Compile Include="Controller\ResultHandler.cs" />
     <Compile Include="Instruments\Aos_BCM4339.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Aos_BCM4339.xml</DependentUpon>
@@ -83,8 +84,7 @@
     <Compile Include="Configuration\StationConfig.cs" />
     <Compile Include="Sequences\AdbWlan.cs" />
     <Compile Include="Sequences\UiDeadlockTest.cs" />
-    <Compile Include="Sequences\DummySequence3.cs" />
-    <Compile Include="Sequences\DummySequence2.cs" />
+    <Compile Include="Sequences\ConfigManagerDemo.cs" />
     <Compile Include="Sequences\TelnetWiFiTest.cs" />
     <Compile Include="TestClientProgram.cs" />
     <Compile Include="Configuration\TestConfig.cs" />
