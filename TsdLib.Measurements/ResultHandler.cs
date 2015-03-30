@@ -6,9 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TsdLib.Configuration;
-using TsdLib.Measurements;
 
-namespace TsdLib.TestSystem.Controller
+namespace TsdLib.Measurements
 {
     public class ResultHandler : IResultHandler
     {

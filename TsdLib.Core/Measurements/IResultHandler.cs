@@ -1,7 +1,6 @@
 ﻿using System;
-using TsdLib.Measurements;
 
-namespace TsdLib.TestSystem
+namespace TsdLib.Measurements
 {
     public interface IResultHandler
     {

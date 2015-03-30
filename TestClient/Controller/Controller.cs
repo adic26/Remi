@@ -5,7 +5,7 @@ using TsdLib.Configuration;
 using TsdLib.Configuration.Connections;
 using TsdLib.CodeGenerator;
 using TsdLib.DataAccess;
-using TsdLib.TestSystem;
+using TsdLib.Measurements;
 using TsdLib.TestSystem.Controller;
 
 namespace TestClient
