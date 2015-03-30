@@ -62,7 +62,6 @@
   <ItemGroup>
     <Compile Include="Controller\Controller.cs" />
     <Compile Include="Configuration\ProductConfig.cs" />
-    <Compile Include="Controller\ResultHandler.cs" />
     <Compile Include="Instruments\Aos_BCM4339.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Aos_BCM4339.xml</DependentUpon>

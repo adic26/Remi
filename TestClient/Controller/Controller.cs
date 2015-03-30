@@ -4,6 +4,7 @@ using TestClient.UI.Forms;
 using TsdLib.Configuration;
 using TsdLib.Configuration.Connections;
 using TsdLib.CodeGenerator;
+using TsdLib.DataAccess;
 using TsdLib.TestSystem;
 using TsdLib.TestSystem.Controller;
 
@@ -18,6 +19,7 @@ namespace TestClient
         }
 
 #if INSTRUMENT_LIBRARY
+        //TODO: move this to TsdLib.InstrumentLibrary.Tools
         protected override System.Collections.Generic.IEnumerable<System.CodeDom.CodeCompileUnit> GenerateAdditionalCodeCompileUnits(string nameSpace)
         {
             System.Collections.Generic.List<System.CodeDom.CodeCompileUnit> codeCompileUnits = new System.Collections.Generic.List<System.CodeDom.CodeCompileUnit>();
@@ -42,37 +44,15 @@ namespace TestClient
 #endif
 
 #if REMICONTROL
-        //TODO: Abstract to TestDetailsEditor instead
-        protected override void EditTestDetails(object sender, bool getFromDatabase)
+        protected override ITestDetailsEditor CreateTestDetailsEditor()
         {
-            if (getFromDatabase)
-                TsdLib.DataAccess.DatabaseTestDetails.EditTestDetails(Details);
-            else
-                base.EditTestDetails(sender, false);
-        }
-#endif
-
-        protected override IResultHandler CreateResultHandler(ITestDetails testDetails)
-        {
-            return new ResultHandler(testDetails);
-        }
-
-
-#if simREMICONTROL
-        //TODO: Abstract to TestDetailsHandler instead
-        protected override void EditTestDetails(object sender, bool getFromDatabase)
-        {
-            if (getFromDatabase)
-                TsdLib.DataAccess.DatabaseTestDetails.EditTestDetails(Details);
-            else
-                base.EditTestDetails(sender, false);
+            return new DatabaseTestDetailsEditor();
         }
 
         protected override IResultHandler CreateResultHandler(ITestDetails testDetails)
         {
-            return new ResultHandler(testDetails);
+            return new DatabaseResultHandler(testDetails);
         }
 #endif
-
     }
 }

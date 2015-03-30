@@ -45,6 +45,7 @@
     <Compile Include="MeasurementWithoutResult.cs" />
     <Compile Include="Measurement{T}.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResultHandler.cs" />
     <Compile Include="TestInfo.cs" />
     <Compile Include="TestResultsCollection.cs" />
     <Compile Include="TestSummary.cs" />

@@ -79,6 +79,7 @@
     <Compile Include="TestCases\TestCase.cs" />
     <Compile Include="TestCases\TestCaseProvider.cs" />
     <Compile Include="TestDetails.cs" />
+    <Compile Include="TestDetailsEditor.cs" />
     <Compile Include="Utilities\ConfigExtensions.cs" />
     <Compile Include="Utilities\VersionTypeEditor.cs" />
   </ItemGroup>

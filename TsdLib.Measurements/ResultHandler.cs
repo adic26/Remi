@@ -10,12 +10,12 @@ using TsdLib.Measurements;
 
 namespace TsdLib.TestSystem.Controller
 {
-    public class ResultHandlerBase : IResultHandler
+    public class ResultHandler : IResultHandler
     {
         private readonly List<Task> _loggingTasks;
         private readonly ITestDetails _testDetails;
 
-        public ResultHandlerBase(ITestDetails testDetails)
+        public ResultHandler(ITestDetails testDetails)
         {
             _loggingTasks = new List<Task>();
             LoggingTasks = new ReadOnlyCollection<Task>(_loggingTasks);

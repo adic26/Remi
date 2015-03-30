@@ -5,9 +5,9 @@ using TsdLib.TestSystem.Controller;
 
 namespace TestClient
 {
-    public class ResultHandler : ResultHandlerBase
+    public class DatabaseResultHandler : ResultHandler
     {
-        public ResultHandler(ITestDetails testDetails)
+        public DatabaseResultHandler(ITestDetails testDetails)
             : base(testDetails)
         {
 

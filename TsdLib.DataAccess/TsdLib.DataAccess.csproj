@@ -49,9 +49,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatabaseConfigConnection.cs" />
-    <Compile Include="DatabaseTestDetails.cs" />
+    <Compile Include="DatabaseTestDetailsEditor..cs" />
     <Compile Include="DatabaseTestResults.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DatabaseResultHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -68,6 +69,10 @@
     <ProjectReference Include="..\TsdLib.Core\TsdLib.Core.csproj">
       <Project>{512BEDDC-2B71-42F0-9C1B-6D37497F5DA7}</Project>
       <Name>TsdLib.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Measurements\TsdLib.Measurements.csproj">
+      <Project>{183FCB65-FF95-4BDA-8B9C-C93CE029E9CC}</Project>
+      <Name>TsdLib.Measurements</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

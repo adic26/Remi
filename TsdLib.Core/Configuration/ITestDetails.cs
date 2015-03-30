@@ -5,7 +5,6 @@ namespace TsdLib.Configuration
 {
     public interface ITestDetails : IXmlSerializable
     {
-        event EventHandler<string> TestSystemIdentityChanged;
         string TestSystemName { get; set; }
         string SafeTestSystemName { get; }
         Version TestSystemVersion { get; set; }
@@ -19,7 +18,6 @@ namespace TsdLib.Configuration
         string StationName { get; set; }
         FunctionalType FunctionalType { get; set; }
 
-        void Edit();
         string ToString(string rowSeparator, string columnSeparator);
     }
 }

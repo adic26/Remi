@@ -1,6 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using System.Windows.Forms;
 using DBControl.Forms;
 using DBControl.Helpers;
 using DBControl.remiAPI;
@@ -8,23 +7,23 @@ using TsdLib.Configuration;
 
 namespace TsdLib.DataAccess
 {
-    public class DatabaseTestDetails
+    public class DatabaseTestDetailsEditor : TestDetailsEditor
     {
         private static readonly Task webServiceInstantiateTask;
 
-        static DatabaseTestDetails()
+        static DatabaseTestDetailsEditor()
         {
             webServiceInstantiateTask = Task.Run(() => Helper.InstantiateWebServices());
         }
 
-        public static void EditTestDetails(ITestDetails testDetails)
+        protected override bool UpdateTestDetails(ITestDetails testDetails, bool detailsFromDatabase)
         {
-
-            try
+            if (detailsFromDatabase)
             {
                 webServiceInstantiateTask.Wait(2000);
                 using (Request remiForm = new Request())
-                    if (remiForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    if (remiForm.ShowDialog() == DialogResult.OK)
                     {
                         ScanReturnData batchInformation = remiForm.RemiData[0];
                         testDetails.TestSystemName = batchInformation.SelectedTestName;
@@ -32,13 +31,13 @@ namespace TsdLib.DataAccess
                         testDetails.RequestNumber = string.Join("-", qraNumber, 0, qraNumber.Length - 1);
                         testDetails.TestStage = batchInformation.TestStageName;
                         testDetails.TestType = batchInformation.JobName;
-                        testDetails.UnitNumber = (uint)batchInformation.UnitNumber;
+                        testDetails.UnitNumber = (uint) batchInformation.UnitNumber;
+                        return true;
                     }
+                    return false;
+                }
             }
-            catch (Exception ex)
-            {
-                Trace.WriteLine("DBControl Exception: " + ex);
-            }
+            return base.UpdateTestDetails(testDetails, false);
         }
     }
 }

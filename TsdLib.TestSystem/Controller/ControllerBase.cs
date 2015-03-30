@@ -105,7 +105,6 @@ namespace TsdLib.TestSystem.Controller
                 Trace.Listeners.Add(UI.TraceListenerControl.Listener);
             UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
 
-            Details.TestSystemIdentityChanged += configDetails_TestSystemIdentityChanged;
             updateConfigManagers();
 
 #if DEBUG
@@ -121,13 +120,13 @@ namespace TsdLib.TestSystem.Controller
 
             //subscribe to view events
             if (UI.ConfigControl != null)
-                UI.ConfigControl.ViewEditConfiguration += EditConfiguration;
+                UI.ConfigControl.ViewEditConfiguration += ConfigControl_EditConfiguration;
             if (UI.TestDetailsControl != null)
-                UI.TestDetailsControl.EditTestDetails += EditTestDetails;
+                UI.TestDetailsControl.EditTestDetails += TestDetailsControl_EditTestDetails;
             if (UI.TestSequenceControl != null)
             {
-                UI.TestSequenceControl.ExecuteTestSequence += ExecuteTestSequence;
-                UI.TestSequenceControl.AbortTestSequence += AbortTestSequence;
+                UI.TestSequenceControl.ExecuteTestSequence += TestSequenceControl_ExecuteTestSequence;
+                UI.TestSequenceControl.AbortTestSequence += TestSequenceControl_AbortTestSequence;
             }
             if (UI.TestCaseControl != null)
             {
@@ -138,6 +137,17 @@ namespace TsdLib.TestSystem.Controller
             UI.UIClosing += UIClosing;
 
             UI.SetState(State.ReadyToTest);
+        }
+
+        protected virtual void TestDetailsControl_EditTestDetails(object sender, bool e)
+        {
+            bool testSystemIdentityChanged = CreateTestDetailsEditor().Edit(Details, e);
+            if (testSystemIdentityChanged)
+            {
+                UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
+                if (UI.ConfigControl != null)
+                    updateConfigManagers();
+            }
         }
 
         void TestCaseControl_TestCaseSelected(object sender, string selectedTestCaseName)
@@ -161,13 +171,6 @@ namespace TsdLib.TestSystem.Controller
             _testCaseProvider.Save(testCase);
         }
 
-        void configDetails_TestSystemIdentityChanged(object sender, string e)
-        {
-            UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
-            if (UI.ConfigControl != null)
-                updateConfigManagers();
-        }
-
         private void updateConfigManagers()
         {
             configManagerProvider.Reload();
@@ -186,7 +189,7 @@ namespace TsdLib.TestSystem.Controller
         /// </summary>
         /// <param name="sender">Object that raised the exception. Should be a reference to the Execute Test Sequence button.</param>
         /// <param name="e">An emptry EventArgs object.</param>
-        protected virtual async void ExecuteTestSequence(object sender, EventArgs e)
+        protected virtual async void TestSequenceControl_ExecuteTestSequence(object sender, EventArgs e)
         {
             AppDomain sequenceDomain = null;
 
@@ -331,7 +334,7 @@ namespace TsdLib.TestSystem.Controller
         /// </summary>
         /// <param name="sender">Object that raised the exception. Should be a reference to the View/Edit Configuration button.</param>
         /// <param name="configManagers">An array of <see cref="IConfigManager"/> objects containing the configuration data.</param>
-        protected virtual void EditConfiguration(object sender, IConfigManager[] configManagers)
+        protected virtual void ConfigControl_EditConfiguration(object sender, IConfigManager[] configManagers)
         {
             using (ConfigManagerForm2 form = new ConfigManagerForm2(configManagerProvider))
                 if (form.ShowDialog() == DialogResult.OK)
@@ -340,18 +343,6 @@ namespace TsdLib.TestSystem.Controller
                 else
                     foreach (IConfigManager modifiedConfig in form.ModifiedConfigs)
                         modifiedConfig.Reload();
-        }
-
-        //TODO: use TestDetailsEditor to handle to editing - expose a virtual CreateTestDetailsEditor to allow client to redefine
-        //Edit behaviour should not be tied to details state
-        /// <summary>
-        /// Default handler for the ViewBase.ViewEditConfiguration event.
-        /// </summary>
-        /// <param name="sender">Object that raised the exception. Should be a reference to the View/Edit Configuration button.</param>
-        /// <param name="e">True if requesting to use database settings. False otherwise.</param>
-        protected virtual void EditTestDetails(object sender, bool e)
-        {
-            Details.Edit();
         }
 
         /// <summary>
@@ -384,7 +375,7 @@ namespace TsdLib.TestSystem.Controller
         /// </summary>
         /// <param name="sender">The <see cref="IView"/> that raised the event.</param>
         /// <param name="e">Empty event args.</param>
-        protected virtual void AbortTestSequence(object sender, EventArgs e)
+        protected virtual void TestSequenceControl_AbortTestSequence(object sender, EventArgs e)
         {
             if (_activeSequence != null)
                 _activeSequence.CancellationManager.Abort();
@@ -401,12 +392,7 @@ namespace TsdLib.TestSystem.Controller
             return new CodeCompileUnit[0];
         }
 
-        #region Controller proxy and Test Sequence creation - maybe better to use strategy pattern to expose these as settable properties? Either way, we need a default implementation - nice to have them as overloadable, so developers can just type 'overload' and see teaking behaviour
 
-        protected virtual void CreateTestDetailsHandler()
-        {
-
-        }
 
         protected virtual ControllerProxy CreateControllerProxy(IView view, ICancellationManager testSequenceCancellationManager)
         {
@@ -430,10 +416,15 @@ namespace TsdLib.TestSystem.Controller
 
         protected virtual IResultHandler CreateResultHandler(ITestDetails testDetails)
         {
-            return new ResultHandlerBase(testDetails);
+            return new ResultHandler(testDetails);
         }
-
-        #endregion
+        /// <summary>
+        /// Gets an <see cref="ITestDetailsEditor"/> object used to view/modify the test details.
+        /// </summary>
+        protected virtual ITestDetailsEditor CreateTestDetailsEditor()
+        {
+            return new TestDetailsEditor();
+        }
 
         /// <summary>
         /// Default handler for the <see cref="TsdLib.UI.IView.UIClosing"/> event.

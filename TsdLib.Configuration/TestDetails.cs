@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Drawing.Design;
 using System.Globalization;
 using System.Reflection;
-using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
 using TsdLib.Forms;
@@ -17,40 +16,12 @@ namespace TsdLib.Configuration
     public class TestDetails : ITestDetails
     {
         /// <summary>
-        /// Event fired when the <see cref="TestDetails"/> object is changed in such a way that the configuration data needs to be refreshed.
-        /// </summary>
-        public event EventHandler<string> TestSystemIdentityChanged;
-
-        /// <summary>
-        /// Fires the <see cref="TestSystemIdentityChanged"/> event.
-        /// </summary>
-        protected void OnTestSystemIdentityChanged(string propertyName)
-        {
-            if (!_supressChangedEvent)
-            {
-                EventHandler<string> handler = TestSystemIdentityChanged;
-                if (handler != null)
-                    handler(this, propertyName);
-            }
-        }
-
-        private string _testSystemName;
-        /// <summary>
         /// Gets the name of the test system.
         /// </summary>
         [Category("Test Details")]
         [DisplayName("Test System Name")]
         [Description("Name of the test system")]
-        public string TestSystemName
-        {
-            get { return _testSystemName; }
-            set
-            {
-                _testSystemName = value;
-                _identityChanged = true;
-                OnTestSystemIdentityChanged("TestSystemName");
-            }
-        }
+        public string TestSystemName { get; set; }
 
         /// <summary>
         /// Gets the name of the test system with illegal characters removed. Useful for creating namespaces or type names.
@@ -60,7 +31,6 @@ namespace TsdLib.Configuration
             get { return TestSystemName.Replace(" ", "_"); }
         }
 
-        private Version _testSystemVersion;
         /// <summary>
         /// Gets the version of the test system.
         /// </summary>
@@ -68,34 +38,15 @@ namespace TsdLib.Configuration
         [DisplayName("Test System Version")]
         [Description("Version of the test system")]
         [Editor(typeof(VersionEditor), typeof(UITypeEditor))]
-        public Version TestSystemVersion
-        {
-            get { return _testSystemVersion; }
-            set
-            {
-                _testSystemVersion = value;
-                _identityChanged = true;
-                OnTestSystemIdentityChanged("TestSystemVersion");
-            }
-        }
+        public Version TestSystemVersion { get; set; }
 
-        private OperatingMode _testSystemMode;
         /// <summary>
         /// Gets the operating mode of the test system (ie. Development, Engineering or Production).
         /// </summary>
         [Category("Test Details")]
         [DisplayName("Test System Mode")]
         [Description("Operating mode of the test system. Determines access to configuration and result publication options.")]
-        public OperatingMode TestSystemMode
-        {
-            get { return _testSystemMode; }
-            set
-            {
-                _testSystemMode = value;
-                _identityChanged = true;
-                OnTestSystemIdentityChanged("TestSystemMode");
-            }
-        }
+        public OperatingMode TestSystemMode { get; set; }
 
         /// <summary>
         /// Gets the version of the TSD Framework.
@@ -182,7 +133,6 @@ namespace TsdLib.Configuration
         /// <param name="functionalType">OPTIONAL: Type of OS image loaded on the DUT, eg. MFI or SFI.</param>
         public TestDetails(string testSystemName, Version testSystemVersion, OperatingMode testSystemMode, string jobNumber, uint unitNumber, string testType, string testStage, FunctionalType functionalType = FunctionalType.None)
         {
-            _supressChangedEvent = true;
             TestSystemName = testSystemName;
             TestSystemVersion = testSystemVersion;
             TestSystemMode = testSystemMode;
@@ -193,7 +143,6 @@ namespace TsdLib.Configuration
             FunctionalType = functionalType;
             TsdFrameworkVersion = Assembly.GetExecutingAssembly().GetName().Version;
             StationName = Environment.MachineName;
-            _supressChangedEvent = false;
         }
 
         /// <summary>
@@ -228,33 +177,6 @@ namespace TsdLib.Configuration
         }
 
         /// <summary>
-        /// Flag to temporarily suppress the <see cref="TestSystemIdentityChanged"/> event when editing the test details in an editor.
-        /// </summary>
-        private bool _supressChangedEvent;
-        /// <summary>
-        /// Flag to indicate that the editor has changed a critical property of the test details.
-        /// </summary>
-        private bool _identityChanged;
-
-        /// <summary>
-        /// Edit the test details using a PropertyGrid user interface. Fires the <see cref="TestSystemIdentityChanged"/> event if the changes require a configuration refresh.
-        /// </summary>
-        [Obsolete("Should move this to TestDetailsHandler class")]
-        public void Edit()
-        {
-            _identityChanged = false;
-            using (PropertyGridEditor editor = new PropertyGridEditor(this))
-            {
-                _supressChangedEvent = true;
-                DialogResult dialogResult = editor.ShowDialog();
-                _supressChangedEvent = false;
-                if (dialogResult == DialogResult.OK && _identityChanged)
-                    OnTestSystemIdentityChanged("Modified by Editor");
-            }
-            _identityChanged = false;
-        }
-
-        /// <summary>
         /// Not used. Required for IXmlSerializable.
         /// </summary>
         /// <returns>null</returns>
@@ -280,6 +202,8 @@ namespace TsdLib.Configuration
         /// Deserialize and XML representation into a TestDetails object.
         /// </summary>
         /// <param name="reader">The <see cref="T:System.Xml.XmlReader"/> stream from which the object is deserialized.</param>
+        /// <exception cref="XmlException">Incorrect XML was encountered in the input stream.</exception>
+        /// <exception cref="OverflowException">UnitNumber represents a number that is less than <see cref="F:System.UInt32.MinValue" /> or greater than <see cref="F:System.UInt32.MaxValue" />. </exception>
         public void ReadXml(XmlReader reader)
         {
             reader.ReadStartElement();

@@ -57,10 +57,7 @@ namespace TsdLib.Configuration.Managers
                 { button_CloneMode, OperatingMode.Engineering },
                 { button_CloneVersion, OperatingMode.Engineering },
                 { button_CreateNew, OperatingMode.Engineering },
-            },_configProvider._testDetails);
-
-            //propertyGrid_Settings.Enabled = !_configProvider._testDetails.TestSystemMode.HasFlag(OperatingMode.Production);
-            //button_PromoteMode.Enabled = button_PromoteVersion.Enabled = button_CreateNew.Enabled = !_configProvider._testDetails.TestSystemMode.HasFlag(OperatingMode.Production);
+            });
         }
 
         private void button_PromoteVersion_Click(object sender, EventArgs e)
@@ -91,6 +88,7 @@ namespace TsdLib.Configuration.Managers
                     _configProvider._sharedConfigConnection.CloneMode(_configProvider._testDetails.SafeTestSystemName, _configProvider._testDetails.TestSystemVersion, _configProvider._testDetails.TestSystemMode, SelectedConfigManager.ConfigType, newMode);
                     _configProvider._testDetails.TestSystemMode = newMode;
                     textBox_TestSystemMode.Text = newMode.ToString();
+                    _controlFilter.Update(newMode);
                 }
             }
         }
