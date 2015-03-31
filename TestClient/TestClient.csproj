@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;INSTRUMENT_LIBRARY;REMICONTROL</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;REMICONTROL;INSTRUMENT_LIBRARY</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -28,7 +28,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;INSTRUMENT_LIBRARY;REMICONTROL;INSTRUMENT_LIBRARY</DefineConstants>
+    <DefineConstants>TRACE;REMICONTROL;INSTRUMENT_LIBRARY</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -55,8 +55,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TsdLib.InstrumentLibrary.Tools">
-      <HintPath>..\packages\TsdLib.InstrumentLibrary.Tools.2.1.5557.27047\lib\net45\TsdLib.InstrumentLibrary.Tools.dll</HintPath>
+    <Reference Include="TsdLib.InstrumentLibrary.Tools, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3646076ad9d068cf, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\TsdLib.InstrumentLibrary.Tools.3.0.5-debug\lib\net45\TsdLib.InstrumentLibrary.Tools.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +83,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\StationConfig.cs" />
     <Compile Include="Sequences\AdbWlan.cs" />
+    <Compile Include="Sequences\IntervalMeasurementUpload.cs" />
     <Compile Include="Sequences\UiDeadlockTest.cs" />
     <Compile Include="Sequences\ConfigManagerDemo.cs" />
     <Compile Include="Sequences\TelnetWiFiTest.cs" />

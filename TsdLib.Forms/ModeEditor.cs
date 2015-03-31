@@ -1,6 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Drawing.Design;
+using System.Linq;
 using System.Windows.Forms;
 using TsdLib.Configuration;
 
@@ -13,10 +12,10 @@ namespace TsdLib.Forms
             get { return (OperatingMode) comboBox.SelectedItem; }
         }
 
-        public ModeEditorForm()
+        public ModeEditorForm(OperatingMode currentMode)
         {
             InitializeComponent();
-            comboBox.DataSource = Enum.GetValues(typeof (OperatingMode));
+            comboBox.DataSource = Enum.GetValues(typeof (OperatingMode)).Cast<OperatingMode>().Where(m => m != currentMode).ToList();
         }
     }
 }

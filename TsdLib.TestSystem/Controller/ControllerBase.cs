@@ -14,11 +14,11 @@ using TsdLib.CodeGenerator;
 using TsdLib.Configuration;
 using TsdLib.Configuration.Common;
 using TsdLib.Configuration.Connections;
+using TsdLib.Configuration.Details;
 using TsdLib.Configuration.Managers;
 using TsdLib.Configuration.Null;
 using TsdLib.Configuration.TestCases;
 using TsdLib.Forms;
-//using TsdLib.Measurement;
 using TsdLib.Measurements;
 using TsdLib.Observer;
 using TsdLib.TestSystem.TestSequence;
@@ -282,7 +282,7 @@ namespace TsdLib.TestSystem.Controller
                 }
                 catch (Exception ex)
                 {
-                    displayError(ex, sequenceConfig.Name);
+                    CreateErrorHandler().HandleError(ex, sequenceConfig.Name);
                 }
                 finally
                 {
@@ -306,29 +306,6 @@ namespace TsdLib.TestSystem.Controller
             UI.SetState(State.ReadyToTest);
         }
 
-        //TODO: abstract to ErrorHandler class
-        private void displayError(Exception ex, string sequenceName)
-        {
-            Trace.WriteLine(ex);
-            Task.Run(() =>
-            {
-                bool helpLinkPresent = ex.HelpLink != null;
-                DialogResult result = MessageBox.Show(string.Join(Environment.NewLine,
-                        "Error: " + ex.GetType().Name,
-                        "Message: " + ex.Message,
-                        helpLinkPresent ? "Would you like to view help for this error?" : ""),
-                    "Error occurred in " + sequenceName,
-                    helpLinkPresent ? MessageBoxButtons.YesNo : MessageBoxButtons.OK);
-
-                if (result == DialogResult.Yes)
-                    Process.Start(ex.HelpLink);
-            }).ContinueWith(task => 
-            {
-                if (task.IsFaulted)
-                    Trace.WriteLine(task.Exception);
-            });
-        }
-
         //TODO: abstract to ConfigEditor class - allow changing the config editor without changing the ControllerBase, expose a virtual CreateConfigEditor to allow client to redefine
         /// <summary>
         /// Default handler for the ViewBase.ViewEditConfiguration event.
@@ -347,31 +324,6 @@ namespace TsdLib.TestSystem.Controller
         }
 
         /// <summary>
-        /// Saves the specified <see cref="ITestResults"/> as xml and csv to the TsdLib.SpecialFolders location.
-        /// </summary>
-        /// <param name="results">The <see cref="ITestResults"/> that was captured by the test sequence.</param>
-        [Obsolete("This functionality has been abstracted to ResultHandler")]
-        protected virtual void SaveResults(ITestResults results)
-        {
-            results.SaveXml();
-            string csvResultsFile = results.SaveCsv();
-
-            Trace.WriteLine("CSV results saved to " + csvResultsFile);
-        }
-
-        /// <summary>
-        /// Override to published the specified <see cref="ITestResults"/> to a database or user-defined location.
-        /// </summary>
-        /// <param name="results">The <see cref="ITestResults"/> that was captured by the test sequence.</param>
-        [Obsolete("This functionality has been abstracted to ResultHandler")]
-        protected virtual void PublishResults(ITestResults results)
-        {
-
-        }
-
-
-
-        /// <summary>
         /// Default handler for the <see cref="TsdLib.UI.ITestSequenceControl.AbortTestSequence"/> event.
         /// </summary>
         /// <param name="sender">The <see cref="IView"/> that raised the event.</param>
@@ -382,12 +334,10 @@ namespace TsdLib.TestSystem.Controller
                 _activeSequence.CancellationManager.Abort();
         }
 
-        //TODO: abstract to CodeCompileUnitGenerator
         /// <summary>
         /// Generates a sequence of <see cref="CodeCompileUnit"/> objects to be dynamically compiled for the test sequence. Not used when the -localDomain command-line switch is used.
         /// </summary>
         /// <returns>A sequence of <see cref="CodeCompileUnit"/> objects.</returns>
-        [Obsolete("This functionality will soon be abstracted to CodeCompileUnitGenerator")]
         protected virtual IEnumerable<CodeCompileUnit> GenerateAdditionalCodeCompileUnits(string nameSpace)
         {
             return new CodeCompileUnit[0];
@@ -420,11 +370,21 @@ namespace TsdLib.TestSystem.Controller
             return new ResultHandler(testDetails);
         }
         /// <summary>
-        /// Gets an <see cref="ITestDetailsEditor"/> object used to view/modify the test details.
+        /// Override to customize the mechanism to view/edit test details.
         /// </summary>
+        /// <returns>An <see cref="ITestDetailsEditor"/> object used to view/modify the test details.</returns>
         protected virtual ITestDetailsEditor CreateTestDetailsEditor()
         {
             return new TestDetailsEditor();
+        }
+
+        /// <summary>
+        /// Override to customize the mechanism to handle errors encountered during the test sequence.
+        /// </summary>
+        /// <returns>An <see cref="IErrorHandler"/> object used to catch, handle, display and/or log errors.</returns>
+        protected virtual IErrorHandler CreateErrorHandler()
+        {
+            return new ErrorHandler();
         }
 
         /// <summary>

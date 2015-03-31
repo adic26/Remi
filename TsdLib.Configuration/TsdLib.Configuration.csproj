@@ -48,27 +48,21 @@
     <Compile Include="Common\StationConfigCommon.cs" />
     <Compile Include="Common\TestConfigCommon.cs" />
     <Compile Include="ConfigItem.cs" />
+    <Compile Include="Editors\ConfigEditor.cs" />
     <Compile Include="Exceptions\InvalidConfigTypeException.cs" />
     <Compile Include="Exceptions\MissingConfigTypeException.cs" />
     <Compile Include="Exceptions\InvalidDirectoryException.cs" />
     <Compile Include="Exceptions\FileUploadException.cs" />
     <Compile Include="Exceptions\InvalidConfigFileException.cs" />
     <Compile Include="Managers\ConfigManager.cs" />
-    <Compile Include="Managers\ConfigManagerForm.cs">
+    <Compile Include="Editors\ConfigEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Managers\ConfigManagerForm.Designer.cs">
-      <DependentUpon>ConfigManagerForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Managers\ConfigManagerForm2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Managers\ConfigManagerForm2.Designer.cs">
-      <DependentUpon>ConfigManagerForm2.cs</DependentUpon>
+    <Compile Include="Editors\ConfigEditorForm.Designer.cs">
+      <DependentUpon>ConfigEditorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Managers\ConfigManagerProvider.cs" />
     <Compile Include="DesignerVerbSite.cs" />
-    <Compile Include="FilePath.cs" />
     <Compile Include="Connections\FileSystemConnection.cs" />
     <Compile Include="Connections\IConfigConnection.cs" />
     <Compile Include="Null\NullProductConfig.cs" />
@@ -78,17 +72,14 @@
     <Compile Include="SequenceSync.cs" />
     <Compile Include="TestCases\TestCase.cs" />
     <Compile Include="TestCases\TestCaseProvider.cs" />
-    <Compile Include="TestDetails.cs" />
-    <Compile Include="TestDetailsEditor.cs" />
+    <Compile Include="Details\TestDetails.cs" />
+    <Compile Include="Details\TestDetailsEditor.cs" />
     <Compile Include="Utilities\ConfigExtensions.cs" />
     <Compile Include="Utilities\VersionTypeEditor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Managers\ConfigManagerForm.resx">
-      <DependentUpon>ConfigManagerForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Managers\ConfigManagerForm2.resx">
-      <DependentUpon>ConfigManagerForm2.cs</DependentUpon>
+    <EmbeddedResource Include="Editors\ConfigEditorForm.resx">
+      <DependentUpon>ConfigEditorForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

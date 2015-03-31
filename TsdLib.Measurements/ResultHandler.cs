@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TsdLib.Configuration;
+using TsdLib.Configuration.Details;
 
 namespace TsdLib.Measurements
 {
@@ -24,7 +25,7 @@ namespace TsdLib.Measurements
         /// <summary>
         /// Gets a list of active tasks responsible for logging test results.
         /// </summary>
-        protected ReadOnlyCollection<Task> LoggingTasks { get; private set; }
+        public ReadOnlyCollection<Task> LoggingTasks { get; private set; }
 
         public void SaveResults(ITestInfo[] testInfo, IMeasurement[] measurements, DateTime start, DateTime end, bool publish)
         {
@@ -50,6 +51,7 @@ namespace TsdLib.Measurements
             );
         }
 
+        //TODO: we should allow different calculation mechanisms per sequence
         protected virtual MeasurementResult CalculateOverallTestResult(IMeasurement[] measurements)
         {
             if (!measurements.Any() || measurements.All(m => m.Result == MeasurementResult.Undefined))
@@ -77,6 +79,28 @@ namespace TsdLib.Measurements
         protected virtual void PublishResults(ITestResults results)
         {
 
+        }
+
+        /// <summary>
+        /// Wait for all logging operations to complete.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (LoggingTasks.Count > 0)
+                {
+                    Trace.WriteLine("Waiting for " + LoggingTasks.Count + " result logging operations to complete...");
+                    Task.WaitAll(LoggingTasks.ToArray());
+                    Trace.WriteLine("Result logging operations are complete");
+                }
+            }
         }
     }
 }

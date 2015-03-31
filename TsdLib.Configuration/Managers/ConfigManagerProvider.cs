@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using TsdLib.Configuration.Connections;
+using TsdLib.Configuration.Details;
 
 namespace TsdLib.Configuration.Managers
 {

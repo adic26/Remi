@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TsdLib.Configuration;
+using TsdLib.Configuration.TestCases;
 
 namespace TsdLib.UI
 {

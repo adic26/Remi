@@ -43,17 +43,18 @@
     <Compile Include="Configuration\IProductConfig.cs" />
     <Compile Include="Configuration\ISequenceConfig.cs" />
     <Compile Include="Configuration\IStationConfig.cs" />
-    <Compile Include="Configuration\ITestCase.cs" />
+    <Compile Include="Configuration\TestCases\ITestCase.cs" />
     <Compile Include="Configuration\ITestConfig.cs" />
-    <Compile Include="Configuration\ITestDetailsEditor.cs" />
+    <Compile Include="Configuration\Details\ITestDetailsEditor.cs" />
     <Compile Include="Measurements\IResultHandler.cs" />
     <Compile Include="Observer\DataContainer.cs" />
     <Compile Include="Observer\Unsubscriber.cs" />
+    <Compile Include="TestSystem\IErrorHandler.cs" />
     <Compile Include="TestSystem\IInstrumentCollection.cs" />
     <Compile Include="UI\IConfigControl.cs" />
     <Compile Include="Configuration\IConfigItem.cs" />
-    <Compile Include="Configuration\IConfigManager.cs" />
-    <Compile Include="Configuration\ITestDetails.cs" />
+    <Compile Include="Configuration\Managers\IConfigManager.cs" />
+    <Compile Include="Configuration\Details\ITestDetails.cs" />
     <Compile Include="Instrument\InstrumentEvents.cs" />
     <Compile Include="Instrument\IInstrument.cs" />
     <Compile Include="Measurements\IMeasurement.cs" />
@@ -83,6 +84,7 @@
     <None Include="packages.config" />
     <None Include="TsdLib.Core.nuspec" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

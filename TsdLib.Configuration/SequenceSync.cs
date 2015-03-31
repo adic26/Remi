@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using TsdLib.Configuration.Common;
 using TsdLib.Configuration.Connections;
+using TsdLib.Configuration.Details;
 using TsdLib.Configuration.Managers;
 
 namespace TsdLib.Configuration

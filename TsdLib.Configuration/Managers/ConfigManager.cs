@@ -9,6 +9,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using TsdLib.Configuration.Connections;
+using TsdLib.Configuration.Details;
 using TsdLib.Configuration.Exceptions;
 
 namespace TsdLib.Configuration.Managers
@@ -207,6 +208,7 @@ namespace TsdLib.Configuration.Managers
                 _configs = new List<T> {newCfg};
             }
             _bindingSource.DataSource = _configs.Where(cfg => cfg.IsValid);
+            //TODO: should we really be calling save here? we should only be loading - updating should be separate
             Save();
         }
 

@@ -9,6 +9,7 @@ using TsdLib.Configuration;
 using System.Configuration;
 using TsdLib.Configuration.Common;
 using TsdLib.Configuration.Connections;
+using TsdLib.Configuration.Details;
 using TsdLib.Configuration.Managers;
 
 namespace TestClient

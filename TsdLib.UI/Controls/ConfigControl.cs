@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 using TsdLib.Configuration;
+using TsdLib.Configuration.Managers;
 
 namespace TsdLib.UI.Controls
 {

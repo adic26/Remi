@@ -4,6 +4,7 @@ using DBControl.Forms;
 using DBControl.Helpers;
 using DBControl.remiAPI;
 using TsdLib.Configuration;
+using TsdLib.Configuration.Details;
 
 namespace TsdLib.DataAccess
 {

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using TsdLib.Configuration;
+using TsdLib.Configuration.Details;
 using TsdLib.Measurements;
 
 namespace TsdLib.DataAccess

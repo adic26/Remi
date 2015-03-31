@@ -10,7 +10,6 @@ namespace TsdLib.Forms
     public class ControlFilter
     {
         private readonly Dictionary<Control, OperatingMode> _dictionary;
-        private readonly ITestDetails _testDetails;
 
         public ControlFilter(Dictionary<Control, OperatingMode> dictionary)
         {
