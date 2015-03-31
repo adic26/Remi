@@ -13,21 +13,20 @@ namespace TsdLib.Configuration.Common
     [Serializable]
     public abstract class StationConfigCommon : ConfigItem, IStationConfig
     {
-        private HashSet<string> _machineNames;
         /// <summary>
         /// Gets or sets a list of machine names that can use this station config item.
         /// </summary>
-        [Editor(typeof(MultiLineStringEditor), typeof(UITypeEditor))]
-        [TypeConverter(typeof(MultiLineStringConverter))]
-        public HashSet<string> MachineNames
-        {
-            get { return _machineNames ?? (_machineNames = new HashSet<string> { Environment.MachineName}); }
-            set { _machineNames = value; }
-        }
+        [Editor(typeof (MultiLineStringEditor), typeof (UITypeEditor))]
+        [TypeConverter(typeof (MultiLineStringConverter))]
+        public HashSet<string> MachineNames { get; set; }
 
         public override bool IsValid
         {
-            get { return MachineNames.Contains(Environment.MachineName) || MachineNames.Contains("*"); }
+            get
+            {
+                return (MachineNames != null) &&
+                       (MachineNames.Contains(Environment.MachineName) || MachineNames.Contains("*"));
+            }
         }
 
         public override void InitializeDefaultValues()
