@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using TsdLib.Configuration;
-using TsdLib.Configuration.Managers;
+using TsdLib.Configuration.Management;
 
 namespace TsdLib.UI.Controls
 {

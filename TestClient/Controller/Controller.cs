@@ -4,6 +4,7 @@ using TestClient.UI.Forms;
 using TsdLib.Configuration;
 using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Details;
+using TsdLib.Configuration.Management;
 using TsdLib.TestSystem.Controller;
 
 namespace TestClient

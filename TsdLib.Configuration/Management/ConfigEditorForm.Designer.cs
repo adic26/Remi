@@ -1,4 +1,4 @@
-﻿namespace TsdLib.Configuration.Editors
+﻿namespace TsdLib.Configuration.Management
 {
     partial class ConfigEditorForm
     {
@@ -234,6 +234,7 @@
             this.button_CreateNew.TabIndex = 26;
             this.button_CreateNew.Text = "Create New";
             this.button_CreateNew.UseVisualStyleBackColor = true;
+            this.button_CreateNew.Click += new System.EventHandler(this.button_CreateNew_Click);
             // 
             // groupBox_ConfigSelection
             // 
@@ -292,7 +293,7 @@
             this.label5.TabIndex = 29;
             this.label5.Text = "Config Item";
             // 
-            // ConfigManagerForm2
+            // ConfigEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -302,7 +303,7 @@
             this.Controls.Add(this.groupBox_TestSystemIdentity);
             this.Controls.Add(this.button_Cancel);
             this.Controls.Add(this.button_OK);
-            this.Name = "ConfigManagerForm2";
+            this.Name = "ConfigEditorForm";
             this.Text = "Config Editor";
             this.groupBox_TestSystemIdentity.ResumeLayout(false);
             this.tableLayoutPanel_TestSystemIdentity.ResumeLayout(false);

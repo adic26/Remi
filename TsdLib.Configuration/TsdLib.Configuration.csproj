@@ -48,23 +48,27 @@
     <Compile Include="Common\StationConfigCommon.cs" />
     <Compile Include="Common\TestConfigCommon.cs" />
     <Compile Include="ConfigItem.cs" />
-    <Compile Include="Editors\ConfigEditor.cs" />
+    <Compile Include="Management\ConfigEditor.cs" />
+    <Compile Include="Management\IConfigEditor.cs" />
+    <Compile Include="Management\IConfigManagerProvider.cs" />
+    <Compile Include="Management\ITestDetailsEditor.cs" />
+    <Compile Include="Management\ITestSystemIdentityManager.cs" />
+    <Compile Include="Management\TestSystemIdentityManager.cs" />
     <Compile Include="Exceptions\InvalidConfigTypeException.cs" />
     <Compile Include="Exceptions\MissingConfigTypeException.cs" />
     <Compile Include="Exceptions\InvalidDirectoryException.cs" />
     <Compile Include="Exceptions\FileUploadException.cs" />
     <Compile Include="Exceptions\InvalidConfigFileException.cs" />
-    <Compile Include="Managers\ConfigManager.cs" />
-    <Compile Include="Editors\ConfigEditorForm.cs">
+    <Compile Include="Management\ConfigManager.cs" />
+    <Compile Include="Management\ConfigEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Editors\ConfigEditorForm.Designer.cs">
+    <Compile Include="Management\ConfigEditorForm.Designer.cs">
       <DependentUpon>ConfigEditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Managers\ConfigManagerProvider.cs" />
+    <Compile Include="Management\ConfigManagerProvider.cs" />
     <Compile Include="DesignerVerbSite.cs" />
     <Compile Include="Connections\FileSystemConnection.cs" />
-    <Compile Include="Connections\IConfigConnection.cs" />
     <Compile Include="Null\NullProductConfig.cs" />
     <Compile Include="Null\NullStationConfig.cs" />
     <Compile Include="Null\NullTestConfig.cs" />
@@ -73,12 +77,12 @@
     <Compile Include="TestCases\TestCase.cs" />
     <Compile Include="TestCases\TestCaseProvider.cs" />
     <Compile Include="Details\TestDetails.cs" />
-    <Compile Include="Details\TestDetailsEditor.cs" />
+    <Compile Include="Management\TestDetailsEditor.cs" />
     <Compile Include="Utilities\ConfigExtensions.cs" />
     <Compile Include="Utilities\VersionTypeEditor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Editors\ConfigEditorForm.resx">
+    <EmbeddedResource Include="Management\ConfigEditorForm.resx">
       <DependentUpon>ConfigEditorForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

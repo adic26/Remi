@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace TsdLib.Configuration.Managers
+namespace TsdLib.Configuration.Management
 {
     /// <summary>
     /// Encapsulates configuration data and provides methods to save configuration.
@@ -58,8 +58,11 @@ namespace TsdLib.Configuration.Managers
         /// <returns>The configuration object with the specified name.</returns>
         T GetConfig(string name);
 
-        //void Add(T item);
-
+        /// <summary>
+        /// Create a new <typeparamref name="T"/> and add it to the configuration instances.
+        /// </summary>
+        /// <param name="name">Name to assign to the new configuration item</param>
+        /// <param name="storeInDatabase"></param>
         T Add(string name, bool storeInDatabase);
     }
 

@@ -5,6 +5,7 @@ using DBControl.Helpers;
 using DBControl.remiAPI;
 using TsdLib.Configuration;
 using TsdLib.Configuration.Details;
+using TsdLib.Configuration.Management;
 
 namespace TsdLib.DataAccess
 {

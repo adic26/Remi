@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -12,13 +12,14 @@ using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Details;
 using TsdLib.Configuration.Exceptions;
 
-namespace TsdLib.Configuration.Managers
+namespace TsdLib.Configuration.Management
 {
     /// <summary>
     /// Encapsulates configuration data of a specified type and provides methods to save and retieve.
     /// </summary>
     /// <typeparam name="T">Type of configuration derived from <see cref="ConfigItem"/></typeparam>
-    public class ConfigManager<T> : MarshalByRefObject, IConfigManager<T> where T : ConfigItem, new()
+    public class ConfigManager<T> : MarshalByRefObject, IConfigManager<T>
+        where T : ConfigItem, new()
     {
         /// <summary>
         /// Gets the type of configuration for this <see cref="ConfigManager{T}"/>.
@@ -37,12 +38,15 @@ namespace TsdLib.Configuration.Managers
         }
 
         private readonly ITestDetails _testDetails;
-        private readonly FileSystemConnection _localConfigConnection;
+        private readonly FileSystemConnection _localConfigConnection = new FileSystemConnection(SpecialFolders.Configuration);
         private readonly IConfigConnection _sharedConfigConnection;
-        private readonly XmlSerializer _serializer;
-
-        private readonly BindingSource _bindingSource;
-        private List<T> _configs;
+        private BindingList<T> _configs = new BindingList<T>();
+        private readonly XmlSerializer _serializer = new XmlSerializer(typeof(BindingList<T>));
+        private readonly XmlWriterSettings _xmlWriterSettings = new XmlWriterSettings
+        {
+            Indent = true,
+            OmitXmlDeclaration = true
+        };
 
         /// <summary>
         /// Initialize a new configuration manager instance.
@@ -52,11 +56,7 @@ namespace TsdLib.Configuration.Managers
         public ConfigManager(ITestDetails testDetails, IConfigConnection sharedConfigConnection)
         {
             _testDetails = testDetails;
-            _localConfigConnection = new FileSystemConnection(SpecialFolders.Configuration);
             _sharedConfigConnection = sharedConfigConnection;
-            _serializer = new XmlSerializer(typeof(List<T>));
-            _configs = new List<T>();
-            _bindingSource = new BindingSource{DataSource = _configs};
         }
 
         /// <summary>
@@ -77,13 +77,19 @@ namespace TsdLib.Configuration.Managers
             _configs.Add(configItem);
         }
 
+        
 
+        /// <summary>
+        /// Add a new <see cref="IConfigItem"/> to the configuration instances.
+        /// </summary>
+        /// <param name="item"><see cref="IConfigItem"/> to add.</param>
         public void Add(IConfigItem item)
         {
             T newItem = item as T;
             if (newItem != null)
                 Add(newItem);
         }
+
 
         public T Add(string name, bool storeInDatabase)
         {
@@ -126,27 +132,26 @@ namespace TsdLib.Configuration.Managers
         /// </summary>
         public void Save()
         {
-            XmlWriterSettings xmlWriterSettings = new XmlWriterSettings
-            {
-                Indent = true,
-                OmitXmlDeclaration = true
-            };
+            saveLocal();
 
-            StringBuilder sbLocal = new StringBuilder();
-            using (XmlWriter xmlWriter = XmlWriter.Create(sbLocal, xmlWriterSettings))
-                _serializer.Serialize(xmlWriter, _configs);
-
-            _localConfigConnection.WriteString(_testDetails.SafeTestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), sbLocal.ToString());
-
-            List<T> sharedConfigGroups = _configs.Where(cfg => cfg.StoreInDatabase).ToList();
+           List<T> sharedConfigGroups = _configs.Where(cfg => cfg.StoreInDatabase).ToList();
 
             if (sharedConfigGroups.Any())
             {
                 StringBuilder sbDatabase = new StringBuilder();
-                using (XmlWriter xmlWriter = XmlWriter.Create(sbDatabase, xmlWriterSettings))
-                    _serializer.Serialize(xmlWriter, new List<T>(sharedConfigGroups));
+                using (XmlWriter xmlWriter = XmlWriter.Create(sbDatabase, _xmlWriterSettings))
+                    _serializer.Serialize(xmlWriter, new BindingList<T>(sharedConfigGroups));
                 _sharedConfigConnection.WriteString(_testDetails.SafeTestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), sbDatabase.ToString());
             }
+        }
+
+        private void saveLocal()
+        {
+            StringBuilder sbLocal = new StringBuilder();
+            using (XmlWriter xmlWriter = XmlWriter.Create(sbLocal, _xmlWriterSettings))
+                _serializer.Serialize(xmlWriter, _configs);
+
+            _localConfigConnection.WriteString(_testDetails.SafeTestSystemName, _testDetails.TestSystemVersion, _testDetails.TestSystemMode, typeof(T), sbLocal.ToString());
         }
 
         /// <summary>
@@ -191,25 +196,27 @@ namespace TsdLib.Configuration.Managers
 
                 //Deserialize the merged config XML into the configs list
                 using (XmlReader reader = localXml.CreateReader())
-                    _configs = (List<T>)(_serializer.Deserialize(reader));
+                    _configs = (BindingList<T>)(_serializer.Deserialize(reader));
+                saveLocal();
             }
             else if (sharedXml != null) //Deserialize the shared config XML into the configs list
+            {
                 using (XmlReader reader = sharedXml.CreateReader())
-                    _configs = (List<T>)(_serializer.Deserialize(reader));
+                    _configs = (BindingList<T>)(_serializer.Deserialize(reader));
+                saveLocal();
+            }
             else
             {
                 T newCfg = new T
                 {
-                    Name = "Default" + typeof(T).Name,
+                    Name = "Default" + typeof (T).Name,
                     IsDefault = true,
                     StoreInDatabase = false
                 };
                 newCfg.InitializeDefaultValues();
-                _configs = new List<T> {newCfg};
+                _configs = new BindingList<T> { newCfg };
+                Save();
             }
-            _bindingSource.DataSource = _configs.Where(cfg => cfg.IsValid);
-            //TODO: should we really be calling save here? we should only be loading - updating should be separate
-            Save();
         }
 
         #region Equality Comparer
@@ -249,11 +256,9 @@ namespace TsdLib.Configuration.Managers
 
         #region IListSource Implementation
 
-        public IList GetList()
+        public System.Collections.IList GetList()
         {
-            if (_bindingSource.Count == 0)
-                Reload();
-            return _bindingSource;
+            return _configs;
         }
 
         public bool ContainsListCollection
@@ -267,6 +272,9 @@ namespace TsdLib.Configuration.Managers
         {
             return null;
         }
+
+
+
 
 
     }

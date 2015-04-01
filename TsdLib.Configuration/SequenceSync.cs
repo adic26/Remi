@@ -7,7 +7,7 @@ using System.Reflection;
 using TsdLib.Configuration.Common;
 using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Details;
-using TsdLib.Configuration.Managers;
+using TsdLib.Configuration.Management;
 
 namespace TsdLib.Configuration
 {

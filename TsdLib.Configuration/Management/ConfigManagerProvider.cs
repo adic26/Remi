@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Details;
 
-namespace TsdLib.Configuration.Managers
+namespace TsdLib.Configuration.Management
 {
-    public class ConfigManagerProvider : MarshalByRefObject, IListSource
+    public class ConfigManagerProvider : MarshalByRefObject, IConfigManagerProvider
     {
         private readonly List<IConfigManager> _configManagers = new List<IConfigManager>();
-        internal readonly ITestDetails _testDetails;
-        internal readonly IConfigConnection _sharedConfigConnection;
+
+        public ITestDetails TestDetails { get; private set;}
+
+        public IConfigConnection SharedConfigConnection { get; private set; }
         
         /// <summary>
         /// Initialize the ConfigurationManagerProvider by providing the test details and connection information required to save and recal configuration data.
@@ -20,8 +21,8 @@ namespace TsdLib.Configuration.Managers
         /// <param name="sharedConfigConnection"></param>
         public ConfigManagerProvider(ITestDetails testdetails, IConfigConnection sharedConfigConnection)
         {
-            _testDetails = testdetails;
-            _sharedConfigConnection = sharedConfigConnection;
+            TestDetails = testdetails;
+            SharedConfigConnection = sharedConfigConnection;
         }
 
         /// <summary>
@@ -34,7 +35,7 @@ namespace TsdLib.Configuration.Managers
             ConfigManager<T> manager = (ConfigManager<T>)GetConfigManager(typeof (T));
             if (manager == null)
             {
-                manager = new ConfigManager<T>(_testDetails, _sharedConfigConnection);
+                manager = new ConfigManager<T>(TestDetails, SharedConfigConnection);
                 manager.Reload();
                 _configManagers.Add(manager);
             }

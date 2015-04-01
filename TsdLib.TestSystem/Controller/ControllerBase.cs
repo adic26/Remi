@@ -15,7 +15,7 @@ using TsdLib.Configuration;
 using TsdLib.Configuration.Common;
 using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Details;
-using TsdLib.Configuration.Managers;
+using TsdLib.Configuration.Management;
 using TsdLib.Configuration.Null;
 using TsdLib.Configuration.TestCases;
 using TsdLib.Forms;
@@ -105,8 +105,9 @@ namespace TsdLib.TestSystem.Controller
             if (UI.TraceListenerControl != null)
                 Trace.Listeners.Add(UI.TraceListenerControl.Listener);
             UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
-
-            updateConfigManagers();
+            
+            configManagerProvider.Reload();
+            updateUIConfigControl();
 
 #if DEBUG
             Trace.WriteLine("Using TsdLib debug assembly. Test results will only be stored as Analysis.");
@@ -140,15 +141,46 @@ namespace TsdLib.TestSystem.Controller
             UI.SetState(State.ReadyToTest);
         }
 
-        protected virtual void TestDetailsControl_EditTestDetails(object sender, bool e)
+        private ITestDetailsEditor _testDetailsEditor;
+        private ITestDetailsEditor testDetailsEditor
         {
-            bool testSystemIdentityChanged = CreateTestDetailsEditor().Edit(Details, e);
-            if (testSystemIdentityChanged)
+            get
             {
-                UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
-                if (UI.ConfigControl != null)
-                    updateConfigManagers();
+                if (_testDetailsEditor == null)
+                {
+                    _testDetailsEditor = CreateTestDetailsEditor();
+                    _testDetailsEditor.IdentityManager.TestSystemIdentityChanged += TestSystemIdentityChanged;
+                }
+                return _testDetailsEditor;
             }
+        }
+
+        private IConfigEditor _configEditor;
+        private IConfigEditor configEditor
+        {
+            get
+            {
+                if (_configEditor == null)
+                {
+                    _configEditor = CreateConfigEditor();
+                    _configEditor.IdentityManager.TestSystemIdentityChanged += TestSystemIdentityChanged;
+                }
+                return _configEditor;
+            }
+        }
+
+        protected virtual void TestSystemIdentityChanged(object sender, EventArgs e)
+        {
+            UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
+            configManagerProvider.Reload();
+            if (UI.ConfigControl != null)
+                updateUIConfigControl();
+        }
+
+        protected virtual void TestDetailsControl_EditTestDetails(object sender, bool detailsFromDatabase)
+        {
+            testDetailsEditor.Edit(Details, detailsFromDatabase);
+
         }
 
         void TestCaseControl_TestCaseSelected(object sender, string selectedTestCaseName)
@@ -172,17 +204,12 @@ namespace TsdLib.TestSystem.Controller
             _testCaseProvider.Save(testCase);
         }
 
-        private void updateConfigManagers()
+        private void updateUIConfigControl()
         {
-            configManagerProvider.Reload();
-            IConfigManager<TStationConfig> stn = configManagerProvider.GetConfigManager<TStationConfig>();
-            UI.ConfigControl.StationConfigManager = stn;
-            IConfigManager<TProductConfig> prod = configManagerProvider.GetConfigManager<TProductConfig>();
-            UI.ConfigControl.ProductConfigManager = prod;
-            IConfigManager<TTestConfig> test = configManagerProvider.GetConfigManager<TTestConfig>();
-            UI.ConfigControl.TestConfigManager = test;
-            IConfigManager<ISequenceConfig> seq = configManagerProvider.GetConfigManager<SequenceConfigCommon>();
-            UI.ConfigControl.SequenceConfigManager = seq;
+            UI.ConfigControl.StationConfigManager = configManagerProvider.GetConfigManager<TStationConfig>();
+            UI.ConfigControl.ProductConfigManager = configManagerProvider.GetConfigManager<TProductConfig>();
+            UI.ConfigControl.TestConfigManager = configManagerProvider.GetConfigManager<TTestConfig>();
+            UI.ConfigControl.SequenceConfigManager = configManagerProvider.GetConfigManager<SequenceConfigCommon>();
         }
 
         /// <summary>
@@ -237,8 +264,9 @@ namespace TsdLib.TestSystem.Controller
                             _activeSequence.AddTraceListener(listener);
                     }
                     
-                    TStationConfig stationConfig = (TStationConfig)(UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TStationConfig>().GetList()[0]);
-                    TProductConfig productConfig = (TProductConfig)(UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TProductConfig>().GetList()[0]);
+                    //TStationConfig stationConfig = (TStationConfig)(UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TStationConfig>().GetList()[0]);
+                    TStationConfig stationConfig = (TStationConfig)(UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TStationConfig>().GetConfigGroup().First());
+                    TProductConfig productConfig = (TProductConfig)(UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TProductConfig>().GetConfigGroup().First());
                     TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig.Cast<TTestConfig>().ToArray();
                     if (!testConfigs.Any())
                         testConfigs = configManagerProvider.GetConfigManager<TTestConfig>().GetConfigGroup().ToArray();
@@ -314,13 +342,14 @@ namespace TsdLib.TestSystem.Controller
         /// <param name="configManagers">An array of <see cref="IConfigManager"/> objects containing the configuration data.</param>
         protected virtual void ConfigControl_EditConfiguration(object sender, IConfigManager[] configManagers)
         {
-            using (ConfigManagerForm2 form = new ConfigManagerForm2(configManagerProvider))
-                if (form.ShowDialog() == DialogResult.OK)
-                    foreach (IConfigManager modifiedConfig in form.ModifiedConfigs)
-                        modifiedConfig.Save();
-                else
-                    foreach (IConfigManager modifiedConfig in form.ModifiedConfigs)
-                        modifiedConfig.Reload();
+            configEditor.Edit(configManagerProvider);
+            //if (UI.ConfigControl != null)
+            //    updateUIConfigControl();
+        }
+
+        protected virtual IConfigEditor CreateConfigEditor()
+        {
+            return new ConfigEditor();
         }
 
         /// <summary>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using TsdLib.Configuration;
-using TsdLib.Configuration.Managers;
+using TsdLib.Configuration.Management;
 using TsdLib.Instrument;
 using TsdLib.Measurements;
 using TsdLib.Observer;

@@ -39,21 +39,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicCodeParser.cs" />
+    <Compile Include="Configuration\Connections\IConfigConnection.cs" />
     <Compile Include="Configuration\Enums.cs" />
+    <Compile Include="Configuration\IConfigItem.cs" />
     <Compile Include="Configuration\IProductConfig.cs" />
     <Compile Include="Configuration\ISequenceConfig.cs" />
     <Compile Include="Configuration\IStationConfig.cs" />
     <Compile Include="Configuration\TestCases\ITestCase.cs" />
     <Compile Include="Configuration\ITestConfig.cs" />
-    <Compile Include="Configuration\Details\ITestDetailsEditor.cs" />
     <Compile Include="Measurements\IResultHandler.cs" />
     <Compile Include="Observer\DataContainer.cs" />
     <Compile Include="Observer\Unsubscriber.cs" />
     <Compile Include="TestSystem\IErrorHandler.cs" />
-    <Compile Include="TestSystem\IInstrumentCollection.cs" />
-    <Compile Include="UI\IConfigControl.cs" />
-    <Compile Include="Configuration\IConfigItem.cs" />
-    <Compile Include="Configuration\Managers\IConfigManager.cs" />
+    <Compile Include="Configuration\Management\IConfigManager.cs" />
     <Compile Include="Configuration\Details\ITestDetails.cs" />
     <Compile Include="Instrument\InstrumentEvents.cs" />
     <Compile Include="Instrument\IInstrument.cs" />
@@ -63,6 +61,7 @@
     <Compile Include="TestSystem\ICancellationManager.cs" />
     <Compile Include="Measurements\ITestResults.cs" />
     <Compile Include="Measurements\ITestSummary.cs" />
+    <Compile Include="UI\IConfigControl.cs" />
     <Compile Include="UI\IMeasurementDisplayControl.cs" />
     <Compile Include="UI\IProgressControl.cs" />
     <Compile Include="UI\ITestCaseControl.cs" />

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
-using TsdLib.Configuration;
 using TsdLib.Configuration.Details;
 
 namespace TsdLib.Measurements

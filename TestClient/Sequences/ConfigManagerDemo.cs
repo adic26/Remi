@@ -5,7 +5,7 @@ using System.Threading;
 using TestClient.Configuration;
 using TestClient.Instruments;
 using TsdLib.Configuration;
-using TsdLib.Configuration.Managers;
+using TsdLib.Configuration.Management;
 using TsdLib.Measurements;
 using TsdLib.TestSystem.TestSequence;
 
