@@ -290,7 +290,6 @@ namespace TsdLib.TestSystem.Controller
                     if (_activeSequence.CancellationManager.CancelledByUser)
                     {
                         Trace.WriteLine("Test sequence was cancelled by user.");
-                        break;
                     }
 
                     else if (_activeSequence.CancellationManager.Error != null)

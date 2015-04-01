@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using TsdLib.Measurements;
 using TsdLib.UI;
 
@@ -21,7 +22,7 @@ namespace TsdLib.TestSystem.Controller
         /// </summary>
         private ICancellationManager _testSequenceCancellationManager;
 
-        private readonly SynchronizationContext _uiContext;
+        private readonly TaskScheduler uiTaskScheduler;
 
         /// <summary>
         /// Initialize a new ControllerProxy.
@@ -32,32 +33,39 @@ namespace TsdLib.TestSystem.Controller
         {
             _viewProxy = view;
             _testSequenceCancellationManager = testSequenceCancellationManager;
-            _uiContext = SynchronizationContext.Current;
+            uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         }
 
-        public virtual void AddData(object sender, DataContainer data)
+        public async virtual void AddData(object sender, DataContainer data)
         {
             try
             {
-                _uiContext.Post(s => _viewProxy.AddArbitraryData(data), null);
+                await Task.Factory.StartNew(() =>
+                    _viewProxy.AddArbitraryData(data),
+                    CancellationToken.None,
+                    TaskCreationOptions.None,
+                    uiTaskScheduler);
             }
             catch (Exception ex)
             {
                 Trace.WriteLine(string.Format("Failed to update data on the UI{0}Data type: {1}{0}Error: {2}", Environment.NewLine, data.GetType().Name, ex));
             }
-
         }
 
         /// <summary>
         /// Provides the observer with new data.
         /// </summary>
         /// <param name="measurement">The measurement information.</param>
-        public virtual void AddMeasurement(object sender, IMeasurement measurement)
+        public async virtual void AddMeasurement(object sender, IMeasurement measurement)
         {
             try
             {
                 if (_viewProxy.MeasurementDisplayControl != null)
-                    _uiContext.Post(s => _viewProxy.MeasurementDisplayControl.AddMeasurement(measurement), null);
+                    await Task.Factory.StartNew(() =>
+                        _viewProxy.MeasurementDisplayControl.AddMeasurement(measurement),
+                        CancellationToken.None,
+                        TaskCreationOptions.None,
+                        uiTaskScheduler);
             }
             catch (Exception ex)
             {
@@ -65,12 +73,16 @@ namespace TsdLib.TestSystem.Controller
             }
         }
 
-        public virtual void AddTestInfo(object sender, ITestInfo testInfo)
+        public async virtual void AddTestInfo(object sender, ITestInfo testInfo)
         {
             try
             {
                 if (_viewProxy.TestInfoDisplayControl != null)
-                    _uiContext.Post(s => _viewProxy.TestInfoDisplayControl.AddTestInfo(testInfo), null);
+                    await Task.Factory.StartNew(() =>
+                        _viewProxy.TestInfoDisplayControl.AddTestInfo(testInfo),
+                        CancellationToken.None,
+                        TaskCreationOptions.None,
+                        uiTaskScheduler);
             }
             catch (Exception ex)
             {
@@ -78,12 +90,16 @@ namespace TsdLib.TestSystem.Controller
             }
         }
 
-        public virtual void UpdateProgress(object sender, Tuple<int, int> progress)
+        public async virtual void UpdateProgress(object sender, Tuple<int, int> progress)
         {
             try
             {
                 if (_viewProxy.ProgressControl != null)
-                    _uiContext.Post(s => _viewProxy.ProgressControl.UpdateProgress(progress.Item1, progress.Item2), null);
+                    await Task.Factory.StartNew(() =>
+                        _viewProxy.ProgressControl.UpdateProgress(progress.Item1, progress.Item2),
+                        CancellationToken.None,
+                        TaskCreationOptions.None,
+                        uiTaskScheduler);
             }
             catch (Exception ex)
             {

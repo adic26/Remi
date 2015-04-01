@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using TsdLib;
 using TsdLib.TestSystem;
 using TsdLib.UI;
 using TsdLib.UI.Forms;
@@ -48,6 +49,7 @@ namespace TestClient.UI.Forms
 
         public void AddData(int s)
         {
+            throw new Exception("Testing appdomain exceptions");
             MessageBox.Show("GOT THE INT");
         }
 
