@@ -29,7 +29,7 @@ namespace TsdLib.Configuration.Common
             }
         }
 
-        public override void InitializeDefaultValues()
+        internal override void inititalizeDefaultValuesBase()
         {
             MachineNames = new HashSet<string> { Environment.MachineName };
         }

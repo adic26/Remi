@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using TsdLib.TestSystem;
 
-//TODO: remove all controls - they'll be implemented in derived classes
 namespace TsdLib.UI.Forms
 {
     /// <summary>
@@ -61,7 +60,7 @@ namespace TsdLib.UI.Forms
             AddData((dynamic)dataContainer.Data);
         }
 
-        private void AddData(object data)
+        public void AddData(object data)
         {
             Trace.WriteLine(string.Format("Unsupported data type received: {0}", data.GetType().Name));
             Trace.WriteLine(string.Format("String representation: {0}", data));

@@ -35,8 +35,7 @@ namespace TsdLib.TestSystem.Controller
             _uiContext = SynchronizationContext.Current;
         }
 
-        [Obsolete("Use events instead")]
-        public virtual void OnNext(DataContainer data)
+        public virtual void AddData(object sender, DataContainer data)
         {
             try
             {
@@ -47,42 +46,6 @@ namespace TsdLib.TestSystem.Controller
                 Trace.WriteLine(string.Format("Failed to update data on the UI{0}Data type: {1}{0}Error: {2}", Environment.NewLine, data.GetType().Name, ex));
             }
 
-        }
-
-        public virtual void AddData(DataContainer data)
-        {
-            try
-            {
-                _uiContext.Post(s => _viewProxy.AddArbitraryData(data), null);
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(string.Format("Failed to update data on the UI{0}Data type: {1}{0}Error: {2}", Environment.NewLine, data.GetType().Name, ex));
-            }
-
-        }
-
-        public void HandleThreeTuple(object sender, DataContainer data)
-        {
-            _uiContext.Post(s => _viewProxy.AddArbitraryData(data), null);
-        }
-
-        /// <summary>
-        /// Provides the observer with new data.
-        /// </summary>
-        /// <param name="measurement">The measurement information.</param>
-        [Obsolete("Use events instead")]
-        public virtual void OnNext(IMeasurement measurement)
-        {
-            try
-            {
-                if (_viewProxy.MeasurementDisplayControl != null)
-                    _uiContext.Post(s => _viewProxy.MeasurementDisplayControl.AddMeasurement(measurement), null);
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(string.Format("Failed to update measurement on the UI{0}Test Info: {1}{0}Error: {2}", Environment.NewLine, measurement, ex));
-            }
         }
 
         /// <summary>
@@ -102,20 +65,6 @@ namespace TsdLib.TestSystem.Controller
             }
         }
 
-        [Obsolete("Use events instead")]
-        public virtual void OnNext(ITestInfo testInfo)
-        {
-            try
-            {
-                if (_viewProxy.TestInfoDisplayControl != null)
-                    _uiContext.Post(s => _viewProxy.TestInfoDisplayControl.AddTestInfo(testInfo), null);
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(string.Format("Failed to update test info on the UI{0}Test Info: {1}{0}Error: {2}", Environment.NewLine, testInfo, ex));
-            }
-        }
-
         public virtual void AddTestInfo(object sender, ITestInfo testInfo)
         {
             try
@@ -126,20 +75,6 @@ namespace TsdLib.TestSystem.Controller
             catch (Exception ex)
             {
                 Trace.WriteLine(string.Format("Failed to update test info on the UI{0}Test Info: {1}{0}Error: {2}", Environment.NewLine, testInfo, ex));
-            }
-        }
-
-        [Obsolete("Use events instead")]
-        public virtual void OnNext(Tuple<int, int> progress)
-        {
-            try
-            {
-                if (_viewProxy.ProgressControl != null)
-                    _uiContext.Post(s => _viewProxy.ProgressControl.UpdateProgress(progress.Item1, progress.Item2), null);
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(string.Format("Failed to update test info on the UI{0}Progress: {1}/{2}{0}Error: {3}", Environment.NewLine, progress.Item1, progress.Item2, ex));
             }
         }
 

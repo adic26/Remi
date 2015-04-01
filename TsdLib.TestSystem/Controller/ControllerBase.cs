@@ -72,8 +72,6 @@ namespace TsdLib.TestSystem.Controller
         /// </summary>
         protected ITestDetails Details { get; private set; }
 
-
-
         /// <summary>
         /// Gets a provider that can be used to retrieve configuration manager instances for modifying, storing and recalling configuration data.
         /// </summary>
@@ -96,7 +94,8 @@ namespace TsdLib.TestSystem.Controller
             
             _testCaseProvider = new TestCaseProvider(Details.SafeTestSystemName);
 
-            configManagerProvider = new ConfigManagerProvider(Details, configConnection);
+
+
             //TODO: if local domain, config manager should just reflect the entry assembly to get baked-in sequences and make Sequence read-only in editor form
 
             //set up view
@@ -104,10 +103,9 @@ namespace TsdLib.TestSystem.Controller
             if (UI.TraceListenerControl != null)
                 Trace.Listeners.Add(UI.TraceListenerControl.Listener);
             UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
-            
-            configManagerProvider.Reload();
-            updateUIConfigControl();
 
+            configManagerProvider = new ConfigManagerProvider(Details, configConnection);
+            refreshConfigManagerProvider(UI);
 #if DEBUG
             Trace.WriteLine("Using TsdLib debug assembly. Test results will only be stored as Analysis.");
             _localDomain = localDomain;
@@ -173,7 +171,7 @@ namespace TsdLib.TestSystem.Controller
             UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
             configManagerProvider.Reload();
             if (UI.ConfigControl != null)
-                updateUIConfigControl();
+                refreshConfigManagerProvider(UI);
         }
 
         protected virtual void TestDetailsControl_EditTestDetails(object sender, bool detailsFromDatabase)
@@ -203,12 +201,13 @@ namespace TsdLib.TestSystem.Controller
             _testCaseProvider.Save(testCase);
         }
 
-        private void updateUIConfigControl()
+        private void refreshConfigManagerProvider(IView ui)
         {
-            UI.ConfigControl.StationConfigManager = configManagerProvider.GetConfigManager<TStationConfig>();
-            UI.ConfigControl.ProductConfigManager = configManagerProvider.GetConfigManager<TProductConfig>();
-            UI.ConfigControl.TestConfigManager = configManagerProvider.GetConfigManager<TTestConfig>();
-            UI.ConfigControl.SequenceConfigManager = configManagerProvider.GetConfigManager<SequenceConfigCommon>();
+            configManagerProvider.Reload();
+            ui.ConfigControl.StationConfigManager = configManagerProvider.GetConfigManager<TStationConfig>();
+            ui.ConfigControl.ProductConfigManager = configManagerProvider.GetConfigManager<TProductConfig>();
+            ui.ConfigControl.TestConfigManager = configManagerProvider.GetConfigManager<TTestConfig>();
+            ui.ConfigControl.SequenceConfigManager = configManagerProvider.GetConfigManager<SequenceConfigCommon>();
         }
 
         /// <summary>
@@ -270,7 +269,7 @@ namespace TsdLib.TestSystem.Controller
                     if (!testConfigs.Any())
                         testConfigs = configManagerProvider.GetConfigManager<TTestConfig>().GetConfigGroup().ToArray();
 
-                    _activeSequence.DataAdded += eventManager.HandleThreeTuple;
+                    _activeSequence.DataAdded += eventManager.AddData;
                     _activeSequence.MeasurementAdded += eventManager.AddMeasurement;
                     _activeSequence.TestInfoAdded += eventManager.AddTestInfo;
                     _activeSequence.ProgressUpdated += eventManager.UpdateProgress;

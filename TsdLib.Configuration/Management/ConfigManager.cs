@@ -69,11 +69,11 @@ namespace TsdLib.Configuration.Management
             T existing = _configs.FirstOrDefault(cfg => cfg.Name == configItem.Name);
 
             if (existing == null)
-                Trace.WriteLine("Adding " + configItem.Name);
+                Trace.WriteLine("Adding " + configItem.Name + " to " + typeof(T).Name);
             else
             {
                 _configs.Remove(existing);
-                Trace.WriteLine("Replacing " + configItem.Name);
+                Trace.WriteLine("Replacing " + configItem.Name + " in " + typeof(T).Name);
             }
             _configs.Add(configItem);
             if (configItem.IsValid && !_validConfigs.Contains(configItem))
@@ -96,16 +96,16 @@ namespace TsdLib.Configuration.Management
 
         public T Add(string name, bool storeInDatabase)
         {
-            T configItem = new T
+            T newCfg = new T
             {
                 Name = name,
                 StoreInDatabase = storeInDatabase,
                 IsDefault = false
             };
 
-            Add(configItem);
-            configItem.InitializeDefaultValues();
-            return configItem;
+            Add(newCfg);
+            newCfg.initializeDefaultValues();
+            return newCfg;
         }
 
         /// <summary>
@@ -218,7 +218,7 @@ namespace TsdLib.Configuration.Management
                     IsDefault = true,
                     StoreInDatabase = false
                 };
-                newCfg.InitializeDefaultValues();
+                newCfg.initializeDefaultValues();
                 _configs = new BindingList<T> { newCfg };
                 _validConfigs = new BindingList<T>(_configs.Where(cfg => cfg.IsValid).ToList());
                 Save();

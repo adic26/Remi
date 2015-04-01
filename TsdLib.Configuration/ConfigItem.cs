@@ -21,6 +21,17 @@ namespace TsdLib.Configuration
         [Description("Initialize configuration values to their defaults")]
         public abstract void InitializeDefaultValues();
 
+        internal virtual void inititalizeDefaultValuesBase()
+        {
+
+        }
+
+        internal void initializeDefaultValues()
+        {
+            inititalizeDefaultValuesBase();
+            InitializeDefaultValues();
+        }
+
         /// <summary>
         /// Gets or sets the name of the configuration item.
         /// </summary>
