@@ -41,6 +41,7 @@ namespace TsdLib.Configuration.Management
         private readonly FileSystemConnection _localConfigConnection = new FileSystemConnection(SpecialFolders.Configuration);
         private readonly IConfigConnection _sharedConfigConnection;
         private BindingList<T> _configs = new BindingList<T>();
+        private BindingList<T> _validConfigs = new BindingList<T>();
         private readonly XmlSerializer _serializer = new XmlSerializer(typeof(BindingList<T>));
         private readonly XmlWriterSettings _xmlWriterSettings = new XmlWriterSettings
         {
@@ -75,6 +76,8 @@ namespace TsdLib.Configuration.Management
                 Trace.WriteLine("Replacing " + configItem.Name);
             }
             _configs.Add(configItem);
+            if (configItem.IsValid && !_validConfigs.Contains(configItem))
+                _validConfigs.Add(configItem);
         }
 
         
@@ -111,9 +114,9 @@ namespace TsdLib.Configuration.Management
         /// <returns>A collection of configuration instances.</returns>
         public IEnumerable<T> GetConfigGroup()
         {
-            if (_configs.Count == 0)
+            if (_validConfigs.Count == 0)
                 Reload();
-            return _configs;
+            return _validConfigs;
         }
 
         /// <summary>
@@ -197,12 +200,14 @@ namespace TsdLib.Configuration.Management
                 //Deserialize the merged config XML into the configs list
                 using (XmlReader reader = localXml.CreateReader())
                     _configs = (BindingList<T>)(_serializer.Deserialize(reader));
+                _validConfigs = new BindingList<T>(_configs.Where(cfg => cfg.IsValid).ToList());
                 saveLocal();
             }
             else if (sharedXml != null) //Deserialize the shared config XML into the configs list
             {
                 using (XmlReader reader = sharedXml.CreateReader())
                     _configs = (BindingList<T>)(_serializer.Deserialize(reader));
+                _validConfigs = new BindingList<T>(_configs.Where(cfg => cfg.IsValid).ToList());
                 saveLocal();
             }
             else
@@ -215,6 +220,7 @@ namespace TsdLib.Configuration.Management
                 };
                 newCfg.InitializeDefaultValues();
                 _configs = new BindingList<T> { newCfg };
+                _validConfigs = new BindingList<T>(_configs.Where(cfg => cfg.IsValid).ToList());
                 Save();
             }
         }
@@ -258,7 +264,7 @@ namespace TsdLib.Configuration.Management
 
         public System.Collections.IList GetList()
         {
-            return _configs;
+            return _validConfigs;
         }
 
         public bool ContainsListCollection
