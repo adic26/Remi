@@ -1,7 +1,5 @@
-﻿//using System.IO;
-using TestClient.Configuration;
+﻿using TestClient.Configuration;
 using TestClient.UI.Forms;
-using TsdLib.Configuration;
 using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Details;
 using TsdLib.Configuration.Management;

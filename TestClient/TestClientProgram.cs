@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 using TsdLib.Configuration;
 using System.Configuration;
-using TsdLib.Configuration.Common;
 using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Details;
-using TsdLib.Configuration.Management;
 
 namespace TestClient
 {
@@ -59,7 +56,7 @@ namespace TestClient
 
                 if (args.Contains(SeqFolderArg))
                 {
-                    synchronizeSequences(testDetails, sharedConfigConnection, getConfigValue(SeqFolderArg), true);
+                    SequenceSync.SynchronizeSequences(testDetails, sharedConfigConnection, getConfigValue(SeqFolderArg), true, false);
                     return;
                 }
 
@@ -81,6 +78,8 @@ namespace TestClient
             else
                 sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation), testSystemVersionMask);
 #else
+            if (string.IsNullOrWhiteSpace(settingsLocation))
+                settingsLocation = @"\\fsg16ykf\personal\jmckee\TsdLibSettings";
             sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation), testSystemVersionMask);
 #endif
             return sharedConfigConnection;
@@ -100,30 +99,6 @@ namespace TestClient
                 Trace.WriteLine(ex);
                 return null;
             }
-        }
-
-        //TODO: move this to ConfigManager?
-        private static void synchronizeSequences(ITestDetails testDetails, IConfigConnection sharedConfigConnection, string sequenceFolder, bool storeInDatabase)
-        {
-            ConfigManager<SequenceConfigCommon> sequenceConfigManager = new ConfigManager<SequenceConfigCommon>(testDetails, sharedConfigConnection);
-
-            HashSet<string> assemblyReferences = new HashSet<string>(AppDomain.CurrentDomain.GetAssemblies().Select(asy => Path.GetFileName(asy.GetName().CodeBase)), StringComparer.InvariantCultureIgnoreCase) { Path.GetFileName(Assembly.GetEntryAssembly().GetName().CodeBase) };
-            foreach (string fileName in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll").Select(Path.GetFileName))
-                assemblyReferences.Add(fileName);
-
-            //foreach (SequenceConfigCommon sequence in sequenceConfigManager.GetConfigGroup().Where(seq => !seq.IsDefault))
-            //{
-            //    string vsFile = Path.Combine(sequenceFolder, sequence.Name + ".cs");
-            //    if (!File.Exists(vsFile))
-            //        File.WriteAllText(vsFile, sequence.SourceCode);
-            //}
-            foreach (string seqFile in Directory.EnumerateFiles(sequenceFolder))
-            {
-                Trace.WriteLine("Found " + seqFile);
-                //TODO: only replace if newer?
-                sequenceConfigManager.Add(new SequenceConfigCommon(seqFile, storeInDatabase, assemblyReferences));
-            }
-            sequenceConfigManager.Save();
         }
     }
 
