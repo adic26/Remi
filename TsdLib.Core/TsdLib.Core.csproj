@@ -48,8 +48,7 @@
     <Compile Include="Configuration\TestCases\ITestCase.cs" />
     <Compile Include="Configuration\ITestConfig.cs" />
     <Compile Include="Measurements\IResultHandler.cs" />
-    <Compile Include="Observer\DataContainer.cs" />
-    <Compile Include="Observer\Unsubscriber.cs" />
+    <Compile Include="TestSystem\DataContainer.cs" />
     <Compile Include="TestSystem\IErrorHandler.cs" />
     <Compile Include="Configuration\Management\IConfigManager.cs" />
     <Compile Include="Configuration\Details\ITestDetails.cs" />

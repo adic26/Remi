@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using TsdLib.Observer;
+using TsdLib.TestSystem;
 
 namespace TsdLib.UI
 {
@@ -48,6 +48,6 @@ namespace TsdLib.UI
         /// Add user-defined data to the UI display.
         /// </summary>
         /// <param name="data">Data object to add.</param>
-        void AddData(DataContainer data);
+        void AddArbitraryData(DataContainer data);
     }
 }

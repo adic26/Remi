@@ -20,7 +20,6 @@ using TsdLib.Configuration.Null;
 using TsdLib.Configuration.TestCases;
 using TsdLib.Forms;
 using TsdLib.Measurements;
-using TsdLib.Observer;
 using TsdLib.TestSystem.TestSequence;
 using TsdLib.UI;
 
@@ -239,12 +238,12 @@ namespace TsdLib.TestSystem.Controller
                     DateTime startTime = DateTime.Now;
 
                     SequenceConfigCommon config = sequenceConfig;
-
-                    ControllerProxy controllerProxy;
+                    
+                    EventManager eventManager;
                     if (_localDomain)
                     {
                         _activeSequence = CreateSequenceObject(config.FullTypeName);
-                        controllerProxy = CreateControllerProxy(UI, _activeSequence.CancellationManager);
+                        eventManager = CreateControllerProxy(UI, _activeSequence.CancellationManager);
                     }
                     else
                     {
@@ -258,7 +257,7 @@ namespace TsdLib.TestSystem.Controller
                         sequenceDomain = AppDomain.CreateDomain("Sequence Domain");
 
                         _activeSequence = CreateSequenceObject(config.FullTypeName, sequenceAssembly, sequenceDomain);
-                        controllerProxy = CreateControllerProxy(UI, _activeSequence.CancellationManager);
+                        eventManager = CreateControllerProxy(UI, _activeSequence.CancellationManager);
 
                         foreach (TraceListener listener in Trace.Listeners)
                             _activeSequence.AddTraceListener(listener);
@@ -271,10 +270,10 @@ namespace TsdLib.TestSystem.Controller
                     if (!testConfigs.Any())
                         testConfigs = configManagerProvider.GetConfigManager<TTestConfig>().GetConfigGroup().ToArray();
 
-                    _activeSequence.Subscribe((IObserver<DataContainer>)controllerProxy);
-                    _activeSequence.Subscribe((IObserver<IMeasurement>)controllerProxy);
-                    _activeSequence.Subscribe((IObserver<ITestInfo>)controllerProxy);
-                    _activeSequence.Subscribe((IObserver<Tuple<int, int>>)controllerProxy);
+                    _activeSequence.DataAdded += eventManager.HandleThreeTuple;
+                    _activeSequence.MeasurementAdded += eventManager.AddMeasurement;
+                    _activeSequence.TestInfoAdded += eventManager.AddTestInfo;
+                    _activeSequence.ProgressUpdated += eventManager.UpdateProgress;
 
                     _activeSequence.Config = configManagerProvider;
 
@@ -374,14 +373,14 @@ namespace TsdLib.TestSystem.Controller
 
 
 
-        protected virtual ControllerProxy CreateControllerProxy(IView view, ICancellationManager testSequenceCancellationManager)
+        protected virtual EventManager CreateControllerProxy(IView view, ICancellationManager testSequenceCancellationManager)
         {
-            return new ControllerProxy(view, testSequenceCancellationManager);
+            return new EventManager(view, testSequenceCancellationManager);
         }
 
-        protected virtual ControllerProxy CreateControllerProxy(IView view, ICancellationManager testSequenceCancellationManager, AppDomain appDomain)
+        protected virtual EventManager CreateControllerProxy(IView view, ICancellationManager testSequenceCancellationManager, AppDomain appDomain)
         {
-            return (ControllerProxy)appDomain.CreateInstanceAndUnwrap(typeof(ControllerProxy).Assembly.FullName, typeof(ControllerProxy).FullName, false, BindingFlags.CreateInstance, null, new object[] { view, testSequenceCancellationManager }, CultureInfo.CurrentCulture, null);
+            return (EventManager)appDomain.CreateInstanceAndUnwrap(typeof(EventManager).Assembly.FullName, typeof(EventManager).FullName, false, BindingFlags.CreateInstance, null, new object[] { view, testSequenceCancellationManager }, CultureInfo.CurrentCulture, null);
         }
 
         protected virtual ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig> CreateSequenceObject(string sequenceName)

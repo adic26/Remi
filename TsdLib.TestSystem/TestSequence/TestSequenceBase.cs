@@ -2,98 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using TsdLib.Configuration;
 using TsdLib.Configuration.Management;
 using TsdLib.Instrument;
 using TsdLib.Measurements;
-using TsdLib.Observer;
 
 namespace TsdLib.TestSystem.TestSequence
 {
     /// <summary>
     /// Contains functionality to connect a test sequence to the system controller
     /// </summary>
-    public abstract class TestSequenceBase : MarshalByRefObject, IDisposable, IObservable<DataContainer>, IObservable<IMeasurement>, IObservable<ITestInfo>, IObservable<Tuple<int, int>>
+    public abstract class TestSequenceBase : MarshalByRefObject, IDisposable
     {
         private bool _runningInRemoteDomain;
-
-        private readonly HashSet<IDisposable> _disposables;
-
-        private readonly HashSet<IObserver<DataContainer>> _observers = new HashSet<IObserver<DataContainer>>();
-        public IDisposable Subscribe(IObserver<DataContainer> observer)
-        {
-            _observers.Add(observer);
-            IDisposable unsubscriber = new Unsubscriber<DataContainer>(_observers, observer);
-            _disposables.Add(unsubscriber);
-            return unsubscriber;
-        }
-
-        private readonly HashSet<IObserver<IMeasurement>> _measurementObservers = new HashSet<IObserver<IMeasurement>>();
-        public IDisposable Subscribe(IObserver<IMeasurement> observer)
-        {
-            _measurementObservers.Add(observer);
-            IDisposable unsubscriber = new Unsubscriber<IMeasurement>(_measurementObservers, observer);
-            _disposables.Add(unsubscriber);
-            return unsubscriber;
-        }
-
-        private readonly HashSet<IObserver<ITestInfo>> _testInfoObservers = new HashSet<IObserver<ITestInfo>>();
-        public IDisposable Subscribe(IObserver<ITestInfo> observer)
-        {
-            _testInfoObservers.Add(observer);
-            IDisposable unsubscriber = new Unsubscriber<ITestInfo>(_testInfoObservers, observer);
-            _disposables.Add(unsubscriber);
-            return unsubscriber;
-        }
-
-        private readonly HashSet<IObserver<Tuple<int, int>>> _progressObservers = new HashSet<IObserver<Tuple<int, int>>>();
-        public IDisposable Subscribe(IObserver<Tuple<int, int>> observer)
-        {
-            _progressObservers.Add(observer);
-            IDisposable unsubscriber = new Unsubscriber<Tuple<int, int>>(_progressObservers, observer);
-            _disposables.Add(unsubscriber);
-            return unsubscriber;
-        }
-
-        /// <summary>
-        /// Send data to the application controller. NOTE: The object must either be decorated with the <see cref="SerializableAttribute"/> or be derived from <see cref="MarshalByRefObject"/>
-        /// </summary>
-        /// <param name="data">Object to send.</param>
-        protected void SendData(object data)
-        {
-            SerializableAttribute serializableAttributeCheck = data.GetType().GetCustomAttribute<SerializableAttribute>();
-            MarshalByRefObject transferrableData = data as MarshalByRefObject;
-
-            if (serializableAttributeCheck == null && transferrableData == null)
-            {
-                Trace.WriteLine("WARNING: The data type {0} must either be (1) a value type, (2) marked with the System.SerializableAttribute or (3) derived from System.MarshalByRefObject in order to be passed across Application Domain boundaries.");
-                if (_runningInRemoteDomain)
-                    return;
-            }
-
-            foreach (IObserver<DataContainer> observer in _observers)
-                observer.OnNext(new DataContainer(data));
-        }
-
-        /// <summary>
-        /// Send data to the application controller.
-        /// </summary>
-        /// <param name="data">Data that can be marshalled across AppDomain boundaries as a value type.</param>
-        [Obsolete("This method has been replaced by SendData")]
-        protected void SendDataByValue<T>(T data) where T : struct
-        {
-            SendData(data);
-        }
-
-        /// <summary>
-        /// Send data to the application controller. NOTE: The object must either be decorated with the <see cref="SerializableAttribute"/> or be derived from <see cref="MarshalByRefObject"/>
-        /// </summary>
-        /// <param name="data">Object to send.</param>
-        [Obsolete("This method has been replaced by SendData")]
-        protected void SendDataByReference(object data)
-        {
-            SendData(data);
-        }
 
         /// <summary>
         /// Gets an <see cref="ICancellationManager"/> object responsible for cancelling the test sequence due to error or user abort.
@@ -137,8 +57,6 @@ namespace TsdLib.TestSystem.TestSequence
             Instruments = new TestSequenceInstrumentCollection();
             Instruments.InstrumentConnected += Instruments_InstrumentConnected;
 
-            _disposables = new HashSet<IDisposable>();
-
             _testInfo = new List<ITestInfo>();
 
             _measurements = new List<IMeasurement>();
@@ -153,6 +71,29 @@ namespace TsdLib.TestSystem.TestSequence
             Trace.Listeners.Add(listener);
         }
 
+        public event EventHandler<DataContainer> DataAdded;
+        /// <summary>
+        /// Send data to the application controller. NOTE: The object must either be decorated with the <see cref="SerializableAttribute"/> or be derived from <see cref="MarshalByRefObject"/>
+        /// </summary>
+        /// <param name="data">Object to send.</param>
+        protected void SendData(object data)
+        {
+            SerializableAttribute serializableAttributeCheck = data.GetType().GetCustomAttribute<SerializableAttribute>();
+            MarshalByRefObject transferrableData = data as MarshalByRefObject;
+
+            if (serializableAttributeCheck == null && transferrableData == null)
+            {
+                Trace.WriteLine("WARNING: The data type {0} must either be (1) a value type, (2) marked with the System.SerializableAttribute or (3) derived from System.MarshalByRefObject in order to be passed across Application Domain boundaries.");
+                if (_runningInRemoteDomain)
+                    return;
+            }
+
+            EventHandler<DataContainer> handler = DataAdded;
+            if (handler != null)
+                handler(this, new DataContainer(data));
+        }
+
+        public event EventHandler<ITestInfo> TestInfoAdded; 
         /// <summary>
         /// Add a new <see cref="ITestInfo"/> to the collection of test information.
         /// </summary>
@@ -164,11 +105,17 @@ namespace TsdLib.TestSystem.TestSequence
             //if (InfoEventProxy != null)
             //    InfoEventProxy.FireEvent(this, testInfo);
 
-            foreach (IObserver<ITestInfo> observer in _testInfoObservers)
-                observer.OnNext(testInfo);
+            //foreach (IObserver<ITestInfo> observer in _testInfoObservers)
+            //    observer.OnNext(testInfo);
+
+            var handler = TestInfoAdded;
+            if (handler != null)
+                handler(this, testInfo);
         }
+
+        public event EventHandler<IMeasurement> MeasurementAdded; 
         /// <summary>
-        /// Add a new <see cref="MeasurementBase"/> to the collection of test measurements.
+        /// Add a new <see cref="IMeasurement"/> to the collection of test measurements.
         /// </summary>
         /// <param name="measurement">Measurement information to add.</param>
         protected void AddMeasurement(IMeasurement measurement)
@@ -178,10 +125,14 @@ namespace TsdLib.TestSystem.TestSequence
             //if (MeasurementEventProxy != null)
             //    MeasurementEventProxy.FireEvent(this, measurement);
 
-            foreach (IObserver<IMeasurement> observer in _measurementObservers)
-                observer.OnNext(measurement);
+            var handler = MeasurementAdded;
+            if (handler != null)
+                handler(this, measurement);
+            //foreach (IObserver<IMeasurement> observer in _measurementObservers)
+            //    observer.OnNext(measurement);
         }
 
+        public event EventHandler<Tuple<int, int>> ProgressUpdated; 
         /// <summary>
         /// Update the application controller of the current test sequence progress.
         /// </summary>
@@ -192,8 +143,12 @@ namespace TsdLib.TestSystem.TestSequence
             //if (ProgressEventProxy != null)
             //    ProgressEventProxy.FireEvent(this, new Tuple<int, int>(currentStep, numberOfSteps));
 
-            foreach (IObserver<Tuple<int, int>> observer in _progressObservers)
-                observer.OnNext(new Tuple<int, int>(currentStep, numberOfSteps));
+            var handler = ProgressUpdated;
+            if (handler != null)
+                handler(this, new Tuple<int, int>(currentStep, numberOfSteps));
+
+            //foreach (IObserver<Tuple<int, int>> observer in _progressObservers)
+            //    observer.OnNext(new Tuple<int, int>(currentStep, numberOfSteps));
         }
 
         /// <summary>
@@ -232,9 +187,6 @@ namespace TsdLib.TestSystem.TestSequence
             {
                 if (Instruments != null)
                     Instruments.Dispose();
-
-                foreach (IDisposable disposable in _disposables)
-                    disposable.Dispose();
             }
         }
 

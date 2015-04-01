@@ -22,7 +22,6 @@ namespace TestClient.Sequences
             //Use the System.Diagnostics.Debugger.Break() method to insert breakpoints.
             //System.Diagnostics.Debugger.Break();
 
-            
             SendData(55);
             SendData(new Tuple<int, string>(1, "2"));
             

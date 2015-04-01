@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TsdLib.Observer
+namespace TsdLib.TestSystem
 {
     public class DataContainer : MarshalByRefObject
     {

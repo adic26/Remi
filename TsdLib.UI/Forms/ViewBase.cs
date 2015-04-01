@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
-using TsdLib.Observer;
+using TsdLib.TestSystem;
 
 //TODO: remove all controls - they'll be implemented in derived classes
 namespace TsdLib.UI.Forms
@@ -56,12 +56,12 @@ namespace TsdLib.UI.Forms
         /// Add a general data object to the UI. Override to perform specific operations based on the type of the internal data value.
         /// </summary>
         /// <param name="dataContainer">Data to add.</param>
-        public virtual void AddData(DataContainer dataContainer)
+        public virtual void AddArbitraryData(DataContainer dataContainer)
         {
-            addData(dataContainer.Data);
+            AddData((dynamic)dataContainer.Data);
         }
 
-        protected void addData(object data)
+        private void AddData(object data)
         {
             Trace.WriteLine(string.Format("Unsupported data type received: {0}", data.GetType().Name));
             Trace.WriteLine(string.Format("String representation: {0}", data));

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using TsdLib.Observer;
+using TsdLib.TestSystem;
 using TsdLib.UI;
 using TsdLib.UI.Forms;
 
@@ -36,18 +36,24 @@ namespace TestClient.UI.Forms
             InitializeComponent();
         }
 
-        /// <summary>
-        /// Add a general data object to the UI. Uses dynamic method overload resolution to automatically bind to the correct method based on the type of data.
-        /// </summary>
-        /// <param name="dataContainer">Data to add.</param>
-        public override void AddData(DataContainer dataContainer)
+        public override void AddArbitraryData(DataContainer dataContainer)
         {
-            addData((dynamic)dataContainer.Data);
+            AddData((dynamic)dataContainer.Data);
         }
 
-        public void addData(Tuple<int, string> data)
+        public void AddData(Tuple<int, string> data)
         {
             MessageBox.Show("Int = " + data.Item1 + " String = " + data.Item2, "Example of user-defined data from test sequence");
+        }
+
+        public void AddData(int s)
+        {
+            MessageBox.Show("GOT THE INT");
+        }
+
+        public void AddData(Tuple<int, int, int> data)
+        {
+            MessageBox.Show("Int1 = " + data.Item1 + " Int2 = " + data.Item2 + " Int3 = " + data.Item3, "Three-int tuple");
         }
     }
 }
