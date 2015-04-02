@@ -245,7 +245,7 @@ namespace TsdLib.TestSystem.Controller
                     if (_localDomain)
                     {
                         _activeSequence = CreateSequenceObject(config.FullTypeName);
-                        eventManager = CreateControllerProxy(UI, _activeSequence);
+                        eventManager = CreateEventManager(UI, _activeSequence);
                     }
                     else
                     {
@@ -259,7 +259,7 @@ namespace TsdLib.TestSystem.Controller
                         sequenceDomain = AppDomain.CreateDomain("Sequence Domain");
 
                         _activeSequence = CreateSequenceObject(config.FullTypeName, sequenceAssembly, sequenceDomain);
-                        eventManager = CreateControllerProxy(UI, _activeSequence);
+                        eventManager = CreateEventManager(UI, _activeSequence);
 
                         foreach (TraceListener listener in Trace.Listeners)
                             _activeSequence.AddTraceListener(listener);
@@ -359,12 +359,12 @@ namespace TsdLib.TestSystem.Controller
 
 
 
-        protected virtual EventManager CreateControllerProxy(IView view, ITestSequence testSequence)
+        protected virtual EventManager CreateEventManager(IView view, ITestSequence testSequence)
         {
             return new EventManager(view, testSequence);
         }
 
-        protected virtual EventManager CreateControllerProxy(IView view, ITestSequence testSequence, AppDomain appDomain)
+        protected virtual EventManager CreateEventManager(IView view, ITestSequence testSequence, AppDomain appDomain)
         {
             return (EventManager)appDomain.CreateInstanceAndUnwrap(typeof(EventManager).Assembly.FullName, typeof(EventManager).FullName, false, BindingFlags.CreateInstance, null, new object[] { view, testSequence }, CultureInfo.CurrentCulture, null);
         }
