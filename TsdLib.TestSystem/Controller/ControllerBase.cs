@@ -193,12 +193,15 @@ namespace TsdLib.TestSystem.Controller
 
         void TestCaseControl_TestCaseSaved(object sender, EventArgs e)
         {
-            string testCaseName;
             using (ConfigItemCreateForm form = new ConfigItemCreateForm(false))
-                testCaseName = form.ShowDialog() == DialogResult.OK ? form.ConfigItemName : "N/A";
-
-            TestCase testCase = new TestCase(testCaseName, UI.ConfigControl.SelectedTestConfig, UI.ConfigControl.SelectedSequenceConfig);
-            _testCaseProvider.Save(testCase);
+            {
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    TestCase testCase = new TestCase(form.ConfigItemName, UI.ConfigControl.SelectedTestConfig, UI.ConfigControl.SelectedSequenceConfig);
+                    _testCaseProvider.Save(testCase);
+                    UI.TestCaseControl.DisplayTestCases(_testCaseProvider.Load());
+                }
+            }
         }
 
         private void refreshConfigManagerProvider(IView ui)
