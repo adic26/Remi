@@ -242,7 +242,7 @@ namespace TsdLib.TestSystem.Controller
                     if (_localDomain)
                     {
                         _activeSequence = CreateSequenceObject(config.FullTypeName);
-                        eventManager = CreateControllerProxy(UI, _activeSequence.CancellationManager);
+                        eventManager = CreateControllerProxy(UI, _activeSequence);
                     }
                     else
                     {
@@ -256,13 +256,12 @@ namespace TsdLib.TestSystem.Controller
                         sequenceDomain = AppDomain.CreateDomain("Sequence Domain");
 
                         _activeSequence = CreateSequenceObject(config.FullTypeName, sequenceAssembly, sequenceDomain);
-                        eventManager = CreateControllerProxy(UI, _activeSequence.CancellationManager);
+                        eventManager = CreateControllerProxy(UI, _activeSequence);
 
                         foreach (TraceListener listener in Trace.Listeners)
                             _activeSequence.AddTraceListener(listener);
                     }
                     
-                    //TStationConfig stationConfig = (TStationConfig)(UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TStationConfig>().GetList()[0]);
                     TStationConfig stationConfig = (TStationConfig)(UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TStationConfig>().GetConfigGroup().First());
                     TProductConfig productConfig = (TProductConfig)(UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TProductConfig>().GetConfigGroup().First());
                     TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig.Cast<TTestConfig>().ToArray();
@@ -283,31 +282,17 @@ namespace TsdLib.TestSystem.Controller
                     if (resultHandler != null)
                         resultHandler.SaveResults(_activeSequence.TestInfo.ToArray(), _activeSequence.Measurements.ToArray(), startTime, DateTime.Now, publishResults);
                 }
-                //TODO: simplify by using AggregateException?
-                catch (OperationCanceledException) //User cancellation and controller proxy errors are propagated as OperationCancelledException
-                //TODO: controller proxy errors shouldn't be propagated as OperationCancelledException
+                catch (OperationCanceledException)
                 {
-                    if (_activeSequence.CancellationManager.CancelledByUser)
-                    {
+                    if (_activeSequence.Error == null)
                         Trace.WriteLine("Test sequence was cancelled by user.");
-                    }
-
-                    else if (_activeSequence.CancellationManager.Error != null)
-                    {
-                        Trace.WriteLine(string.Format("Exception:{0} was thrown from client code in the primary AppDomain", _activeSequence.CancellationManager.Error.GetType().Name));
-                        throw _activeSequence.CancellationManager.Error;
-                    }
-
-                    //Test test sequence did not set the Error property - this should never happen
                     else
-                    {
-                        Trace.WriteLine("Test test sequence did not set the Error property - this should never happen");
-                        MessageBox.Show("An undescribed error has occurred but the test sequence Error prperty was not set. Please contact TSD for support.", "Unknown Error:");
-                    }
+                        Trace.WriteLine("Test sequence was cancelled due to error: " + _activeSequence.Error);
                 }
                 catch (Exception ex)
                 {
-                    CreateErrorHandler().HandleError(ex, sequenceConfig.Name);
+                    if (!CreateErrorHandler().TryHandleError(ex, sequenceConfig.Name))
+                        throw;
                 }
                 finally
                 {
@@ -357,7 +342,7 @@ namespace TsdLib.TestSystem.Controller
         protected virtual void TestSequenceControl_AbortTestSequence(object sender, EventArgs e)
         {
             if (_activeSequence != null)
-                _activeSequence.CancellationManager.Abort();
+                _activeSequence.Abort();
         }
 
         /// <summary>
@@ -371,14 +356,14 @@ namespace TsdLib.TestSystem.Controller
 
 
 
-        protected virtual EventManager CreateControllerProxy(IView view, ICancellationManager testSequenceCancellationManager)
+        protected virtual EventManager CreateControllerProxy(IView view, ITestSequence testSequence)
         {
-            return new EventManager(view, testSequenceCancellationManager);
+            return new EventManager(view, testSequence);
         }
 
-        protected virtual EventManager CreateControllerProxy(IView view, ICancellationManager testSequenceCancellationManager, AppDomain appDomain)
+        protected virtual EventManager CreateControllerProxy(IView view, ITestSequence testSequence, AppDomain appDomain)
         {
-            return (EventManager)appDomain.CreateInstanceAndUnwrap(typeof(EventManager).Assembly.FullName, typeof(EventManager).FullName, false, BindingFlags.CreateInstance, null, new object[] { view, testSequenceCancellationManager }, CultureInfo.CurrentCulture, null);
+            return (EventManager)appDomain.CreateInstanceAndUnwrap(typeof(EventManager).Assembly.FullName, typeof(EventManager).FullName, false, BindingFlags.CreateInstance, null, new object[] { view, testSequence }, CultureInfo.CurrentCulture, null);
         }
 
         protected virtual ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig> CreateSequenceObject(string sequenceName)

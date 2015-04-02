@@ -2,8 +2,8 @@
 
 namespace TsdLib.TestSystem
 {
-    public interface IErrorHandler : IDisposable
+    public interface IErrorHandler
     {
-        void HandleError(Exception error, string source);
+        bool TryHandleError(Exception error, string source);
     }
 }

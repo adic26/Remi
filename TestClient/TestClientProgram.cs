@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using TsdLib.Configuration;
 using System.Configuration;
+using System.Reflection;
 using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Details;
 
@@ -46,7 +47,7 @@ namespace TestClient
                 string testSystemName = getConfigValue(TestSystemNameArg) ?? Application.ProductName;
                 Version testSystemVersion = Version.Parse(getConfigValue(TestSystemVersionArg) ?? Application.ProductVersion.Split('-')[0]);
                 string testSystemVersionMask = getConfigValue(TestSystemVersionMaskArg) ?? @"\d+\.\d+";
-                OperatingMode testSystemMode = (OperatingMode)Enum.Parse(typeof(OperatingMode), getConfigValue(TestSystemModeArg) ?? DefaultMode.ToString());
+                OperatingMode testSystemMode = (OperatingMode) Enum.Parse(typeof (OperatingMode), getConfigValue(TestSystemModeArg) ?? DefaultMode.ToString());
                 bool localDomain = bool.Parse(getConfigValue(LocalDomainArg) ?? "false");
                 string settingsLocation = getConfigValue(SettingsLocationArg) ?? @"";
 
@@ -63,9 +64,21 @@ namespace TestClient
                 Controller c = new Controller(testDetails, sharedConfigConnection, localDomain);
                 Application.Run(c.UI);
             }
+
+
+#if !DEBUG            
+            catch (TargetInvocationException ex)
+            {
+                MessageBox.Show(ex.InnerException.ToString(), ex.InnerException.GetType().Name);
+            }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString(), ex.GetType().Name);
+            }
+#endif
+            finally
+            {
+
             }
         }
 

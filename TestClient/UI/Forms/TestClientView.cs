@@ -46,16 +46,5 @@ namespace TestClient.UI.Forms
         {
             MessageBox.Show("Int = " + data.Item1 + " String = " + data.Item2, "Example of user-defined data from test sequence");
         }
-
-        public void AddData(int s)
-        {
-            throw new Exception("Testing appdomain exceptions");
-            MessageBox.Show("GOT THE INT");
-        }
-
-        public void AddData(Tuple<int, int, int> data)
-        {
-            MessageBox.Show("Int1 = " + data.Item1 + " Int2 = " + data.Item2 + " Int3 = " + data.Item3, "Three-int tuple");
-        }
     }
 }

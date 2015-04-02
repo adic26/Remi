@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading;
 using TsdLib.Configuration.Management;
 using TsdLib.Instrument;
 using TsdLib.Measurements;
@@ -11,14 +12,17 @@ namespace TsdLib.TestSystem.TestSequence
     /// <summary>
     /// Contains functionality to connect a test sequence to the system controller
     /// </summary>
-    public abstract class TestSequenceBase : MarshalByRefObject, IDisposable
+    public abstract class TestSequenceBase : MarshalByRefObject, ITestSequence, IDisposable
     {
         private bool _runningInRemoteDomain;
 
-        /// <summary>
-        /// Gets an <see cref="ICancellationManager"/> object responsible for cancelling the test sequence due to error or user abort.
-        /// </summary>
-        public ICancellationManager CancellationManager { get; private set; }
+        private readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
+        public Exception Error { get; private set; }
+
+        public CancellationToken Token
+        {
+            get { return _tokenSource.Token; }
+        }
 
         /// <summary>
         /// Gets a collection of instruments currently controlled used by the test sequence.
@@ -30,7 +34,7 @@ namespace TsdLib.TestSystem.TestSequence
         /// </summary>
         public ConfigManagerProvider Config { get; set; }
 
-        private readonly List<IMeasurement> _measurements;
+        private readonly List<IMeasurement> _measurements = new List<IMeasurement>();
         /// <summary>
         /// Gets the collection of measurements captured during the test sequence.
         /// </summary>
@@ -38,7 +42,7 @@ namespace TsdLib.TestSystem.TestSequence
         {
             get { return _measurements; }
         }
-        private readonly List<ITestInfo> _testInfo;
+        private readonly List<ITestInfo> _testInfo = new List<ITestInfo>();
         /// <summary>
         /// Gets the collection of information captured during the test sequence.
         /// </summary>
@@ -53,13 +57,8 @@ namespace TsdLib.TestSystem.TestSequence
         {
             Trace.AutoFlush = true;
 
-            CancellationManager = new TestSequenceCancellationManager();
             Instruments = new TestSequenceInstrumentCollection();
             Instruments.InstrumentConnected += Instruments_InstrumentConnected;
-
-            _testInfo = new List<ITestInfo>();
-
-            _measurements = new List<IMeasurement>();
         }
 
         /// <summary>
@@ -101,14 +100,9 @@ namespace TsdLib.TestSystem.TestSequence
         protected void AddTestInfo(ITestInfo testInfo)
         {
             _testInfo.Add(testInfo);
-            Trace.WriteLine(testInfo);
-            //if (InfoEventProxy != null)
-            //    InfoEventProxy.FireEvent(this, testInfo);
+            Trace.WriteLine("Test info: " + testInfo);
 
-            //foreach (IObserver<ITestInfo> observer in _testInfoObservers)
-            //    observer.OnNext(testInfo);
-
-            var handler = TestInfoAdded;
+            EventHandler<ITestInfo> handler = TestInfoAdded;
             if (handler != null)
                 handler(this, testInfo);
         }
@@ -121,15 +115,11 @@ namespace TsdLib.TestSystem.TestSequence
         protected void AddMeasurement(IMeasurement measurement)
         {
             _measurements.Add(measurement);
-            Trace.WriteLine(measurement);
-            //if (MeasurementEventProxy != null)
-            //    MeasurementEventProxy.FireEvent(this, measurement);
+            Trace.WriteLine("Measurement: " + measurement);
 
-            var handler = MeasurementAdded;
+            EventHandler<IMeasurement> handler = MeasurementAdded;
             if (handler != null)
                 handler(this, measurement);
-            //foreach (IObserver<IMeasurement> observer in _measurementObservers)
-            //    observer.OnNext(measurement);
         }
 
         public event EventHandler<Tuple<int, int>> ProgressUpdated; 
@@ -140,15 +130,10 @@ namespace TsdLib.TestSystem.TestSequence
         /// <param name="numberOfSteps">The total number of steps in the test sequence.</param>
         protected void UpdateProgress(int currentStep, int numberOfSteps)
         {
-            //if (ProgressEventProxy != null)
-            //    ProgressEventProxy.FireEvent(this, new Tuple<int, int>(currentStep, numberOfSteps));
-
-            var handler = ProgressUpdated;
+            Trace.WriteLine("Progress: " + currentStep + "/" + numberOfSteps);
+            EventHandler<Tuple<int, int>> handler = ProgressUpdated;
             if (handler != null)
                 handler(this, new Tuple<int, int>(currentStep, numberOfSteps));
-
-            //foreach (IObserver<Tuple<int, int>> observer in _progressObservers)
-            //    observer.OnNext(new Tuple<int, int>(currentStep, numberOfSteps));
         }
 
         /// <summary>
@@ -167,6 +152,16 @@ namespace TsdLib.TestSystem.TestSequence
             _testInfo.Add(new TestInfo(instrumentType + " " + instrument.FirmwareVersionDescriptor, instrument.FirmwareVersion));
         }
 
+        public void Abort()
+        {
+            _tokenSource.Cancel();
+        }
+
+        public void Abort(Exception ex)
+        {
+            Error = ex;
+            _tokenSource.Cancel();
+        }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

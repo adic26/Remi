@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using TsdLib.Measurements;
+using TsdLib.TestSystem.TestSequence;
 using TsdLib.UI;
 
 namespace TsdLib.TestSystem.Controller
@@ -15,12 +16,9 @@ namespace TsdLib.TestSystem.Controller
         /// <summary>
         /// Gets a reference to the View object, representing the user interface.
         /// </summary>
-        private readonly IView _viewProxy;
+        protected IView ViewProxy { get; private  set; }
 
-        /// <summary>
-        /// Gets a reference to the object used to cancel/abort the test sequence.
-        /// </summary>
-        private ICancellationManager _testSequenceCancellationManager;
+        protected ITestSequence TestSequence { get; private set; }
 
         private readonly TaskScheduler uiTaskScheduler;
 
@@ -28,11 +26,10 @@ namespace TsdLib.TestSystem.Controller
         /// Initialize a new ControllerProxy.
         /// </summary>
         /// <param name="view">An instance of <see cref="IView"/> that will be used to handle UI events.</param>
-        /// <param name="testSequenceCancellationManager">Reference to the test sequence cancellation manager.</param>
-        public EventManager(IView view, ICancellationManager testSequenceCancellationManager)
+        public EventManager(IView view, ITestSequence testSequence)
         {
-            _viewProxy = view;
-            _testSequenceCancellationManager = testSequenceCancellationManager;
+            ViewProxy = view;
+            TestSequence = testSequence;
             uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         }
 
@@ -41,7 +38,7 @@ namespace TsdLib.TestSystem.Controller
             try
             {
                 await Task.Factory.StartNew(() =>
-                    _viewProxy.AddArbitraryData(data),
+                    ViewProxy.AddArbitraryData(data),
                     CancellationToken.None,
                     TaskCreationOptions.None,
                     uiTaskScheduler);
@@ -60,9 +57,9 @@ namespace TsdLib.TestSystem.Controller
         {
             try
             {
-                if (_viewProxy.MeasurementDisplayControl != null)
+                if (ViewProxy.MeasurementDisplayControl != null)
                     await Task.Factory.StartNew(() =>
-                        _viewProxy.MeasurementDisplayControl.AddMeasurement(measurement),
+                        ViewProxy.MeasurementDisplayControl.AddMeasurement(measurement),
                         CancellationToken.None,
                         TaskCreationOptions.None,
                         uiTaskScheduler);
@@ -77,9 +74,9 @@ namespace TsdLib.TestSystem.Controller
         {
             try
             {
-                if (_viewProxy.TestInfoDisplayControl != null)
+                if (ViewProxy.TestInfoDisplayControl != null)
                     await Task.Factory.StartNew(() =>
-                        _viewProxy.TestInfoDisplayControl.AddTestInfo(testInfo),
+                        ViewProxy.TestInfoDisplayControl.AddTestInfo(testInfo),
                         CancellationToken.None,
                         TaskCreationOptions.None,
                         uiTaskScheduler);
@@ -94,9 +91,9 @@ namespace TsdLib.TestSystem.Controller
         {
             try
             {
-                if (_viewProxy.ProgressControl != null)
+                if (ViewProxy.ProgressControl != null)
                     await Task.Factory.StartNew(() =>
-                        _viewProxy.ProgressControl.UpdateProgress(progress.Item1, progress.Item2),
+                        ViewProxy.ProgressControl.UpdateProgress(progress.Item1, progress.Item2),
                         CancellationToken.None,
                         TaskCreationOptions.None,
                         uiTaskScheduler);
