@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using TsdLib.Configuration;
+using TsdLib.Configuration.TestCases;
 
 namespace TsdLib.UI.Controls
 {

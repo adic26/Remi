@@ -37,6 +37,7 @@ namespace TsdLib.CodeGenerator
         /// <param name="testSequenceSourceCode">String containing the test sequence source code.</param>
         /// <param name="referencedAssemblies">Names of assemblies to be referenced by the test sequence assembly.</param>
         /// <returns>Absolute path the the generated assembly.</returns>
+        [Obsolete("Use Compile instead")]
         public string GenerateTestSequenceAssembly(string testSequenceSourceCode, IEnumerable<string> referencedAssemblies)
         {
 

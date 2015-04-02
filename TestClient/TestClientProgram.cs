@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 using TsdLib.Configuration;
 using System.Configuration;
-using TsdLib.Configuration.Common;
+using System.Reflection;
 using TsdLib.Configuration.Connections;
-using TsdLib.Configuration.Managers;
+using TsdLib.Configuration.Details;
 
 namespace TestClient
 {
@@ -48,14 +47,9 @@ namespace TestClient
                 string testSystemName = getConfigValue(TestSystemNameArg) ?? Application.ProductName;
                 Version testSystemVersion = Version.Parse(getConfigValue(TestSystemVersionArg) ?? Application.ProductVersion.Split('-')[0]);
                 string testSystemVersionMask = getConfigValue(TestSystemVersionMaskArg) ?? @"\d+\.\d+";
-                OperatingMode testSystemMode = (OperatingMode)Enum.Parse(typeof(OperatingMode), getConfigValue(TestSystemModeArg) ?? DefaultMode.ToString());
+                OperatingMode testSystemMode = (OperatingMode) Enum.Parse(typeof (OperatingMode), getConfigValue(TestSystemModeArg) ?? DefaultMode.ToString());
                 bool localDomain = bool.Parse(getConfigValue(LocalDomainArg) ?? "false");
                 string settingsLocation = getConfigValue(SettingsLocationArg) ?? @"";
-
-                //bool retval = DBControl.DAL.Config.CloneConfigMode(testSystemName, "2.1", testSystemMode.ToString(), "StationConfigCommon", "Production");
-                //DBControl.DAL.Config.CloneConfigVersion(testSystemName, testSystemVersion.ToString(2), testSystemMode.ToString(), "StationConfigCommon", "2.1");
-                //bool retval = DBControl.DAL.Config.CloneConfigVersion(testSystemName, testSystemVersion.ToString(2), testSystemMode.ToString(), "StationConfigCommon", "2.1");
-                //return;
 
                 ITestDetails testDetails = new TestDetails(testSystemName, testSystemVersion, testSystemMode);
 
@@ -63,16 +57,28 @@ namespace TestClient
 
                 if (args.Contains(SeqFolderArg))
                 {
-                    synchronizeSequences(testDetails, sharedConfigConnection, getConfigValue(SeqFolderArg), true);
+                    SequenceSync.SynchronizeSequences(testDetails, sharedConfigConnection, getConfigValue(SeqFolderArg), true, false);
                     return;
                 }
 
                 Controller c = new Controller(testDetails, sharedConfigConnection, localDomain);
                 Application.Run(c.UI);
             }
+
+
+#if !DEBUG            
+            catch (TargetInvocationException ex)
+            {
+                MessageBox.Show(ex.InnerException.ToString(), ex.InnerException.GetType().Name);
+            }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString(), ex.GetType().Name);
+            }
+#endif
+            finally
+            {
+
             }
         }
 
@@ -81,10 +87,12 @@ namespace TestClient
             IConfigConnection sharedConfigConnection;
 #if REMICONTROL
             if (string.IsNullOrWhiteSpace(settingsLocation))
-                sharedConfigConnection = new Configuration.Connections.DatabaseConfigConnection(testSystemVersionMask);
+                sharedConfigConnection = new TsdLib.DataAccess.DatabaseConfigConnection(testSystemVersionMask);
             else
                 sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation), testSystemVersionMask);
 #else
+            if (string.IsNullOrWhiteSpace(settingsLocation))
+                settingsLocation = @"\\fsg16ykf\personal\jmckee\TsdLibSettings";
             sharedConfigConnection = new FileSystemConnection(new DirectoryInfo(settingsLocation), testSystemVersionMask);
 #endif
             return sharedConfigConnection;
@@ -104,30 +112,6 @@ namespace TestClient
                 Trace.WriteLine(ex);
                 return null;
             }
-        }
-
-        //TODO: move this to ConfigManager?
-        private static void synchronizeSequences(ITestDetails testDetails, IConfigConnection sharedConfigConnection, string sequenceFolder, bool storeInDatabase)
-        {
-            ConfigManager<SequenceConfigCommon> sequenceConfigManager = new ConfigManager<SequenceConfigCommon>(testDetails, sharedConfigConnection);
-
-            HashSet<string> assemblyReferences = new HashSet<string>(AppDomain.CurrentDomain.GetAssemblies().Select(asy => Path.GetFileName(asy.GetName().CodeBase)), StringComparer.InvariantCultureIgnoreCase) { Path.GetFileName(Assembly.GetEntryAssembly().GetName().CodeBase) };
-            foreach (string fileName in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll").Select(Path.GetFileName))
-                assemblyReferences.Add(fileName);
-
-            //foreach (SequenceConfigCommon sequence in sequenceConfigManager.GetConfigGroup().Where(seq => !seq.IsDefault))
-            //{
-            //    string vsFile = Path.Combine(sequenceFolder, sequence.Name + ".cs");
-            //    if (!File.Exists(vsFile))
-            //        File.WriteAllText(vsFile, sequence.SourceCode);
-            //}
-            foreach (string seqFile in Directory.EnumerateFiles(sequenceFolder))
-            {
-                Trace.WriteLine("Found " + seqFile);
-                //TODO: only replace if newer?
-                sequenceConfigManager.Add(new SequenceConfigCommon(seqFile, storeInDatabase, assemblyReferences));
-            }
-            sequenceConfigManager.Save();
         }
     }
 

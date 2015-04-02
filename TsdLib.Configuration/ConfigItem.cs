@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
-using TsdLib.Configuration.Managers;
 using TsdLib.Configuration.Utilities;
 
 namespace TsdLib.Configuration
@@ -16,7 +12,7 @@ namespace TsdLib.Configuration
     /// Base class for a specific instance of a configuration.
     /// </summary>
     [Serializable]
-    public abstract class ConfigItem : MarshalByRefObject, IConfigItem, IComponent
+    public abstract class ConfigItem : MarshalByRefObject, IConfigItem//, IComponent
     {
         /// <summary>
         /// Initialize the configuration properties to default values.
@@ -24,6 +20,17 @@ namespace TsdLib.Configuration
         [Browsable(true)]
         [Description("Initialize configuration values to their defaults")]
         public abstract void InitializeDefaultValues();
+
+        internal virtual void inititalizeDefaultValuesBase()
+        {
+
+        }
+
+        internal void initializeDefaultValues()
+        {
+            inititalizeDefaultValuesBase();
+            InitializeDefaultValues();
+        }
 
         /// <summary>
         /// Gets or sets the name of the configuration item.
@@ -72,17 +79,6 @@ namespace TsdLib.Configuration
             }
         }
 
-        ///// <summary>
-        ///// Save the configuration item to persisted storage.
-        ///// </summary>
-        //public void Save(IConfigManager configManager)
-        //{
-        //    if (configManager != null)
-        //        configManager.Save();
-        //    else
-        //        Trace.WriteLine("Could not save configuration");
-        //}
-
         /// <summary>
         /// Gets the name of the common base type.
         /// </summary>
@@ -90,8 +86,6 @@ namespace TsdLib.Configuration
         {
             get { return ConfigExtensions.GetBaseTypeName(GetType()); }
         }
-
-
 
         /// <summary>
         /// Gets the name of the <see cref="ConfigItem"/>
@@ -102,8 +96,12 @@ namespace TsdLib.Configuration
             return Name;
         }
 
-        #region IComponent implementation
-
+        #region IComponent implementation - used to attach to DesignerVerbSite - currently disabled, as this is causing exceptions on other clients when getting DesignerVerbSite.Name
+        /*
+         * Could try returning null or empty string for get_Name?
+         * 
+         * 
+         * 
         /// <summary>
         /// Gets the <see cref="ISite"/> of the <see cref="IComponent"/>
         /// </summary>
@@ -140,7 +138,7 @@ namespace TsdLib.Configuration
         {
 
         }
-
+        */
         #endregion
 
         /// <summary>
@@ -150,17 +148,6 @@ namespace TsdLib.Configuration
         public override object InitializeLifetimeService()
         {
             return null;
-        }
-    }
-
-    internal class HashSetConverter : TypeConverter
-    {
-        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
-        {
-            HashSet<string> v = value as HashSet<string>;
-            if (v != null && destinationType == typeof (string))
-                return string.Join(Environment.NewLine, v);
-            return base.ConvertTo(context, culture, value, destinationType);
         }
     }
 }

@@ -20,7 +20,6 @@ namespace TestClient.Configuration
         /// </summary>
         public override void InitializeDefaultValues()
         {
-            base.InitializeDefaultValues();
             PowerSupplyAddress = "GPIB0::1::INSTR";
             PathLoss = 0;
         }

@@ -1,22 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using TsdLib.Configuration.Managers;
+using System.Reflection;
+using System.Threading;
+using TsdLib.Configuration.Management;
 using TsdLib.Instrument;
 using TsdLib.Measurements;
-using TsdLib.TestSystem.Controller;
 
 namespace TsdLib.TestSystem.TestSequence
 {
     /// <summary>
     /// Contains functionality to connect a test sequence to the system controller
     /// </summary>
-    public abstract class TestSequenceBase : MarshalByRefObject, IDisposable
+    public abstract class TestSequenceBase : MarshalByRefObject, ITestSequence, IDisposable
     {
-        /// <summary>
-        /// Gets an <see cref="ICancellationManager"/> object responsible for cancelling the test sequence due to error or user abort.
-        /// </summary>
-        public ICancellationManager CancellationManager { get; private set; }
+        private bool _runningInRemoteDomain;
+
+        private readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
+        public Exception Error { get; private set; }
+
+        public CancellationToken Token
+        {
+            get { return _tokenSource.Token; }
+        }
 
         /// <summary>
         /// Gets a collection of instruments currently controlled used by the test sequence.
@@ -28,24 +34,7 @@ namespace TsdLib.TestSystem.TestSequence
         /// </summary>
         public ConfigManagerProvider Config { get; set; }
 
-        /// <summary>
-        /// Gets or sets an EventProxy object that can be used to send measurement events across AppDomain boundaries.
-        /// </summary>
-        internal EventProxy<IMeasurement> MeasurementEventProxy { get; set; }
-        /// <summary>
-        /// Gets or sets an EventProxy object that can be used to send information events across AppDomain boundaries.
-        /// </summary>
-        internal EventProxy<ITestInfo> InfoEventProxy { get; set; }
-        /// <summary>
-        /// Gets or sets an EventProxy object that can be used to send progress updates across AppDomain boundaries.
-        /// </summary>
-        internal EventProxy<Tuple<int, int>> ProgressEventProxy { get; set; }
-        /// <summary>
-        /// Gets or sets an EventProxy object that can be used to send general data across AppDomain boundaries.
-        /// </summary>
-        internal EventProxy<object> DataEventProxy { get; set; }
-
-        private readonly List<IMeasurement> _measurements;
+        private readonly List<IMeasurement> _measurements = new List<IMeasurement>();
         /// <summary>
         /// Gets the collection of measurements captured during the test sequence.
         /// </summary>
@@ -53,7 +42,7 @@ namespace TsdLib.TestSystem.TestSequence
         {
             get { return _measurements; }
         }
-        private readonly List<ITestInfo> _testInfo;
+        private readonly List<ITestInfo> _testInfo = new List<ITestInfo>();
         /// <summary>
         /// Gets the collection of information captured during the test sequence.
         /// </summary>
@@ -68,13 +57,8 @@ namespace TsdLib.TestSystem.TestSequence
         {
             Trace.AutoFlush = true;
 
-            CancellationManager = new TestSequenceCancellationManager();
             Instruments = new TestSequenceInstrumentCollection();
             Instruments.InstrumentConnected += Instruments_InstrumentConnected;
-
-            _testInfo = new List<ITestInfo>();
-
-            _measurements = new List<IMeasurement>();
         }
 
         /// <summary>
@@ -86,6 +70,29 @@ namespace TsdLib.TestSystem.TestSequence
             Trace.Listeners.Add(listener);
         }
 
+        public event EventHandler<DataContainer> DataAdded;
+        /// <summary>
+        /// Send data to the application controller. NOTE: The object must either be decorated with the <see cref="SerializableAttribute"/> or be derived from <see cref="MarshalByRefObject"/>
+        /// </summary>
+        /// <param name="data">Object to send.</param>
+        protected void SendData(object data)
+        {
+            SerializableAttribute serializableAttributeCheck = data.GetType().GetCustomAttribute<SerializableAttribute>();
+            MarshalByRefObject transferrableData = data as MarshalByRefObject;
+
+            if (serializableAttributeCheck == null && transferrableData == null)
+            {
+                Trace.WriteLine("WARNING: The data type {0} must either be (1) a value type, (2) marked with the System.SerializableAttribute or (3) derived from System.MarshalByRefObject in order to be passed across Application Domain boundaries.");
+                if (_runningInRemoteDomain)
+                    return;
+            }
+
+            EventHandler<DataContainer> handler = DataAdded;
+            if (handler != null)
+                handler(this, new DataContainer(data));
+        }
+
+        public event EventHandler<ITestInfo> TestInfoAdded; 
         /// <summary>
         /// Add a new <see cref="ITestInfo"/> to the collection of test information.
         /// </summary>
@@ -93,22 +100,29 @@ namespace TsdLib.TestSystem.TestSequence
         protected void AddTestInfo(ITestInfo testInfo)
         {
             _testInfo.Add(testInfo);
-            Trace.WriteLine(testInfo);
-            if (InfoEventProxy != null)
-                InfoEventProxy.FireEvent(this, testInfo);
+            Trace.WriteLine("Test info: " + testInfo);
+
+            EventHandler<ITestInfo> handler = TestInfoAdded;
+            if (handler != null)
+                handler(this, testInfo);
         }
+
+        public event EventHandler<IMeasurement> MeasurementAdded; 
         /// <summary>
-        /// Add a new <see cref="MeasurementBase"/> to the collection of test measurements.
+        /// Add a new <see cref="IMeasurement"/> to the collection of test measurements.
         /// </summary>
         /// <param name="measurement">Measurement information to add.</param>
         protected void AddMeasurement(IMeasurement measurement)
         {
             _measurements.Add(measurement);
-            Trace.WriteLine(measurement);
-            if (MeasurementEventProxy != null)
-                MeasurementEventProxy.FireEvent(this, measurement);
+            Trace.WriteLine("Measurement: " + measurement);
+
+            EventHandler<IMeasurement> handler = MeasurementAdded;
+            if (handler != null)
+                handler(this, measurement);
         }
 
+        public event EventHandler<Tuple<int, int>> ProgressUpdated; 
         /// <summary>
         /// Update the application controller of the current test sequence progress.
         /// </summary>
@@ -116,28 +130,10 @@ namespace TsdLib.TestSystem.TestSequence
         /// <param name="numberOfSteps">The total number of steps in the test sequence.</param>
         protected void UpdateProgress(int currentStep, int numberOfSteps)
         {
-            if (ProgressEventProxy != null)
-                ProgressEventProxy.FireEvent(this, new Tuple<int, int>(currentStep, numberOfSteps));
-        }
-
-        /// <summary>
-        /// Send data to the application controller.
-        /// </summary>
-        /// <param name="data">Data that can be marshalled across AppDomain boundaries as a value type.</param>
-        protected void SendDataByValue<T>(T data) where T : struct
-        {
-            if (DataEventProxy != null)
-                DataEventProxy.FireEvent(this, data);
-        }
-
-        /// <summary>
-        /// Send data to the application controller.
-        /// </summary>
-        /// <param name="dataContainer">Data that can be marshalled across AppDomain boundaries as a reference type.</param>
-        protected void SendDataByReference<T>(DataContainer<T> dataContainer)
-        {
-            if (DataEventProxy != null)
-                DataEventProxy.FireEvent(this, dataContainer);
+            Trace.WriteLine("Progress: " + currentStep + "/" + numberOfSteps);
+            EventHandler<Tuple<int, int>> handler = ProgressUpdated;
+            if (handler != null)
+                handler(this, new Tuple<int, int>(currentStep, numberOfSteps));
         }
 
         /// <summary>
@@ -156,6 +152,16 @@ namespace TsdLib.TestSystem.TestSequence
             _testInfo.Add(new TestInfo(instrumentType + " " + instrument.FirmwareVersionDescriptor, instrument.FirmwareVersion));
         }
 
+        public void Abort()
+        {
+            _tokenSource.Cancel();
+        }
+
+        public void Abort(Exception ex)
+        {
+            Error = ex;
+            _tokenSource.Cancel();
+        }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -172,8 +178,11 @@ namespace TsdLib.TestSystem.TestSequence
         /// <param name="disposing">True to dispose managed resources.</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing && Instruments != null)
-                Instruments.Dispose();
+            if (disposing)
+            {
+                if (Instruments != null)
+                    Instruments.Dispose();
+            }
         }
 
         /// <summary>
@@ -182,6 +191,7 @@ namespace TsdLib.TestSystem.TestSequence
         /// <returns>null</returns>
         public override object InitializeLifetimeService()
         {
+            _runningInRemoteDomain = true;
             return null;
         }
     }

@@ -78,6 +78,26 @@ namespace TsdLib.Configuration.Connections
             return true;
         }
 
+        public bool CloneMode(string testSystemName, Version testSystemVersion, OperatingMode testSystemMode, Type configType, OperatingMode newMode)
+        {
+            string sourceFile = Path.Combine(getDirectoryInfo(testSystemName, testSystemVersion, testSystemMode), configType.Name + ".xml");
+            string destinationFile = Path.Combine(getDirectoryInfo(testSystemName, testSystemVersion, newMode), configType.Name + ".xml");
+            
+            File.Copy(sourceFile, destinationFile);
+
+            return true;
+        }
+
+        public bool CloneVersion(string testSystemName, Version testSystemVersion, OperatingMode testSystemMode, Type configType, Version newVersion)
+        {
+            string sourceFile = Path.Combine(getDirectoryInfo(testSystemName, testSystemVersion, testSystemMode), configType.Name + ".xml");
+            string destinationFile = Path.Combine(getDirectoryInfo(testSystemName, newVersion, testSystemMode), configType.Name + ".xml");
+
+            File.Copy(sourceFile, destinationFile);
+
+            return true;
+        }
+
         /// <summary>
         /// Uploads a file to the database using the name/version of the test system and dataDescription as indexes.
         /// </summary>

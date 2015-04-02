@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
-using TsdLib.Measurements;
+using TsdLib.TestSystem;
 
 namespace TsdLib.UI.Forms
 {
@@ -12,21 +12,21 @@ namespace TsdLib.UI.Forms
     /// </summary>
     public partial class ViewBase : Form, IView
     {
-        public virtual ITestCaseControl TestCaseControl { get { return testCasesMenuItem; } }
+        public virtual ITestCaseControl TestCaseControl { get { return null; } }
 
-        public virtual IConfigControl ConfigControl { get { return multiConfigControl; } }
+        public virtual IConfigControl ConfigControl { get { return null; } }
 
-        public virtual ITestInfoDisplayControl TestInfoDisplayControl { get { return testInfoDataGridViewControl; } }
+        public virtual ITestInfoDisplayControl TestInfoDisplayControl { get { return null; } }
 
-        public virtual IMeasurementDisplayControl MeasurementDisplayControl { get { return measurementDataGridViewControl; } }
+        public virtual IMeasurementDisplayControl MeasurementDisplayControl { get { return null; } }
 
-        public virtual ITestSequenceControl TestSequenceControl { get { return testSequenceControl; } }
+        public virtual ITestSequenceControl TestSequenceControl { get { return null; } }
 
-        public virtual ITestDetailsControl TestDetailsControl { get { return testDetailsControl; } }
+        public virtual ITestDetailsControl TestDetailsControl { get { return null; } }
 
-        public virtual ITraceListenerControl TraceListenerControl { get { return traceListenerTextBoxControl; } }
+        public virtual ITraceListenerControl TraceListenerControl { get { return null; } }
 
-        public virtual IProgressControl ProgressControl { get { return progressControl; } }
+        public virtual IProgressControl ProgressControl { get { return null; } }
 
         /// <summary>
         /// Initializes a new instance of the base UI form.
@@ -52,30 +52,26 @@ namespace TsdLib.UI.Forms
         }
 
         /// <summary>
-        /// Add an <see cref="IMeasurement"/> to the DataGridView.
-        /// </summary>
-        /// <param name="measurement">Measurement to add.</param>
-        public virtual void AddMeasurement(IMeasurement measurement)
-        {
-            measurementDataGridViewControl.AddMeasurement(measurement);
-        }
-
-        /// <summary>
         /// Add a general data object to the UI. Override to perform specific operations based on the type of the internal data value.
         /// </summary>
-        /// <param name="data">Data to add.</param>
-        public void AddData(object data)
+        /// <param name="dataContainer">Data to add.</param>
+        public virtual void AddArbitraryData(DataContainer dataContainer)
         {
-            addData((dynamic)data);
+            AddData((dynamic)dataContainer.Data);
         }
 
-        private void addData(object data)
+        public void AddData(object data)
         {
             Trace.WriteLine(string.Format("Unsupported data type received: {0}", data.GetType().Name));
             Trace.WriteLine(string.Format("String representation: {0}", data));
         }
 
         private void ViewBase_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            OnUIClosing(e);
+        }
+
+        protected virtual void OnUIClosing(FormClosingEventArgs e)
         {
             EventHandler<CancelEventArgs> invoker = UIClosing;
             if (invoker != null)
@@ -86,7 +82,7 @@ namespace TsdLib.UI.Forms
         /// Sets the text displayed in the title section of the UI.
         /// </summary>
         /// <param name="title">Text to display.</param>
-        public void SetTitle(string title)
+        public virtual void SetTitle(string title)
         {
             Text = title;
         }

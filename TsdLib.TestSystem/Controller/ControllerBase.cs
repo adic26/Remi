@@ -1,7 +1,6 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -15,7 +14,8 @@ using TsdLib.CodeGenerator;
 using TsdLib.Configuration;
 using TsdLib.Configuration.Common;
 using TsdLib.Configuration.Connections;
-using TsdLib.Configuration.Managers;
+using TsdLib.Configuration.Details;
+using TsdLib.Configuration.Management;
 using TsdLib.Configuration.Null;
 using TsdLib.Configuration.TestCases;
 using TsdLib.Forms;
@@ -60,8 +60,6 @@ namespace TsdLib.TestSystem.Controller
     {
         private ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig> _activeSequence;
         private readonly bool _localDomain;
-        private readonly List<Task> _loggingTasks;
-        private readonly TextWriterTraceListener _textWriterTraceListener;
         private readonly TestCaseProvider _testCaseProvider;
 
         /// <summary>
@@ -73,11 +71,6 @@ namespace TsdLib.TestSystem.Controller
         /// Gets or sets the metadata describing the test request.
         /// </summary>
         protected ITestDetails Details { get; private set; }
-
-        /// <summary>
-        /// Gets a list of active tasks responsible for logging test results.
-        /// </summary>
-        protected ReadOnlyCollection<Task> LoggingTasks { get; private set; }
 
         /// <summary>
         /// Gets a provider that can be used to retrieve configuration manager instances for modifying, storing and recalling configuration data.
@@ -96,15 +89,13 @@ namespace TsdLib.TestSystem.Controller
 
             Thread.CurrentThread.Name = "UI Thread";
             Trace.AutoFlush = true;
-            _textWriterTraceListener = new TextWriterTraceListener(SpecialFolders.GetTraceLogs(Details.SafeTestSystemName));
-            Trace.Listeners.Add(_textWriterTraceListener);
+            var textWriterTraceListener = new TextWriterTraceListener(SpecialFolders.GetTraceLogs(Details.SafeTestSystemName));
+            Trace.Listeners.Add(textWriterTraceListener);
             
             _testCaseProvider = new TestCaseProvider(Details.SafeTestSystemName);
 
-            _loggingTasks = new List<Task>();
-            LoggingTasks = new ReadOnlyCollection<Task>(_loggingTasks);
 
-            configManagerProvider = new ConfigManagerProvider(Details, configConnection);
+
             //TODO: if local domain, config manager should just reflect the entry assembly to get baked-in sequences and make Sequence read-only in editor form
 
             //set up view
@@ -113,9 +104,8 @@ namespace TsdLib.TestSystem.Controller
                 Trace.Listeners.Add(UI.TraceListenerControl.Listener);
             UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
 
-            Details.TestSystemIdentityChanged += configDetails_TestSystemIdentityChanged;
-            updateConfigManagers();
-
+            configManagerProvider = new ConfigManagerProvider(Details, configConnection);
+            refreshConfigManagerProvider(UI);
 #if DEBUG
             Trace.WriteLine("Using TsdLib debug assembly. Test results will only be stored as Analysis.");
             _localDomain = localDomain;
@@ -129,13 +119,13 @@ namespace TsdLib.TestSystem.Controller
 
             //subscribe to view events
             if (UI.ConfigControl != null)
-                UI.ConfigControl.ViewEditConfiguration += EditConfiguration;
+                UI.ConfigControl.ViewEditConfiguration += ConfigControl_EditConfiguration;
             if (UI.TestDetailsControl != null)
-                UI.TestDetailsControl.EditTestDetails += EditTestDetails;
+                UI.TestDetailsControl.EditTestDetails += TestDetailsControl_EditTestDetails;
             if (UI.TestSequenceControl != null)
             {
-                UI.TestSequenceControl.ExecuteTestSequence += ExecuteTestSequence;
-                UI.TestSequenceControl.AbortTestSequence += AbortTestSequence;
+                UI.TestSequenceControl.ExecuteTestSequence += TestSequenceControl_ExecuteTestSequence;
+                UI.TestSequenceControl.AbortTestSequence += TestSequenceControl_AbortTestSequence;
             }
             if (UI.TestCaseControl != null)
             {
@@ -146,6 +136,48 @@ namespace TsdLib.TestSystem.Controller
             UI.UIClosing += UIClosing;
 
             UI.SetState(State.ReadyToTest);
+        }
+
+        private ITestDetailsEditor _testDetailsEditor;
+        private ITestDetailsEditor testDetailsEditor
+        {
+            get
+            {
+                if (_testDetailsEditor == null)
+                {
+                    _testDetailsEditor = CreateTestDetailsEditor();
+                    _testDetailsEditor.IdentityManager.TestSystemIdentityChanged += TestSystemIdentityChanged;
+                }
+                return _testDetailsEditor;
+            }
+        }
+
+        private IConfigEditor _configEditor;
+        private IConfigEditor configEditor
+        {
+            get
+            {
+                if (_configEditor == null)
+                {
+                    _configEditor = CreateConfigEditor();
+                    _configEditor.IdentityManager.TestSystemIdentityChanged += TestSystemIdentityChanged;
+                }
+                return _configEditor;
+            }
+        }
+
+        protected virtual void TestSystemIdentityChanged(object sender, EventArgs e)
+        {
+            UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
+            configManagerProvider.Reload();
+            if (UI.ConfigControl != null)
+                refreshConfigManagerProvider(UI);
+        }
+
+        protected virtual void TestDetailsControl_EditTestDetails(object sender, bool detailsFromDatabase)
+        {
+            testDetailsEditor.Edit(Details, detailsFromDatabase);
+
         }
 
         void TestCaseControl_TestCaseSelected(object sender, string selectedTestCaseName)
@@ -161,32 +193,24 @@ namespace TsdLib.TestSystem.Controller
 
         void TestCaseControl_TestCaseSaved(object sender, EventArgs e)
         {
-            string testCaseName;
             using (ConfigItemCreateForm form = new ConfigItemCreateForm(false))
-                testCaseName = form.ShowDialog() == DialogResult.OK ? form.ConfigItemName : "N/A";
-
-            TestCase testCase = new TestCase(testCaseName, UI.ConfigControl.SelectedTestConfig, UI.ConfigControl.SelectedSequenceConfig);
-            _testCaseProvider.Save(testCase);
+            {
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    TestCase testCase = new TestCase(form.ConfigItemName, UI.ConfigControl.SelectedTestConfig, UI.ConfigControl.SelectedSequenceConfig);
+                    _testCaseProvider.Save(testCase);
+                    UI.TestCaseControl.DisplayTestCases(_testCaseProvider.Load());
+                }
+            }
         }
 
-        void configDetails_TestSystemIdentityChanged(object sender, string e)
-        {
-            UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
-            if (UI.ConfigControl != null)
-                updateConfigManagers();
-        }
-
-        private void updateConfigManagers()
+        private void refreshConfigManagerProvider(IView ui)
         {
             configManagerProvider.Reload();
-            IConfigManager<TStationConfig> stn = configManagerProvider.GetConfigManager<TStationConfig>();
-            UI.ConfigControl.StationConfigManager = stn;
-            IConfigManager<TProductConfig> prod = configManagerProvider.GetConfigManager<TProductConfig>();
-            UI.ConfigControl.ProductConfigManager = prod;
-            IConfigManager<TTestConfig> test = configManagerProvider.GetConfigManager<TTestConfig>();
-            UI.ConfigControl.TestConfigManager = test;
-            IConfigManager<ISequenceConfig> seq = configManagerProvider.GetConfigManager<SequenceConfigCommon>();
-            UI.ConfigControl.SequenceConfigManager = seq;
+            ui.ConfigControl.StationConfigManager = configManagerProvider.GetConfigManager<TStationConfig>();
+            ui.ConfigControl.ProductConfigManager = configManagerProvider.GetConfigManager<TProductConfig>();
+            ui.ConfigControl.TestConfigManager = configManagerProvider.GetConfigManager<TTestConfig>();
+            ui.ConfigControl.SequenceConfigManager = configManagerProvider.GetConfigManager<SequenceConfigCommon>();
         }
 
         /// <summary>
@@ -194,19 +218,13 @@ namespace TsdLib.TestSystem.Controller
         /// </summary>
         /// <param name="sender">Object that raised the exception. Should be a reference to the Execute Test Sequence button.</param>
         /// <param name="e">An emptry EventArgs object.</param>
-        protected async void ExecuteTestSequence(object sender, EventArgs e)
+        protected virtual async void TestSequenceControl_ExecuteTestSequence(object sender, EventArgs e)
         {
             AppDomain sequenceDomain = null;
 
             UI.SetState(State.TestStarting);
 
             Trace.WriteLine(Details);
-
-            TStationConfig stationConfig = (TStationConfig) (UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TStationConfig>().GetList()[0]);
-            TProductConfig productConfig = (TProductConfig)(UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TProductConfig>().GetList()[0]);
-            TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig.Cast<TTestConfig>().ToArray();
-            if (!testConfigs.Any())
-                testConfigs = configManagerProvider.GetConfigManager<TTestConfig>().GetConfigGroup().ToArray();
 
             var sequenceConfigs = UI.ConfigControl.SelectedSequenceConfig.Cast<SequenceConfigCommon>().ToArray();
             if (!sequenceConfigs.Any())
@@ -215,10 +233,6 @@ namespace TsdLib.TestSystem.Controller
 
             Trace.WriteLine(string.Format("Using {0} application domain", _localDomain ? "local" : "remote"));
 
-            SynchronizationContext uiContext = SynchronizationContext.Current;
-
-            ControllerProxy controllerProxy;
-
             foreach (SequenceConfigCommon sequenceConfig in sequenceConfigs)
             {
                 try
@@ -226,109 +240,62 @@ namespace TsdLib.TestSystem.Controller
                     DateTime startTime = DateTime.Now;
 
                     SequenceConfigCommon config = sequenceConfig;
-                    await Task.Run(() =>
+                    
+                    EventManager eventManager;
+                    if (_localDomain)
                     {
-                        if (_localDomain)
-                        {
-                            _activeSequence = (ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>)Activator.CreateInstance(Assembly.GetEntryAssembly().GetType(config.FullTypeName));
-
-                            controllerProxy = (ControllerProxy)Activator.CreateInstance(typeof(ControllerProxy), BindingFlags.CreateInstance, null, new object[] { UI, _activeSequence.CancellationManager }, CultureInfo.CurrentCulture);
-                        }
-                        else
-                        {
-                            List<CodeCompileUnit> codeCompileUnits = new List<CodeCompileUnit> { new BasicCodeParser(config.AssemblyReferences.ToArray()).Parse(new StringReader(config.SourceCode)) };
-
-                            IEnumerable<CodeCompileUnit> additionalCodeCompileUnits = GenerateAdditionalCodeCompileUnits(config.Namespace.Replace(".Sequences", ""));
-
-                            DynamicCompiler generator = new DynamicCompiler(Language.CSharp, AppDomain.CurrentDomain.BaseDirectory);
-                            string sequenceAssembly = generator.Compile(codeCompileUnits.Concat(additionalCodeCompileUnits));
-
-                            sequenceDomain = AppDomain.CreateDomain("Sequence Domain");
-
-                            _activeSequence = (ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>)sequenceDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, config.FullTypeName);
-                            controllerProxy = (ControllerProxy) sequenceDomain.CreateInstanceAndUnwrap(typeof (ControllerProxy).Assembly.FullName, typeof (ControllerProxy).FullName, false, BindingFlags.CreateInstance, null, new object[] {UI, _activeSequence.CancellationManager}, CultureInfo.CurrentCulture, null);
-
-                            if (UI.TraceListenerControl != null)
-                                _activeSequence.AddTraceListener(UI.TraceListenerControl.Listener);
-
-                            _activeSequence.AddTraceListener(_textWriterTraceListener);
-                        }
-
-                        //TODO: can we create the event proxies on the test sequence and just attach to them here?
-                        EventProxy<ITestInfo> infoEventHandler = new EventProxy<ITestInfo>();
-                        _activeSequence.InfoEventProxy = infoEventHandler;
-                        infoEventHandler.Attach(controllerProxy.InfoAdded, uiContext);
-
-                        EventProxy<IMeasurement> measurementEventHandler = new EventProxy<IMeasurement>();
-                        _activeSequence.MeasurementEventProxy = measurementEventHandler;
-                        measurementEventHandler.Attach(controllerProxy.MeasurementAdded, uiContext);
-
-                        EventProxy<Tuple<int, int>> progressEventHandler = new EventProxy<Tuple<int, int>>();
-                        _activeSequence.ProgressEventProxy = progressEventHandler;
-                        progressEventHandler.Attach(controllerProxy.ProgressUpdated, uiContext);
-
-                        EventProxy<object> dataEventHandler = new EventProxy<object>();
-                        _activeSequence.DataEventProxy = dataEventHandler;
-                        dataEventHandler.Attach(controllerProxy.DataAdded, uiContext);
-
-                        _activeSequence.Config = configManagerProvider;
-
-                        _activeSequence.ExecuteSequence(stationConfig, productConfig, testConfigs);
-                    });
-
-                    DateTime endTime = DateTime.Now;
-
-                    string overallResult;
-                    if (!_activeSequence.Measurements.Any() || _activeSequence.Measurements.All(m => m.Result == MeasurementResult.Undefined))
-                        overallResult = "Undefined";
+                        _activeSequence = CreateSequenceObject(config.FullTypeName);
+                        eventManager = CreateEventManager(UI, _activeSequence);
+                    }
                     else
-                        overallResult = _activeSequence.Measurements.All(m => m.Result == MeasurementResult.Pass) ? "Pass" : "Fail";
-                    ITestResults testResults = new TestResultCollection(Details, _activeSequence.Measurements, new TestSummary(overallResult, startTime, endTime), _activeSequence.TestInfo);
-
-
-                    _loggingTasks.Add(Task.Run(() =>
                     {
-                        ITestResults localTestResults = testResults; //Create a local reference in case they are overwritten by the next sequence before the logging is complete.
-                        if (Thread.CurrentThread.Name != null)
-                            Thread.CurrentThread.Name = "Result Handler Thread";
-                        Thread.CurrentThread.IsBackground = false;
-                        SaveResults(localTestResults);
-                        if (publishResults)
-                            PublishResults(localTestResults);
-                    }).ContinueWith(t =>
-                        {
-                            _loggingTasks.Remove(t);
-                            if (t.IsFaulted && t.Exception != null)
-                                Trace.WriteLine("Failed to log test results!" + Environment.NewLine + string.Join(Environment.NewLine, t.Exception.Flatten().InnerExceptions));
-                        })
-                    );
+                        List<CodeCompileUnit> codeCompileUnits = new List<CodeCompileUnit> { new BasicCodeParser(config.AssemblyReferences.ToArray()).Parse(new StringReader(config.SourceCode)) };
 
+                        IEnumerable<CodeCompileUnit> additionalCodeCompileUnits = GenerateAdditionalCodeCompileUnits(config.Namespace.Replace(".Sequences", ""));
+
+                        DynamicCompiler generator = new DynamicCompiler(Language.CSharp, AppDomain.CurrentDomain.BaseDirectory);
+                        string sequenceAssembly = generator.Compile(codeCompileUnits.Concat(additionalCodeCompileUnits));
+
+                        sequenceDomain = AppDomain.CreateDomain("Sequence Domain");
+
+                        _activeSequence = CreateSequenceObject(config.FullTypeName, sequenceAssembly, sequenceDomain);
+                        eventManager = CreateEventManager(UI, _activeSequence);
+
+                        foreach (TraceListener listener in Trace.Listeners)
+                            _activeSequence.AddTraceListener(listener);
+                    }
+                    
+                    TStationConfig stationConfig = (TStationConfig)(UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TStationConfig>().GetConfigGroup().First());
+                    TProductConfig productConfig = (TProductConfig)(UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TProductConfig>().GetConfigGroup().First());
+                    TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig.Cast<TTestConfig>().ToArray();
+                    if (!testConfigs.Any())
+                        testConfigs = configManagerProvider.GetConfigManager<TTestConfig>().GetConfigGroup().ToArray();
+
+                    _activeSequence.DataAdded += eventManager.AddData;
+                    _activeSequence.MeasurementAdded += eventManager.AddMeasurement;
+                    _activeSequence.TestInfoAdded += eventManager.AddTestInfo;
+                    _activeSequence.ProgressUpdated += eventManager.UpdateProgress;
+
+                    _activeSequence.Config = configManagerProvider;
+
+                    //TODO: ExecuteSequenceAsync
+                    await Task.Run(() => _activeSequence.ExecuteSequence(stationConfig, productConfig, testConfigs));
+
+                    IResultHandler resultHandler = CreateResultHandler(Details);
+                    if (resultHandler != null)
+                        resultHandler.SaveResults(_activeSequence.TestInfo.ToArray(), _activeSequence.Measurements.ToArray(), startTime, DateTime.Now, publishResults);
                 }
-                //TODO: use AggregateException?
-                catch (OperationCanceledException) //User cancellation and controller proxy errors are propagated as OperationCancelledException
+                catch (OperationCanceledException)
                 {
-                    if (_activeSequence.CancellationManager.CancelledByUser)
-                    {
+                    if (_activeSequence.Error == null)
                         Trace.WriteLine("Test sequence was cancelled by user.");
-                        break;
-                    }
-
-                    else if (_activeSequence.CancellationManager.Error != null)
-                    {
-                        Trace.WriteLine(string.Format("Exception:{0} was thrown from client code in the primary AppDomain", _activeSequence.CancellationManager.Error.GetType().Name));
-                        throw _activeSequence.CancellationManager.Error;
-                    }
-
-                    //Test test sequence did not set the Error property - this should never happen
                     else
-                    {
-                        Trace.WriteLine("Test test sequence did not set the Error property - this should never happen");
-                        MessageBox.Show("An undescribed error has occurred but the test sequence Error prperty was not set. Please contact TSD for support.", "Unknown Error:");
-                    }
+                        Trace.WriteLine("Test sequence was cancelled due to error: " + _activeSequence.Error);
                 }
                 catch (Exception ex)
                 {
-                    displayError(ex, sequenceConfig.Name);
+                    if (!CreateErrorHandler().TryHandleError(ex, sequenceConfig.Name))
+                        throw;
                 }
                 finally
                 {
@@ -352,73 +319,22 @@ namespace TsdLib.TestSystem.Controller
             UI.SetState(State.ReadyToTest);
         }
 
-        private void displayError(Exception ex, string sequenceName)
-        {
-            Trace.WriteLine(ex);
-            Task.Run(() =>
-            {
-                bool helpLinkPresent = ex.HelpLink != null;
-                DialogResult result = MessageBox.Show(string.Join(Environment.NewLine,
-                        "Error: " + ex.GetType().Name,
-                        "Message: " + ex.Message,
-                        helpLinkPresent ? "Would you like to view help for this error?" : ""),
-                    "Error occurred in " + sequenceName,
-                    helpLinkPresent ? MessageBoxButtons.YesNo : MessageBoxButtons.OK);
-
-                if (result == DialogResult.Yes)
-                    Process.Start(ex.HelpLink);
-            }).ContinueWith(task => 
-            {
-                if (task.IsFaulted)
-                    Trace.WriteLine(task.Exception);
-            });
-        }
-
+        //TODO: abstract to ConfigEditor class - allow changing the config editor without changing the ControllerBase, expose a virtual CreateConfigEditor to allow client to redefine
         /// <summary>
         /// Default handler for the ViewBase.ViewEditConfiguration event.
         /// </summary>
         /// <param name="sender">Object that raised the exception. Should be a reference to the View/Edit Configuration button.</param>
         /// <param name="configManagers">An array of <see cref="IConfigManager"/> objects containing the configuration data.</param>
-        protected virtual void EditConfiguration(object sender, IConfigManager[] configManagers)
+        protected virtual void ConfigControl_EditConfiguration(object sender, IConfigManager[] configManagers)
         {
-            using (ConfigManagerForm form = new ConfigManagerForm(Details.TestSystemName, Details.TestSystemVersion, true, configManagers))
-                if (form.ShowDialog() == DialogResult.OK)
-                    foreach (IConfigManager modifiedConfig in form.ModifiedConfigs)
-                        modifiedConfig.Save();
-                else
-                    foreach (IConfigManager modifiedConfig in form.ModifiedConfigs)
-                        modifiedConfig.Reload();
+            configEditor.Edit(configManagerProvider);
+            //if (UI.ConfigControl != null)
+            //    updateUIConfigControl();
         }
 
-        /// <summary>
-        /// Default handler for the ViewBase.ViewEditConfiguration event.
-        /// </summary>
-        /// <param name="sender">Object that raised the exception. Should be a reference to the View/Edit Configuration button.</param>
-        /// <param name="e">True if requesting to use database settings. False otherwise.</param>
-        protected virtual void EditTestDetails(object sender, bool e)
+        protected virtual IConfigEditor CreateConfigEditor()
         {
-            Details.Edit();
-        }
-
-        /// <summary>
-        /// Saves the specified <see cref="ITestResults"/> as xml and csv to the TsdLib.SpecialFolders location.
-        /// </summary>
-        /// <param name="results">The <see cref="ITestResults"/> that was captured by the test sequence.</param>
-        protected virtual void SaveResults(ITestResults results)
-        {
-            results.SaveXml();
-            string csvResultsFile = results.SaveCsv();
-            
-            Trace.WriteLine("CSV results saved to " + csvResultsFile);
-        }
-
-        /// <summary>
-        /// Override to published the specified <see cref="ITestResults"/> to a database or user-defined location.
-        /// </summary>
-        /// <param name="results">The <see cref="ITestResults"/> that was captured by the test sequence.</param>
-        protected virtual void PublishResults(ITestResults results)
-        {
-
+            return new ConfigEditor();
         }
 
         /// <summary>
@@ -426,10 +342,10 @@ namespace TsdLib.TestSystem.Controller
         /// </summary>
         /// <param name="sender">The <see cref="IView"/> that raised the event.</param>
         /// <param name="e">Empty event args.</param>
-        protected virtual void AbortTestSequence(object sender, EventArgs e)
+        protected virtual void TestSequenceControl_AbortTestSequence(object sender, EventArgs e)
         {
             if (_activeSequence != null)
-                _activeSequence.CancellationManager.Abort();
+                _activeSequence.Abort();
         }
 
         /// <summary>
@@ -441,6 +357,50 @@ namespace TsdLib.TestSystem.Controller
             return new CodeCompileUnit[0];
         }
 
+
+
+        protected virtual EventManager CreateEventManager(IView view, ITestSequence testSequence)
+        {
+            return new EventManager(view, testSequence);
+        }
+
+        protected virtual EventManager CreateEventManager(IView view, ITestSequence testSequence, AppDomain appDomain)
+        {
+            return (EventManager)appDomain.CreateInstanceAndUnwrap(typeof(EventManager).Assembly.FullName, typeof(EventManager).FullName, false, BindingFlags.CreateInstance, null, new object[] { view, testSequence }, CultureInfo.CurrentCulture, null);
+        }
+
+        protected virtual ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig> CreateSequenceObject(string sequenceName)
+        {
+            return (ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>)Activator.CreateInstance(Assembly.GetEntryAssembly().GetType(sequenceName));
+        }
+
+        protected virtual ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig> CreateSequenceObject(string sequenceName, string sequenceAssembly, AppDomain appDomain)
+        {
+            return (ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>)appDomain.CreateInstanceFromAndUnwrap(sequenceAssembly, sequenceName);
+        }
+
+        protected virtual IResultHandler CreateResultHandler(ITestDetails testDetails)
+        {
+            return new ResultHandler(testDetails);
+        }
+        /// <summary>
+        /// Override to customize the mechanism to view/edit test details.
+        /// </summary>
+        /// <returns>An <see cref="ITestDetailsEditor"/> object used to view/modify the test details.</returns>
+        protected virtual ITestDetailsEditor CreateTestDetailsEditor()
+        {
+            return new TestDetailsEditor();
+        }
+
+        /// <summary>
+        /// Override to customize the mechanism to handle errors encountered during the test sequence.
+        /// </summary>
+        /// <returns>An <see cref="IErrorHandler"/> object used to catch, handle, display and/or log errors.</returns>
+        protected virtual IErrorHandler CreateErrorHandler()
+        {
+            return new ErrorHandler();
+        }
+
         /// <summary>
         /// Default handler for the <see cref="TsdLib.UI.IView.UIClosing"/> event.
         /// </summary>
@@ -448,17 +408,17 @@ namespace TsdLib.TestSystem.Controller
         /// <param name="e">A <see cref="CancelEventArgs"/> object to provide an opportunity to cancel the closing operation.</param>
         protected virtual void UIClosing(object sender, CancelEventArgs e)
         {
-            if (LoggingTasks.Count > 0)
-            {
-                Trace.WriteLine(string.Format("There are currently {0} test result logging operations in progress", LoggingTasks.Count));
-                //Currently, the logging operations are run on background threads, so there is no need to cancel the close or wait for the tasks to complete
+            //if (LoggingTasks.Count > 0)
+            //{
+            //    Trace.WriteLine(string.Format("There are currently {0} test result logging operations in progress", LoggingTasks.Count));
+            //    Currently, the logging operations are run on foreground worker threads, so there is no need to cancel the close or wait for the tasks to complete
 
-                //Option 1: This will cancel the close and keep the UI open
-                //e.Cancel = true;
+            //    Option 1: This will cancel the close and keep the UI open
+            //    e.Cancel = true;
 
-                //Option 2: This will keep the application open until all logging is complete.
-                //Task.WaitAll(LoggingTasks.ToArray());
-            }
+            //    Option 2: This will keep the application open until all logging is complete.
+            //    Task.WaitAll(LoggingTasks.ToArray());
+            //}
         }
     }
 }

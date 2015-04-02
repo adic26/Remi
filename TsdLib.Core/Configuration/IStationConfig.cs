@@ -4,6 +4,6 @@ namespace TsdLib.Configuration
 {
     public interface IStationConfig : IConfigItem
     {
-        List<string> MachineNames { get; set; }
+        HashSet<string> MachineNames { get; set; }
     }
 }

@@ -39,6 +39,8 @@ namespace TsdLib.UI.Controls
                 Clear();
         }
 
+        
+
         #region nested TraceListener implementation
 
         /// <summary>

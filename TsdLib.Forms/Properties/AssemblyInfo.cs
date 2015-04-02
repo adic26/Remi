@@ -5,7 +5,11 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("TsdLib.Forms")]
 [assembly: AssemblyDescription("A library of reusable System.Windows.Forms.Form classes.")]
-[assembly: AssemblyConfiguration("")]
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
+[assembly: AssemblyConfiguration("Release")]
+#endif
 [assembly: AssemblyCompany("BlackBerry")]
 [assembly: AssemblyProduct("TsdLib.Forms")]
 [assembly: AssemblyCopyright("Copyright © BlackBerry 2015")]
@@ -20,4 +24,4 @@ using System.Runtime.InteropServices;
 
 
 
-[assembly: AssemblyVersion("2.0")]
+[assembly: AssemblyVersion("3.0")]

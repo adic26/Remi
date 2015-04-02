@@ -36,39 +36,31 @@ namespace TsdLib.TestSystem.TestSequence
         /// <returns>A <see cref="TestResultCollection"/> containing the test results.</returns>
         public override void ExecuteSequence(TStationConfig stationConfig, TProductConfig productConfig, params TTestConfig[] testConfigs)
         {
-            try
+            AddTestInfo(new TestInfo(stationConfig.CommonBaseTypeName, stationConfig.Name));
+            AddTestInfo(new TestInfo(productConfig.CommonBaseTypeName, productConfig.Name));
+            foreach (TTestConfig testConfig in testConfigs)
+                AddTestInfo(new TestInfo(testConfig.CommonBaseTypeName, testConfig.Name));
+            AddTestInfo(new TestInfo("SequenceConfigCommon", GetType().Name));
+
+            Trace.WriteLine("Starting pre-test at " + DateTime.Now);
+
+            ExecutePreTest(Token, stationConfig, productConfig);
+
+            int testNumber = 0;
+            foreach (TTestConfig testConfig in testConfigs)
             {
-                AddTestInfo(new TestInfo(stationConfig.CommonBaseTypeName, stationConfig.Name));
-                AddTestInfo(new TestInfo(productConfig.CommonBaseTypeName, productConfig.Name));
-                foreach (TTestConfig testConfig in testConfigs)
-                    AddTestInfo(new TestInfo(testConfig.CommonBaseTypeName, testConfig.Name));
-                AddTestInfo(new TestInfo("SequenceConfigCommon", GetType().Name));
+                Trace.WriteLine(string.Format("Starting {0} at {1}.", testConfig.Name, DateTime.Now));
+                UpdateProgress(testNumber++, testConfigs.Length);
 
-                Trace.WriteLine("Starting pre-test at " + DateTime.Now);
-
-                ExecutePreTest(CancellationManager.Token, stationConfig, productConfig);
-
-                int testNumber = 0;
-                foreach (TTestConfig testConfig in testConfigs)
-                {
-                    Trace.WriteLine(string.Format("Starting {0} at {1}.", testConfig.Name, DateTime.Now));
-                    UpdateProgress(testNumber++, testConfigs.Length);
-
-                    ExecuteTest(CancellationManager.Token, stationConfig, productConfig, testConfig);
-                }
-
-                Trace.WriteLine("Starting post-test at ." + DateTime.Now);
-
-                ExecutePostTest(CancellationManager.Token, stationConfig, productConfig);
-
-                Trace.WriteLine("Completed test sequence at " + DateTime.Now);
-                UpdateProgress(1, 1);
+                ExecuteTest(Token, stationConfig, productConfig, testConfig);
             }
-            catch (Exception ex)
-            {
-                CancellationManager.Error = ex;
-                throw;
-            }
+
+            Trace.WriteLine("Starting post-test at ." + DateTime.Now);
+
+            ExecutePostTest(Token, stationConfig, productConfig);
+
+            Trace.WriteLine("Completed test sequence at " + DateTime.Now);
+            UpdateProgress(1, 1);
         }
     }
 }

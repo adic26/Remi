@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing.Design;
+using TsdLib.Forms;
 
 namespace TsdLib.Configuration.Common
 {
@@ -13,16 +16,22 @@ namespace TsdLib.Configuration.Common
         /// <summary>
         /// Gets or sets a list of machine names that can use this station config item.
         /// </summary>
-        public List<string> MachineNames { get; set; }
+        [Editor(typeof (MultiLineStringEditor), typeof (UITypeEditor))]
+        [TypeConverter(typeof (MultiLineStringConverter))]
+        public HashSet<string> MachineNames { get; set; }
 
         public override bool IsValid
         {
-            get { return MachineNames.Contains(Environment.MachineName); }
+            get
+            {
+                return (MachineNames != null) &&
+                       (MachineNames.Contains(Environment.MachineName) || MachineNames.Contains("*"));
+            }
         }
 
-        public override void InitializeDefaultValues()
+        internal override void inititalizeDefaultValuesBase()
         {
-            MachineNames = new List<string> { Environment.MachineName };
+            MachineNames = new HashSet<string> { Environment.MachineName };
         }
     }
 }
