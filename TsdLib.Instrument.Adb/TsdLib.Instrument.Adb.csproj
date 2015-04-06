@@ -50,21 +50,14 @@
     <None Include="TsdLib.Instrument.Adb.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="platform-tools\source.properties">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="platform-tools\systrace\AUTHORS">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="platform-tools\systrace\LICENSE">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="platform-tools\systrace\NOTICE">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="platform-tools\systrace\UPSTREAM_REVISION">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\TsdLib.Core\TsdLib.Core.csproj">
+      <Project>{512beddc-2b71-42f0-9c1b-6d37497f5da7}</Project>
+      <Name>TsdLib.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TsdLib.Instrument\TsdLib.Instrument.csproj">
+      <Project>{421092EB-A692-46A8-A66B-247C94C16421}</Project>
+      <Name>TsdLib.Instrument</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="platform-tools\adb.exe">
@@ -76,55 +69,18 @@
     <Content Include="platform-tools\AdbWinUsbApi.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="platform-tools\api\api-versions.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="platform-tools\dmtracedump.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="platform-tools\etc1tool.exe">
+    <Content Include="platform-tools\authboot.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="platform-tools\fastboot.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="platform-tools\hprof-conv.exe">
+    <Content Include="platform-tools\libcurl.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="platform-tools\NOTICE.txt">
+    <Content Include="platform-tools\libxpmux.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="platform-tools\sqlite3.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="platform-tools\systrace\prefix.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="platform-tools\systrace\script.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="platform-tools\systrace\style.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="platform-tools\systrace\suffix.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="platform-tools\systrace\systrace-legacy.py">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="platform-tools\systrace\systrace.py">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TsdLib.Core\TsdLib.Core.csproj">
-      <Project>{512beddc-2b71-42f0-9c1b-6d37497f5da7}</Project>
-      <Name>TsdLib.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TsdLib.Instrument\TsdLib.Instrument.csproj">
-      <Project>{421092EB-A692-46A8-A66B-247C94C16421}</Project>
-      <Name>TsdLib.Instrument</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
