@@ -92,5 +92,8 @@ namespace TsdLib.UI.Controls
             if (state.HasFlag(State.TestStarting))
                 ClearMeasurements();
         }
+
+        [Obsolete("Use the DisplayXXX properties to toggle visibility")]
+        public bool DisplayLimitsAndResult { get; set; }
     }
 }
