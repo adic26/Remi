@@ -140,7 +140,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_LowerLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_UpperLimit;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_Result;
-        protected System.Windows.Forms.DataGridView dataGridView;
+        private System.Windows.Forms.DataGridView dataGridView;
         private System.Windows.Forms.GroupBox groupBox;
     }
 }
