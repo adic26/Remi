@@ -146,7 +146,12 @@
             // measurementDataGridViewControl
             // 
             this.measurementDataGridViewControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.measurementDataGridViewControl.DisplayLimitsAndResult = true;
+            this.measurementDataGridViewControl.DisplayLowerLimit = true;
+            this.measurementDataGridViewControl.DisplayMeasuredValue = true;
+            this.measurementDataGridViewControl.DisplayMeasurementName = true;
+            this.measurementDataGridViewControl.DisplayResult = true;
+            this.measurementDataGridViewControl.DisplayUnits = true;
+            this.measurementDataGridViewControl.DisplayUpperLimit = true;
             this.measurementDataGridViewControl.Location = new System.Drawing.Point(12, 280);
             this.measurementDataGridViewControl.Name = "measurementDataGridViewControl";
             this.measurementDataGridViewControl.Size = new System.Drawing.Size(1032, 282);
