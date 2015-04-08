@@ -239,27 +239,24 @@ namespace TsdLib.TestSystem.Controller
                 {
                     DateTime startTime = DateTime.Now;
 
-                    SequenceConfigCommon config = sequenceConfig;
-                    
-                    EventManager eventManager;
+                    SequenceConfigCommon sequence = sequenceConfig;
+
                     if (_localDomain)
                     {
-                        _activeSequence = CreateSequenceObject(config.FullTypeName);
-                        eventManager = CreateEventManager(UI, _activeSequence);
+                        _activeSequence = CreateSequenceObject(sequence.FullTypeName);
                     }
                     else
                     {
-                        List<CodeCompileUnit> codeCompileUnits = new List<CodeCompileUnit> { new BasicCodeParser(config.AssemblyReferences.ToArray()).Parse(new StringReader(config.SourceCode)) };
+                        List<CodeCompileUnit> codeCompileUnits = new List<CodeCompileUnit> { new BasicCodeParser(sequence.AssemblyReferences.ToArray()).Parse(new StringReader(sequence.SourceCode)) };
 
-                        IEnumerable<CodeCompileUnit> additionalCodeCompileUnits = GenerateAdditionalCodeCompileUnits(config.Namespace.Replace(".Sequences", ""));
+                        IEnumerable<CodeCompileUnit> additionalCodeCompileUnits = GenerateAdditionalCodeCompileUnits(sequence.Namespace.Replace(".Sequences", ""));
 
                         DynamicCompiler generator = new DynamicCompiler(Language.CSharp, AppDomain.CurrentDomain.BaseDirectory);
                         string sequenceAssembly = generator.Compile(codeCompileUnits.Concat(additionalCodeCompileUnits));
 
                         sequenceDomain = AppDomain.CreateDomain("Sequence Domain");
 
-                        _activeSequence = CreateSequenceObject(config.FullTypeName, sequenceAssembly, sequenceDomain);
-                        eventManager = CreateEventManager(UI, _activeSequence);
+                        _activeSequence = CreateSequenceObject(sequence.FullTypeName, sequenceAssembly, sequenceDomain);
 
                         foreach (TraceListener listener in Trace.Listeners)
                             _activeSequence.AddTraceListener(listener);
@@ -271,6 +268,7 @@ namespace TsdLib.TestSystem.Controller
                     if (!testConfigs.Any())
                         testConfigs = configManagerProvider.GetConfigManager<TTestConfig>().GetConfigGroup().ToArray();
 
+                    EventManager eventManager = CreateEventManager(UI);
                     _activeSequence.DataAdded += eventManager.AddData;
                     _activeSequence.MeasurementAdded += eventManager.AddMeasurement;
                     _activeSequence.TestInfoAdded += eventManager.AddTestInfo;
@@ -357,16 +355,9 @@ namespace TsdLib.TestSystem.Controller
             return new CodeCompileUnit[0];
         }
 
-
-
-        protected virtual EventManager CreateEventManager(IView view, ITestSequence testSequence)
+        protected virtual EventManager CreateEventManager(IView view)
         {
-            return new EventManager(view, testSequence);
-        }
-
-        protected virtual EventManager CreateEventManager(IView view, ITestSequence testSequence, AppDomain appDomain)
-        {
-            return (EventManager)appDomain.CreateInstanceAndUnwrap(typeof(EventManager).Assembly.FullName, typeof(EventManager).FullName, false, BindingFlags.CreateInstance, null, new object[] { view, testSequence }, CultureInfo.CurrentCulture, null);
+            return new EventManager(view);
         }
 
         protected virtual ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig> CreateSequenceObject(string sequenceName)
