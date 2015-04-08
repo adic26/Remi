@@ -152,12 +152,12 @@ namespace TsdLib.TestSystem.TestSequence
             _testInfo.Add(new TestInfo(instrumentType + " " + instrument.FirmwareVersionDescriptor, instrument.FirmwareVersion));
         }
 
-        public void Abort()
+        public virtual void Abort()
         {
             _tokenSource.Cancel();
         }
 
-        public void Abort(Exception ex)
+        public virtual void Abort(Exception ex)
         {
             Error = ex;
             _tokenSource.Cancel();
