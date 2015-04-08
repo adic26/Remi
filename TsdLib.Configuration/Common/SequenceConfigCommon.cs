@@ -74,7 +74,7 @@ using {0}.Configuration;
 using TsdLib.TestSequence;
 namespace {0}.Sequences
 {{
-    public class DefaultSequence : TestSequenceBase<StationConfig, ProductConfig, TestConfig>
+    public class DefaultSequence : SequentialTestSequence<StationConfig, ProductConfig, TestConfig>
     {{
         protected override void ExecuteTest(StationConfig stationConfig, ProductConfig productConfig, params TestConfig[] testConfigs)
         {{
