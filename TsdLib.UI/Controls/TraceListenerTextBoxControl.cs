@@ -39,9 +39,20 @@ namespace TsdLib.UI.Controls
                 Clear();
         }
 
-        
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
 
         #region nested TraceListener implementation
+
+        private class SyncObject : MarshalByRefObject
+        {
+            public override object InitializeLifetimeService()
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Subscribe a text box to monitor the Trace and Debug output messages.
@@ -51,7 +62,7 @@ namespace TsdLib.UI.Controls
             public TextBoxBase TextBox { get; private set; }
             readonly Action<string> _textBoxAppend;
 
-            private readonly object _syncObject = new object();
+            private readonly SyncObject _syncObject = new SyncObject();
             private readonly StringBuilder _buffer = new StringBuilder();
 
             /// <summary>
@@ -104,6 +115,11 @@ namespace TsdLib.UI.Controls
             public override void WriteLine(string message)
             {
                 Write(message + Environment.NewLine);
+            }
+
+            public override object InitializeLifetimeService()
+            {
+                return null;
             }
         }
 
