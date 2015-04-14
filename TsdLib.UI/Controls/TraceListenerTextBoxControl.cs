@@ -39,9 +39,20 @@ namespace TsdLib.UI.Controls
                 Clear();
         }
 
-        
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
 
         #region nested TraceListener implementation
+
+        private class SyncObject : MarshalByRefObject
+        {
+            public override object InitializeLifetimeService()
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Subscribe a text box to monitor the Trace and Debug output messages.
@@ -51,7 +62,8 @@ namespace TsdLib.UI.Controls
             public TextBoxBase TextBox { get; private set; }
             readonly Action<string> _textBoxAppend;
 
-            private readonly StringBuilder _buffer;
+            private readonly SyncObject _syncObject = new SyncObject();
+            private readonly StringBuilder _buffer = new StringBuilder();
 
             /// <summary>
             /// Initializes a new instance of the TextBoxTraceListener by subscribing a text box to monitor the Trace and Debug output messages.
@@ -61,7 +73,6 @@ namespace TsdLib.UI.Controls
             {
                 TextBox = textBox;
                 _textBoxAppend = textBox.AppendText;
-                _buffer = new StringBuilder();
 
                 TextBox.HandleCreated += _textBox_HandleCreated;
             }
@@ -79,19 +90,22 @@ namespace TsdLib.UI.Controls
             /// <param name="message">Message to write.</param>
             public override void Write(string message)
             {
-                if (TextBox.IsDisposed)
-                    return;
-
-                if (!TextBox.IsHandleCreated)
+                lock (_syncObject)
                 {
-                    _buffer.Append(message);
-                    return;
-                }
+                    if (TextBox.IsDisposed)
+                        return;
 
-                if (TextBox.InvokeRequired)
-                    TextBox.Invoke(_textBoxAppend, message);
-                else
-                    _textBoxAppend(message);
+                    if (!TextBox.IsHandleCreated)
+                    {
+                        _buffer.Append(message);
+                        return;
+                    }
+
+                    if (TextBox.InvokeRequired)
+                        TextBox.Invoke(_textBoxAppend, message);
+                    else
+                        _textBoxAppend(message);
+                }
             }
 
             /// <summary>
@@ -101,6 +115,11 @@ namespace TsdLib.UI.Controls
             public override void WriteLine(string message)
             {
                 Write(message + Environment.NewLine);
+            }
+
+            public override object InitializeLifetimeService()
+            {
+                return null;
             }
         }
 

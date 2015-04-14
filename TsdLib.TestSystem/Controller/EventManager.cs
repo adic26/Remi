@@ -38,7 +38,7 @@ namespace TsdLib.TestSystem.Controller
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(string.Format("Failed to update data on the UI{0}Data type: {1}{0}Error: {2}", Environment.NewLine, data.GetType().Name, ex));
+                Trace.WriteLine(string.Format("Failed to update data on the UI{0}Data type: {1}{0}Error: {2}", Environment.NewLine, data.Data.GetType().Name, ex));
             }
         }
 

@@ -24,8 +24,10 @@ namespace TsdLib.Configuration.Common
         {
             get
             {
-                return (MachineNames != null) &&
-                       (MachineNames.Contains(Environment.MachineName) || MachineNames.Contains("*"));
+                return MachineNames == null ||
+                       MachineNames.Count == 0 ||
+                       MachineNames.Contains(Environment.MachineName) ||
+                       MachineNames.Contains("*");
             }
         }
 
