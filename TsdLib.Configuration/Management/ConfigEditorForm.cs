@@ -54,6 +54,8 @@ namespace TsdLib.Configuration.Management
                 { button_CloneVersion, OperatingMode.Engineering },
                 { button_CreateNew, OperatingMode.Engineering },
             });
+
+            _controlFilter.Update(_configProvider.TestDetails.TestSystemMode);
         }
 
         private void button_PromoteVersion_Click(object sender, EventArgs e)

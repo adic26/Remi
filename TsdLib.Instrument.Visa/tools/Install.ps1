@@ -3,7 +3,12 @@
 function InstallDrivers
 {
     Write-Host "Running VISA driver downloader"
-	$exePath = $toolsPath + "\NIVISA1401full_downloader.exe"
+	
+	$projectFullName = $project.FullName
+	$fileInfo = new-object -typename System.IO.FileInfo -ArgumentList $projectFullName
+	$projectDirectory = $fileInfo.DirectoryName
+	$exePath = $projectDirectory + "\NIVISA1401full_downloader.exe"
+	Write-Host exe path = $exePath
     Start-Process -FilePath $exePath
 }
 
@@ -16,6 +21,7 @@ function InstallDriversFromMsi
     Start-Process -FilePath $msiPath -ArgumentList /i, $msiPath
 }
 
+$project.ProjectItems.Item("NIVISA1401full_downloader.exe").Properties.Item("CopyToOutputDirectory").Value = 2
 $regKey = 'HKLM:Software\National Instruments\NI-VISA\CurrentVersion'
 
 If (!(Test-Path($regKey)))
@@ -26,6 +32,7 @@ If (!(Test-Path($regKey)))
 Else
 {
     $val = (Get-ItemProperty -Path 'HKLM:Software\National Instruments\NI-VISA\CurrentVersion' -Name "Version").Version
+	Write-Host Found VISA version $val installed
     If ($val -ne "14.0.1")
     {
         Write-Host "Wrong version for NI-VISA drivers"
