@@ -1,4 +1,5 @@
-﻿using TestClient.Configuration;
+﻿using System.Diagnostics;
+using TestClient.Configuration;
 using TestClient.Instruments;
 using TsdLib.Measurements;
 using TsdLib.TestSystem.TestSequence;

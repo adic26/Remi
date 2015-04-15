@@ -9,12 +9,12 @@ namespace TestClient.TestPrograms
     {
         public static void Init()
         {
-            AdbFactory factory = new AdbFactory();
-            using (Aos_BCM4339 avg = factory.GetInstrument<Aos_BCM4339>())
-            {
-                string chipset = avg.GetChipsetFirmwareType();
-                MessageBox.Show(string.Format(" Model: {1}{0} Serial: {2}{0} Firmware: {3}{0} Chipset: {4}{0}", Environment.NewLine, avg.ModelNumber, avg.SerialNumber, avg.FirmwareVersion, chipset));
-            }
+            //AdbFactory_Process_Start_Stop factory = new AdbFactory_Process_Start_Stop();
+            //using (Aos_BCM4339 avg = factory.GetInstrument<Aos_BCM4339>())
+            //{
+            //    string chipset = avg.GetChipsetFirmwareType();
+            //    MessageBox.Show(string.Format(" Model: {1}{0} Serial: {2}{0} Firmware: {3}{0} Chipset: {4}{0}", Environment.NewLine, avg.ModelNumber, avg.SerialNumber, avg.FirmwareVersion, chipset));
+            //}
         }
     }
 }

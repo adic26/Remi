@@ -39,8 +39,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdbConnection.cs" />
+    <Compile Include="AdbConnection_Process_StartStop.cs" />
     <Compile Include="AdbExceptions.cs" />
     <Compile Include="AdbFactory.cs" />
+    <Compile Include="AdbFactory_Process_Start_Stop.cs" />
     <None Include="ManagedAdb\StreamOutputReceiver.cs" />
     <None Include="ManagedAdb\ManagedAdbConnection.cs" />
     <None Include="ManagedAdb\ManagedAdbFactory.cs" />
