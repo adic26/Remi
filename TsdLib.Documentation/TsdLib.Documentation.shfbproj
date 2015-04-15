@@ -51,7 +51,6 @@
       <DocumentationSource sourceFile="..\TsdLib.Measurements\TsdLib.Measurements.csproj" />
       <DocumentationSource sourceFile="..\TsdLib.TestSystem\TsdLib.TestSystem.csproj" />
       <DocumentationSource sourceFile="..\TsdLib.UI\TsdLib.UI.csproj" />
-      <DocumentationSource sourceFile="..\TsdLib.InstrumentLibraryTools\TsdLib.InstrumentLibraryTools.csproj" />
       <DocumentationSource sourceFile="..\TsdLib.Instrument.Visa\TsdLib.Instrument.Visa.csproj" />
       <DocumentationSource sourceFile="..\TsdLib.Instrument.Ssh\TsdLib.Instrument.Ssh.csproj" />
       <DocumentationSource sourceFile="..\TsdLib.CodeGenerator\TsdLib.CodeGenerator.csproj" />
