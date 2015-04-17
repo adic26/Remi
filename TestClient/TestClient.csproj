@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;REMICONTROL;INSTRUMENT_LIBRARY</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;INSTRUMENT_LIBRARY;REMICONTROL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -28,7 +28,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;REMICONTROL;INSTRUMENT_LIBRARY</DefineConstants>
+    <DefineConstants>TRACE;INSTRUMENT_LIBRARY;REMICONTROL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -37,12 +37,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DBControl, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DBControl.4.5.228\lib\net45\DBControl.dll</HintPath>
+      <HintPath>..\packages\DBControl.4.5.346\lib\net45\DBControl.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="DBControl.XmlSerializers, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DBControl.4.5.228\lib\net45\DBControl.XmlSerializers.dll</HintPath>
+      <HintPath>..\packages\DBControl.4.5.346\lib\net45\DBControl.XmlSerializers.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="LibGit2Sharp">
       <HintPath>..\packages\LibGit2Sharp.0.21.0.176\lib\net40\LibGit2Sharp.dll</HintPath>

@@ -12,6 +12,8 @@ namespace TestClient.Sequences
         {
             var blackBerryWlan = Aos_BCM4339.Connect();
 
+            AddTestInfo(new TestInfo("WLAN Chipset Family", blackBerryWlan.GetChipsetFamily()));
+
             AddTestInfo(new TestInfo("WLAN Chipset Firmware Version", blackBerryWlan.GetChipsetFirmwareVersion()));
 
             blackBerryWlan.DisableWlan();

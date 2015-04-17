@@ -32,11 +32,13 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DBControl">
-      <HintPath>..\packages\DBControl.4.5.258\lib\net45\DBControl.dll</HintPath>
+    <Reference Include="DBControl, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DBControl.4.5.346\lib\net45\DBControl.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="DBControl.XmlSerializers">
-      <HintPath>..\packages\DBControl.4.5.258\lib\net45\DBControl.XmlSerializers.dll</HintPath>
+    <Reference Include="DBControl.XmlSerializers, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DBControl.4.5.346\lib\net45\DBControl.XmlSerializers.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

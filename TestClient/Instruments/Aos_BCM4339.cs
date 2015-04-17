@@ -18,8 +18,7 @@ namespace TestClient.Instruments
     
     // ReSharper disable once FieldCanBeMadeReadOnly.Local
     [IdQuery("Avengers")]
-    [InitCommands("netcfg wlan0 up")]
-    [CommandDelay("200")]
+    [InitCommands("adb root;netcfg wlan0 up")]
     public class Aos_BCM4339 : InstrumentBase<AdbConnection>, IBlackBerryWlan
     {
         
@@ -39,7 +38,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "cat /system/build.prop | grep ro.build.id";
+                return "getprop | grep ro.product.board";
             }
         }
         
@@ -47,7 +46,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "(?<=ro.build.id=)\\w+";
+                return "(?<=: \\[)\\w+(?=\\])";
             }
         }
         
@@ -55,7 +54,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "cat /system/build.prop | grep ro.build.date.utc";
+                return "getprop | grep ro.nvram.boardid.bsn";
             }
         }
         
@@ -63,7 +62,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "(?<=ro.build.date.utc=)\\d+";
+                return "(?<=: \\[)\\d+(?=\\])";
             }
         }
         
@@ -79,7 +78,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "cat /system/build.prop | grep ro.build.version.incremental";
+                return "getprop | grep ro.build.version.incremental";
             }
         }
         
@@ -87,7 +86,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "(?<=ro.build.version.incremental=)\\w+";
+                return "(?<=: \\[)\\w+(?=\\])";
             }
         }
         
@@ -405,8 +404,8 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil revinfo | grep chipnum", -1);
-                return Connection.GetResponse<String>("(?<=chipnum 0x)\\d+");
+                Connection.SendCommand("getprop | grep ro.hwf.wlan.chipset", -1);
+                return Connection.GetResponse<String>("\\d+");
             }
             finally
             {

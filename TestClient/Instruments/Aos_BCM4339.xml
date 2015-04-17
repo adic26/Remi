@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Instruments xmlns="TsdLib.Instruments.xsd">
-  <Instrument Name="Aos_BCM4339" ConnectionType="Adb" CommandDelay="200" Interfaces="IBlackBerryWlan" InitCommands="netcfg wlan0 up">
+  <Instrument Name="Aos_BCM4339" ConnectionType="Adb" Interfaces="IBlackBerryWlan" InitCommands="adb root;netcfg wlan0 up">
 
     <!--Discovery-->
     <IdQuery Response="Avengers"/>
 
     <!--Identification-->
-    <ModelNumber Message="cat /system/build.prop | grep ro.build.id" RegEx="(?&lt;=ro.build.id=)\w+"/>
-    <SerialNumber Message="cat /system/build.prop | grep ro.build.date.utc" RegEx="(?&lt;=ro.build.date.utc=)\d+" Descriptor="BSN"/>
-    <FirmwareVersion Message="cat /system/build.prop | grep ro.build.version.incremental" RegEx="(?&lt;=ro.build.version.incremental=)\w+" Descriptor="OS Version"/>
+    <ModelNumber Message="getprop | grep ro.product.board" RegEx="(?&lt;=: \[)\w+(?=\])"/>
+    <SerialNumber Message="getprop | grep ro.nvram.boardid.bsn" RegEx="(?&lt;=: \[)\d+(?=\])" Descriptor="BSN"/>
+    <FirmwareVersion Message="getprop | grep ro.build.version.incremental" RegEx="(?&lt;=: \[)\w+(?=\])" Descriptor="OS Version"/>
 
     <Command Name="DisableWlan" Message="netcfg wlan0 down">
     </Command>
@@ -69,7 +69,7 @@
     <Command Name="ResetCounter" Message="/vendor/firmware/wlutil reset_cnts">
     </Command>
 
-    <Query Name="GetChipsetFamily" Message="/vendor/firmware/wlutil revinfo | grep chipnum" RegEx="(?&lt;=chipnum 0x)\d+" ReturnType="String">
+    <Query Name="GetChipsetFamily" Message="getprop | grep ro.hwf.wlan.chipset" RegEx="\d+" ReturnType="String">
     </Query>
     <Query Name="GetChipsetFirmwareType" Message="/vendor/firmware/wlutil ver" RegEx="(?&lt;=version (\d+\.){3}\d+ \().*(?=\))" ReturnType="String">
     </Query>

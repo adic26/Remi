@@ -16,14 +16,14 @@ namespace TsdLib.Forms
             _dictionary = dictionary;
         }
 
-        public void Update(OperatingMode operatingMode)
+        public void Update(OperatingMode currentMode)
         {
             foreach (var kvp in _dictionary)
             {
                 Control ctrl = kvp.Key;
-                OperatingMode mode = kvp.Value;
+                OperatingMode minimumAccessMode = kvp.Value;
 
-                ctrl.Enabled = mode < operatingMode;
+                ctrl.Enabled = currentMode <= minimumAccessMode;
             }
         }
     }

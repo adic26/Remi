@@ -64,9 +64,7 @@ namespace TestClient
                 Controller c = new Controller(testDetails, sharedConfigConnection, localDomain);
                 Application.Run(c.UI);
             }
-
-
-#if !DEBUG            
+#if RELEASE           
             catch (TargetInvocationException ex)
             {
                 MessageBox.Show(ex.InnerException.ToString(), ex.InnerException.GetType().Name);

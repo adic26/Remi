@@ -1,104 +1,86 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace TsdLib.Instrument.Adb
 {
     public class AdbConnection : ConnectionBase
     {
-        private readonly Process cmdProcess;
-        //private readonly StringBuilder sbOut = new StringBuilder();
+        private const int Timeout = 10000;
+        private static readonly string[] commandSeparators = { ";" };
+        private static readonly string workingDirectory = Path.Combine(Directory.GetCurrentDirectory(), "platform-tools");
+        private static readonly string adbExe = Path.Combine(Directory.GetCurrentDirectory(), "platform-tools", "adb.exe");
+        
+        private readonly ProcessRunner _adbShellProcess;
 
-        private readonly ConcurrentStack<string> outputStack = new ConcurrentStack<string>();
-
-        private readonly EventWaitHandle mreOut = new AutoResetEvent(false);
-        private readonly EventWaitHandle mreErr = new AutoResetEvent(false);
-
+        /// <summary>
+        /// Gets an array of strings that are used to delimit commands placed on a single line.
+        /// </summary>
+        protected override string[] CommandSeparators
+        {
+            get { return commandSeparators; }
+        }
         public AdbConnection(string address)
             : base(address)
         {
-            ProcessStartInfo _startInfo = new ProcessStartInfo
-            {
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                FileName = Path.Combine(Environment.SystemDirectory, "cmd.exe"),
-                RedirectStandardError = true,
-                RedirectStandardOutput = true,
-                RedirectStandardInput = true,
-                WorkingDirectory = @"platform-tools"
-            };
-
-            cmdProcess = Process.Start(_startInfo);
-
-            cmdProcess.OutputDataReceived += (o, e) =>
-            {
-                if (string.IsNullOrWhiteSpace(e.Data))
-                    mreOut.Set();
-                else
-                    //sbOut.AppendLine(e.Data);
-                    outputStack.Push(e.Data);
-            };
-            cmdProcess.BeginOutputReadLine();
-            cmdProcess.ErrorDataReceived += (o, e) =>
-            {
-                if (string.IsNullOrWhiteSpace(e.Data))
-                    mreErr.Set();
-                else
-                {
-                    bool gotOutputWithinFiveSeconds = mreOut.WaitOne(5000);
-                    string command;
-                    bool success = outputStack.TryPop(out command);
-                    throw new AdbCommandException(this, command, e.Data);
-                }
-            };
-            cmdProcess.BeginErrorReadLine();
-
-            mreOut.WaitOne();
-
-            //if (cmdProcess.ExitCode != 0)
-            //    throw new AdbConnectException("The adb devices process exited with code: " + cmdProcess.ExitCode);
-            
-
-            //if (sbErr.Length > 0)
-            //    throw new AdbConnectException("The adb devices process generated the error: " + sbErr);
-
-            //IEnumerable<string> devs = sbOut.ToString()
-            //    .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
-            //    .Select(line => Regex.Match(line, @"\w{8}(?=\sdevice)"))
-            //    .Where(match => match.Success)
-            //    .Select(match => match.Value)
-            //    ;
-
+            _adbShellProcess = new ProcessRunner(adbExe, "shell", workingDirectory, "exit", Timeout);
         }
 
-        protected override void Write(string message)
+        protected override void Write(string command)
         {
-            outputStack.Clear();
-            cmdProcess.StandardInput.WriteLine("adb -s " + Address + " shell \"" + message + "\"" );
+            if (command.StartsWith("adb"))
+            {
+                StringBuilder sbOut = new StringBuilder();
+                StringBuilder sbErr = new StringBuilder();
 
-            mreOut.WaitOne();
-            //cmdProcess.StandardInput.Close();
-            //bool exited = cmdProcess.WaitForExit(5000);
+                ProcessStartInfo _startInfo = new ProcessStartInfo
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    FileName = Path.Combine(Environment.SystemDirectory, "cmd.exe"),
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardInput = true,
+                    WorkingDirectory = @"platform-tools"
+                };
 
-            //if (!exited)
-            //    throw new AdbConnectException("The adb devices process did not exit after 5 seconds.");
+                using (Process cmdProcess = Process.Start(_startInfo))
+                using (ManualResetEvent mreOut = new ManualResetEvent(false), mreErr = new ManualResetEvent(false))
+                {
+                    cmdProcess.OutputDataReceived += (o, e) => { if (e.Data == null) mreOut.Set(); else sbOut.AppendLine(e.Data); };
+                    cmdProcess.BeginOutputReadLine();
+                    cmdProcess.ErrorDataReceived += (o, e) => { if (e.Data == null) mreErr.Set(); else sbErr.AppendLine(e.Data); };
+                    cmdProcess.BeginErrorReadLine();
 
+                    cmdProcess.StandardInput.WriteLine(command);
 
+                    cmdProcess.StandardInput.Close();
+                    bool exited = cmdProcess.WaitForExit(Timeout);
+
+                    if (!exited)
+                        throw new AdbCommandException(this, command, "The adb process did not exit after " + Timeout + " milliSeconds.");
+
+                    mreOut.WaitOne();
+                    mreErr.WaitOne();
+
+                    if (cmdProcess.ExitCode != 0)
+                        throw new AdbCommandException(this, command, "The adb root process exited with code: " + cmdProcess.ExitCode);
+
+                    if (sbErr.Length > 0)
+                        throw new AdbCommandException(this, command, "Error read from buffer");
+
+                    Trace.WriteLine("Received response: " + sbOut);
+                }
+            }
+            else
+                _adbShellProcess.SendCommand(command);
         }
 
         protected override string ReadString()
         {
-            string data;
-            bool success = outputStack.TryPop(out data);
-            outputStack.Clear();
-            return data;
+            return _adbShellProcess.ReadBuffer();
         }
 
         protected override byte ReadByte()
@@ -108,21 +90,17 @@ namespace TsdLib.Instrument.Adb
 
         protected override bool CheckForError()
         {
-            return false;
+            return !IsConnected;
         }
 
         public override bool IsConnected
         {
-            get { return true; }
+            get { return _adbShellProcess.IsConnected; }
         }
 
         protected override void Dispose(bool disposing)
         {
-            cmdProcess.StandardInput.Close();
-            cmdProcess.StandardOutput.Close();
-            cmdProcess.StandardError.Close();
-            cmdProcess.Close();
-            cmdProcess.Dispose();
+            _adbShellProcess.Dispose();
             base.Dispose(disposing);
         }
     }

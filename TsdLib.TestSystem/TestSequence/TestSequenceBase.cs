@@ -146,10 +146,10 @@ namespace TsdLib.TestSystem.TestSequence
         protected virtual void Instruments_InstrumentConnected(object sender, IInstrument instrument)
         {
             string instrumentType = instrument.GetType().Name;
-            _testInfo.Add(new TestInfo(instrumentType + " Description", instrument.Description));
-            _testInfo.Add(new TestInfo(instrumentType + " " + instrument.ModelNumberDescriptor, instrument.ModelNumber));
-            _testInfo.Add(new TestInfo(instrumentType + " " + instrument.SerialNumberDescriptor, instrument.SerialNumber));
-            _testInfo.Add(new TestInfo(instrumentType + " " + instrument.FirmwareVersionDescriptor, instrument.FirmwareVersion));
+            AddTestInfo(new TestInfo(instrumentType + " Description", instrument.Description));
+            AddTestInfo(new TestInfo(instrumentType + " " + instrument.ModelNumberDescriptor, instrument.ModelNumber));
+            AddTestInfo(new TestInfo(instrumentType + " " + instrument.SerialNumberDescriptor, instrument.SerialNumber));
+            AddTestInfo(new TestInfo(instrumentType + " " + instrument.FirmwareVersionDescriptor, instrument.FirmwareVersion));
         }
 
         public virtual void Abort()
@@ -180,6 +180,7 @@ namespace TsdLib.TestSystem.TestSequence
         {
             if (disposing)
             {
+                Trace.Listeners.Clear();
                 if (Instruments != null)
                     Instruments.Dispose();
             }

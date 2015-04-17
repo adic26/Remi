@@ -309,7 +309,8 @@ namespace TsdLib.TestSystem.Controller
                     }
                     catch (CannotUnloadAppDomainException ex)
                     {
-                        Trace.WriteLine("AppDomain could not be unloaded." + Environment.NewLine + ex);
+                        //Can't write to trace, since the listener on the other side may be unloaded
+                        //Trace.WriteLine("AppDomain could not be unloaded." + Environment.NewLine + ex);
                     }
 
                 }
