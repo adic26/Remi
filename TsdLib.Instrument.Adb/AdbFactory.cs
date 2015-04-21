@@ -11,6 +11,16 @@ namespace TsdLib.Instrument.Adb
 {
     public class AdbFactory : FactoryBase<AdbConnection>
     {
+        static AdbFactory()
+        {
+            //using (Process p = Process.Start(Path.Combine(Environment.SystemDirectory, "cmd.exe"), "taskkill /F /im adb.exe"))
+            //    if (!p.WaitForExit(5000))
+            //        Trace.WriteLine("WARNING: FAILED TO KILL ADB PROCESSES");
+
+            foreach (Process adbProcess in Process.GetProcessesByName("adb"))
+                adbProcess.Kill();
+        }
+
         protected override IEnumerable<string> SearchForInstruments()
         {
             StringBuilder sbOut = new StringBuilder();
@@ -34,6 +44,8 @@ namespace TsdLib.Instrument.Adb
                 cmdProcess.BeginOutputReadLine();
                 cmdProcess.ErrorDataReceived += (o, e) => { if (e.Data == null) mreErr.Set(); else sbErr.AppendLine(e.Data); };
                 cmdProcess.BeginErrorReadLine();
+
+                //TODO: cmdProcess.StandardInput.WriteLine("adb wait-for-device");
 
                 cmdProcess.StandardInput.WriteLine("adb devices");
 

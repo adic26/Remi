@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace TsdLib.Instrument.Adb
@@ -13,16 +14,9 @@ namespace TsdLib.Instrument.Adb
         private readonly string _exitCommand;
         private readonly int _timeoutMilliseconds;
 
-        private readonly ConcurrentStack<string> _stack = new ConcurrentStack<string>();
-
-        public event EventHandler<string> OutputDataReceived;
-
-        protected void OnOutputDataReceived(string data)
-        {
-            var handler = OutputDataReceived;
-            if (handler != null)
-                handler(this, data);
-        }
+        private readonly ConcurrentQueue<string> _queue = new ConcurrentQueue<string>();
+        private readonly AutoResetEvent _waitHandleCmd = new AutoResetEvent(false);
+        //private readonly AutoResetEvent _waitHandleResponse = new AutoResetEvent(false);
 
         public ProcessRunner(string exe, string arguments, string workingDirectory, string exitCommand, int timeoutMilliseconds)
         {
@@ -47,12 +41,35 @@ namespace TsdLib.Instrument.Adb
             if (_process == null)
                 throw new Exception("Could not start the process " + _process.ProcessName);
 
+            bool terminated = false;
             _process.OutputDataReceived += (o, e) =>
             {
                 if (e.Data == null)
                 { }
                 else
-                    _stack.Push(e.Data);
+                {
+                    Match junk = Regex.Match(e.Data, ".*(\b)+");
+                    if (junk.Success)
+                    {
+                        string appendThis = e.Data.Remove(0, junk.Length);
+                        string[] copy = new string[_queue.Count];
+                        _queue.CopyTo(copy, 0);
+                        copy[copy.Length - 1] += appendThis;
+                        _queue.Clear();
+                        foreach (string s in copy)
+                            _queue.Enqueue(s);
+                    }
+                    else
+                        _queue.Enqueue(e.Data);
+
+                    if (e.Data == string.Empty)
+                        if (terminated)
+                            _waitHandleCmd.Set();
+                        else
+                            terminated = true;
+                    else
+                        terminated = false;
+                }
             };
             _process.BeginOutputReadLine();
 
@@ -60,62 +77,33 @@ namespace TsdLib.Instrument.Adb
             {
                 if (e.Data == null)
                 { }
-                else
+                else if (!_process.HasExited)
                     throw new Exception(string.Format("Error from process {0}: On command: {1} Details: {2}", _process.ProcessName, _lastCommand, e.Data));
             };
             _process.BeginErrorReadLine();
         }
 
+        //TODO: return error code
         public void SendCommand(string command)
         {
-            
-            _lastCommand = command;
+            _queue.Clear();
             _process.StandardInput.WriteLine(command);
+            _waitHandleCmd.WaitOne();
 
+            //read until we see the command that we just sent, followed by two empty strings
+            _queue.DequeueUntil(readFromBuffer => Regex.IsMatch(readFromBuffer, @"\w+@\w+:/\s?[#$]\s?"));
+            _queue.DequeueUntil(readFromBuffer => readFromBuffer == string.Empty);
+            _queue.DequeueUntil(readFromBuffer => readFromBuffer == string.Empty);
         }
 
         public string ReadBuffer()
         {
-            List<string> data = new List<string>();
-
-            string line;
-
-
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            while (true)
-            {
-                //Give the async DataReceived event some time to push the latest data onto the stack
-                //If stale data is still on the stack, the line.Contains method could go further down into the stale commands
-                Thread.Sleep(400);
-
-                if (_stack.TryPop(out line))
-                {
-                    if (line.Contains(_lastCommand))
-                        break;
-                    if (!string.IsNullOrWhiteSpace(line))
-                        data.Insert(0, line);
-                }
-
-                else
-                    Trace.Write(".");
-
-                if (sw.ElapsedMilliseconds > _timeoutMilliseconds)
-                    return "Could not read any data from the queue";
-            }
-            _stack.Clear();
-            return string.Join(Environment.NewLine, data);
+            return _queue.DequeueUntil(readFromBuffer => _queue.Count == 0);
         }
 
         public bool IsConnected
         {
             get { return true; }
-        }
-
-        public bool WaitForExit()
-        {
-
-            return _process.WaitForExit(_timeoutMilliseconds);
         }
 
         public void Dispose()
@@ -137,6 +125,40 @@ namespace TsdLib.Instrument.Adb
                 catch (InvalidOperationException) { }
 
             _process.Dispose();
+        }
+    }
+
+    internal static class QueueExtensions
+    {
+        public static void Clear(this ConcurrentQueue<string> queue)
+        {
+            string str;
+            List<string> list = new List<string>();
+            while (queue.TryDequeue(out str))
+                list.Add(str);
+        }
+
+        public static string DequeueUntil(this ConcurrentQueue<string> queue, Predicate<string> check)
+        {
+            string readFromBuffer = null;
+            List<string> list = new List<string>();
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            while (readFromBuffer == null || !check(readFromBuffer))
+            {
+                if (!queue.TryDequeue(out readFromBuffer))
+                    Thread.Sleep(100);
+                else
+                    list.Add(readFromBuffer);
+                if (sw.ElapsedMilliseconds > 5000)
+                {
+                    Trace.WriteLine("WARNING: COULD NOT FIND THE PATTERN IN THE BUFFER");
+                    return "";
+                }
+            }
+
+            return string.Join("", list);
         }
     }
 }

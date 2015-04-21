@@ -54,7 +54,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "getprop | grep ro.nvram.boardid.bsn";
+                return "cat /nvram/boardid/bsn && echo \'\'";
             }
         }
         
@@ -62,7 +62,7 @@ namespace TestClient.Instruments
         {
             get
             {
-                return "(?<=: \\[)\\d+(?=\\])";
+                return "\\d+";
             }
         }
         
@@ -405,7 +405,7 @@ namespace TestClient.Instruments
             try
             {
                 Connection.SendCommand("getprop | grep ro.hwf.wlan.chipset", -1);
-                return Connection.GetResponse<String>("\\d+");
+                return Connection.GetResponse<String>("\\d+", '\uD800', -1);
             }
             finally
             {
@@ -419,7 +419,7 @@ namespace TestClient.Instruments
             try
             {
                 Connection.SendCommand("/vendor/firmware/wlutil ver", -1);
-                return Connection.GetResponse<String>("(?<=version (\\d+\\.){3}\\d+ \\().*(?=\\))");
+                return Connection.GetResponse<String>("(?<=version (\\d+\\.){3}\\d+ \\().*(?=\\))", '\uD800', -1);
             }
             finally
             {
@@ -433,7 +433,7 @@ namespace TestClient.Instruments
             try
             {
                 Connection.SendCommand("/vendor/firmware/wlutil ver", -1);
-                return Connection.GetResponse<String>("(?<=version )(\\d+\\.){3}\\d+");
+                return Connection.GetResponse<String>("(?<=version )(\\d+\\.){3}\\d+", '\uD800', -1);
             }
             finally
             {
@@ -447,7 +447,7 @@ namespace TestClient.Instruments
             try
             {
                 Connection.SendCommand("/vendor/firmware/wlutil isup", -1);
-                return Connection.GetResponse<Boolean>();
+                return Connection.GetResponse<Boolean>("", '\uD800', -1);
             }
             finally
             {
@@ -461,7 +461,7 @@ namespace TestClient.Instruments
             try
             {
                 Connection.SendCommand("/vendor/firmware/wlutil country", -1);
-                return Connection.GetResponse<String>();
+                return Connection.GetResponse<String>("", '\uD800', -1);
             }
             finally
             {
@@ -475,7 +475,7 @@ namespace TestClient.Instruments
             try
             {
                 Connection.SendCommand("/vendor/firmware/wlutil phy_activecal", -1);
-                return Connection.GetResponse<Boolean>();
+                return Connection.GetResponse<Boolean>("", '\uD800', -1);
             }
             finally
             {
@@ -488,8 +488,8 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil counters | grep rxdfrmmcast", -1);
-                return Connection.GetResponse<Int32>("(?<=rxdfrmmcast )\\d+");
+                Connection.SendCommand("/vendor/firmware/wlutil counters | grep rxdfrmmcast", 200);
+                return Connection.GetResponse<Int32>("(?<=rxdfrmmcast )\\d+", '\uD800', 200);
             }
             finally
             {

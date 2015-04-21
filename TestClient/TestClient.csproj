@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;INSTRUMENT_LIBRARY;REMICONTROL</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;REMICONTROL;INSTRUMENT_LIBRARY</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -28,7 +28,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;INSTRUMENT_LIBRARY;REMICONTROL</DefineConstants>
+    <DefineConstants>TRACE;REMICONTROL;INSTRUMENT_LIBRARY</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -56,7 +56,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="TsdLib.InstrumentLibrary.Tools, Version=3.2.0.0, Culture=neutral, PublicKeyToken=3646076ad9d068cf, processorArchitecture=MSIL">
-      <HintPath>..\packages\TsdLib.InstrumentLibrary.Tools.3.2.6-debug\lib\net45\TsdLib.InstrumentLibrary.Tools.dll</HintPath>
+      <HintPath>..\packages\TsdLib.InstrumentLibrary.Tools.3.2.9-debug\lib\net45\TsdLib.InstrumentLibrary.Tools.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -102,6 +102,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Instruments\Schema\TsdLib.Instruments.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

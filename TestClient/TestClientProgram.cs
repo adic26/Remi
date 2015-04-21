@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows.Forms;
 using TsdLib.Configuration;
 using System.Configuration;
-using System.Reflection;
 using TsdLib.Configuration.Connections;
 using TsdLib.Configuration.Details;
 
