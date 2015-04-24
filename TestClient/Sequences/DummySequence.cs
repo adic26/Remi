@@ -1,5 +1,6 @@
 
 using System;
+using System.Diagnostics;
 using System.Threading;
 using TestClient.Configuration;
 using TestClient.Instruments;
@@ -21,11 +22,11 @@ namespace TestClient.Sequences
         {
             //Use the System.Diagnostics.Debugger.Break() method to insert breakpoints.
             //System.Diagnostics.Debugger.Break();
-
             SendData(new Tuple<int, string>(1, "2"));
             
             for (int i = 0; i < testConfig.LoopIterations; i++)
             {
+                Trace.WriteLine("ITERATION " + i);
                 UpdateProgress(i, testConfig.LoopIterations);
                 foreach (double voltageSetting in testConfig.VoltageSettings)
                 {

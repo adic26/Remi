@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using TsdLib.UI.Utilities;
 
 namespace TsdLib.UI.Controls
 {
@@ -39,20 +44,7 @@ namespace TsdLib.UI.Controls
                 Clear();
         }
 
-        public override object InitializeLifetimeService()
-        {
-            return null;
-        }
-
         #region nested TraceListener implementation
-
-        private class SyncObject : MarshalByRefObject
-        {
-            public override object InitializeLifetimeService()
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Subscribe a text box to monitor the Trace and Debug output messages.
@@ -60,10 +52,8 @@ namespace TsdLib.UI.Controls
         private class TextBoxTraceListener : TraceListener
         {
             public TextBoxBase TextBox { get; private set; }
-            readonly Action<string> _textBoxAppend;
-
-            private readonly SyncObject _syncObject = new SyncObject();
-            private readonly StringBuilder _buffer = new StringBuilder();
+            private readonly BlockingCollection<string> _queue = new BlockingCollection<string>();
+            private readonly TaskScheduler _uiTaskScheduler;
 
             /// <summary>
             /// Initializes a new instance of the TextBoxTraceListener by subscribing a text box to monitor the Trace and Debug output messages.
@@ -72,17 +62,30 @@ namespace TsdLib.UI.Controls
             public TextBoxTraceListener(TextBoxBase textBox)
             {
                 TextBox = textBox;
-                _textBoxAppend = textBox.AppendText;
-
-                TextBox.HandleCreated += _textBox_HandleCreated;
+                TextBox.HandleCreated += StartQueue;
+                _uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             }
 
-            void _textBox_HandleCreated(object sender, EventArgs e)
+            private void StartQueue(object sender, EventArgs e)
             {
-                if (_buffer.Length > 0)
-                    Write(_buffer.ToString());
-                _buffer.Clear();
+                Task.Run(() =>
+                {
+                    while (!_queue.IsCompleted)
+                    {
+                        try
+                        {
+                            string data = _queue.Take();
+                            Task.Factory.StartNew(
+                                () => TextBox.AppendText(data),
+                                CancellationToken.None,
+                                TaskCreationOptions.None,
+                                _uiTaskScheduler);
+                        }
+                        catch (InvalidOperationException) { }
+                    }
+                });
             }
+
 
             /// <summary>
             /// Write a message to the text box.
@@ -90,24 +93,12 @@ namespace TsdLib.UI.Controls
             /// <param name="message">Message to write.</param>
             public override void Write(string message)
             {
-                lock (_syncObject)
-                {
-                    if (TextBox.IsDisposed)
-                        return;
+                if (TextBox.IsDisposed)
+                    return;
 
-                    if (!TextBox.IsHandleCreated)
-                    {
-                        _buffer.Append(message);
-                        return;
-                    }
-
-                    if (TextBox.InvokeRequired)
-                        TextBox.Invoke(_textBoxAppend, message);
-                    else
-                        _textBoxAppend(message);
-                }
+                _queue.Add(message);
             }
-
+            
             /// <summary>
             /// Write a message to the text box, terminated with a NewLine character.
             /// </summary>
@@ -117,9 +108,10 @@ namespace TsdLib.UI.Controls
                 Write(message + Environment.NewLine);
             }
 
-            public override object InitializeLifetimeService()
+            protected override void Dispose(bool disposing)
             {
-                return null;
+                _queue.CompleteAdding();
+                base.Dispose(disposing);
             }
         }
 

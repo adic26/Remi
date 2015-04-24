@@ -55,21 +55,32 @@ namespace TsdLib.TestSystem.TestSequence
         /// </summary>
         protected TestSequenceBase()
         {
+            Trace.Listeners.Clear();
             Trace.AutoFlush = true;
+            Trace.Listeners.Add(new SequenceTraceListener(this));
 
             Instruments = new TestSequenceInstrumentCollection();
             Instruments.InstrumentConnected += Instruments_InstrumentConnected;
         }
 
         /// <summary>
-        /// Adds the specified TraceListener to the Trace Listeners collection. Useful if running the test sequence from a separate application domain.
+        /// Event raised when Trace information is generated in the sequence domain.
         /// </summary>
-        /// <param name="listener">TraceListener to add to the Trace Listeners collection.</param>
-        public void AddTraceListener(TraceListener listener)
+        public event EventHandler<string> TraceOutput;
+        /// <summary>
+        /// Send Trace information to the application controller.
+        /// </summary>
+        /// <param name="message">Message to send.</param>
+        protected internal void OnTraceOutput(string message)
         {
-            Trace.Listeners.Add(listener);
+            var handler = TraceOutput;
+            if (handler != null)
+                handler(this, message);
         }
 
+        /// <summary>
+        /// Event raised when data is sent from the test sequence.
+        /// </summary>
         public event EventHandler<DataContainer> DataAdded;
         /// <summary>
         /// Send data to the application controller. NOTE: The object must either be decorated with the <see cref="SerializableAttribute"/> or be derived from <see cref="MarshalByRefObject"/>

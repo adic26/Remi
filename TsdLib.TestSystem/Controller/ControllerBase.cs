@@ -240,6 +240,7 @@ namespace TsdLib.TestSystem.Controller
                     DateTime startTime = DateTime.Now;
 
                     SequenceConfigCommon sequence = sequenceConfig;
+                    EventManager eventManager = CreateEventManager(UI);
 
                     if (_localDomain)
                     {
@@ -258,8 +259,7 @@ namespace TsdLib.TestSystem.Controller
 
                         _activeSequence = CreateSequenceObject(sequence.FullTypeName, sequenceAssembly, sequenceDomain);
 
-                        foreach (TraceListener listener in Trace.Listeners)
-                            _activeSequence.AddTraceListener(listener);
+                        _activeSequence.TraceOutput += eventManager.TraceOutput;
                     }
                     
                     TStationConfig stationConfig = (TStationConfig)(UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TStationConfig>().GetConfigGroup().First());
@@ -268,7 +268,7 @@ namespace TsdLib.TestSystem.Controller
                     if (!testConfigs.Any())
                         testConfigs = configManagerProvider.GetConfigManager<TTestConfig>().GetConfigGroup().ToArray();
 
-                    EventManager eventManager = CreateEventManager(UI);
+                    
                     _activeSequence.DataAdded += eventManager.AddData;
                     _activeSequence.MeasurementAdded += eventManager.AddMeasurement;
                     _activeSequence.TestInfoAdded += eventManager.AddTestInfo;

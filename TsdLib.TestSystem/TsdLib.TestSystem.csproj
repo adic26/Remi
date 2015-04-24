@@ -48,6 +48,7 @@
     <Compile Include="TestSequence\ITestSequence.cs" />
     <Compile Include="TestSequence\IInstrumentCollection.cs" />
     <Compile Include="TestSequence\MultiConfigTestSequence.cs" />
+    <Compile Include="TestSequence\SequenceTraceListener.cs" />
     <Compile Include="TestSequence\SequentialTestSequence.cs" />
     <Compile Include="TestSequence\TestSequenceBase.cs" />
     <Compile Include="TestSequence\TestSequenceException.cs" />

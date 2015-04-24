@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using TsdLib;
 using TsdLib.TestSystem;
@@ -44,7 +45,8 @@ namespace TestClient.UI.Forms
 
         public void AddData(Tuple<int, string> data)
         {
-            MessageBox.Show("Int = " + data.Item1 + " String = " + data.Item2, "Example of user-defined data from test sequence");
+            //MessageBox.Show("Int = " + data.Item1 + " String = " + data.Item2, "Example of user-defined data from test sequence");
+            Trace.WriteLine("Int = " + data.Item1 + " String = " + data.Item2, "Example of user-defined data from test sequence");
         }
     }
 }

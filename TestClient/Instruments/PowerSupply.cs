@@ -8,14 +8,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using TsdLib.Instrument.Dummy;
-
 namespace TestClient.Instruments
 {
     using System;
     using TsdLib.Instrument;
-
-
+    using TsdLib.Instrument.Dummy;
+    
+    
     // ReSharper disable once FieldCanBeMadeReadOnly.Local
     [IdQuery("MyInstrument, Model 12345")]
     public class PowerSupply : InstrumentBase<DummyConnection>
@@ -62,78 +61,9 @@ namespace TestClient.Instruments
             return _factory.GetInstrument<PowerSupply>(address);
         }
         
-        public virtual void SetVoltage(Double voltage)
+        public static PowerSupply Connect(ConnectionBase connection)
         {
-            System.Threading.Monitor.Enter(Connection.SyncRoot);
-            try
-            {
-                Connection.SendCommand("SET:VOLT {0}", -1, voltage);
-            }
-            finally
-            {
-                System.Threading.Monitor.Exit(Connection.SyncRoot);
-            }
-        }
-        
-        public virtual Double GetCurrent()
-        {
-            System.Threading.Monitor.Enter(Connection.SyncRoot);
-            try
-            {
-                Connection.SendCommand("GET:CURRENT?", -1);
-                return Connection.GetResponse<Double>();
-            }
-            finally
-            {
-                System.Threading.Monitor.Exit(Connection.SyncRoot);
-            }
-        }
-    }
-    
-    // ReSharper disable once FieldCanBeMadeReadOnly.Local
-    [IdQuery("MyInstrument, Model 12345")]
-    public class DummyPowerSupply2 : InstrumentBase<DummyConnection>
-    {
-        
-        static DummyFactory _factory = new DummyFactory();
-        
-        internal DummyPowerSupply2(DummyConnection connection) : 
-                base(connection)
-        {
-        }
-        
-        protected override string ModelNumberMessage
-        {
-            get
-            {
-                return "*IDN?";
-            }
-        }
-        
-        protected override string SerialNumberMessage
-        {
-            get
-            {
-                return "*IDN?";
-            }
-        }
-        
-        protected override string FirmwareVersionMessage
-        {
-            get
-            {
-                return "*IDN?";
-            }
-        }
-        
-        public static DummyPowerSupply2 Connect()
-        {
-            return _factory.GetInstrument<DummyPowerSupply2>();
-        }
-        
-        public static DummyPowerSupply2 Connect(string address)
-        {
-            return _factory.GetInstrument<DummyPowerSupply2>(address);
+            return _factory.GetInstrument<PowerSupply>(((DummyConnection)(connection)));
         }
         
         public virtual void SetVoltage(Double voltage)
@@ -155,7 +85,7 @@ namespace TestClient.Instruments
             try
             {
                 Connection.SendCommand("GET:CURRENT?", -1);
-                return Connection.GetResponse<Double>();
+                return Connection.GetResponse<Double>(".*", '\uD800', -1);
             }
             finally
             {

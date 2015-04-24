@@ -75,6 +75,11 @@ namespace TsdLib.TestSystem.Controller
                 await PerformThreadSafeAction(() => ViewProxy.ProgressControl.UpdateProgress(progress.Item1, progress.Item2));
         }
 
+        public void TraceOutput(object sender, string message)
+        {
+            Trace.Write(message);
+        }
+
         /// <summary>
         /// Perform an action on the UI thread.
         /// </summary>
