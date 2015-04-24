@@ -10,8 +10,8 @@ namespace TsdLib.Instrument.Adb
     {
         private const int Timeout = 10000;
         private static readonly string[] commandSeparators = { ";" };
-        private static readonly string workingDirectory = Path.Combine(Directory.GetCurrentDirectory(), "platform-tools");
-        private static readonly string adbExe = Path.Combine(Directory.GetCurrentDirectory(), "platform-tools", "adb.exe");
+        private static readonly string workingDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "platform-tools");
+        private static readonly string adbExe = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "platform-tools", "adb.exe");
         
         private ProcessRunner _adbShellProcess;
 

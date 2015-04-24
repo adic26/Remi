@@ -127,11 +127,7 @@ namespace TsdLib.CodeGenerator
                     provider.GenerateCodeFromCompileUnit(codeCompileUnit, w, new CodeGeneratorOptions { BracingStyle = "C" });
             }
 
-            string currentDirectory = Directory.GetCurrentDirectory();
-            Directory.SetCurrentDirectory(_assemblyDirectory);
-            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
             CompilerResults compilerResults = provider.CompileAssemblyFromFile(cp, Directory.GetFiles(_tempPath, "*." + provider.FileExtension));
-            Directory.SetCurrentDirectory(currentDirectory);
 
             if (compilerResults.Errors.HasErrors)
                 throw new CompilerException(compilerResults.Errors);

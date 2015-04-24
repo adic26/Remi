@@ -18,7 +18,7 @@ namespace TestClient
 #if INSTRUMENT_LIBRARY
         protected override System.Collections.Generic.IEnumerable<System.CodeDom.CodeCompileUnit> GenerateAdditionalCodeCompileUnits(string nameSpace)
         {
-            return TsdLib.InstrumentLibrary.Tools.InstrumentFinder.GenerateCodeCompileUnits(new System.IO.DirectoryInfo(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Instruments")), nameSpace);
+            return TsdLib.InstrumentLibrary.Tools.InstrumentFinder.GenerateCodeCompileUnits(new System.IO.DirectoryInfo(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Instruments")), nameSpace);
         }
 #endif
 
