@@ -35,48 +35,31 @@ namespace TestClient
         [STAThread]
         private static void Main(string[] args)
         {
-            try
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Trace.Listeners.Add(new ConsoleTraceListener());
+
+            _argsList = args.ToList();
+
+            string testSystemName = getConfigValue(TestSystemNameArg) ?? Application.ProductName;
+            Version testSystemVersion = Version.Parse(getConfigValue(TestSystemVersionArg) ?? Application.ProductVersion.Split('-')[0]);
+            string testSystemVersionMask = getConfigValue(TestSystemVersionMaskArg) ?? @"\d+\.\d+";
+            OperatingMode testSystemMode = (OperatingMode) Enum.Parse(typeof (OperatingMode), getConfigValue(TestSystemModeArg) ?? DefaultMode.ToString());
+            bool localDomain = bool.Parse(getConfigValue(LocalDomainArg) ?? "false");
+            string settingsLocation = getConfigValue(SettingsLocationArg) ?? @"";
+
+            ITestDetails testDetails = new TestDetails(testSystemName, testSystemVersion, testSystemMode);
+
+            IConfigConnection sharedConfigConnection = getConfigConnection(settingsLocation, testSystemVersionMask);
+
+            if (args.Contains(SeqFolderArg))
             {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Trace.Listeners.Add(new ConsoleTraceListener());
-
-                _argsList = args.ToList();
-
-                string testSystemName = getConfigValue(TestSystemNameArg) ?? Application.ProductName;
-                Version testSystemVersion = Version.Parse(getConfigValue(TestSystemVersionArg) ?? Application.ProductVersion.Split('-')[0]);
-                string testSystemVersionMask = getConfigValue(TestSystemVersionMaskArg) ?? @"\d+\.\d+";
-                OperatingMode testSystemMode = (OperatingMode) Enum.Parse(typeof (OperatingMode), getConfigValue(TestSystemModeArg) ?? DefaultMode.ToString());
-                bool localDomain = bool.Parse(getConfigValue(LocalDomainArg) ?? "false");
-                string settingsLocation = getConfigValue(SettingsLocationArg) ?? @"";
-
-                ITestDetails testDetails = new TestDetails(testSystemName, testSystemVersion, testSystemMode);
-
-                IConfigConnection sharedConfigConnection = getConfigConnection(settingsLocation, testSystemVersionMask);
-
-                if (args.Contains(SeqFolderArg))
-                {
-                    SequenceSync.SynchronizeSequences(testDetails, sharedConfigConnection, getConfigValue(SeqFolderArg), true, false);
-                    return;
-                }
-
-                Controller c = new Controller(testDetails, sharedConfigConnection, localDomain);
-                Application.Run(c.UI);
+                SequenceSync.SynchronizeSequences(testDetails, sharedConfigConnection, getConfigValue(SeqFolderArg), true, false);
+                return;
             }
-#if RELEASE           
-            catch (TargetInvocationException ex)
-            {
-                MessageBox.Show(ex.InnerException.ToString(), ex.InnerException.GetType().Name);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString(), ex.GetType().Name);
-            }
-#endif
-            finally
-            {
 
-            }
+            Controller c = new Controller(testDetails, sharedConfigConnection, localDomain);
+            Application.Run(c.UI);
         }
 
         private static IConfigConnection getConfigConnection(string settingsLocation, string testSystemVersionMask)

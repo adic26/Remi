@@ -26,26 +26,6 @@ using TsdLib.UI;
 namespace TsdLib.TestSystem.Controller
 {
     /// <summary>
-    /// Contains base functionality for the system controller without station/product/test configuration.
-    /// </summary>
-    /// <typeparam name="TView">Type of the derived user interface.</typeparam>
-    public abstract class ControllerBase<TView> : ControllerBase<TView, NullStationConfig, NullProductConfig, NullTestConfig>
-        where TView : IView, new()
-    {
-        /// <summary>
-        /// Initialize a new system controller.
-        /// </summary>
-        /// <param name="testDetails">An <see cref="ITestDetails"/> object containing metadata describing the test request.</param>
-        /// <param name="configConnection">An <see cref="IConfigConnection"/> object to handle configuration persistence with a database.</param>
-        /// <param name="localDomain">True to execute the test sequence in the local application domain. Disables dynamic sequence/instrument generation.</param>
-        protected ControllerBase(ITestDetails testDetails, IConfigConnection configConnection, bool localDomain)
-            : base(testDetails, configConnection, localDomain)
-        {
-
-        }
-    }
-
-    /// <summary>
     /// Contains base functionality for the system controller.
     /// </summary>
     /// <typeparam name="TView">Type of the derived user interface.</typeparam>
@@ -411,6 +391,27 @@ namespace TsdLib.TestSystem.Controller
             //    Option 2: This will keep the application open until all logging is complete.
             //    Task.WaitAll(LoggingTasks.ToArray());
             //}
+        }
+    }
+
+
+    /// <summary>
+    /// Contains base functionality for the system controller without station/product/test configuration.
+    /// </summary>
+    /// <typeparam name="TView">Type of the derived user interface.</typeparam>
+    public abstract class ControllerBase<TView> : ControllerBase<TView, NullStationConfig, NullProductConfig, NullTestConfig>
+        where TView : IView, new()
+    {
+        /// <summary>
+        /// Initialize a new system controller.
+        /// </summary>
+        /// <param name="testDetails">An <see cref="ITestDetails"/> object containing metadata describing the test request.</param>
+        /// <param name="configConnection">An <see cref="IConfigConnection"/> object to handle configuration persistence with a database.</param>
+        /// <param name="localDomain">True to execute the test sequence in the local application domain. Disables dynamic sequence/instrument generation.</param>
+        protected ControllerBase(ITestDetails testDetails, IConfigConnection configConnection, bool localDomain)
+            : base(testDetails, configConnection, localDomain)
+        {
+
         }
     }
 }
