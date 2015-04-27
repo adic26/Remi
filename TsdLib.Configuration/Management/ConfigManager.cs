@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
@@ -40,8 +39,8 @@ namespace TsdLib.Configuration.Management
         private readonly ITestDetails _testDetails;
         private readonly FileSystemConnection _localConfigConnection = new FileSystemConnection(SpecialFolders.Configuration);
         private readonly IConfigConnection _sharedConfigConnection;
-        private BindingList<T> _configs = new BindingList<T>();
-        private BindingList<T> _validConfigs = new BindingList<T>();
+        private readonly BindingList<T> _configs = new BindingList<T>();
+        public readonly BindingList<T> _validConfigs = new BindingList<T>();
         private readonly XmlSerializer _serializer = new XmlSerializer(typeof(BindingList<T>));
         private readonly XmlWriterSettings _xmlWriterSettings = new XmlWriterSettings
         {
@@ -166,6 +165,9 @@ namespace TsdLib.Configuration.Management
             Trace.WriteLine("Reloading " + typeof(T).Name);
             XElement sharedXml = null;
 
+            _configs.Clear();
+            _validConfigs.Clear();
+
             if (_sharedConfigConnection != null)
             {
                 string sharedConfigString;
@@ -199,15 +201,29 @@ namespace TsdLib.Configuration.Management
 
                 //Deserialize the merged config XML into the configs list
                 using (XmlReader reader = localXml.CreateReader())
-                    _configs = (BindingList<T>)(_serializer.Deserialize(reader));
-                _validConfigs = new BindingList<T>(_configs.Where(cfg => cfg.IsValid).ToList());
+                {
+                    BindingList<T> config =  (BindingList<T>) (_serializer.Deserialize(reader));
+                    foreach (T cfg in config)
+                    {
+                        _configs.Add(cfg);
+                        if (cfg.IsValid)
+                            _validConfigs.Add(cfg);
+                    }
+                }
                 saveLocal();
             }
             else if (sharedXml != null) //Deserialize the shared config XML into the configs list
             {
                 using (XmlReader reader = sharedXml.CreateReader())
-                    _configs = (BindingList<T>)(_serializer.Deserialize(reader));
-                _validConfigs = new BindingList<T>(_configs.Where(cfg => cfg.IsValid).ToList());
+                {
+                    BindingList<T> config = (BindingList<T>)(_serializer.Deserialize(reader));
+                    foreach (T cfg in config)
+                    {
+                        _configs.Add(cfg);
+                        if (cfg.IsValid)
+                            _validConfigs.Add(cfg);
+                    }
+                }
                 saveLocal();
             }
             else
@@ -219,8 +235,9 @@ namespace TsdLib.Configuration.Management
                     StoreInDatabase = false
                 };
                 newCfg.initializeDefaultValues();
-                _configs = new BindingList<T> { newCfg };
-                _validConfigs = new BindingList<T>(_configs.Where(cfg => cfg.IsValid).ToList());
+                _configs.Add(newCfg);
+                if (newCfg.IsValid)
+                    _validConfigs.Add(newCfg);
                 Save();
             }
         }

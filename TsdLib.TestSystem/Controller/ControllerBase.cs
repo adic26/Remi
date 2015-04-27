@@ -3,7 +3,6 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -85,9 +84,12 @@ namespace TsdLib.TestSystem.Controller
             UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
 
             configManagerProvider = new ConfigManagerProvider(Details, configConnection);
-            refreshConfigManagerProvider(UI);
+            UI.ConfigControl.StationConfigManager = configManagerProvider.GetConfigManager<TStationConfig>();
+            UI.ConfigControl.ProductConfigManager = configManagerProvider.GetConfigManager<TProductConfig>();
+            UI.ConfigControl.TestConfigManager = configManagerProvider.GetConfigManager<TTestConfig>();
+            UI.ConfigControl.SequenceConfigManager = configManagerProvider.GetConfigManager<SequenceConfigCommon>();
 #if DEBUG
-            Trace.WriteLine("Using TsdLib debug assembly. Test results will only be stored as Analysis.");
+            Trace.WriteLine("Using TsdLib debug assembly.");
             _localDomain = localDomain;
 #else
             //should still leave the option of running in local domain in production/release - just need to make SequenceConfig readonly in config manager
@@ -150,8 +152,6 @@ namespace TsdLib.TestSystem.Controller
         {
             UI.SetTitle(Details.TestSystemName + " v." + Details.TestSystemVersion + " " + Details.TestSystemMode);
             configManagerProvider.Reload();
-            if (UI.ConfigControl != null)
-                refreshConfigManagerProvider(UI);
         }
 
         protected virtual void TestDetailsControl_EditTestDetails(object sender, bool detailsFromDatabase)
@@ -184,15 +184,6 @@ namespace TsdLib.TestSystem.Controller
             }
         }
 
-        private void refreshConfigManagerProvider(IView ui)
-        {
-            configManagerProvider.Reload();
-            ui.ConfigControl.StationConfigManager = configManagerProvider.GetConfigManager<TStationConfig>();
-            ui.ConfigControl.ProductConfigManager = configManagerProvider.GetConfigManager<TProductConfig>();
-            ui.ConfigControl.TestConfigManager = configManagerProvider.GetConfigManager<TTestConfig>();
-            ui.ConfigControl.SequenceConfigManager = configManagerProvider.GetConfigManager<SequenceConfigCommon>();
-        }
-
         /// <summary>
         /// Default handler for the ViewBase.ExecuteTestSequence event.
         /// </summary>
@@ -202,14 +193,18 @@ namespace TsdLib.TestSystem.Controller
         {
             AppDomain sequenceDomain = null;
 
+            SequenceConfigCommon[] sequenceConfigs = UI.ConfigControl.SelectedSequenceConfig.Cast<SequenceConfigCommon>().ToArray();
+            if (!sequenceConfigs.Any())
+            {
+                Trace.WriteLine("No test sequence selected.");
+                return;
+            }
+
+            bool publishResults = UI.TestSequenceControl.PublishResults;
+
             UI.SetState(State.TestStarting);
 
             Trace.WriteLine(Details);
-
-            var sequenceConfigs = UI.ConfigControl.SelectedSequenceConfig.Cast<SequenceConfigCommon>().ToArray();
-            if (!sequenceConfigs.Any())
-                sequenceConfigs = configManagerProvider.GetConfigManager<SequenceConfigCommon>().GetConfigGroup().ToArray();
-            bool publishResults = UI.TestSequenceControl.PublishResults;
 
             Trace.WriteLine(string.Format("Using {0} application domain", _localDomain ? "local" : "remote"));
 
@@ -217,6 +212,16 @@ namespace TsdLib.TestSystem.Controller
             {
                 try
                 {
+                    IStationConfig stationConfig = UI.ConfigControl.SelectedStationConfig.FirstOrDefault();
+                    if (stationConfig == null)
+                        throw new NoConfigSelectedException<TStationConfig>();
+                    IProductConfig productConfig = UI.ConfigControl.SelectedProductConfig.FirstOrDefault();
+                    if (productConfig == null)
+                        throw new NoConfigSelectedException<TProductConfig>();
+                    TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig.Cast<TTestConfig>().ToArray();
+                    if (!testConfigs.Any())
+                        throw new NoConfigSelectedException<TTestConfig>();
+
                     DateTime startTime = DateTime.Now;
 
                     SequenceConfigCommon sequence = sequenceConfig;
@@ -242,11 +247,7 @@ namespace TsdLib.TestSystem.Controller
                         _activeSequence.TraceOutput += eventManager.TraceOutput;
                     }
                     
-                    TStationConfig stationConfig = (TStationConfig)(UI.ConfigControl.SelectedStationConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TStationConfig>().GetConfigGroup().First());
-                    TProductConfig productConfig = (TProductConfig)(UI.ConfigControl.SelectedProductConfig.FirstOrDefault() ?? configManagerProvider.GetConfigManager<TProductConfig>().GetConfigGroup().First());
-                    TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig.Cast<TTestConfig>().ToArray();
-                    if (!testConfigs.Any())
-                        testConfigs = configManagerProvider.GetConfigManager<TTestConfig>().GetConfigGroup().ToArray();
+
 
                     
                     _activeSequence.DataAdded += eventManager.AddData;
@@ -257,7 +258,7 @@ namespace TsdLib.TestSystem.Controller
                     _activeSequence.Config = configManagerProvider;
 
                     //TODO: ExecuteSequenceAsync
-                    await Task.Run(() => _activeSequence.ExecuteSequence(stationConfig, productConfig, testConfigs));
+                    await Task.Run(() => _activeSequence.ExecuteSequence((TStationConfig) stationConfig, (TProductConfig) productConfig, testConfigs));
 
                     IResultHandler resultHandler = CreateResultHandler(Details);
                     if (resultHandler != null)

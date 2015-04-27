@@ -30,7 +30,6 @@ namespace TestClient.Sequences
                 UpdateProgress(i, testConfig.LoopIterations);
                 foreach (double voltageSetting in testConfig.VoltageSettings)
                 {
-                    throw new Exception("Let's see how this gets handled");
                     token.ThrowIfCancellationRequested();
                     _ps.SetVoltage(voltageSetting);
                     Thread.Sleep(productConfig.SettlingTime);

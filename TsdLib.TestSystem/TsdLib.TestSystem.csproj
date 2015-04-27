@@ -43,6 +43,7 @@
     <Compile Include="Controller\ControllerBase.cs" />
     <Compile Include="Controller\EventManager.cs" />
     <Compile Include="Controller\ErrorHandler.cs" />
+    <Compile Include="Controller\NoConfigSelectedException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestSequence\ConfigurableTestSequence.cs" />
     <Compile Include="TestSequence\ITestSequence.cs" />

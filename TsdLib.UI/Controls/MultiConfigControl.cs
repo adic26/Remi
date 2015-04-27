@@ -57,6 +57,9 @@ namespace TsdLib.UI.Controls
                 comboBox_ProductConfig.DataSource = value;
             }
         }
+
+
+
         /// <summary>
         /// Sets the list of available Test Config instances.
         /// </summary>
@@ -69,7 +72,7 @@ namespace TsdLib.UI.Controls
             {
                 if (value == null) return;
                 checkedListBox_TestConfig.DataSource = value;
-                checkedListBox_TestConfig.SetItemChecked(0, true);
+                
             }
         }
         /// <summary>
@@ -84,7 +87,6 @@ namespace TsdLib.UI.Controls
             {
                 if (value == null) return;
                 checkedListBox_SequenceConfig.DataSource = value;
-                checkedListBox_SequenceConfig.SetItemChecked(0, true);
             }
         }
 
