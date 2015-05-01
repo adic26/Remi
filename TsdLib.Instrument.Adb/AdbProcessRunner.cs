@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -41,14 +42,12 @@ namespace TsdLib.Instrument.Adb
             if (_process == null)
                 throw new Exception("Could not start the process " + _process.ProcessName);
 
-            bool terminated = false;
             _process.OutputDataReceived += (o, e) =>
             {
-                if (e.Data == null)
-                { }
-                else
-                {
-                    Match junk = Regex.Match(e.Data, ".*(\b)+");
+                if (string.IsNullOrWhiteSpace(e.Data))
+                    return;
+                 
+                Match junk = Regex.Match(e.Data, ".*(\b)+");
                     if (junk.Success)
                     {
                         string appendThis = e.Data.Remove(0, junk.Length);
@@ -61,15 +60,6 @@ namespace TsdLib.Instrument.Adb
                     }
                     else
                         _queue.Enqueue(e.Data);
-
-                    if (e.Data == string.Empty)
-                        if (terminated)
-                            _waitHandleCmd.Set();
-                        else
-                            terminated = true;
-                    else
-                        terminated = false;
-                }
             };
             _process.BeginOutputReadLine();
 
@@ -83,22 +73,26 @@ namespace TsdLib.Instrument.Adb
             _process.BeginErrorReadLine();
         }
 
+        private string returnCodeString = "echo return code: $?";
+
+        public int LastReturnCode { get; private set; }
+
+        public string ReceiveBuffer { get; private set; }
+
         //TODO: return error code
         public void SendCommand(string command)
         {
             _queue.Clear();
-            _process.StandardInput.WriteLine(command);
-            _waitHandleCmd.WaitOne();
+            _process.StandardInput.WriteLine(command + " && echo return code: $?");
 
-            //read until we see the command that we just sent, followed by two empty strings
+            //read until we see the command that we just sent
             _queue.DequeueUntil(readFromBuffer => Regex.IsMatch(readFromBuffer, @"\w+@\w+:/\s?[#$]\s?"));
-            _queue.DequeueUntil(readFromBuffer => readFromBuffer == string.Empty);
-            _queue.DequeueUntil(readFromBuffer => readFromBuffer == string.Empty);
-        }
 
-        public string ReadBuffer()
-        {
-            return _queue.DequeueUntil(readFromBuffer => _queue.Count == 0);
+            IEnumerable<string> responsePlusReturnCode = _queue.DequeueUntil(readFromBuffer => Regex.IsMatch(readFromBuffer, "return code: "));
+
+            ReceiveBuffer = string.Join(Environment.NewLine, responsePlusReturnCode.TakeWhile(readFromBuffer => !Regex.IsMatch(readFromBuffer, "return code: ")));
+
+            LastReturnCode = int.Parse(Regex.Match(responsePlusReturnCode.Last(), @"(?<=return code: )-?\d+").Value);
         }
 
         public bool IsConnected
@@ -138,7 +132,7 @@ namespace TsdLib.Instrument.Adb
                 list.Add(str);
         }
 
-        public static string DequeueUntil(this ConcurrentQueue<string> queue, Predicate<string> check)
+        public static IEnumerable<string> DequeueUntil(this ConcurrentQueue<string> queue, Predicate<string> check)
         {
             string readFromBuffer = null;
             List<string> list = new List<string>();
@@ -153,12 +147,12 @@ namespace TsdLib.Instrument.Adb
                     list.Add(readFromBuffer);
                 if (sw.ElapsedMilliseconds > 5000)
                 {
-                    Trace.WriteLine("WARNING: COULD NOT FIND THE PATTERN IN THE BUFFER");
-                    return "";
+                    list.Add("return code: -1");
+                    break;
                 }
             }
 
-            return string.Join("", list);
+            return list;
         }
     }
 }

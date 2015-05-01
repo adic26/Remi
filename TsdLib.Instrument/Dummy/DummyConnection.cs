@@ -46,9 +46,11 @@
         /// <summary>
         /// Checks if there is an error with the current connection or from the last command/response.
         /// </summary>
+        /// <param name="errorString">A description of the error.</param>
         /// <returns>True in case of error; False otherwise.</returns>
-        protected override bool CheckForError()
+        protected override bool CheckForError(out string errorString)
         {
+            errorString = "ReturnErrorOnCheck was set to true";
             return ReturnErrorOnCheck;
         }
         /// <summary>

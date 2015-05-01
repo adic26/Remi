@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Threading;
+﻿using System.Threading;
 using TestClient.Configuration;
 using TestClient.Instruments;
 using TsdLib.Measurements;
@@ -9,9 +8,10 @@ namespace TestClient.Sequences
 {
     public class AdbWlan : SequentialTestSequence<StationConfig, ProductConfig, TestConfig>
     {
-        protected override void ExecuteTest(System.Threading.CancellationToken token, StationConfig stationConfig, ProductConfig productConfig, TestConfig testConfig)
+        protected override void ExecuteTest(CancellationToken token, StationConfig stationConfig, ProductConfig productConfig, TestConfig testConfig)
         {
-            var blackBerryWlan = Aos_BCM4339.Connect();
+            IBlackBerryWlan blackBerryWlan = Aos_BCM4339.Connect();
+            //IBlackBerryWlan blackBerryWlan = new AosBCM4339_SafeCommands();
 
             AddTestInfo(new TestInfo("WLAN Chipset Family", blackBerryWlan.GetChipsetFamily()));
 

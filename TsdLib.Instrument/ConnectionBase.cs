@@ -63,8 +63,9 @@ namespace TsdLib.Instrument
         /// <summary>
         /// Checks if there is an error with the current connection or from the last command/response.
         /// </summary>
+        /// <param name="errorString">A description of the error.</param>
         /// <returns>True in case of error; False otherwise.</returns>
-        protected abstract bool CheckForError();
+        protected abstract bool CheckForError(out string errorString);
         /// <summary>
         /// Gets the string used to separate commands sent in a single line.
         /// </summary>
@@ -120,8 +121,9 @@ namespace TsdLib.Instrument
                 {
                     Trace.WriteLine("Sending command to " + Description + ": " + partialCommand);
                     Write(partialCommand);
-                    if (CheckForError())
-                        throw new CommandException(this, partialCommand, "The connection object detected an error");
+                    string error;
+                    if (CheckForError(out error))
+                        throw new CommandException(this, partialCommand, error);
                 }
             }
         }
@@ -151,8 +153,9 @@ namespace TsdLib.Instrument
                         ReadString() :
                         Encoding.ASCII.GetString(GetByteResponse(terminationCharacter: terminationCharacter, delay: 0));
 
-                    if (CheckForError())
-                        throw new ResponseException(this);
+                    string error;
+                    if (CheckForError(out error))
+                        throw new ResponseException(this, error);
 
                     Trace.WriteLine("Received response from: " + Description + ": " + response);
 
@@ -211,8 +214,9 @@ namespace TsdLib.Instrument
                     resp.Add(ReadByte());
                 byte[] response = resp.ToArray();
 
-                if (CheckForError())
-                    throw new ResponseException(this);
+                string error;
+                if (CheckForError(out error))
+                    throw new ResponseException(this, error);
 
                 Trace.WriteLine("Received response from " + Description + ": " + Encoding.ASCII.GetString(response));
 

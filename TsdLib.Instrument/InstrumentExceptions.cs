@@ -9,6 +9,7 @@ namespace TsdLib.Instrument
     /// <typeparam name="TInstrument">Type of instrument.</typeparam>
     /// <typeparam name="TConnection">Type of connection.</typeparam>
     [Serializable]
+    [Obsolete("Use the non-generic class instead")]
     public class ConnectException<TInstrument, TConnection> : TsdLibException
         where TConnection : ConnectionBase
         where TInstrument : InstrumentBase<TConnection>
@@ -19,6 +20,30 @@ namespace TsdLib.Instrument
         /// <param name="inner">OPTIONAL: The Exception that is the cause of the InstrumentFinderException</param>
         public ConnectException(Exception inner = null)
             : base("Could not connect to any " + typeof(TInstrument).Name + " instruments via " + typeof(TConnection).Name, inner) { }
+
+        /// <summary>
+        /// Deserialization constructor used by the .NET Framework to initialize an instance of the ConnectException class from serialized data.
+        /// </summary>
+        /// <param name="info">The SerialzationInfo that holds the serialized object data about the exception being thrown.</param>
+        /// <param name="context">The StreamingContext that contains the contextual information about the source or destination.</param>
+        protected ConnectException(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
+    }
+
+    /// <summary>
+    /// Exception due to an error finding or connecting to instruments of a specified type on a specified connection type.
+    /// </summary>
+    [Serializable]
+    public class ConnectException : TsdLibException
+    {
+        /// <summary>
+        /// Initialize a new ConnectException.
+        /// </summary>
+        /// <param name="instrumentType">The type of instrument.</param>
+        /// <param name="connectionType">The type of connection.</param>
+        /// <param name="inner">OPTIONAL: The Exception that is the cause of the ConnectException</param>
+        public ConnectException(string instrumentType, string connectionType, Exception inner = null)
+            : base("Could not connect to any " + instrumentType + " instruments via " + connectionType, inner) { }
 
         /// <summary>
         /// Deserialization constructor used by the .NET Framework to initialize an instance of the ConnectException class from serialized data.
@@ -106,10 +131,10 @@ namespace TsdLib.Instrument
         /// Initialize a new ResponseException caused by an error processing the specified response.
         /// </summary>
         /// <param name="connection">Connection where the error occurred.</param>
-        /// <param name="response">Response that could not be processed.</param>
+        /// <param name="message">Message describing the error.</param>
         /// <param name="inner">OPTIONAL: The Exception that is the cause of the CommandException.</param>
-        public ResponseException(ConnectionBase connection, string response, Exception inner = null)
-            : base("Error processing response: " + response + " from " + connection.Description, inner) { }
+        public ResponseException(ConnectionBase connection, string message, Exception inner = null)
+            : base("Error processing response: " + message + " from " + connection.Description, inner) { }
 
         /// <summary>
         /// Deserialization constructor used by the .NET Framework to initialize an instance of the ResponseException class from serialized data.

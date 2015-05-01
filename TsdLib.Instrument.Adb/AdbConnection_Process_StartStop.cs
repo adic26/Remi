@@ -59,10 +59,18 @@ namespace TsdLib.Instrument.Adb
             throw new NotImplementedException();
         }
 
-        protected override bool CheckForError()
+        /// <summary>
+        /// Checks if there is an error with the current connection or from the last command/response.
+        /// </summary>
+        /// <param name="errorString">A description of the error.</param>
+        /// <returns>True in case of error; False otherwise.</returns>
+        protected override bool CheckForError(out string errorString)
         {
             Trace.WriteLineIf(_exitCode != 0, "ADB ERROR: Process exit code = " + _exitCode);
             Trace.WriteLineIf(_error.Length != 0, "ADB ERROR: " + _error);
+
+            errorString = "Exit code: " + _exitCode + ": " + _error.ToString();
+
             return _exitCode != 0 || _error.Length != 0;
         }
 

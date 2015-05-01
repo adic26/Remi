@@ -214,13 +214,13 @@ namespace TsdLib.TestSystem.Controller
                 {
                     IStationConfig stationConfig = UI.ConfigControl.SelectedStationConfig.FirstOrDefault();
                     if (stationConfig == null)
-                        throw new NoConfigSelectedException<TStationConfig>();
+                        throw new NoConfigSelectedException(typeof(TStationConfig).Name);
                     IProductConfig productConfig = UI.ConfigControl.SelectedProductConfig.FirstOrDefault();
                     if (productConfig == null)
-                        throw new NoConfigSelectedException<TProductConfig>();
+                        throw new NoConfigSelectedException(typeof(TProductConfig).Name);
                     TTestConfig[] testConfigs = UI.ConfigControl.SelectedTestConfig.Cast<TTestConfig>().ToArray();
                     if (!testConfigs.Any())
-                        throw new NoConfigSelectedException<TTestConfig>();
+                        throw new NoConfigSelectedException(typeof(TTestConfig).Name);
 
                     DateTime startTime = DateTime.Now;
 

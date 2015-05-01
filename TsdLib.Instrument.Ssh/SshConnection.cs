@@ -62,9 +62,15 @@ namespace TsdLib.Instrument.Ssh
             _streamWriter.WriteLine("y");
         }
 
-        protected override bool CheckForError()
+        /// <summary>
+        /// Checks if there is an error with the current connection or from the last command/response.
+        /// </summary>
+        /// <param name="errorString">A description of the error.</param>
+        /// <returns>True in case of error; False otherwise.</returns>
+        protected override bool CheckForError(out string errorString)
         {
             //TODO: make sure streams are open or check for errors on QConnClient
+            errorString = "Unknown error";
             return _sshSession.HasExited;
         }
         protected override byte ReadByte()

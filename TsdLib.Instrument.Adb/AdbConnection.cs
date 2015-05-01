@@ -100,7 +100,7 @@ namespace TsdLib.Instrument.Adb
 
         protected override string ReadString()
         {
-            return _adbShellProcess.ReadBuffer();
+            return _adbShellProcess.ReceiveBuffer;
         }
 
         protected override byte ReadByte()
@@ -108,12 +108,15 @@ namespace TsdLib.Instrument.Adb
             throw new NotImplementedException();
         }
 
-        protected override bool CheckForError()
+        protected override bool CheckForError(out string errorString)
         {
-            //TODO: need a safe way to read the error code CheckForError gets called after each command (before the read in a query) so it clears the buffer
-            //Write("echo $?");
-            //string errorCode = ReadString();
+            if (_adbShellProcess.LastReturnCode != 0)
+            {
+                errorString = _adbShellProcess.ReceiveBuffer;
+                return true;
+            }
 
+            errorString = "";
             return !IsConnected;
         }
 

@@ -46,7 +46,7 @@ namespace TsdLib.Instrument
             TConnection[] connections = GetConnection<TInstrument>(address);
 
             if (connections.Length == 0)
-                throw new ConnectException<TInstrument, TConnection>();
+                throw new ConnectException(typeof(TInstrument).Name, typeof(TConnection).Name);
 
             TInstrument inst = GetInstrument<TInstrument>(connections[0]);
 

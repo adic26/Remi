@@ -6,16 +6,16 @@ namespace TsdLib.TestSystem.Controller
     /// <summary>
     /// Exception thrown when attempting to run a test sequence with a missing configuration object.
     /// </summary>
-    /// <typeparam name="T">Type of the missing configuration object.</typeparam>
     [Serializable]
-    public class NoConfigSelectedException<T> : TsdLibException
+    public class NoConfigSelectedException : TsdLibException
     {
         /// <summary>
-        /// Initialize a new <see cref="NoConfigSelectedException{T}"/>.
+        /// Initialize a new <see cref="NoConfigSelectedException"/>.
         /// </summary>
+        /// <param name="configType">The type of configuration that is missing.</param>
         /// <param name="inner">Exception that caused the error.</param>
-        public NoConfigSelectedException(Exception inner = null)
-            : base("No " + typeof (T) + " selected", inner) { }
+        public NoConfigSelectedException(string configType, Exception inner = null)
+            : base("No " + configType + " selected", inner) { }
 
 
         /// <summary>

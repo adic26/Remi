@@ -447,7 +447,7 @@ namespace TestClient.Instruments
             try
             {
                 Connection.SendCommand("/vendor/firmware/wlutil isup", -1);
-                return Connection.GetResponse<Boolean>("", '\uD800', -1);
+                return Connection.GetResponse<Boolean>(".*", '\uD800', -1);
             }
             finally
             {
@@ -461,7 +461,7 @@ namespace TestClient.Instruments
             try
             {
                 Connection.SendCommand("/vendor/firmware/wlutil country", -1);
-                return Connection.GetResponse<String>("", '\uD800', -1);
+                return Connection.GetResponse<String>(".*", '\uD800', -1);
             }
             finally
             {
@@ -475,7 +475,7 @@ namespace TestClient.Instruments
             try
             {
                 Connection.SendCommand("/vendor/firmware/wlutil phy_activecal", -1);
-                return Connection.GetResponse<Boolean>("", '\uD800', -1);
+                return Connection.GetResponse<Boolean>(".*", '\uD800', -1);
             }
             finally
             {
@@ -488,8 +488,8 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil counters | grep rxdfrmmcast", 200);
-                return Connection.GetResponse<Int32>("(?<=rxdfrmmcast )\\d+", '\uD800', 200);
+                Connection.SendCommand("/vendor/firmware/wlutil counters | grep rxdfrmmcast", -1);
+                return Connection.GetResponse<Int32>("(?<=rxdfrmmcast )\\d+", '\uD800', -1);
             }
             finally
             {

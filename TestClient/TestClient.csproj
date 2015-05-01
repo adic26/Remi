@@ -56,18 +56,18 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="TsdLib.InstrumentLibrary.Tools, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3646076ad9d068cf, processorArchitecture=MSIL">
-      <HintPath>..\packages\TsdLib.InstrumentLibrary.Tools.3.3.0-debug\lib\net45\TsdLib.InstrumentLibrary.Tools.dll</HintPath>
+      <HintPath>..\packages\TsdLib.InstrumentLibrary.Tools.3.3.7-debug\lib\net45\TsdLib.InstrumentLibrary.Tools.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller\Controller.cs" />
     <Compile Include="Configuration\ProductConfig.cs" />
+    <Compile Include="Instruments\AosBCM4339_SafeCommands.cs" />
     <Compile Include="Instruments\Aos_BCM4339.cs">
       <AutoGen>True</AutoGen>
-      <DependentUpon>Aos_BCM4339.xml</DependentUpon>
       <DesignTime>True</DesignTime>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <DependentUpon>Aos_BCM4339.xml</DependentUpon>
     </Compile>
     <Compile Include="Instruments\BlackBerry.cs">
       <AutoGen>True</AutoGen>

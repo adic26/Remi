@@ -81,7 +81,7 @@
     </Query>
     <Query Name="GetActivecal" Message="/vendor/firmware/wlutil phy_activecal" ReturnType="Boolean">
     </Query>
-    <Query Name="GetRxFrameCount" Message="/vendor/firmware/wlutil counters | grep rxdfrmmcast" RegEx="(?&lt;=rxdfrmmcast )\d+" ReturnType="Int32" Delay="200">
+    <Query Name="GetRxFrameCount" Message="/vendor/firmware/wlutil counters | grep rxdfrmmcast" RegEx="(?&lt;=rxdfrmmcast )\d+" ReturnType="Int32">
     </Query>
 
   </Instrument>
