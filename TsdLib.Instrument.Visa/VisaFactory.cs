@@ -35,10 +35,9 @@ namespace TsdLib.Instrument.Visa
         /// Connects to the Visa-based instrument at the specified address.
         /// </summary>
         /// <param name="address">Visa resource name for the instrument (ie. GPIB0::6::INSTR).</param>
-        /// <param name="defaultDelay">Default delay to wait between commands.</param>
         /// <param name="attributes">Zero or more ConnectionSettingAttributes with a name matching a member of NationalInstruments.VisaNS.AttributeType.</param>
         /// <returns>A VisaConnection object that can be used to communicate with the instrument.</returns>
-        protected override VisaConnection CreateConnection(string address, int defaultDelay, params ConnectionSettingAttribute[] attributes)
+        protected override VisaConnection CreateConnection(string address, params ConnectionSettingAttribute[] attributes)
         {
             try
             {
@@ -56,7 +55,7 @@ namespace TsdLib.Instrument.Visa
                         session.SetAttribute(typeEnum, attribute.ArgumentValue);
                     }
 
-                    return new VisaConnection(session, defaultDelay); 
+                    return new VisaConnection(session); 
                 }
                 catch (TargetInvocationException ex)
                 {
@@ -84,9 +83,9 @@ namespace TsdLib.Instrument.Visa
                 if (!connection.IsConnected)
                     Debug.Fail("Passed a disconnected connection into VisaFactory.GetInstrumentIdentifier!");
 
-                connection.SendCommand(idAttribute.Command, -1);
+                connection.SendCommand(idAttribute.Command, 0, false);
 
-                string response = idAttribute.TermChar == '\uD800' ? connection.GetResponse<string>() : connection.GetResponse<string>(terminationCharacter:idAttribute.TermChar);
+                string response = idAttribute.TermChar == '\uD800' ? connection.GetResponse<string>(".*", false) : connection.GetResponse<string>(".*", false, idAttribute.TermChar);
                 
                 return response;
             }

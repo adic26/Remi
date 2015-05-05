@@ -32,29 +32,26 @@ namespace TsdLib.Instrument.Telnet
         /// Connects to the Telnet-based instrument at the specified address.
         /// </summary>
         /// <param name="address">IP address for the instrument.</param>
-        /// <param name="defaultDelay">Default delay to wait between commands.</param>
         /// <param name="attributes">Zero or more ConnectionSettingAttributes. Not required for TelnetConnection.</param>
         /// <returns>A VisaConnection object that can be used to communicate with the instrument.</returns>
-        protected override TelnetConnection CreateConnection(string address, int defaultDelay, params ConnectionSettingAttribute[] attributes)
+        protected override TelnetConnection CreateConnection(string address, params ConnectionSettingAttribute[] attributes)
         {
             try
             {
                 TcpClient tcpSocket = new TcpClient(address, 23);
-                TelnetConnection telnetConnection = new TelnetConnection(tcpSocket, 750); //Use a longer delay for the login operation
+                TelnetConnection telnetConnection = new TelnetConnection(tcpSocket);
                 
-                string initial = telnetConnection.GetResponse<string>();
+                string initial = telnetConnection.GetResponse<string>(".*", false);
                 if (!initial.TrimEnd().EndsWith(":"))
                     return null;
 
-                telnetConnection.DefaultDelay = defaultDelay; //Now set the desired delay
-
-                telnetConnection.SendCommand("root", 0);
-                string loginResponse = telnetConnection.GetResponse<string>();
+                telnetConnection.SendCommand("root", 0, false);
+                string loginResponse = telnetConnection.GetResponse<string>(".*", false);
                 if (!loginResponse.TrimEnd().EndsWith(":"))
                     throw new TelnetException("Could not connect to " + address + " via telnet: no password prompt");
 
-                telnetConnection.SendCommand("root", 0);
-                string passwordResponse = telnetConnection.GetResponse<string>();
+                telnetConnection.SendCommand("root", 0, false);
+                string passwordResponse = telnetConnection.GetResponse<string>(".*", false);
 
                 if (passwordResponse.Length == 0)
                     throw new TelnetException("Could not read any data from " + address + " via Telnet");

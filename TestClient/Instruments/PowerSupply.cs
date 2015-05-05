@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Threading;
+
 namespace TestClient.Instruments
 {
     using System;
@@ -26,39 +28,15 @@ namespace TestClient.Instruments
                 base(connection)
         {
         }
-        
-        protected override string ModelNumberMessage
+
+        public static PowerSupply Connect(CancellationToken token)
         {
-            get
-            {
-                return "*IDN?";
-            }
+            return _factory.GetInstrument<PowerSupply>(token);
         }
         
-        protected override string SerialNumberMessage
+        public static PowerSupply Connect(CancellationToken token, string address)
         {
-            get
-            {
-                return "*IDN?";
-            }
-        }
-        
-        protected override string FirmwareVersionMessage
-        {
-            get
-            {
-                return "*IDN?";
-            }
-        }
-        
-        public static PowerSupply Connect()
-        {
-            return _factory.GetInstrument<PowerSupply>();
-        }
-        
-        public static PowerSupply Connect(string address)
-        {
-            return _factory.GetInstrument<PowerSupply>(address);
+            return _factory.GetInstrument<PowerSupply>(token, address);
         }
         
         public static PowerSupply Connect(ConnectionBase connection)
@@ -66,12 +44,54 @@ namespace TestClient.Instruments
             return _factory.GetInstrument<PowerSupply>(((DummyConnection)(connection)));
         }
         
+        protected override string GetModelNumber()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("*IDN?", 0, false);
+                return Connection.GetResponse<string>(".*", false, '\uD800');
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
+        protected override string GetSerialNumber()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("*IDN?", 0, false);
+                return Connection.GetResponse<string>(".*", false, '\uD800');
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
+        protected override string GetFirmwareVersion()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("*IDN?", 0, false);
+                return Connection.GetResponse<string>(".*", false, '\uD800');
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
         public virtual void SetVoltage(Double voltage)
         {
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("SET:VOLT {0}", -1, voltage);
+                Connection.SendCommand("SET:VOLT {0}", 0, false, voltage);
             }
             finally
             {
@@ -84,8 +104,8 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("GET:CURRENT?", -1);
-                return Connection.GetResponse<Double>(".*", '\uD800', -1);
+                Connection.SendCommand("GET:CURRENT?", 0, false);
+                return Connection.GetResponse<Double>(".*", false, '\uD800');
             }
             finally
             {

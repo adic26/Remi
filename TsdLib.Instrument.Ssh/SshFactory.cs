@@ -20,11 +20,10 @@ namespace TsdLib.Instrument.Ssh
         /// <summary>
         /// Will try to connect to either a BB10 or Avengers device, depending on whether or not a BB10 device is detected
         /// </summary>
-        /// <param name="address"></param>
-        /// <param name="defaultDelay"></param>
+        /// <param name="address">Address of the BB10 or Avengers device.</param>
         /// <param name="attributes"></param>
         /// <returns>Connection</returns>
-        protected override SshConnection CreateConnection(string address, int defaultDelay, params ConnectionSettingAttribute[] attributes)
+        protected override SshConnection CreateConnection(string address, params ConnectionSettingAttribute[] attributes)
         {
             for (int i = NumRetries; i > 0; i--)
             {

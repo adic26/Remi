@@ -37,11 +37,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DBControl, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DBControl.4.5.346\lib\net45\DBControl.dll</HintPath>
+      <HintPath>..\packages\DBControl.4.5.371\lib\net45\DBControl.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="DBControl.XmlSerializers, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DBControl.4.5.346\lib\net45\DBControl.XmlSerializers.dll</HintPath>
+      <HintPath>..\packages\DBControl.4.5.371\lib\net45\DBControl.XmlSerializers.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="LibGit2Sharp">
@@ -55,15 +55,15 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TsdLib.InstrumentLibrary.Tools, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3646076ad9d068cf, processorArchitecture=MSIL">
-      <HintPath>..\packages\TsdLib.InstrumentLibrary.Tools.3.3.7-debug\lib\net45\TsdLib.InstrumentLibrary.Tools.dll</HintPath>
+    <Reference Include="TsdLib.InstrumentLibrary.Tools, Version=4.0.0.0, Culture=neutral, PublicKeyToken=3646076ad9d068cf, processorArchitecture=MSIL">
+      <HintPath>..\packages\TsdLib.InstrumentLibrary.Tools.4.0.19-debug\lib\net45\TsdLib.InstrumentLibrary.Tools.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller\Controller.cs" />
     <Compile Include="Configuration\ProductConfig.cs" />
-    <Compile Include="Instruments\AosBCM4339_SafeCommands.cs" />
+    <None Include="Instruments\AosBCM4339_SafeCommands.cs" />
     <Compile Include="Instruments\Aos_BCM4339.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -167,6 +167,7 @@
       <Generator>InstrumentClassGenerator</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <LastGenOutput>BlackBerry.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Instruments\PowerSupply.xml">
       <Generator>InstrumentClassGenerator</Generator>
@@ -192,12 +193,12 @@
   <PropertyGroup>
     <PreBuildEvent>rmdir /S /Q $(TargetDir)Instruments</PreBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\TsdLib.Build.Versioning.2.9.0\build\TsdLib.Build.Versioning.targets" Condition="Exists('..\packages\TsdLib.Build.Versioning.2.9.0\build\TsdLib.Build.Versioning.targets')" />
+  <Import Project="..\packages\TsdLib.Build.Versioning.3.0.0\build\TsdLib.Build.Versioning.targets" Condition="Exists('..\packages\TsdLib.Build.Versioning.3.0.0\build\TsdLib.Build.Versioning.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\TsdLib.Build.Versioning.2.9.0\build\TsdLib.Build.Versioning.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\TsdLib.Build.Versioning.2.9.0\build\TsdLib.Build.Versioning.targets'))" />
+    <Error Condition="!Exists('..\packages\TsdLib.Build.Versioning.3.0.0\build\TsdLib.Build.Versioning.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\TsdLib.Build.Versioning.3.0.0\build\TsdLib.Build.Versioning.targets'))" />
   </Target>
   <!--<Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

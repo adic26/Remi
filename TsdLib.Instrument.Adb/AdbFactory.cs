@@ -75,7 +75,7 @@ namespace TsdLib.Instrument.Adb
             return devs;
         }
 
-        protected override AdbConnection CreateConnection(string address, int defaultDelay, params ConnectionSettingAttribute[] attributes)
+        protected override AdbConnection CreateConnection(string address, params ConnectionSettingAttribute[] attributes)
         {
             AdbConnection conn = new AdbConnection(address);
 

@@ -27,9 +27,8 @@ namespace TsdLib.Instrument.Telnet
         /// Initialize a new Connection object.
         /// </summary>
         /// <param name="tcpClient">A System.Net.Sockets.TcpClient object to provide the transport layer for the Telnet connection.</param>
-        /// <param name="defaultDelay">Default delay (in ms) to wait before sending each command.</param>
-        internal TelnetConnection(TcpClient tcpClient, int defaultDelay = 200)
-            : base(((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString(), defaultDelay)
+        internal TelnetConnection(TcpClient tcpClient)
+            : base(((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString())
         {
             _tcpSocket = tcpClient;
         }
@@ -71,7 +70,7 @@ namespace TsdLib.Instrument.Telnet
             StringBuilder sb = new StringBuilder(_rxBuffer);
             _rxBuffer = "";
             if (_tcpSocket.Available > 0)
-                sb.AppendLine(Read(DefaultDelay));
+                sb.AppendLine(Read(200));
             return sb.ToString();
         }
 
@@ -82,7 +81,7 @@ namespace TsdLib.Instrument.Telnet
         protected override void Write(string message)
         {
             WriteLine(message);
-            string buffer = Read(DefaultDelay);
+            string buffer = Read(200);
             _rxBuffer = buffer.Contains(message) ? buffer.Remove(0, message.Length).Replace("#", "").Replace("\0", "").Trim() : buffer;
         }
 

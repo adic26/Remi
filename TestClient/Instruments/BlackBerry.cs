@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Threading;
+
 namespace TestClient.Instruments
 {
     using System;
@@ -18,7 +20,6 @@ namespace TestClient.Instruments
     
     // ReSharper disable once FieldCanBeMadeReadOnly.Local
     [IdQuery("BlackBerry Device")]
-    [CommandDelay("200")]
     public class BlackBerry : InstrumentBase<TelnetConnection>
     {
         
@@ -34,62 +35,14 @@ namespace TestClient.Instruments
         {
         }
         
-        protected override string ModelNumberMessage
+        public static BlackBerry Connect(CancellationToken token)
         {
-            get
-            {
-                return "cat /pps/services/hw_info/inventory | grep Board_Type::";
-            }
+            return _factory.GetInstrument<BlackBerry>(token);
         }
         
-        protected override string ModelNumberRegEx
+        public static BlackBerry Connect(CancellationToken token, string address)
         {
-            get
-            {
-                return "(?<=Board_Type::).*";
-            }
-        }
-        
-        protected override string SerialNumberMessage
-        {
-            get
-            {
-                return "cat /pps/system/nvram/deviceinfo | grep BSN::";
-            }
-        }
-        
-        protected override string SerialNumberRegEx
-        {
-            get
-            {
-                return "(?<=BSN::).*";
-            }
-        }
-        
-        protected override string FirmwareVersionMessage
-        {
-            get
-            {
-                return "cat /pps/services/deviceproperties | grep scmbundle::";
-            }
-        }
-        
-        protected override string FirmwareVersionRegEx
-        {
-            get
-            {
-                return "(?<=scmbundle::).*";
-            }
-        }
-        
-        public static BlackBerry Connect()
-        {
-            return _factory.GetInstrument<BlackBerry>();
-        }
-        
-        public static BlackBerry Connect(string address)
-        {
-            return _factory.GetInstrument<BlackBerry>(address);
+            return _factory.GetInstrument<BlackBerry>(token, address);
         }
         
         public static BlackBerry Connect(ConnectionBase connection)
@@ -97,13 +50,55 @@ namespace TestClient.Instruments
             return _factory.GetInstrument<BlackBerry>(((TelnetConnection)(connection)));
         }
         
+        protected override string GetModelNumber()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("cat /pps/services/hw_info/inventory | grep Board_Type::", 200, false);
+                return Connection.GetResponse<string>("(?<=Board_Type::).*", false, '\uD800');
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
+        protected override string GetSerialNumber()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("cat /pps/system/nvram/deviceinfo | grep BSN::", 200, false);
+                return Connection.GetResponse<string>("(?<=BSN::).*", false, '\uD800');
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
+        protected override string GetFirmwareVersion()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("cat /pps/services/deviceproperties | grep scmbundle::", 200, false);
+                return Connection.GetResponse<string>("(?<=scmbundle::).*", false, '\uD800');
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
         public virtual String GetImei()
         {
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("cat /pps/system/nvram/deviceinfo | grep IMEI::", -1);
-                return Connection.GetResponse<String>("(?<=IMEI::).*(?=\\r\\nInProduction)");
+                Connection.SendCommand("cat /pps/system/nvram/deviceinfo | grep IMEI::", 200, false);
+                return Connection.GetResponse<String>("(?<=IMEI::).*(?=\\r\\nInProduction)", false, '\uD800');
             }
             finally
             {
@@ -116,8 +111,8 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("wl_bcm_dhd revinfo | grep chipnum", -1);
-                return Connection.GetResponse<String>("(?<=chipnum 0x)\\d+");
+                Connection.SendCommand("wl_bcm_dhd revinfo | grep chipnum", 200, false);
+                return Connection.GetResponse<String>("(?<=chipnum 0x)\\d+", false, '\uD800');
             }
             finally
             {

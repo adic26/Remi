@@ -50,7 +50,7 @@ namespace TsdLib.Instrument.Adb
             throw new AdbConnectException("Error received when searching for devices: " + e.Data);
         }
 
-        protected override AdbConnection_Process_StartStop CreateConnection(string address, int defaultDelay, params ConnectionSettingAttribute[] attributes)
+        protected override AdbConnection_Process_StartStop CreateConnection(string address, params ConnectionSettingAttribute[] attributes)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
             {

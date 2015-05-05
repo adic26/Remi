@@ -20,11 +20,9 @@ namespace TsdLib.Instrument.Dummy
         /// Creates a simulated connection using the specified address.
         /// </summary>
         /// <param name="address">Address to assign to the simulated instrument.</param>
-        /// <param name="defaultDelay">Default delay to wait between commands.</param>
         /// <param name="attributes">Zero or more ConnectionSettingAttributes. Content will be defined by the instrument connection type.</param>
         /// <returns>A simulated instrument connection.</returns>
-        protected override DummyConnection CreateConnection(string address, int defaultDelay,
-            params ConnectionSettingAttribute[] attributes)
+        protected override DummyConnection CreateConnection(string address, params ConnectionSettingAttribute[] attributes)
         {
             return new DummyConnection(address);
         }

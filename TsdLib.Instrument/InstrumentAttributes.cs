@@ -3,24 +3,21 @@
 namespace TsdLib.Instrument
 {
     /// <summary>
-    /// Custom attribute to define the initialization commands to send to the instrument during the connection process.
+    /// Custom attribute to identify an initialization command that will be to sent to the instrument during the connection process.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class InitCommandsAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Method)]
+    public class InitCommandAttribute : Attribute
     {
-        /// <summary>
-        /// Gets the commands in an array.
-        /// </summary>
-        public string[] Commands { get; private set; }
 
-        /// <summary>
-        /// Initialize a new InitCommandsAttribute with the specified commands.
-        /// </summary>
-        /// <param name="commands">Zero or more commands to be sent to the instrument during the connection process.</param>
-        public InitCommandsAttribute(params string[] commands)
-        {
-            Commands = commands;
-        }
+    }
+
+    /// <summary>
+    /// Custom attribute to identify a disposal command that will be to sent to the instrument during the teardown process.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public class DisposeCommandAttribute : Attribute
+    {
+
     }
 
     /// <summary>
@@ -90,27 +87,6 @@ namespace TsdLib.Instrument
                 throw new ConnectionSettingAttributeException(type, name);
 
             ArgumentValue = Convert.ChangeType(val, ArgumentType);
-        }
-    }
-
-    /// <summary>
-    /// Custom attribute to define a default delay (in ms) to wait before sending each command to the instrument.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Class)]
-    public class CommandDelayAttribute : Attribute
-    {
-        /// <summary>
-        /// Gets the delay (in ms).
-        /// </summary>
-        public int Delay { get; private set; }
-
-        /// <summary>
-        /// Initialize a new CommandDelayAttribute with the specified delay.
-        /// </summary>
-        /// <param name="delay">Delay (in ms).</param>
-        public CommandDelayAttribute(string delay)
-        {
-            Delay = int.Parse(delay);
         }
     }
     

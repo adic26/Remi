@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace TsdLib.Instrument
 {
@@ -22,10 +23,9 @@ namespace TsdLib.Instrument
         /// Creates a connection using the specified address.
         /// </summary>
         /// <param name="address">Address of the instrument.</param>
-        /// <param name="defaultDelay">Default delay to wait between commands.</param>
         /// <param name="attributes">Zero or more ConnectionSettingAttributes. Content will be defined by the instrument connection type.</param>
         /// <returns>A VisaConnection object that can be used to communicate with the instrument.</returns>
-        protected abstract TConnection CreateConnection(string address, int defaultDelay, params ConnectionSettingAttribute[] attributes);
+        protected abstract TConnection CreateConnection(string address, params ConnectionSettingAttribute[] attributes);
         /// <summary>
         /// Send a request to identify the instrument via the specified connection.
         /// </summary>
@@ -38,12 +38,13 @@ namespace TsdLib.Instrument
         /// Connects to an instrument of the specified type and returns an object to communicate with it.
         /// </summary>
         /// <typeparam name="TInstrument">Type of instrument to connect to.</typeparam>
+        /// <param name="token">A cancellation token used to enable cooperative cancellation.</param>
         /// <param name="address">OPTIONAL: If specified, limits the search to the specfied address.</param>
         /// <returns>An object of the specified type (derived from InstrumentBase) with a connection of the specified type.</returns>
-        public TInstrument GetInstrument<TInstrument>(string address = null)
+        public TInstrument GetInstrument<TInstrument>(CancellationToken token, string address = null)
             where TInstrument : InstrumentBase<TConnection>
         {
-            TConnection[] connections = GetConnection<TInstrument>(address);
+            TConnection[] connections = GetConnection<TInstrument>(token, address);
 
             if (connections.Length == 0)
                 throw new ConnectException(typeof(TInstrument).Name, typeof(TConnection).Name);
@@ -55,24 +56,22 @@ namespace TsdLib.Instrument
             return inst;
         }
 
-        public TConnection[] GetConnection<TInstrument>(string address = null)
+        public TConnection[] GetConnection<TInstrument>(CancellationToken token, string address = null)
             where TInstrument : InstrumentBase<TConnection>
         {
             IdQueryAttribute idAtt = (IdQueryAttribute)Attribute.GetCustomAttribute(typeof(TInstrument), typeof(IdQueryAttribute), true);
             ConnectionSettingAttribute[] connectionAttributes = Attribute.GetCustomAttributes(typeof(TInstrument), typeof(ConnectionSettingAttribute), true).Cast<ConnectionSettingAttribute>().ToArray();
-
-            CommandDelayAttribute delayAttribute = (CommandDelayAttribute)Attribute.GetCustomAttribute(typeof(TInstrument), typeof(CommandDelayAttribute), true);
-            int defaultDelay = delayAttribute != null ? delayAttribute.Delay : 0;
 
             string[] instrumentAddresses = string.IsNullOrWhiteSpace(address) ? SearchForInstruments().ToArray() : new[] { address };
 
             List<TConnection> connections = new List<TConnection>();
             foreach (string instrumentAddress in instrumentAddresses)
             {
-                TConnection conn = CreateConnection(instrumentAddress, defaultDelay, connectionAttributes);
+                TConnection conn = CreateConnection(instrumentAddress, connectionAttributes);
 
                 if (conn != null)
                 {
+                    conn.Token = token;
                     Trace.WriteLine("Connecting to " + instrumentAddress);
 
                     string id = GetInstrumentIdentifier(conn, idAtt);
@@ -102,19 +101,13 @@ namespace TsdLib.Instrument
                 new object[] { connection },
                 null);
 
-            InitCommandsAttribute initCommands = (InitCommandsAttribute)Attribute.GetCustomAttribute(typeof(TInstrument), typeof(InitCommandsAttribute), true);
-            if (initCommands != null)
-                foreach (string command in initCommands.Commands)
-                    inst.Connection.SendCommand(command, -1);
+            IEnumerable<MethodInfo> initMethods = typeof (TInstrument)
+                .GetMethods()
+                .Where(m => m.GetCustomAttributes().OfType<InitCommandAttribute>().Any());
 
-            inst.Connection.SendCommand(inst.ModelNumberMessage, -1);
-            inst.ModelNumber = inst.Connection.GetResponse<string>(inst.ModelNumberRegEx, inst.ModelNumberTermChar);
+            foreach (MethodInfo initMethod in initMethods)
+                initMethod.Invoke(inst, new object[0]);
 
-            inst.Connection.SendCommand(inst.SerialNumberMessage, -1);
-            inst.SerialNumber = inst.Connection.GetResponse<string>(inst.SerialNumberRegEx, inst.SerialNumberTermChar);
-
-            inst.Connection.SendCommand(inst.FirmwareVersionMessage, -1);
-            inst.FirmwareVersion = inst.Connection.GetResponse<string>(inst.FirmwareVersionRegEx, inst.FirmwareVersionTermChar);
 
             Trace.WriteLine("Connected to " + inst.Description);
             Trace.WriteLine("Model number: " + inst.ModelNumber);

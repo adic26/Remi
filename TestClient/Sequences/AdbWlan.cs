@@ -10,7 +10,12 @@ namespace TestClient.Sequences
     {
         protected override void ExecuteTest(CancellationToken token, StationConfig stationConfig, ProductConfig productConfig, TestConfig testConfig)
         {
-            IBlackBerryWlan blackBerryWlan = Aos_BCM4339.Connect();
+            IBlackBerryWlan blackBerryWlan = Aos_BCM4339.Connect(token);
+
+
+
+
+
             //IBlackBerryWlan blackBerryWlan = new AosBCM4339_SafeCommands();
 
             AddTestInfo(new TestInfo("WLAN Chipset Family", blackBerryWlan.GetChipsetFamily()));

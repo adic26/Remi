@@ -13,14 +13,12 @@ namespace TsdLib.Instrument
     /// </summary>
     public abstract class ConnectionBase : IDisposable
     {
+        internal CancellationToken Token = new CancellationToken();
+
         /// <summary>
         /// Synchronization object used to lock the connection for thread-safety.
         /// </summary>
         public readonly object SyncRoot;
-        /// <summary>
-        /// Gets or sets the default delay (in ms) to wait before sending each command.
-        /// </summary>
-        public int DefaultDelay { get; set; }
 
         /// <summary>
         /// Unique address of the instrument.
@@ -35,12 +33,10 @@ namespace TsdLib.Instrument
         /// Initialize a new Connection object.
         /// </summary>
         /// <param name="address">Unique address of the instrument.</param>
-        /// <param name="defaultDelay">Default delay (in ms) to wait before sending each command.</param>
-        protected ConnectionBase(string address, int defaultDelay = 0)
+        protected ConnectionBase(string address)
         {
             SyncRoot = new object();
             Address = address;
-            DefaultDelay = defaultDelay;
             Description = GetType().Name + " on " + Address;
         }
 
@@ -102,15 +98,13 @@ namespace TsdLib.Instrument
         /// Sends a command to the connected instrument.
         /// </summary>
         /// <param name="command">Raw command to send. Use {0}, {1}, etc. to insert members of the args array.</param>
-        /// <param name="delay">Time in milliseconds to delay before sending the command. Pass -1 to use the default delay for the connection.</param>
+        /// <param name="delay">Time in milliseconds to wait after sending the command.</param>
+        /// <param name="ignoreErrors">Pass true to ignore any errors resulting from this command.</param>
         /// <param name="args">Arguments to be inserted into the raw command string.</param>
-        public void SendCommand(string command, int delay, params object[] args)
+        /// <exception cref="OperationCanceledException">The token has had cancellation requested.</exception>
+        public void SendCommand(string command, int delay, bool ignoreErrors, params object[] args)
         {
-            int localDelay = delay != -1 ? delay : DefaultDelay;
-            if (localDelay > 0)
-                Trace.WriteLine("Waiting " + localDelay + "ms before sending");
-            Thread.Sleep(localDelay);
-                
+            Token.ThrowIfCancellationRequested();
             lock (SyncRoot)
             {
                 string fullCommand = string.Format(command, args);
@@ -122,27 +116,25 @@ namespace TsdLib.Instrument
                     Trace.WriteLine("Sending command to " + Description + ": " + partialCommand);
                     Write(partialCommand);
                     string error;
-                    if (CheckForError(out error))
+                    if (CheckForError(out error) && !ignoreErrors)
                         throw new CommandException(this, partialCommand, error);
                 }
             }
+            Thread.Sleep(delay);
         }
 
         /// <summary>
         /// Reads a string from the connected instrument and parses it into a specified type.
         /// </summary>
         /// <typeparam name="T">Return type.</typeparam>
-        /// <param name="regex">Optional: Specify a regular expression string to filter the raw response.</param>
+        /// <param name="regex">Specify a regular expression string to filter the raw response.</param>
+        /// <param name="ignoreErrors">Pass true to ignore any errors resulting from this command.</param>
         /// <param name="terminationCharacter">Optional: Specify a character that singals the end of the expected response from the connected instrument.</param>
-        /// <param name="delay">Optional: Overrides the default connection delay (in milliseconds) for this read.</param>
         /// <returns>The response filtered by the regular expression specified by regex and parsed into the return type specified by T.</returns>
-        public T GetResponse<T>(string regex = ".*", char terminationCharacter = '\uD800', int delay = -1)
+        /// <exception cref="OperationCanceledException">The token has had cancellation requested.</exception>
+        public T GetResponse<T>(string regex, bool ignoreErrors, char terminationCharacter = '\uD800')
         {
-            int localDelay = delay != -1 ? delay : DefaultDelay;
-            if (localDelay > 0)
-                Trace.WriteLine("Waiting " + localDelay + "ms before receiving string response");
-            Thread.Sleep(localDelay);
-
+            Token.ThrowIfCancellationRequested();
             string parsedResponse = "";
 
             lock (SyncRoot)
@@ -151,10 +143,10 @@ namespace TsdLib.Instrument
                 {
                     string response = terminationCharacter == '\uD800' ?
                         ReadString() :
-                        Encoding.ASCII.GetString(GetByteResponse(terminationCharacter: terminationCharacter, delay: 0));
+                        Encoding.ASCII.GetString(GetByteResponse(ignoreErrors, terminationCharacter: terminationCharacter));
 
                     string error;
-                    if (CheckForError(out error))
+                    if (CheckForError(out error) && !ignoreErrors)
                         throw new ResponseException(this, error);
 
                     Trace.WriteLine("Received response from: " + Description + ": " + response);
@@ -196,17 +188,12 @@ namespace TsdLib.Instrument
         /// <summary>
         /// Read an array of bytes from the instrument.
         /// </summary>
+        /// <param name="ignoreErrors">Pass true to ignore any errors resulting from this command.</param>
         /// <param name="byteCount">Number of bytes to read.</param>
         /// <param name="terminationCharacter">OPTIONAL: Termination character that instrument uses to signal the end of the transmission.</param>
-        /// <param name="delay">Delay (in ms) to wait before reading the bytes.</param>
         /// <returns>A byte array from the instrument.</returns>
-        public byte[] GetByteResponse(int byteCount = int.MaxValue, char terminationCharacter = '\uD800', int delay = -1)
+        public byte[] GetByteResponse(bool ignoreErrors, int byteCount = int.MaxValue, char terminationCharacter = '\uD800')
         {
-            int localDelay = delay != -1 ? delay : DefaultDelay;
-            if (localDelay > 0)
-                Trace.WriteLine("Waiting " + localDelay + "ms before receiving byte response");
-            Thread.Sleep(localDelay);
-
             lock (SyncRoot)
             {
                 List<byte> resp = new List<byte>();
@@ -215,7 +202,7 @@ namespace TsdLib.Instrument
                 byte[] response = resp.ToArray();
 
                 string error;
-                if (CheckForError(out error))
+                if (CheckForError(out error) && !ignoreErrors)
                     throw new ResponseException(this, error);
 
                 Trace.WriteLine("Received response from " + Description + ": " + Encoding.ASCII.GetString(response));

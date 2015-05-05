@@ -31,9 +31,8 @@ namespace TsdLib.Instrument.Visa
         /// Initialize a new Connection object.
         /// </summary>
         /// <param name="session">A NationalInstruments.VisaNS.MessageBasedSession object to provide the transport layer for the Visa connection.</param>
-        /// <param name="defaultDelay">Default delay (in ms) to wait before sending each command.</param>
-        internal VisaConnection(MessageBasedSession session, int defaultDelay = 0)
-            : base(session.ResourceName, defaultDelay)
+        internal VisaConnection(MessageBasedSession session)
+            : base(session.ResourceName)
         {
             _session = session;
         }

@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Threading;
+
 namespace TestClient.Instruments
 {
     using System;
@@ -18,7 +20,6 @@ namespace TestClient.Instruments
     
     // ReSharper disable once FieldCanBeMadeReadOnly.Local
     [IdQuery("Avengers")]
-    [InitCommands("adb root;netcfg wlan0 up")]
     public class Aos_BCM4339 : InstrumentBase<AdbConnection>, IBlackBerryWlan
     {
         
@@ -33,79 +34,15 @@ namespace TestClient.Instruments
                 base(connection)
         {
         }
-        
-        protected override string ModelNumberMessage
+
+        public static Aos_BCM4339 Connect(CancellationToken token)
         {
-            get
-            {
-                return "getprop | grep ro.product.board";
-            }
+            return _factory.GetInstrument<Aos_BCM4339>(token);
         }
         
-        protected override string ModelNumberRegEx
+        public static Aos_BCM4339 Connect(CancellationToken token, string address)
         {
-            get
-            {
-                return "(?<=: \\[)\\w+(?=\\])";
-            }
-        }
-        
-        protected override string SerialNumberMessage
-        {
-            get
-            {
-                return "cat /nvram/boardid/bsn && echo \'\'";
-            }
-        }
-        
-        protected override string SerialNumberRegEx
-        {
-            get
-            {
-                return "\\d+";
-            }
-        }
-        
-        public override string SerialNumberDescriptor
-        {
-            get
-            {
-                return "BSN";
-            }
-        }
-        
-        protected override string FirmwareVersionMessage
-        {
-            get
-            {
-                return "getprop | grep ro.build.version.incremental";
-            }
-        }
-        
-        protected override string FirmwareVersionRegEx
-        {
-            get
-            {
-                return "(?<=: \\[)\\w+(?=\\])";
-            }
-        }
-        
-        public override string FirmwareVersionDescriptor
-        {
-            get
-            {
-                return "OS Version";
-            }
-        }
-        
-        public static Aos_BCM4339 Connect()
-        {
-            return _factory.GetInstrument<Aos_BCM4339>();
-        }
-        
-        public static Aos_BCM4339 Connect(string address)
-        {
-            return _factory.GetInstrument<Aos_BCM4339>(address);
+            return _factory.GetInstrument<Aos_BCM4339>(token, address);
         }
         
         public static Aos_BCM4339 Connect(ConnectionBase connection)
@@ -113,12 +50,54 @@ namespace TestClient.Instruments
             return _factory.GetInstrument<Aos_BCM4339>(((AdbConnection)(connection)));
         }
         
+        protected override string GetModelNumber()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("getprop | grep ro.product.board", 0, false);
+                return Connection.GetResponse<string>("(?<=: \\[)\\w+(?=\\])", false, '\uD800');
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
+        protected override string GetSerialNumber()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("cat /nvram/boardid/bsn && echo \'\'", 0, false);
+                return Connection.GetResponse<string>("\\d+", false, '\uD800');
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
+        protected override string GetFirmwareVersion()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("getprop | grep ro.build.version.incremental", 0, false);
+                return Connection.GetResponse<string>("(?<=: \\[)\\w+(?=\\])", false, '\uD800');
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
         public virtual void DisableWlan()
         {
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("netcfg wlan0 down", -1);
+                Connection.SendCommand("netcfg wlan0 down", 0, false);
             }
             finally
             {
@@ -131,7 +110,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("netcfg wlan0 up", -1);
+                Connection.SendCommand("netcfg wlan0 up", 0, false);
             }
             finally
             {
@@ -144,7 +123,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil pkteng_start 00:11:22:33:44:55 tx 100 1024 0", -1);
+                Connection.SendCommand("/vendor/firmware/wlutil pkteng_start 00:11:22:33:44:55 tx 100 1024 0", 0, false);
             }
             finally
             {
@@ -157,7 +136,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil pkteng_stop tx", -1);
+                Connection.SendCommand("/vendor/firmware/wlutil pkteng_stop tx", 0, false);
             }
             finally
             {
@@ -170,7 +149,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil pkteng_start 00:00:00:C0:FF:EE rxwithack", -1);
+                Connection.SendCommand("/vendor/firmware/wlutil pkteng_start 00:00:00:C0:FF:EE rxwithack", 0, false);
             }
             finally
             {
@@ -183,7 +162,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil pkteng_stop rx", -1);
+                Connection.SendCommand("/vendor/firmware/wlutil pkteng_stop rx", 0, false);
             }
             finally
             {
@@ -196,7 +175,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil up", -1);
+                Connection.SendCommand("/vendor/firmware/wlutil up", 0, false);
             }
             finally
             {
@@ -209,7 +188,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil down", -1);
+                Connection.SendCommand("/vendor/firmware/wlutil down", 0, false);
             }
             finally
             {
@@ -222,7 +201,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil mpc 0", -1);
+                Connection.SendCommand("/vendor/firmware/wlutil mpc 0", 0, false);
             }
             finally
             {
@@ -235,7 +214,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil phy_watchdog 0", -1);
+                Connection.SendCommand("/vendor/firmware/wlutil phy_watchdog 0", 0, false);
             }
             finally
             {
@@ -248,7 +227,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil country {0}", -1, countryCode);
+                Connection.SendCommand("/vendor/firmware/wlutil country {0}", 0, false, countryCode);
             }
             finally
             {
@@ -261,7 +240,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil band {0}", -1, band_try_auto);
+                Connection.SendCommand("/vendor/firmware/wlutil band {0}", 0, false, band_try_auto);
             }
             finally
             {
@@ -274,7 +253,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil {0}g_rate -{1} {2} -b {3}", -1, band, rateType, rate, bandwidth);
+                Connection.SendCommand("/vendor/firmware/wlutil {0}g_rate -{1} {2} -b {3}", 0, false, band, rateType, rate, bandwidth);
             }
             finally
             {
@@ -287,7 +266,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil chanspec {0}/{1}", -1, channel, bandwidth);
+                Connection.SendCommand("/vendor/firmware/wlutil chanspec {0}/{1}", 0, false, channel, bandwidth);
             }
             finally
             {
@@ -300,7 +279,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil phy_forcecal 1", -1);
+                Connection.SendCommand("/vendor/firmware/wlutil phy_forcecal 1", 0, false);
             }
             finally
             {
@@ -313,7 +292,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil scansuppress 1", -1);
+                Connection.SendCommand("/vendor/firmware/wlutil scansuppress 1", 0, false);
             }
             finally
             {
@@ -326,7 +305,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil phy_txpwrctrl 1", -1);
+                Connection.SendCommand("/vendor/firmware/wlutil phy_txpwrctrl 1", 0, false);
             }
             finally
             {
@@ -339,7 +318,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil mimo_txbw {0}", -1, bandwidth);
+                Connection.SendCommand("/vendor/firmware/wlutil mimo_txbw {0}", 0, false, bandwidth);
             }
             finally
             {
@@ -352,7 +331,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil txpwr1 -1", -1);
+                Connection.SendCommand("/vendor/firmware/wlutil txpwr1 -1", 0, false);
             }
             finally
             {
@@ -365,7 +344,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil txpwr1 -d {0}", -1, powerLevel);
+                Connection.SendCommand("/vendor/firmware/wlutil txpwr1 -d {0}", 0, false, powerLevel);
             }
             finally
             {
@@ -378,7 +357,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil txpwr1 -d {0} -o", -1, powerLevel);
+                Connection.SendCommand("/vendor/firmware/wlutil txpwr1 -d {0} -o", 0, false, powerLevel);
             }
             finally
             {
@@ -391,7 +370,7 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil reset_cnts", -1);
+                Connection.SendCommand("/vendor/firmware/wlutil reset_cnts", 0, false);
             }
             finally
             {
@@ -404,8 +383,8 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("getprop | grep ro.hwf.wlan.chipset", -1);
-                return Connection.GetResponse<String>("\\d+", '\uD800', -1);
+                Connection.SendCommand("getprop | grep ro.hwf.wlan.chipset", 0, false);
+                return Connection.GetResponse<String>("\\d+", false, '\uD800');
             }
             finally
             {
@@ -418,8 +397,8 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil ver", -1);
-                return Connection.GetResponse<String>("(?<=version (\\d+\\.){3}\\d+ \\().*(?=\\))", '\uD800', -1);
+                Connection.SendCommand("/vendor/firmware/wlutil ver", 0, false);
+                return Connection.GetResponse<String>("(?<=version (\\d+\\.){3}\\d+ \\().*(?=\\))", false, '\uD800');
             }
             finally
             {
@@ -432,8 +411,8 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil ver", -1);
-                return Connection.GetResponse<String>("(?<=version )(\\d+\\.){3}\\d+", '\uD800', -1);
+                Connection.SendCommand("/vendor/firmware/wlutil ver", 0, false);
+                return Connection.GetResponse<String>("(?<=version )(\\d+\\.){3}\\d+", false, '\uD800');
             }
             finally
             {
@@ -446,8 +425,8 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil isup", -1);
-                return Connection.GetResponse<Boolean>(".*", '\uD800', -1);
+                Connection.SendCommand("/vendor/firmware/wlutil isup", 0, false);
+                return Connection.GetResponse<Boolean>(".*", false, '\uD800');
             }
             finally
             {
@@ -460,8 +439,8 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil country", -1);
-                return Connection.GetResponse<String>(".*", '\uD800', -1);
+                Connection.SendCommand("/vendor/firmware/wlutil country", 0, false);
+                return Connection.GetResponse<String>(".*", false, '\uD800');
             }
             finally
             {
@@ -474,8 +453,8 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil phy_activecal", -1);
-                return Connection.GetResponse<Boolean>(".*", '\uD800', -1);
+                Connection.SendCommand("/vendor/firmware/wlutil phy_activecal", 0, false);
+                return Connection.GetResponse<Boolean>(".*", false, '\uD800');
             }
             finally
             {
@@ -488,8 +467,8 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil counters | grep rxdfrmmcast", -1);
-                return Connection.GetResponse<Int32>("(?<=rxdfrmmcast )\\d+", '\uD800', -1);
+                Connection.SendCommand("/vendor/firmware/wlutil counters | grep rxdfrmmcast", 0, false);
+                return Connection.GetResponse<Int32>("(?<=rxdfrmmcast )\\d+", false, '\uD800');
             }
             finally
             {

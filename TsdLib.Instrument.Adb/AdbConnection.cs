@@ -110,10 +110,12 @@ namespace TsdLib.Instrument.Adb
 
         protected override bool CheckForError(out string errorString)
         {
+            //TODO: make sure we can ignore errors - returning true here will cause ConnectionBase to throw an exception - we may not always want this
             if (_adbShellProcess.LastReturnCode != 0)
             {
                 errorString = _adbShellProcess.ReceiveBuffer;
-                return true;
+                Trace.WriteLine("WARNING: adb process returned an error: " + errorString);
+                return !IsConnected;
             }
 
             errorString = "";

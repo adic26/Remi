@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 using TsdLib.Instrument.Dummy;
 
 namespace TsdLib.Instrument
@@ -47,21 +50,18 @@ namespace TsdLib.Instrument
         protected virtual string InitCommands { get { return ""; } }
 
         /// <summary>
-        /// Gets the message to send to the instrument to query the model number.
+        /// Override to implement the query used to obtain the instrument model number.
         /// </summary>
-        protected internal abstract string ModelNumberMessage { get; }
-        /// <summary>
-        /// Gets the regular expression used to parse the response when querying the model number.
-        /// </summary>
-        protected internal virtual string ModelNumberRegEx { get { return ".*"; } }
-        /// <summary>
-        /// Gets the termination character (if any) that the instrument will send to signal the end of the model number query response.
-        /// </summary>
-        protected internal virtual char ModelNumberTermChar { get { return '\uD800'; } }
+        /// <returns></returns>
+        protected abstract string GetModelNumber();
+        private string _modelNumber;
         /// <summary>
         /// Gets the instrument model number.
         /// </summary>
-        public string ModelNumber { get; internal set; }
+        public string ModelNumber
+        {
+            get { return _modelNumber ?? (_modelNumber = GetModelNumber());} 
+        }
 
         /// <summary>
         /// Gets the descriptor used for the <see cref="IInstrument.ModelNumber"/> property.
@@ -72,21 +72,18 @@ namespace TsdLib.Instrument
         }
 
         /// <summary>
-        /// Gets the message to send to the instrument to query the serial number.
+        /// Override to implement the query used to obtain the instrument serial number.
         /// </summary>
-        protected internal abstract string SerialNumberMessage { get; }
-        /// <summary>
-        /// Gets the regular expression used to parse the response when querying the serial number.
-        /// </summary>
-        protected internal virtual string SerialNumberRegEx { get { return ".*"; } }
-        /// <summary>
-        /// Gets the termination character (if any) that the instrument will send to signal the end of the serial number query response.
-        /// </summary>
-        protected internal virtual char SerialNumberTermChar { get { return '\uD800'; } }
+        /// <returns></returns>
+        protected abstract string GetSerialNumber();
+        private string _serialNumber;
         /// <summary>
         /// Gets the instrument serial number.
         /// </summary>
-        public string SerialNumber { get; internal set; }
+        public string SerialNumber
+        {
+            get { return _serialNumber ?? (_serialNumber = GetSerialNumber()); }
+        }
 
         /// <summary>
         /// Gets the descriptor used for the <see cref="IInstrument.SerialNumber"/> property.
@@ -97,21 +94,18 @@ namespace TsdLib.Instrument
         }
 
         /// <summary>
-        /// Gets the message to send to the instrument to query the firmware version.
+        /// Override to implement the query used to obtain the instrument serial number.
         /// </summary>
-        protected internal abstract string FirmwareVersionMessage { get; }
+        /// <returns></returns>
+        protected abstract string GetFirmwareVersion();
+        private string _firmwareVersion;
         /// <summary>
-        /// Gets the regular expression used to parse the response when querying the firmware version.
+        /// Gets the instrument serial number.
         /// </summary>
-        protected internal virtual string FirmwareVersionRegEx { get { return ".*"; } }
-        /// <summary>
-        /// Gets the termination character (if any) that the instrument will send to signal the end of the firmware version query response.
-        /// </summary>
-        protected internal virtual char FirmwareVersionTermChar { get { return '\uD800'; } }
-        /// <summary>
-        /// Gets the instrument firmware version.
-        /// </summary>
-        public string FirmwareVersion { get; internal set; }
+        public string FirmwareVersion
+        {
+            get { return _firmwareVersion ?? (_firmwareVersion = GetFirmwareVersion()); }
+        }
 
         /// <summary>
         /// Gets the descriptor used for the <see cref="IInstrument.FirmwareVersion"/> property.
@@ -139,6 +133,14 @@ namespace TsdLib.Instrument
             if (disposing)
             {
                 Trace.WriteLine("Disposing " + Description);
+
+                IEnumerable<MethodInfo> disposeMethods = GetType()
+                    .GetMethods()
+                    .Where(m => m.GetCustomAttributes().OfType<InitCommandAttribute>().Any());
+
+                foreach (MethodInfo disposeMethod in disposeMethods)
+                    disposeMethod.Invoke(this, new object[0]);
+
                 Connection.Dispose();
             }
         }

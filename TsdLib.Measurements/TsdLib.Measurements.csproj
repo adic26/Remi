@@ -72,11 +72,11 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\TsdLib.Build.NuGet.2.0.0\build\TsdLib.Build.NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\TsdLib.Build.NuGet.2.0.0\build\TsdLib.Build.NuGet.targets'))" />
-    <Error Condition="!Exists('..\packages\TsdLib.Build.Versioning.2.8.0\build\TsdLib.Build.Versioning.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\TsdLib.Build.Versioning.2.8.0\build\TsdLib.Build.Versioning.targets'))" />
+    <Error Condition="!Exists('..\packages\TsdLib.Build.Versioning.3.0.0\build\TsdLib.Build.Versioning.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\TsdLib.Build.Versioning.3.0.0\build\TsdLib.Build.Versioning.targets'))" />
+    <Error Condition="!Exists('..\packages\TsdLib.Build.NuGet.3.0.0\build\TsdLib.Build.NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\TsdLib.Build.NuGet.3.0.0\build\TsdLib.Build.NuGet.targets'))" />
   </Target>
-  <Import Project="..\packages\TsdLib.Build.NuGet.2.0.0\build\TsdLib.Build.NuGet.targets" Condition="Exists('..\packages\TsdLib.Build.NuGet.2.0.0\build\TsdLib.Build.NuGet.targets')" />
-  <Import Project="..\packages\TsdLib.Build.Versioning.2.8.0\build\TsdLib.Build.Versioning.targets" Condition="Exists('..\packages\TsdLib.Build.Versioning.2.8.0\build\TsdLib.Build.Versioning.targets')" />
+  <Import Project="..\packages\TsdLib.Build.Versioning.3.0.0\build\TsdLib.Build.Versioning.targets" Condition="Exists('..\packages\TsdLib.Build.Versioning.3.0.0\build\TsdLib.Build.Versioning.targets')" />
+  <Import Project="..\packages\TsdLib.Build.NuGet.3.0.0\build\TsdLib.Build.NuGet.targets" Condition="Exists('..\packages\TsdLib.Build.NuGet.3.0.0\build\TsdLib.Build.NuGet.targets')" />
   <!--<Import Project="$(SolutionDir)\TsdLib.Build\build\TsdLib.Build.targets" />-->
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
