@@ -39,7 +39,7 @@ namespace TestClient.Sequences
                 blackBerryWlan.EnableForceCal();
                 blackBerryWlan.GetActivecal();
                 blackBerryWlan.EnableScanSuppress();
-                blackBerryWlan.EnableClosedLoopPowerControl();
+                blackBerryWlan.SetPowerControlMode(1);
                 blackBerryWlan.SetTxPowerDefault();
                 blackBerryWlan.StartTx();
                 blackBerryWlan.StopTx();

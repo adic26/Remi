@@ -63,6 +63,20 @@ namespace TestClient.Instruments
             }
         }
         
+        [InitCommand()]
+        public virtual void EnableWlan()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("netcfg wlan0 up", 0, false);
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
         protected override string GetModelNumber()
         {
             System.Threading.Monitor.Enter(Connection.SyncRoot);
@@ -82,8 +96,8 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("cat /nvram/boardid/bsn && echo \'\'", 0, false);
-                return Connection.GetResponse<string>("\\d+", false, '\uD800');
+                Connection.SendCommand("getprop | grep ro.nvram.boardid.bsn", 0, false);
+                return Connection.GetResponse<string>("(?<=: \\[)\\d+(?=\\])", false, '\uD800');
             }
             finally
             {
@@ -111,71 +125,6 @@ namespace TestClient.Instruments
             try
             {
                 Connection.SendCommand("netcfg wlan0 down", 0, false);
-            }
-            finally
-            {
-                System.Threading.Monitor.Exit(Connection.SyncRoot);
-            }
-        }
-        
-        public virtual void StartTx()
-        {
-            System.Threading.Monitor.Enter(Connection.SyncRoot);
-            try
-            {
-                Connection.SendCommand("/vendor/firmware/wlutil pkteng_start 00:11:22:33:44:55 tx 100 1024 0", 0, false);
-            }
-            finally
-            {
-                System.Threading.Monitor.Exit(Connection.SyncRoot);
-            }
-        }
-        
-        public virtual void StopTx()
-        {
-            System.Threading.Monitor.Enter(Connection.SyncRoot);
-            try
-            {
-                Connection.SendCommand("/vendor/firmware/wlutil pkteng_stop tx", 0, false);
-            }
-            finally
-            {
-                System.Threading.Monitor.Exit(Connection.SyncRoot);
-            }
-        }
-        
-        public virtual void StartRx()
-        {
-            System.Threading.Monitor.Enter(Connection.SyncRoot);
-            try
-            {
-                Connection.SendCommand("/vendor/firmware/wlutil pkteng_start 00:00:00:C0:FF:EE rxwithack", 0, false);
-            }
-            finally
-            {
-                System.Threading.Monitor.Exit(Connection.SyncRoot);
-            }
-        }
-        
-        public virtual void StopRx()
-        {
-            System.Threading.Monitor.Enter(Connection.SyncRoot);
-            try
-            {
-                Connection.SendCommand("/vendor/firmware/wlutil pkteng_stop rx", 0, false);
-            }
-            finally
-            {
-                System.Threading.Monitor.Exit(Connection.SyncRoot);
-            }
-        }
-        
-        public virtual void EnableDriver()
-        {
-            System.Threading.Monitor.Enter(Connection.SyncRoot);
-            try
-            {
-                Connection.SendCommand("/vendor/firmware/wlutil up", 0, false);
             }
             finally
             {
@@ -248,12 +197,12 @@ namespace TestClient.Instruments
             }
         }
         
-        public virtual void SetRate(Int32 band, String rateType, Double rate, Int32 bandwidth)
+        public virtual void SetChannel(Int32 channel, Int32 bandwidth)
         {
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil {0}g_rate -{1} {2} -b {3}", 0, false, band, rateType, rate, bandwidth);
+                Connection.SendCommand("/vendor/firmware/wlutil chanspec {0}/{1}", 0, false, channel, bandwidth);
             }
             finally
             {
@@ -261,12 +210,25 @@ namespace TestClient.Instruments
             }
         }
         
-        public virtual void SetChannel(Int32 channel, Int32 bandwidth)
+        public virtual void SetMimoTxBw(Int32 bandwidth)
         {
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil chanspec {0}/{1}", 0, false, channel, bandwidth);
+                Connection.SendCommand("/vendor/firmware/wlutil mimo_txbw {0}", 0, false, bandwidth);
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
+        public virtual void EnableDriver()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("/vendor/firmware/wlutil up", 0, false);
             }
             finally
             {
@@ -300,12 +262,12 @@ namespace TestClient.Instruments
             }
         }
         
-        public virtual void EnableClosedLoopPowerControl()
+        public virtual void StartTx()
         {
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil phy_txpwrctrl 1", 0, false);
+                Connection.SendCommand("/vendor/firmware/wlutil pkteng_start 00:11:22:33:44:55 tx 100 1024 0", 0, false);
             }
             finally
             {
@@ -313,12 +275,64 @@ namespace TestClient.Instruments
             }
         }
         
-        public virtual void SetMimoTxBw(Int32 bandwidth)
+        public virtual void StopTx()
         {
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("/vendor/firmware/wlutil mimo_txbw {0}", 0, false, bandwidth);
+                Connection.SendCommand("/vendor/firmware/wlutil pkteng_stop tx", 0, false);
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
+        public virtual void StartRx()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("/vendor/firmware/wlutil pkteng_start 00:00:00:C0:FF:EE rxwithack", 0, false);
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
+        public virtual void StopRx()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("/vendor/firmware/wlutil pkteng_stop rx", 0, false);
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
+        public virtual void SetPowerControlMode(Int32 mode)
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("/vendor/firmware/wlutil phy_txpwrctrl {0}", 0, false, mode);
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
+        public virtual void SetRate(Int32 band, String rateType, Double rate, Int32 bandwidth)
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("/vendor/firmware/wlutil {0}g_rate -{1} {2} -b {3}", 0, false, band, rateType, rate, bandwidth);
             }
             finally
             {
@@ -365,6 +379,19 @@ namespace TestClient.Instruments
             }
         }
         
+        public virtual void SetTxPowerIndex(Int32 powerIndex)
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("/vendor/firmware/wlutil  phy_txpwrindex {0}", 0, false, powerIndex);
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
         public virtual void ResetCounter()
         {
             System.Threading.Monitor.Enter(Connection.SyncRoot);
@@ -378,39 +405,13 @@ namespace TestClient.Instruments
             }
         }
         
-        public virtual void SetTcpPort(Int32 port)
-        {
-            System.Threading.Monitor.Enter(Connection.SyncRoot);
-            try
-            {
-                Connection.SendCommand("setprop service.adb.tcp.port {0}", 0, false, port);
-            }
-            finally
-            {
-                System.Threading.Monitor.Exit(Connection.SyncRoot);
-            }
-        }
-        
-        public virtual void ConnectViaWifi(String IpAddress)
-        {
-            System.Threading.Monitor.Enter(Connection.SyncRoot);
-            try
-            {
-                Connection.SendCommand("adb connect {0}", 0, false, IpAddress);
-            }
-            finally
-            {
-                System.Threading.Monitor.Exit(Connection.SyncRoot);
-            }
-        }
-        
         public virtual String GetChipsetFamily()
         {
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("getprop | grep ro.hwf.wlan.chipset", 0, false);
-                return Connection.GetResponse<String>("\\d+", false, '\uD800');
+                Connection.SendCommand("/vendor/firmware/wlutil revinfo | grep chipnum", 0, false);
+                return Connection.GetResponse<String>("(?<=chipnum 0x)\\d+", false, '\uD800');
             }
             finally
             {
@@ -438,7 +439,7 @@ namespace TestClient.Instruments
             try
             {
                 Connection.SendCommand("/vendor/firmware/wlutil ver", 0, false);
-                return Connection.GetResponse<String>("(?<=version )(\\d+\\.){3}\\d+", false, '\uD800');
+                return Connection.GetResponse<String>("(?<=version )(\\d+\\.){3}\\w+", false, '\uD800');
             }
             finally
             {
@@ -495,20 +496,6 @@ namespace TestClient.Instruments
             {
                 Connection.SendCommand("/vendor/firmware/wlutil counters | grep rxdfrmmcast", 0, false);
                 return Connection.GetResponse<Int32>("(?<=rxdfrmmcast )\\d+", false, '\uD800');
-            }
-            finally
-            {
-                System.Threading.Monitor.Exit(Connection.SyncRoot);
-            }
-        }
-        
-        public virtual String GetWlanIpAddress()
-        {
-            System.Threading.Monitor.Enter(Connection.SyncRoot);
-            try
-            {
-                Connection.SendCommand("ip -f inet addr show wlan0", 0, false);
-                return Connection.GetResponse<String>("(?<=inet )\\d+\\.\\d+\\.\\d+\\.\\d+", false, '\uD800');
             }
             finally
             {
