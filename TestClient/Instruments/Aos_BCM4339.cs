@@ -8,11 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System.Threading;
-
 namespace TestClient.Instruments
 {
     using System;
+    using System.Threading;
     using TsdLib.Instrument;
     using TsdLib.Instrument.Dummy;
     using TsdLib.Instrument.Adb;
@@ -34,7 +33,7 @@ namespace TestClient.Instruments
                 base(connection)
         {
         }
-
+        
         public static Aos_BCM4339 Connect(CancellationToken token)
         {
             return _factory.GetInstrument<Aos_BCM4339>(token);
@@ -48,6 +47,20 @@ namespace TestClient.Instruments
         public static Aos_BCM4339 Connect(ConnectionBase connection)
         {
             return _factory.GetInstrument<Aos_BCM4339>(((AdbConnection)(connection)));
+        }
+        
+        [InitCommand()]
+        public virtual void EnableRoot()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("adb root", 0, false);
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
         }
         
         protected override string GetModelNumber()
@@ -98,19 +111,6 @@ namespace TestClient.Instruments
             try
             {
                 Connection.SendCommand("netcfg wlan0 down", 0, false);
-            }
-            finally
-            {
-                System.Threading.Monitor.Exit(Connection.SyncRoot);
-            }
-        }
-        
-        public virtual void EnableWlan()
-        {
-            System.Threading.Monitor.Enter(Connection.SyncRoot);
-            try
-            {
-                Connection.SendCommand("netcfg wlan0 up", 0, false);
             }
             finally
             {
@@ -378,6 +378,32 @@ namespace TestClient.Instruments
             }
         }
         
+        public virtual void SetTcpPort(Int32 port)
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("setprop service.adb.tcp.port {0}", 0, false, port);
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
+        public virtual void ConnectViaWifi(String IpAddress)
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("adb connect {0}", 0, false, IpAddress);
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
         public virtual String GetChipsetFamily()
         {
             System.Threading.Monitor.Enter(Connection.SyncRoot);
@@ -469,6 +495,20 @@ namespace TestClient.Instruments
             {
                 Connection.SendCommand("/vendor/firmware/wlutil counters | grep rxdfrmmcast", 0, false);
                 return Connection.GetResponse<Int32>("(?<=rxdfrmmcast )\\d+", false, '\uD800');
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
+        public virtual String GetWlanIpAddress()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("ip -f inet addr show wlan0", 0, false);
+                return Connection.GetResponse<String>("(?<=inet )\\d+\\.\\d+\\.\\d+\\.\\d+", false, '\uD800');
             }
             finally
             {

@@ -74,6 +74,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BlackBerry.xml</DependentUpon>
     </Compile>
+    <Compile Include="Instruments\Aos_WiFi.cs">
+      <DependentUpon>Aos_WiFi.xml</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Instruments\Interfaces\IBlackBerryWlan.cs" />
     <Compile Include="Instruments\PowerSupply.cs">
       <AutoGen>True</AutoGen>
@@ -85,6 +90,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\StationConfig.cs" />
+    <Compile Include="Sequences\AdbOverWifi.cs" />
     <Compile Include="Sequences\AdbWlan.cs" />
     <Compile Include="Sequences\IntervalMeasurementUpload.cs" />
     <Compile Include="Sequences\UiDeadlockTest.cs" />
@@ -94,6 +100,12 @@
     <Compile Include="Configuration\TestConfig.cs" />
     <Compile Include="Sequences\DummySequence.cs" />
     <Compile Include="TestPrograms\AdbTest.cs" />
+    <Compile Include="UI\Controls\TestClientDataVisualizer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\TestClientDataVisualizer.Designer.cs">
+      <DependentUpon>TestClientDataVisualizer.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Forms\TestClientView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -169,6 +181,12 @@
       <LastGenOutput>BlackBerry.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Instruments\Aos_WiFi.xml">
+      <Generator>InstrumentClassGenerator</Generator>
+      <LastGenOutput>Aos_WiFi.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Instruments\PowerSupply.xml">
       <Generator>InstrumentClassGenerator</Generator>
       <LastGenOutput>PowerSupply.cs</LastGenOutput>
@@ -181,9 +199,7 @@
       <DependentUpon>TestClientView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI\Controls\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>$(TargetPath) -seq $(ProjectDir)Sequences true -testSystemMode Developer 

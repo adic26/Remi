@@ -14,6 +14,16 @@
       <xs:enumeration value="Dummy"/>
     </xs:restriction>
   </xs:simpleType>
+  
+  <xs:simpleType name="AnyClassName">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\w+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="ConnectionTypesExtended">
+    <xs:union memberTypes="ConnectionTypes AnyClassName"/>
+  </xs:simpleType>
 
   <xs:simpleType name="ConnectionSettingTypes">
     <xs:restriction base="xs:string">
@@ -58,6 +68,7 @@
     </xs:annotation>
     <xs:sequence>
       <xs:element name="IdQuery" type="IdQueryElement" minOccurs="1" maxOccurs="1" />
+      <xs:element name="InitCommand" type="InitCommandElement" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="ConnectionSetting" type="ConnectionSettingElement" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="ModelNumber" type="InfoElement" minOccurs="1" maxOccurs="1" />
       <xs:element name="SerialNumber" type="InfoElement" minOccurs="1" maxOccurs="1" />
@@ -65,15 +76,21 @@
       <xs:element name="Command" type="CommandElement" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="Query" type="QueryElement" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="ByteQuery" type="ByteQueryElement" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="DisposeCommand" type="InitCommandElement" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="Name" use="required">
       <xs:annotation>
         <xs:documentation>Name of the instrument. Will be used to name the CLR class generated.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="ConnectionType" type="ConnectionTypes" use="required">
+    <xs:attribute name="ConnectionType" type="ConnectionTypesExtended" use="required">
       <xs:annotation>
         <xs:documentation>Type of the connection protocol. Must be a CLR type derived from TsdLib.Instrument.ConnectionBase.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="BaseClass">
+      <xs:annotation>
+        <xs:documentation>Not yet fully implemented: Another instrument class that this instrument derives from.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="Interfaces">
@@ -81,14 +98,14 @@
         <xs:documentation>Optional: Interfaces that the generated class will implement. Multiple interfaces can be defined using a comma-separated list. Interfaces must be defined in the TsdLib.Instrument namespace.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="InitCommands">
-      <xs:annotation>
-        <xs:documentation>Optional: Semicolon-separated list of raw string command to send to the instrument on initialization.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
     <xs:attribute name="CommandDelay" type="xs:unsignedInt">
       <xs:annotation>
-        <xs:documentation>Optional: A delay (in milliseconds) to wait before sending each command.</xs:documentation>
+        <xs:documentation>Optional: A delay (in milliseconds) to wait after each command. Can be overridden at the command-level.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="IgnoreErrors" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>Optional: Pass true to ignore errors detected by the connection object. Can be overridden at the command-level.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>
@@ -163,13 +180,12 @@
 
   <xs:complexType name="InitCommandElement">
     <xs:annotation>
-      <xs:documentation>Command to send to the instrument on initialization.</xs:documentation>
+      <xs:documentation>Defines a method to send a command to the instrument as part of the initialization routine.</xs:documentation>
     </xs:annotation>
-    <xs:attribute name="Message" use="required">
-      <xs:annotation>
-        <xs:documentation>Semicolon-separated list of raw strings to send to the instrument.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
+    <xs:sequence>
+      <xs:element name="Parameter" type="ParameterElement" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="MethodAttributes"/>
   </xs:complexType>
 
   <xs:complexType name="CommandElement">
@@ -226,6 +242,16 @@
       </xs:simpleType>
     </xs:attribute>
   </xs:complexType>
+  
+  <xs:complexType name="DisposeCommandElement">
+    <xs:annotation>
+      <xs:documentation>Defines a method to send a command to the instrument as part of the disposal routine.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Parameter" type="ParameterElement" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="MethodAttributes"/>
+  </xs:complexType>
 
   <xs:attributeGroup name="MethodAttributes">
     <xs:attribute name="Name" use="required">
@@ -248,6 +274,11 @@
         <xs:documentation>Optional: A delay (in milliseconds) to wait before sending the command. Overrides the global delay set in Instrument@CommandDelay</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+  <xs:attribute name="IgnoreErrors" type="xs:boolean">
+    <xs:annotation>
+      <xs:documentation>Optional: Specify true to ignore any errors generated by the command.</xs:documentation>
+    </xs:annotation>
+  </xs:attribute>
   </xs:attributeGroup>
 
   <xs:complexType name="ParameterElement">

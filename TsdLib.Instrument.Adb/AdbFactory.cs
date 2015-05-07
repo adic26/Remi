@@ -13,10 +13,6 @@ namespace TsdLib.Instrument.Adb
     {
         static AdbFactory()
         {
-            //using (Process p = Process.Start(Path.Combine(Environment.SystemDirectory, "cmd.exe"), "taskkill /F /im adb.exe"))
-            //    if (!p.WaitForExit(5000))
-            //        Trace.WriteLine("WARNING: FAILED TO KILL ADB PROCESSES");
-
             foreach (Process adbProcess in Process.GetProcessesByName("adb"))
                 adbProcess.Kill();
         }

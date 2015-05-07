@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows.Forms;
 using TsdLib.TestSystem;
 
@@ -27,6 +26,8 @@ namespace TsdLib.UI.Forms
         public virtual ITraceListenerControl TraceListenerControl { get { return null; } }
 
         public virtual IProgressControl ProgressControl { get { return null; } }
+
+        public virtual IDataVisualizerContainerControl  DataVisualizer { get { return null; } }
 
         /// <summary>
         /// Initializes a new instance of the base UI form.
@@ -57,13 +58,17 @@ namespace TsdLib.UI.Forms
         /// <param name="dataContainer">Data to add.</param>
         public virtual void AddArbitraryData(DataContainer dataContainer)
         {
+            DataVisualizer.Add((dynamic)dataContainer.Data);
             AddData((dynamic)dataContainer.Data);
         }
 
+        /// <summary>
+        /// Fallback method for the dynamic method overload resolution.
+        /// </summary>
+        /// <param name="data">Data that did not match an overloaded method parameter.</param>
         public void AddData(object data)
         {
-            Trace.WriteLine(string.Format("Unsupported data type received: {0}", data.GetType().Name));
-            Trace.WriteLine(string.Format("String representation: {0}", data));
+
         }
 
         private void ViewBase_FormClosing(object sender, FormClosingEventArgs e)
@@ -71,6 +76,10 @@ namespace TsdLib.UI.Forms
             OnUIClosing(e);
         }
 
+        /// <summary>
+        /// Fire the UIClosing event.
+        /// </summary>
+        /// <param name="e">Mechanism allowing cancellation.</param>
         protected virtual void OnUIClosing(FormClosingEventArgs e)
         {
             EventHandler<CancelEventArgs> invoker = UIClosing;

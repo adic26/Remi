@@ -12,10 +12,6 @@ namespace TestClient.Sequences
         {
             IBlackBerryWlan blackBerryWlan = Aos_BCM4339.Connect(token);
 
-
-
-
-
             //IBlackBerryWlan blackBerryWlan = new AosBCM4339_SafeCommands();
 
             AddTestInfo(new TestInfo("WLAN Chipset Family", blackBerryWlan.GetChipsetFamily()));

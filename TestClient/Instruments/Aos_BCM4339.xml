@@ -1,10 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Instruments xmlns="TsdLib.Instruments.xsd">
-  <Instrument Name="Aos_BCM4339" ConnectionType="Adb" Interfaces="IBlackBerryWlan" InitCommands="adb root;netcfg wlan0 up">
+  <Instrument Name="Aos_BCM4339" ConnectionType="Adb" Interfaces="IBlackBerryWlan">
 
     <!--Discovery-->
     <IdQuery Response="Avengers"/>
 
+    <InitCommand Name="EnableRoot" Message="adb root"/>
+    <!--<InitCommand Name="EnableWlan" Message="netcfg wlan0 up"/>-->
+    
     <!--Identification-->
     <ModelNumber Message="getprop | grep ro.product.board" RegEx="(?&lt;=: \[)\w+(?=\])"/>
     <!--<SerialNumber Message="getprop | grep ro.nvram.boardid.bsn" RegEx="(?&lt;=: \[)\d+(?=\])" Descriptor="BSN"/>-->
@@ -12,8 +15,6 @@
     <FirmwareVersion Message="getprop | grep ro.build.version.incremental" RegEx="(?&lt;=: \[)\w+(?=\])" Descriptor="OS Version"/>
 
     <Command Name="DisableWlan" Message="netcfg wlan0 down">
-    </Command>
-    <Command Name="EnableWlan" Message="netcfg wlan0 up">
     </Command>
     <Command Name="StartTx" Message="/vendor/firmware/wlutil pkteng_start 00:11:22:33:44:55 tx 100 1024 0">
     </Command><Command Name="StopTx" Message="/vendor/firmware/wlutil pkteng_stop tx">
@@ -69,6 +70,17 @@
     <Command Name="ResetCounter" Message="/vendor/firmware/wlutil reset_cnts">
     </Command>
 
+    
+      
+    <Command Name="SetTcpPort" Message="setprop service.adb.tcp.port {0}">
+      <Parameter Name="port" Type="Int32"/>
+    </Command>
+    <Command Name="ConnectViaWifi" Message="adb connect {0}">
+      <Parameter Name="IpAddress" Type="String"/>
+    </Command>
+      
+    
+    
     <Query Name="GetChipsetFamily" Message="getprop | grep ro.hwf.wlan.chipset" RegEx="\d+" ReturnType="String">
     </Query>
     <Query Name="GetChipsetFirmwareType" Message="/vendor/firmware/wlutil ver" RegEx="(?&lt;=version (\d+\.){3}\d+ \().*(?=\))" ReturnType="String">
@@ -82,6 +94,10 @@
     <Query Name="GetActivecal" Message="/vendor/firmware/wlutil phy_activecal" ReturnType="Boolean">
     </Query>
     <Query Name="GetRxFrameCount" Message="/vendor/firmware/wlutil counters | grep rxdfrmmcast" RegEx="(?&lt;=rxdfrmmcast )\d+" ReturnType="Int32">
+    </Query>
+    
+    
+    <Query Name="GetWlanIpAddress" Message="ip -f inet addr show wlan0" RegEx="(?&lt;=inet )\d+\.\d+\.\d+\.\d+" ReturnType="String">
     </Query>
 
   </Instrument>

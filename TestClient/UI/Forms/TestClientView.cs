@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Windows.Forms;
-using TsdLib;
 using TsdLib.TestSystem;
 using TsdLib.UI;
 using TsdLib.UI.Forms;
@@ -29,6 +27,8 @@ namespace TestClient.UI.Forms
         public override ITraceListenerControl TraceListenerControl { get { return traceListenerTextBoxControl; } }
 
         public override IProgressControl ProgressControl { get { return progressControl; } }
+
+        public override IDataVisualizerContainerControl DataVisualizer { get { return dataVisualizer; } }
 
         /// <summary>
         /// Initializes a new instance of the UI form.

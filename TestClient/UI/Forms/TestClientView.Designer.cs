@@ -43,6 +43,7 @@
             this.measurementDataGridViewControl = new TsdLib.UI.Controls.MeasurementDataGridViewControl();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.testCasesMenuItem = new TsdLib.UI.Controls.TestCasesMenuItem(this.components);
+            this.dataVisualizer = new TestClient.UI.Controls.TestClientDataVisualizer();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -96,12 +97,9 @@
             // 
             // traceListenerTextBoxControl
             // 
-            this.traceListenerTextBoxControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.traceListenerTextBoxControl.Location = new System.Drawing.Point(12, 615);
             this.traceListenerTextBoxControl.Name = "traceListenerTextBoxControl";
-            this.traceListenerTextBoxControl.Size = new System.Drawing.Size(1032, 153);
+            this.traceListenerTextBoxControl.Size = new System.Drawing.Size(1032, 191);
             this.traceListenerTextBoxControl.TabIndex = 5;
             // 
             // progressControl
@@ -128,7 +126,6 @@
             // 
             // testSequenceControl
             // 
-            this.testSequenceControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.testSequenceControl.Location = new System.Drawing.Point(448, 145);
             this.testSequenceControl.Name = "testSequenceControl";
             this.testSequenceControl.Size = new System.Drawing.Size(188, 115);
@@ -136,8 +133,6 @@
             // 
             // testInfoDataGridViewControl
             // 
-            this.testInfoDataGridViewControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.testInfoDataGridViewControl.Location = new System.Drawing.Point(679, 38);
             this.testInfoDataGridViewControl.Name = "testInfoDataGridViewControl";
             this.testInfoDataGridViewControl.Size = new System.Drawing.Size(365, 222);
@@ -145,7 +140,7 @@
             // 
             // measurementDataGridViewControl
             // 
-            this.measurementDataGridViewControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.measurementDataGridViewControl.DisplayLimitsAndResult = false;
             this.measurementDataGridViewControl.DisplayLowerLimit = true;
             this.measurementDataGridViewControl.DisplayMeasuredValue = true;
             this.measurementDataGridViewControl.DisplayMeasurementName = true;
@@ -163,7 +158,7 @@
             this.testCasesMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(1056, 24);
+            this.menuStrip.Size = new System.Drawing.Size(1609, 24);
             this.menuStrip.TabIndex = 8;
             this.menuStrip.Text = "menuStrip";
             // 
@@ -173,11 +168,20 @@
             this.testCasesMenuItem.Size = new System.Drawing.Size(74, 20);
             this.testCasesMenuItem.Text = "&Test Cases";
             // 
+            // testClientDataVisualizer
+            // 
+            this.dataVisualizer.Location = new System.Drawing.Point(1050, 38);
+            this.dataVisualizer.Name = "testClientDataVisualizer1";
+            this.dataVisualizer.Size = new System.Drawing.Size(547, 768);
+            this.dataVisualizer.TabIndex = 9;
+            this.dataVisualizer.VisibleDataVisualizers = new TsdLib.UI.IDataVisualizer[0];
+            // 
             // TestClientView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1056, 780);
+            this.ClientSize = new System.Drawing.Size(1609, 818);
+            this.Controls.Add(this.dataVisualizer);
             this.Controls.Add(this.traceListenerTextBoxControl);
             this.Controls.Add(this.progressControl);
             this.Controls.Add(this.multiConfigControl);
@@ -216,5 +220,6 @@
         protected TsdLib.UI.Controls.ProgressControl progressControl;
         protected System.Windows.Forms.MenuStrip menuStrip;
         private TsdLib.UI.Controls.TestCasesMenuItem testCasesMenuItem;
+        private Controls.TestClientDataVisualizer dataVisualizer;
     }
 }

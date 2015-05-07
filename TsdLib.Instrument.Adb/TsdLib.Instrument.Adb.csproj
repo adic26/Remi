@@ -47,6 +47,8 @@
     <None Include="ManagedAdb\ManagedAdbConnection.cs" />
     <None Include="ManagedAdb\ManagedAdbFactory.cs" />
     <Compile Include="AdbProcessRunner.cs" />
+    <Compile Include="AdbWifiConnection.cs" />
+    <Compile Include="AdbWifiFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="packages.config" />
     <None Include="tools\Install.ps1" />
