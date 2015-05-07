@@ -24,4 +24,4 @@ using System.Runtime.InteropServices;
 
 
 
-[assembly: AssemblyVersion("3.2")]
+[assembly: AssemblyVersion("4.1")]

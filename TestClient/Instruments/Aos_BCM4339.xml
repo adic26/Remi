@@ -6,7 +6,7 @@
     <IdQuery Response="Avengers"/>
 
     <InitCommand Name="EnableRoot" Message="adb root"/>
-    <!--<InitCommand Name="EnableWlan" Message="netcfg wlan0 up"/>-->
+    <InitCommand Name="EnableWlan" Message="netcfg wlan0 up"/>
     
     <!--Identification-->
     <ModelNumber Message="getprop | grep ro.product.board" RegEx="(?&lt;=: \[)\w+(?=\])"/>

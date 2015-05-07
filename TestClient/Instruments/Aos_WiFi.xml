@@ -1,103 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Instruments xmlns="TsdLib.Instruments.xsd">
-  <Instrument Name="Aos_WiFi" ConnectionType="Adb" Interfaces="IBlackBerryWlan">
+  <Instrument Name="Aos_WiFi" ConnectionType="Adb">
 
     <!--Discovery-->
     <IdQuery Response="Avengers"/>
 
-    <InitCommand Name="EnableRoot" Message="adb root"/>
-    <InitCommand Name="SetTcpPort" Message="setprop service.adb.tcp.port 5555" />
-    <InitCommand Name="EnableTcpMode" Message="adb tcpip 5555" />
+    <ConnectionSetting Name="WiFi" ArgumentValue="" ArgumentType="String" />
     
     <!--Identification-->
     <ModelNumber Message="getprop | grep ro.product.board" RegEx="(?&lt;=: \[)\w+(?=\])"/>
     <!--<SerialNumber Message="getprop | grep ro.nvram.boardid.bsn" RegEx="(?&lt;=: \[)\d+(?=\])" Descriptor="BSN"/>-->
     <SerialNumber Message="cat /nvram/boardid/bsn &amp;&amp; echo ''" RegEx="\d+" Descriptor="BSN"/>
     <FirmwareVersion Message="getprop | grep ro.build.version.incremental" RegEx="(?&lt;=: \[)\w+(?=\])" Descriptor="OS Version"/>
-
-    <Command Name="DisableWlan" Message="netcfg wlan0 down">
-    </Command>
-    <Command Name="StartTx" Message="/vendor/firmware/wlutil pkteng_start 00:11:22:33:44:55 tx 100 1024 0">
-    </Command><Command Name="StopTx" Message="/vendor/firmware/wlutil pkteng_stop tx">
-    </Command>
-    <Command Name="StartRx" Message="/vendor/firmware/wlutil pkteng_start 00:00:00:C0:FF:EE rxwithack">
-    </Command>
-    <Command Name="StopRx" Message="/vendor/firmware/wlutil pkteng_stop rx">
-    </Command>
-    <Command Name="EnableDriver" Message="/vendor/firmware/wlutil up">
-    </Command>
-    <Command Name="DisableDriver" Message="/vendor/firmware/wlutil down">
-    </Command>
-    <Command Name="DisableMinimumPowerControl" Message="/vendor/firmware/wlutil mpc 0">
-    </Command>
-    <Command Name="DisableWatchdog" Message="/vendor/firmware/wlutil phy_watchdog 0">
-    </Command>
-    <Command Name="SetCountryCode" Message="/vendor/firmware/wlutil country {0}">
-      <Parameter Name="countryCode" Type="String"/>
-    </Command>
-    <Command Name="SetBand" Message="/vendor/firmware/wlutil band {0}">
-      <Parameter Name="band_try_auto" Type="String"/>
-    </Command>
-    <Command Name="SetRate" Message="/vendor/firmware/wlutil {0}g_rate -{1} {2} -b {3}">
-      <Parameter Name="band" Type="Int32"/>
-      <!--2,5-->
-      <Parameter Name="rateType" Type="String"/>
-      <!--r, h, v    add -s 1 parameter for 1 spatial stream-->
-      <Parameter Name="rate" Type="Double"/>
-      <Parameter Name="bandwidth" Type="Int32"/>
-    </Command>
-    <Command Name="SetChannel" Message="/vendor/firmware/wlutil chanspec {0}/{1}">
-      <!--try adding this after for auto band select;/vendor/firmware/wlutil band {0}-->
-      <Parameter Name="channel" Type="Int32"/>
-      <Parameter Name="bandwidth" Type="Int32"/>
-    </Command>
-    <Command Name="EnableForceCal" Message="/vendor/firmware/wlutil phy_forcecal 1">
-    </Command>
-    <Command Name="EnableScanSuppress" Message="/vendor/firmware/wlutil scansuppress 1">
-    </Command>
-    <Command Name="EnableClosedLoopPowerControl" Message="/vendor/firmware/wlutil phy_txpwrctrl 1">
-    </Command>
-    <Command Name="SetMimoTxBw" Message="/vendor/firmware/wlutil mimo_txbw {0}">
-      <Parameter Name="bandwidth" Type="Int32"/>
-    </Command>
-    <Command Name="SetTxPowerDefault" Message="/vendor/firmware/wlutil txpwr1 -1">
-    </Command>
-    <Command Name="SetTxPower" Message="/vendor/firmware/wlutil txpwr1 -d {0}">
-      <Parameter Name="powerLevel" Type="Double"/>
-    </Command>
-    <Command Name="SetTxPowerOverrideLimits" Message="/vendor/firmware/wlutil txpwr1 -d {0} -o">
-      <Parameter Name="powerLevel" Type="Double"/>
-    </Command>
-    <Command Name="ResetCounter" Message="/vendor/firmware/wlutil reset_cnts">
-    </Command>
-
-    
-      
+   
     <Command Name="SetTcpPort" Message="setprop service.adb.tcp.port {0}">
       <Parameter Name="port" Type="Int32"/>
     </Command>
     <Command Name="ConnectViaWifi" Message="adb connect {0}">
       <Parameter Name="IpAddress" Type="String"/>
     </Command>
-      
-    
-    
-    <Query Name="GetChipsetFamily" Message="getprop | grep ro.hwf.wlan.chipset" RegEx="\d+" ReturnType="String">
-    </Query>
-    <Query Name="GetChipsetFirmwareType" Message="/vendor/firmware/wlutil ver" RegEx="(?&lt;=version (\d+\.){3}\d+ \().*(?=\))" ReturnType="String">
-    </Query>
-    <Query Name="GetChipsetFirmwareVersion" Message="/vendor/firmware/wlutil ver" RegEx="(?&lt;=version )(\d+\.){3}\d+" ReturnType="String">
-    </Query>
-    <Query Name="IsDriverEnabled" Message="/vendor/firmware/wlutil isup" ReturnType="Boolean">
-    </Query>
-    <Query Name="GetCountry" Message="/vendor/firmware/wlutil country" ReturnType="String">
-    </Query>
-    <Query Name="GetActivecal" Message="/vendor/firmware/wlutil phy_activecal" ReturnType="Boolean">
-    </Query>
-    <Query Name="GetRxFrameCount" Message="/vendor/firmware/wlutil counters | grep rxdfrmmcast" RegEx="(?&lt;=rxdfrmmcast )\d+" ReturnType="Int32">
-    </Query>
-    
-    
+   
     <Query Name="GetWlanIpAddress" Message="ip -f inet addr show wlan0" RegEx="(?&lt;=inet )\d+\.\d+\.\d+\.\d+" ReturnType="String">
     </Query>
 

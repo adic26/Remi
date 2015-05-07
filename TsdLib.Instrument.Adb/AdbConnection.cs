@@ -88,7 +88,9 @@ namespace TsdLib.Instrument.Adb
             }
 
 
-            bool restart = sbOut.ToString().Contains("restarting adbd");
+            bool restart = sbOut.ToString().Contains("restarting adbd") ||
+                           sbOut.ToString().Contains("restarting in TCP mode") ||
+                           sbOut.ToString().Contains("restarting in USB mode");
             if (restart)
             {
                 _adbShellProcess.Dispose();

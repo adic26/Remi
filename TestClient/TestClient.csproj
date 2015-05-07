@@ -56,7 +56,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="TsdLib.InstrumentLibrary.Tools, Version=4.0.0.0, Culture=neutral, PublicKeyToken=3646076ad9d068cf, processorArchitecture=MSIL">
-      <HintPath>..\packages\TsdLib.InstrumentLibrary.Tools.4.0.19-debug\lib\net45\TsdLib.InstrumentLibrary.Tools.dll</HintPath>
+      <HintPath>..\packages\TsdLib.InstrumentLibrary.Tools.4.0.25-debug\lib\net45\TsdLib.InstrumentLibrary.Tools.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

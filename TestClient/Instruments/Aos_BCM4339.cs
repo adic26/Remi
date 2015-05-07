@@ -63,6 +63,20 @@ namespace TestClient.Instruments
             }
         }
         
+        [InitCommand()]
+        public virtual void EnableWlan()
+        {
+            System.Threading.Monitor.Enter(Connection.SyncRoot);
+            try
+            {
+                Connection.SendCommand("netcfg wlan0 up", 0, false);
+            }
+            finally
+            {
+                System.Threading.Monitor.Exit(Connection.SyncRoot);
+            }
+        }
+        
         protected override string GetModelNumber()
         {
             System.Threading.Monitor.Enter(Connection.SyncRoot);
