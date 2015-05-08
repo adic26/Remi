@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TsdLib.UI.Utilities;
 
 namespace TsdLib.UI.Controls
 {
@@ -38,7 +35,7 @@ namespace TsdLib.UI.Controls
             _listener.TextBox.Clear();
         }
 
-        public void SetState(State state)
+        public virtual void SetState(State state)
         {
             if (state.HasFlag(State.TestStarting))
                 Clear();

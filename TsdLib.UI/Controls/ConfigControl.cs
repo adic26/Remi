@@ -150,7 +150,7 @@ namespace TsdLib.UI.Controls
         /// </summary>
         public event EventHandler<IConfigManager[]> ViewEditConfiguration;
 
-        public void SetState(State state)
+        public virtual void SetState(State state)
         {
             Enabled = state.HasFlag(State.ReadyToTest);
         }

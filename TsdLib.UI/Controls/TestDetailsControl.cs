@@ -17,7 +17,7 @@ namespace TsdLib.UI.Controls
                 handler(this, checkBox_DetailsFromDatabase.Checked);
         }
 
-        public void SetState(State state)
+        public virtual void SetState(State state)
         {
             Enabled = state.HasFlag(State.ReadyToTest);
         }

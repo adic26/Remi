@@ -140,7 +140,6 @@
             // 
             // measurementDataGridViewControl
             // 
-            this.measurementDataGridViewControl.DisplayLimitsAndResult = false;
             this.measurementDataGridViewControl.DisplayLowerLimit = true;
             this.measurementDataGridViewControl.DisplayMeasuredValue = true;
             this.measurementDataGridViewControl.DisplayMeasurementName = true;

@@ -15,7 +15,7 @@ namespace TsdLib.UI.Controls
             progressBar.Value = currentStep;
         }
 
-        public void SetState(State state)
+        public virtual void SetState(State state)
         {
             if (state.HasFlag(State.TestStarting))
                 UpdateProgress(0, 1);

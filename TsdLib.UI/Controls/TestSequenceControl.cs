@@ -38,7 +38,7 @@ namespace TsdLib.UI.Controls
         /// Enables or disables the buttons depending on the state of the test system.
         /// </summary>
         /// <param name="state">The current state of the test system.</param>
-        public void SetState(State state)
+        public virtual void SetState(State state)
         {
             button_Abort.Enabled = state.HasFlag(State.TestStarting);
             button_Execute.Enabled = checkBox_PublishResults.Enabled = state.HasFlag(State.ReadyToTest);

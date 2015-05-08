@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using TsdLib.Measurements;
 
@@ -6,6 +7,8 @@ namespace TsdLib.UI.Controls
 {
     public partial class MeasurementDataGridViewControl : UserControl, IMeasurementDisplayControl
     {
+        private readonly List<DataGridViewColumn> _parameterColumns = new List<DataGridViewColumn>();
+
         public virtual bool DisplayMeasurementName
         {
             get { return Column_MeasurementName.Visible; }
@@ -62,14 +65,15 @@ namespace TsdLib.UI.Controls
                 string parameterColumnName = "Column_" + measurementParameter.Name.Replace(" ", "");
                 if (!dataGridView.Columns.Contains(parameterColumnName))
                 {
-                    dataGridView.Columns.Add(new DataGridViewTextBoxColumn
+                    var parameterColumn = new DataGridViewTextBoxColumn
                     {
                         Name = parameterColumnName,
                         HeaderText = measurementParameter.Name,
                         AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
                         FillWeight = 150
-                    });
-
+                    };
+                    dataGridView.Columns.Add(parameterColumn);
+                    _parameterColumns.Add(parameterColumn);
                 }
                 dataGridView.Rows[newRowIndex].Cells[parameterColumnName].Value = measurementParameter.Value;
             }
@@ -81,19 +85,19 @@ namespace TsdLib.UI.Controls
         public void ClearMeasurements()
         {
             dataGridView.Rows.Clear();
+            foreach (DataGridViewColumn parameterColumn in _parameterColumns)
+                dataGridView.Columns.Remove(parameterColumn);
+            _parameterColumns.Clear();
         }
 
         /// <summary>
         /// Set the behaviour of the control based on the current state of the test system.
         /// </summary>
         /// <param name="state">The current state of the test system.</param>
-        public void SetState(State state)
+        public virtual void SetState(State state)
         {
             if (state.HasFlag(State.TestStarting))
                 ClearMeasurements();
         }
-
-        [Obsolete("Use the DisplayXXX properties to toggle visibility")]
-        public bool DisplayLimitsAndResult { get; set; }
     }
 }

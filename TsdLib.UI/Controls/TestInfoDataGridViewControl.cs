@@ -27,7 +27,7 @@ namespace TsdLib.UI.Controls
             dataGridView.Rows.Clear();
         }
 
-        public void SetState(State state)
+        public virtual void SetState(State state)
         {
             if (state.HasFlag(State.TestStarting))
                 ClearTestInfo();

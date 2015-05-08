@@ -63,7 +63,7 @@ namespace TsdLib.UI.Controls
         ///     Sets the state of all contained data visualizers.
         /// </summary>
         /// <param name="state">State to set.</param>
-        public void SetState(State state)
+        public virtual void SetState(State state)
         {
             foreach (IDataVisualizer dataVisualizer in DataVisualizers)
                 dataVisualizer.SetState(state);
