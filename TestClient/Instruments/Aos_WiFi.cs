@@ -92,39 +92,13 @@ namespace TestClient.Instruments
             }
         }
         
-        public virtual void SetTcpPort(Int32 port)
+        public virtual String GetDeviceProperties()
         {
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("setprop service.adb.tcp.port {0}", 0, false, port);
-            }
-            finally
-            {
-                System.Threading.Monitor.Exit(Connection.SyncRoot);
-            }
-        }
-        
-        public virtual void ConnectViaWifi(String IpAddress)
-        {
-            System.Threading.Monitor.Enter(Connection.SyncRoot);
-            try
-            {
-                Connection.SendCommand("adb connect {0}", 0, false, IpAddress);
-            }
-            finally
-            {
-                System.Threading.Monitor.Exit(Connection.SyncRoot);
-            }
-        }
-        
-        public virtual String GetWlanIpAddress()
-        {
-            System.Threading.Monitor.Enter(Connection.SyncRoot);
-            try
-            {
-                Connection.SendCommand("ip -f inet addr show wlan0", 0, false);
-                return Connection.GetResponse<String>("(?<=inet )\\d+\\.\\d+\\.\\d+\\.\\d+", false, '\uD800');
+                Connection.SendCommand("getprop", 0, false);
+                return Connection.GetResponse<String>(".*", false, '\uD800');
             }
             finally
             {
