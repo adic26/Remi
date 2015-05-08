@@ -69,8 +69,8 @@ namespace TestClient.Instruments
             System.Threading.Monitor.Enter(Connection.SyncRoot);
             try
             {
-                Connection.SendCommand("cat /nvram/boardid/bsn && echo \'\'", 0, false);
-                return Connection.GetResponse<string>("\\d+", false, '\uD800');
+                Connection.SendCommand("getprop | grep ro.serialno", 0, false);
+                return Connection.GetResponse<string>("(?<=: \\[)\\d+(?=\\])", false, '\uD800');
             }
             finally
             {

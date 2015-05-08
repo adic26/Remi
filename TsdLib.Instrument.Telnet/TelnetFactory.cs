@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace TsdLib.Instrument.Telnet
 {
@@ -40,7 +41,8 @@ namespace TsdLib.Instrument.Telnet
             {
                 TcpClient tcpSocket = new TcpClient(address, 23);
                 TelnetConnection telnetConnection = new TelnetConnection(tcpSocket);
-                
+
+                Thread.Sleep(1000);
                 string initial = telnetConnection.GetResponse<string>(".*", false);
                 if (!initial.TrimEnd().EndsWith(":"))
                     return null;

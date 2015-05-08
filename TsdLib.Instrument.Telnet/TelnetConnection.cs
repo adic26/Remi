@@ -60,7 +60,8 @@ namespace TsdLib.Instrument.Telnet
         {
             throw new NotImplementedException();
         }
-        
+
+        private int timeout = 750;
         /// <summary>
         /// Read a string from the Telnet-based instrument.
         /// </summary>
@@ -70,7 +71,8 @@ namespace TsdLib.Instrument.Telnet
             StringBuilder sb = new StringBuilder(_rxBuffer);
             _rxBuffer = "";
             if (_tcpSocket.Available > 0)
-                sb.AppendLine(Read(200));
+                sb.AppendLine(Read(timeout));
+            timeout = 200;
             return sb.ToString();
         }
 
@@ -81,7 +83,7 @@ namespace TsdLib.Instrument.Telnet
         protected override void Write(string message)
         {
             WriteLine(message);
-            string buffer = Read(200);
+            string buffer = Read(timeout);
             _rxBuffer = buffer.Contains(message) ? buffer.Remove(0, message.Length).Replace("#", "").Replace("\0", "").Trim() : buffer;
         }
 

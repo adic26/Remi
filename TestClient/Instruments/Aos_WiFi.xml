@@ -10,7 +10,7 @@
     <!--Identification-->
     <ModelNumber Message="getprop | grep ro.product.board" RegEx="(?&lt;=: \[)\w+(?=\])"/>
     <!--<SerialNumber Message="getprop | grep ro.nvram.boardid.bsn" RegEx="(?&lt;=: \[)\d+(?=\])" Descriptor="BSN"/>-->
-    <SerialNumber Message="cat /nvram/boardid/bsn &amp;&amp; echo ''" RegEx="\d+" Descriptor="BSN"/>
+    <SerialNumber Message="getprop | grep ro.serialno" RegEx="(?&lt;=: \[)\d+(?=\])" Descriptor="BSN"/>
     <FirmwareVersion Message="getprop | grep ro.build.version.incremental" RegEx="(?&lt;=: \[)\w+(?=\])" Descriptor="OS Version"/>
 
     <Query Name="GetDeviceProperties" Message="getprop" ReturnType="String" />

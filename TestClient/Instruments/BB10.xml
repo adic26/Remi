@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Instruments xmlns="TsdLib.Instruments.xsd">
+  <Instrument Name="BB10" ConnectionType="Telnet" CommandDelay="200" Interfaces="IBlackBerry">
+
+    <!--Discovery-->
+    <IdQuery Response="BlackBerry Device"/>
+
+    <!--Identification-->
+    <ModelNumber Message="cat /pps/services/hw_info/inventory | grep Board_Type::" RegEx="(?&lt;=Board_Type::).*"/>
+    <SerialNumber Message="cat /pps/system/nvram/deviceinfo | grep BSN::" RegEx="(?&lt;=BSN::).*"/>
+    <FirmwareVersion Message="cat /pps/services/deviceproperties | grep scmbundle::" RegEx="(?&lt;=scmbundle::).*"/>
+
+    <!--General-->
+    <Query Name="GetImei" Message="cat /pps/system/nvram/deviceinfo | grep IMEI::" RegEx="(?&lt;=IMEI::).*(?=\r\nInProduction)" ReturnType="String"/>
+    <Query Name="GetChipsetFamily" Message="wl_bcm_dhd revinfo | grep chipnum" RegEx="(?&lt;=chipnum 0x)\d+" ReturnType="String"/>
+    
+  </Instrument>
+</Instruments>
