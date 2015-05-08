@@ -56,7 +56,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="TsdLib.InstrumentLibrary.Tools, Version=4.0.0.0, Culture=neutral, PublicKeyToken=3646076ad9d068cf, processorArchitecture=MSIL">
-      <HintPath>..\packages\TsdLib.InstrumentLibrary.Tools.4.0.19-debug\lib\net45\TsdLib.InstrumentLibrary.Tools.dll</HintPath>
+      <HintPath>..\packages\TsdLib.InstrumentLibrary.Tools.4.0.25-debug\lib\net45\TsdLib.InstrumentLibrary.Tools.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -69,11 +69,23 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Aos_BCM4339.xml</DependentUpon>
     </Compile>
+    <Compile Include="Instruments\BB10.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BB10.xml</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Instruments\BlackBerry.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>BlackBerry.xml</DependentUpon>
     </Compile>
+    <Compile Include="Instruments\Aos_WiFi.cs">
+      <DependentUpon>Aos_WiFi.xml</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Instruments\Interfaces\IBlackBerry.cs" />
     <Compile Include="Instruments\Interfaces\IBlackBerryWlan.cs" />
     <Compile Include="Instruments\PowerSupply.cs">
       <AutoGen>True</AutoGen>
@@ -85,6 +97,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\StationConfig.cs" />
+    <Compile Include="Sequences\AdbOverWifi.cs" />
     <Compile Include="Sequences\AdbWlan.cs" />
     <Compile Include="Sequences\IntervalMeasurementUpload.cs" />
     <Compile Include="Sequences\UiDeadlockTest.cs" />
@@ -169,11 +182,22 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Instruments\BB10.xml">
+      <Generator>InstrumentClassGenerator</Generator>
+      <LastGenOutput>BB10.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Instruments\BlackBerry.xml">
       <Generator>InstrumentClassGenerator</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <LastGenOutput>BlackBerry.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Instruments\Aos_WiFi.xml">
+      <Generator>InstrumentClassGenerator</Generator>
+      <LastGenOutput>Aos_WiFi.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Instruments\PowerSupply.xml">
       <Generator>InstrumentClassGenerator</Generator>

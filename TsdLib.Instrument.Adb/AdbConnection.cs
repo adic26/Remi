@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -25,13 +26,15 @@ namespace TsdLib.Instrument.Adb
         public AdbConnection(string address)
             : base(address)
         {
-            _adbShellProcess = new ProcessRunner(adbExe, "shell", workingDirectory, "exit", Timeout);
+            //TODO: specify address - but some adb's give bsn, some give adb address
+            _adbShellProcess = new ProcessRunner(adbExe, "-s " + address + " shell", workingDirectory, "exit", Timeout);
+            //_adbShellProcess = new ProcessRunner(adbExe, "shell", workingDirectory, "exit", Timeout);
         }
 
         protected override void Write(string command)
         {
             if (command.StartsWith("adb"))
-                runNewAdbProcess(command);
+                runNewAdbProcess(command.Split(new[] { "adb", ".exe" }, StringSplitOptions.RemoveEmptyEntries).Last());
             else
                 _adbShellProcess.SendCommand(command);
         }
@@ -46,11 +49,12 @@ namespace TsdLib.Instrument.Adb
             {
                 UseShellExecute = false,
                 CreateNoWindow = true,
-                FileName = Path.Combine(Environment.SystemDirectory, "cmd.exe"),
+                FileName = adbExe,
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
                 RedirectStandardInput = true,
-                WorkingDirectory = @"platform-tools"
+                WorkingDirectory = workingDirectory,
+                Arguments = command
             };
 
             using (Process cmdProcess = Process.Start(_startInfo))
@@ -87,7 +91,7 @@ namespace TsdLib.Instrument.Adb
                     throw new AdbCommandException(this, command, "Error read from buffer");
             }
 
-
+            Trace.WriteLine(sbOut.ToString().Trim());
             bool restart = sbOut.ToString().Contains("restarting adbd");
             if (restart)
             {
@@ -110,12 +114,11 @@ namespace TsdLib.Instrument.Adb
 
         protected override bool CheckForError(out string errorString)
         {
-            //TODO: make sure we can ignore errors - returning true here will cause ConnectionBase to throw an exception - we may not always want this
             if (_adbShellProcess.LastReturnCode != 0)
             {
                 errorString = _adbShellProcess.ReceiveBuffer;
                 Trace.WriteLine("WARNING: adb process returned an error: " + errorString);
-                return !IsConnected;
+                return true;
             }
 
             errorString = "";

@@ -72,7 +72,7 @@ namespace TsdLib.Instrument
                 if (conn != null)
                 {
                     conn.Token = token;
-                    Trace.WriteLine("Connecting to " + instrumentAddress);
+                    Trace.WriteLine("Connecting to " + conn.Address);
 
                     string id = GetInstrumentIdentifier(conn, idAtt);
                     if (id.Contains(idAtt.Response) || id == "Dummy_Device")
@@ -91,7 +91,7 @@ namespace TsdLib.Instrument
             return connections.ToArray();
         }
 
-        public TInstrument GetInstrument<TInstrument>(TConnection connection)
+        public virtual TInstrument GetInstrument<TInstrument>(TConnection connection)
             where TInstrument : InstrumentBase<TConnection>
         {
             TInstrument inst = (TInstrument)Activator.CreateInstance(
@@ -109,10 +109,10 @@ namespace TsdLib.Instrument
                 initMethod.Invoke(inst, new object[0]);
 
 
-            Trace.WriteLine("Connected to " + inst.Description);
-            Trace.WriteLine("Model number: " + inst.ModelNumber);
-            Trace.WriteLine("Serial number: " + inst.SerialNumber);
-            Trace.WriteLine("Firmware version: " + inst.FirmwareVersion);
+            //Trace.WriteLine("Connected to " + inst.Description);
+            //Trace.WriteLine("Model number: " + inst.ModelNumber);
+            //Trace.WriteLine("Serial number: " + inst.SerialNumber);
+            //Trace.WriteLine("Firmware version: " + inst.FirmwareVersion);
 
             return inst;
         }

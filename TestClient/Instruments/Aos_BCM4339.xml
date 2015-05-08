@@ -4,13 +4,12 @@
 
     <!--Discovery-->
     <IdQuery Response="Avengers"/>
-    
+
     <InitCommand Name="EnableRoot" Message="adb root"/>
     <InitCommand Name="EnableWlan" Message="netcfg wlan0 up"/>
-
+    
     <ModelNumber Message="getprop | grep ro.product.board" RegEx="(?&lt;=: \[)\w+(?=\])"/>
-    <SerialNumber Message="getprop | grep ro.nvram.boardid.bsn" RegEx="(?&lt;=: \[)\d+(?=\])" Descriptor="BSN"/>
-    <!--<SerialNumber Message="cat /nvram/boardid/bsn &amp;&amp; echo ''" RegEx="\d+" Descriptor="BSN"/>-->
+    <SerialNumber Message="getprop | grep ro.serialno" RegEx="(?&lt;=: \[)\d+(?=\])" Descriptor="BSN"/>
     <FirmwareVersion Message="getprop | grep ro.build.version.incremental" RegEx="(?&lt;=: \[)\w+(?=\])" Descriptor="OS Version"/>
 
     
@@ -107,6 +106,6 @@
     </Query>
     <Query Name="GetRxFrameCount" Message="/vendor/firmware/wlutil counters | grep rxdfrmmcast" RegEx="(?&lt;=rxdfrmmcast )\d+" ReturnType="Int32">
     </Query>
-
+    
   </Instrument>
 </Instruments>

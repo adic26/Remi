@@ -17,6 +17,13 @@ namespace TsdLib.Instrument.Adb
                 adbProcess.Kill();
         }
 
+        public override TInstrument GetInstrument<TInstrument>(AdbConnection connection)
+        {
+            //TODO: if usb is connected and connection is wifi, need to unplug usb
+
+            return base.GetInstrument<TInstrument>(connection);
+        }
+
         protected override IEnumerable<string> SearchForInstruments()
         {
             StringBuilder sbOut = new StringBuilder();
@@ -30,7 +37,7 @@ namespace TsdLib.Instrument.Adb
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
                 RedirectStandardInput = true,
-                WorkingDirectory = @"platform-tools"
+                WorkingDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "platform-tools")
             };
 
             using (Process cmdProcess = Process.Start(_startInfo))
@@ -63,7 +70,7 @@ namespace TsdLib.Instrument.Adb
 
             IEnumerable<string> devs = sbOut.ToString()
                 .Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries)
-                .Select(line => Regex.Match(line, @"\w{8}(?=\sdevice)"))
+                .Select(line => Regex.Match(line, @"\w{8,}(?=\s+device)"))
                 .Where(match => match.Success)
                 .Select(match => match.Value)
                 ;
@@ -73,9 +80,34 @@ namespace TsdLib.Instrument.Adb
 
         protected override AdbConnection CreateConnection(string address, params ConnectionSettingAttribute[] attributes)
         {
-            AdbConnection conn = new AdbConnection(address);
+            ConnectionSettingAttribute wifiAttribute = attributes.FirstOrDefault(attr => attr.Name == "WiFi");
 
-            return conn;
+            if (wifiAttribute == null)
+                return new AdbConnection(address);
+
+            string ip;
+
+            Match ipMatch = Regex.Match(wifiAttribute.ArgumentValue.ToString(), @"(?<=inet )\d+\.\d+\.\d+\.\d+");
+            if (ipMatch.Success)
+                ip = ipMatch.Value;
+            else
+            {
+                using (AdbConnection conn = new AdbConnection(address))
+                {
+                    conn.SendCommand("ip -f inet addr show wlan0", 0, false);
+                    ip = conn.GetResponse<string>(@"(?<=inet )\d+\.\d+\.\d+\.\d+", false);
+
+                    conn.SendCommand("setprop service.adb.tcp.port 5555", 0, false);
+                    conn.SendCommand("adb tcpip 5555", 0, false);
+
+                    Thread.Sleep(5000);
+                    conn.SendCommand("adb connect " + ip, 0, false);
+                    Thread.Sleep(5000);
+
+                }
+            }
+            return new AdbConnection(ip + ":5555");
+            
         }
 
         protected override string GetInstrumentIdentifier(AdbConnection connection, IdQueryAttribute idAttribute)
