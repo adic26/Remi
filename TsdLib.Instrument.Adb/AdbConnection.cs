@@ -85,7 +85,7 @@ namespace TsdLib.Instrument.Adb
                 mreErr.WaitOne();
 
                 if (cmdProcess.ExitCode != 0)
-                    throw new AdbCommandException(this, command, "The adb root process exited with code: " + cmdProcess.ExitCode);
+                    throw new AdbCommandException(this, command, "The adb process exited with code: " + cmdProcess.ExitCode);
 
                 if (sbErr.Length > 0)
                     throw new AdbCommandException(this, command, "Error read from buffer");

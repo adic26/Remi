@@ -17,13 +17,6 @@ namespace TsdLib.Instrument.Adb
                 adbProcess.Kill();
         }
 
-        public override TInstrument GetInstrument<TInstrument>(AdbConnection connection)
-        {
-            //TODO: if usb is connected and connection is wifi, need to unplug usb
-
-            return base.GetInstrument<TInstrument>(connection);
-        }
-
         protected override IEnumerable<string> SearchForInstruments()
         {
             StringBuilder sbOut = new StringBuilder();
@@ -97,12 +90,16 @@ namespace TsdLib.Instrument.Adb
                     conn.SendCommand("ip -f inet addr show wlan0", 0, false);
                     ip = conn.GetResponse<string>(@"(?<=inet )\d+\.\d+\.\d+\.\d+", false);
 
+                    //TODO: check to make sure ip is valid
+                    if (!Regex.IsMatch(ip, @"\d+\.\d+\.\d+\.\d+"))
+                        throw new AdbConnectException(string.Format("Invalid IP address {0} read from device {1}", ip, conn.Address));
+
                     conn.SendCommand("setprop service.adb.tcp.port 5555", 0, false);
                     conn.SendCommand("adb tcpip 5555", 0, false);
 
-                    Thread.Sleep(5000);
+                    Thread.Sleep(2000);
                     conn.SendCommand("adb connect " + ip, 0, false);
-                    Thread.Sleep(5000);
+                    //Thread.Sleep(2000);
 
                 }
             }
