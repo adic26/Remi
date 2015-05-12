@@ -101,7 +101,7 @@ namespace TsdLib.Instrument
                 new object[] { connection },
                 null);
 
-            IEnumerable<MethodInfo> initMethods = typeof (TInstrument)
+            IEnumerable<MethodInfo> initMethods = typeof(TInstrument)
                 .GetMethods()
                 .Where(m => m.GetCustomAttributes().OfType<InitCommandAttribute>().Any());
 

@@ -75,6 +75,12 @@
       <DependentUpon>BB10.xml</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Instruments\BB10_BCM4339.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BB10_BCM4339.xml</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Instruments\BlackBerry.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -185,6 +191,11 @@
     <Content Include="Instruments\BB10.xml">
       <Generator>InstrumentClassGenerator</Generator>
       <LastGenOutput>BB10.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Instruments\BB10_BCM4339.xml">
+      <Generator>InstrumentClassGenerator</Generator>
+      <LastGenOutput>BB10_BCM4339.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Instruments\BlackBerry.xml">

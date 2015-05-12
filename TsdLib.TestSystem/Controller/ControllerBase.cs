@@ -293,6 +293,10 @@ namespace TsdLib.TestSystem.Controller
                         //Can't write to trace, since the listener on the other side may be unloaded
                         //Trace.WriteLine("AppDomain could not be unloaded." + Environment.NewLine + ex);
                     }
+                    catch (Exception ex)
+                    {
+
+                    }
 
                 }
             }

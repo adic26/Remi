@@ -18,7 +18,9 @@ namespace TsdLib.Instrument.Telnet
         protected override IEnumerable<string> SearchForInstruments()
         {
             var result = NetworkInterface.GetAllNetworkInterfaces()
-                .Select(ni => ni.GetIPProperties().DhcpServerAddresses)
+                .Select(ni => ni.GetIPProperties())
+                .Where(ipp => ipp.DnsSuffix == "")
+                .Select(ipp => ipp.DhcpServerAddresses)
                 .Where(ip => ip.Any())
                 .Select(ip => ip.First().ToString())
                 .ToArray();
@@ -41,9 +43,14 @@ namespace TsdLib.Instrument.Telnet
             {
                 TcpClient tcpSocket = new TcpClient(address, 23);
                 TelnetConnection telnetConnection = new TelnetConnection(tcpSocket);
-
-                Thread.Sleep(1000);
-                string initial = telnetConnection.GetResponse<string>(".*", false);
+                string initial = "";
+                for (int i = 0; i < 20; i++)
+                {
+                    initial = telnetConnection.GetResponse<string>(".*", false);
+                    if (initial.TrimEnd().EndsWith(":"))
+                        break;
+                    Thread.Sleep(200);
+                }
                 if (!initial.TrimEnd().EndsWith(":"))
                     return null;
 

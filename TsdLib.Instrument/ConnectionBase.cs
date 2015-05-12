@@ -105,21 +105,20 @@ namespace TsdLib.Instrument
         public void SendCommand(string command, int delay, bool ignoreErrors, params object[] args)
         {
             Token.ThrowIfCancellationRequested();
-            lock (SyncRoot)
+
+            string fullCommand = string.Format(command, args);
+
+            string[] split = CommandSeparators != null ? fullCommand.Split(CommandSeparators, StringSplitOptions.RemoveEmptyEntries) : new []{fullCommand};
+
+            foreach (string partialCommand in split)
             {
-                string fullCommand = string.Format(command, args);
-
-                string[] split = CommandSeparators != null ? fullCommand.Split(CommandSeparators, StringSplitOptions.RemoveEmptyEntries) : new []{fullCommand};
-
-                foreach (string partialCommand in split)
-                {
-                    Trace.WriteLine("Sending command to " + Description + ": " + partialCommand);
-                    Write(partialCommand);
-                    string error;
-                    if (CheckForError(out error) && !ignoreErrors)
-                        throw new CommandException(this, partialCommand, error);
-                }
+                Trace.WriteLine("Sending command to " + Description + ": " + partialCommand);
+                Write(partialCommand);
+                string error;
+                if (CheckForError(out error) && !ignoreErrors)
+                    throw new CommandException(this, partialCommand, error);
             }
+            
             Thread.Sleep(delay);
         }
 

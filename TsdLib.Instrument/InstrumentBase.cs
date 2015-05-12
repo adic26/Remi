@@ -134,12 +134,13 @@ namespace TsdLib.Instrument
             {
                 Trace.WriteLine("Disposing " + Description);
 
-                IEnumerable<MethodInfo> disposeMethods = GetType()
-                    .GetMethods()
-                    .Where(m => m.GetCustomAttributes().OfType<InitCommandAttribute>().Any());
+                //This causes TargetInvokeExceptions
+                //IEnumerable<MethodInfo> disposeMethods = GetType()
+                //    .GetMethods()
+                //    .Where(m => m.GetCustomAttributes().OfType<InitCommandAttribute>().Any());
 
-                foreach (MethodInfo disposeMethod in disposeMethods)
-                    disposeMethod.Invoke(this, new object[0]);
+                //foreach (MethodInfo disposeMethod in disposeMethods)
+                //    disposeMethod.Invoke(this, new object[0]);
 
                 Connection.Dispose();
             }

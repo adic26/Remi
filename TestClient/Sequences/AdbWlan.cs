@@ -10,7 +10,7 @@ namespace TestClient.Sequences
     {
         protected override void ExecuteTest(CancellationToken token, StationConfig stationConfig, ProductConfig productConfig, TestConfig testConfig)
         {
-            IBlackBerryWlan blackBerryWlan = Aos_BCM4339.Connect(token);
+            IBlackBerryWlan blackBerryWlan = BB10_BCM4339.Connect(token);
 
             //IBlackBerryWlan blackBerryWlan = new AosBCM4339_SafeCommands();
 
@@ -18,7 +18,7 @@ namespace TestClient.Sequences
 
             AddTestInfo(new TestInfo("WLAN Chipset Firmware Version", blackBerryWlan.GetChipsetFirmwareVersion()));
 
-            bool tx = false;
+            bool tx = true;
 
             if (tx)
             {

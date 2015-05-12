@@ -14,7 +14,7 @@ namespace TestClient.Sequences
     {
         protected override void ExecuteTest(System.Threading.CancellationToken token, StationConfig stationConfig, ProductConfig productConfig, TestConfig testConfig)
         {
-            BlackBerry bb = BlackBerry.Connect(token, "10.231.176.190");
+            BlackBerry bb = BlackBerry.Connect(token);
 
             var imei = bb.GetImei();
         }
