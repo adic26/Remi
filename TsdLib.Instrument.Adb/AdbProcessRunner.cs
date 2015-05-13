@@ -83,15 +83,31 @@ namespace TsdLib.Instrument.Adb
         public void SendCommand(string command)
         {
             _queue.Clear();
+
+            if (command.StartsWith("|") && command.EndsWith("|"))
+                sendPipeCommand(command);
+            else
+                sendShellCommand(command);
+        }
+
+        public void sendPipeCommand(string command)
+        {
+            _process.StandardInput.WriteLine(command.Trim('|'));
+            IEnumerable<string> str = _queue.DequeueUntil(r => _queue.Count == 0);
+            Trace.WriteLine(string.Join(Environment.NewLine, str.Where(s => !string.IsNullOrWhiteSpace(s))));
+        }
+
+        public void sendShellCommand(string command)
+        {
             _process.StandardInput.WriteLine(command + " && echo return code: $?");
 
             //read until we see the command that we just sent
-            _queue.DequeueUntil(readFromBuffer => Regex.IsMatch(readFromBuffer, @"\w+@\w+:/\s?[#$]\s?"));
-
+            IEnumerable<string> str = _queue.DequeueUntil(readFromBuffer => Regex.IsMatch(readFromBuffer, @"\w+@\w+:/\s?[#$]\s?"));
+            Trace.WriteLine(string.Join(Environment.NewLine, str.Where(s => !string.IsNullOrWhiteSpace(s))));
+           
             IEnumerable<string> responsePlusReturnCode = _queue.DequeueUntil(readFromBuffer => Regex.IsMatch(readFromBuffer, "return code: "));
 
             ReceiveBuffer = string.Join(Environment.NewLine, responsePlusReturnCode.TakeWhile(readFromBuffer => !Regex.IsMatch(readFromBuffer, "return code: ")));
-
             LastReturnCode = int.Parse(Regex.Match(responsePlusReturnCode.Last(), @"(?<=return code: )-?\d+").Value);
         }
 

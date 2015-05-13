@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Instruments xmlns="TsdLib.Instruments.xsd">
+  <Instrument Name="Aos_BT" ConnectionType="Adb">
+
+    <!--Discovery-->
+    <IdQuery Response="Avengers"/>
+    <InitCommand Name="EnableRoot" Message="adb root"/>
+
+    <!--<ConnectionSetting Name="WiFi" ArgumentValue="" ArgumentType="String" />-->
+    
+    <!--Identification-->
+    <ModelNumber Message="getprop | grep ro.product.board" RegEx="(?&lt;=: \[)\w+(?=\])"/>
+    <!--<SerialNumber Message="getprop | grep ro.nvram.boardid.bsn" RegEx="(?&lt;=: \[)\d+(?=\])" Descriptor="BSN"/>-->
+    <SerialNumber Message="getprop | grep ro.serialno" RegEx="(?&lt;=: \[)\d+(?=\])" Descriptor="BSN"/>
+    <FirmwareVersion Message="getprop | grep ro.build.version.incremental" RegEx="(?&lt;=: \[)\w+(?=\])" Descriptor="OS Version"/>
+
+    <Command Name="EnableBtTestMode" Message="|/system/bin/bdt|;|enable|;|dut_mode_configure 1|;|quit|" IgnoreErrors="true"/>
+    
+    <Query Name="GetDeviceProperties" Message="getprop" ReturnType="String" />
+
+
+  </Instrument>
+</Instruments>

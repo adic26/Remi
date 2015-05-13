@@ -91,6 +91,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Instruments\Aos_BT.cs">
+      <DependentUpon>Aos_BT.xml</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Instruments\Interfaces\IBlackBerry.cs" />
     <Compile Include="Instruments\Interfaces\IBlackBerryWlan.cs" />
     <Compile Include="Instruments\PowerSupply.cs">
@@ -103,6 +108,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\StationConfig.cs" />
+    <Compile Include="Sequences\AdbBluetooth.cs" />
     <Compile Include="Sequences\AdbOverWifi.cs" />
     <Compile Include="Sequences\AdbWlan.cs" />
     <Compile Include="Sequences\IntervalMeasurementUpload.cs" />
@@ -207,6 +213,12 @@
     <Content Include="Instruments\Aos_WiFi.xml">
       <Generator>InstrumentClassGenerator</Generator>
       <LastGenOutput>Aos_WiFi.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Instruments\Aos_BT.xml">
+      <Generator>InstrumentClassGenerator</Generator>
+      <LastGenOutput>Aos_BT.cs</LastGenOutput>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
