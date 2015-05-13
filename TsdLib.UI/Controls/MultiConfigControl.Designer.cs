@@ -303,7 +303,7 @@
         private System.Windows.Forms.GroupBox groupBox_SequenceConfig;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_TestConfigButtons;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_SequenceConfigButtons;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
         private System.Windows.Forms.GroupBox groupBox;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
     }
 }

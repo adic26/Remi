@@ -21,5 +21,12 @@ namespace TsdLib.TestSystem.TestSequence
         {
             Write(message + Environment.NewLine);
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (Trace.Listeners.Contains(this))
+                Trace.Listeners.Remove(this);
+            base.Dispose(disposing);
+        }
     }
 }

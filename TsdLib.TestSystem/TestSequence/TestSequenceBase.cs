@@ -50,14 +50,16 @@ namespace TsdLib.TestSystem.TestSequence
         {
             get { return _testInfo; }
         }
+
+        private readonly SequenceTraceListener _sequenceTraceListener;
+
         /// <summary>
         /// Initializes the TestSequenceBase object.
         /// </summary>
         protected TestSequenceBase()
         {
-            Trace.Listeners.Clear();
-            Trace.AutoFlush = true;
-            Trace.Listeners.Add(new SequenceTraceListener(this));
+            _sequenceTraceListener = new SequenceTraceListener(this);
+            Trace.Listeners.Add(_sequenceTraceListener);
 
             Instruments = new TestSequenceInstrumentCollection();
             Instruments.InstrumentConnected += Instruments_InstrumentConnected;
@@ -191,7 +193,7 @@ namespace TsdLib.TestSystem.TestSequence
         {
             if (disposing)
             {
-                Trace.Listeners.Clear();
+                _sequenceTraceListener.Dispose();
                 if (Instruments != null)
                     Instruments.Dispose();
             }
