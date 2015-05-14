@@ -48,11 +48,13 @@
     <Compile Include="Common\StationConfigCommon.cs" />
     <Compile Include="Common\TestConfigCommon.cs" />
     <Compile Include="ConfigItem.cs" />
+    <Compile Include="LocalSequenceConfig.cs" />
     <Compile Include="Management\ConfigEditor.cs" />
     <Compile Include="Management\IConfigEditor.cs" />
     <Compile Include="Management\IConfigManagerProvider.cs" />
     <Compile Include="Management\ITestDetailsEditor.cs" />
     <Compile Include="Management\ITestSystemIdentityManager.cs" />
+    <Compile Include="Management\LocalSequenceConfigManager.cs" />
     <Compile Include="Management\TestSystemIdentityManager.cs" />
     <Compile Include="Exceptions\InvalidConfigTypeException.cs" />
     <Compile Include="Exceptions\MissingConfigTypeException.cs" />

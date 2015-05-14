@@ -87,7 +87,10 @@ namespace TsdLib.TestSystem.Controller
             UI.ConfigControl.StationConfigManager = configManagerProvider.GetConfigManager<TStationConfig>();
             UI.ConfigControl.ProductConfigManager = configManagerProvider.GetConfigManager<TProductConfig>();
             UI.ConfigControl.TestConfigManager = configManagerProvider.GetConfigManager<TTestConfig>();
-            UI.ConfigControl.SequenceConfigManager = configManagerProvider.GetConfigManager<SequenceConfigCommon>();
+            if (localDomain)
+                UI.ConfigControl.SequenceConfigManager = new LocalSequenceConfigManager();
+            else
+                UI.ConfigControl.SequenceConfigManager = configManagerProvider.GetConfigManager<SequenceConfigCommon>();
 #if DEBUG
             Trace.WriteLine("Using TsdLib debug assembly.");
             _localDomain = localDomain;
@@ -193,7 +196,7 @@ namespace TsdLib.TestSystem.Controller
         {
             AppDomain sequenceDomain = null;
 
-            SequenceConfigCommon[] sequenceConfigs = UI.ConfigControl.SelectedSequenceConfig.Cast<SequenceConfigCommon>().ToArray();
+            ISequenceConfig[] sequenceConfigs = UI.ConfigControl.SelectedSequenceConfig.Cast<ISequenceConfig>().ToArray();
             if (!sequenceConfigs.Any())
             {
                 Trace.WriteLine("No test sequence selected.");
@@ -208,7 +211,8 @@ namespace TsdLib.TestSystem.Controller
 
             Trace.WriteLine(string.Format("Using {0} application domain", _localDomain ? "local" : "remote"));
 
-            foreach (SequenceConfigCommon sequenceConfig in sequenceConfigs)
+
+            foreach (ISequenceConfig sequenceConfig in sequenceConfigs)
             {
                 try
                 {
@@ -223,16 +227,17 @@ namespace TsdLib.TestSystem.Controller
                         throw new NoConfigSelectedException(typeof(TTestConfig).Name);
 
                     DateTime startTime = DateTime.Now;
-
-                    SequenceConfigCommon sequence = sequenceConfig;
+                    
                     EventManager eventManager = CreateEventManager(UI);
 
                     if (_localDomain)
                     {
-                        _activeSequence = CreateSequenceObject(sequence.FullTypeName);
+                        ISequenceConfig sequence = sequenceConfig;
+                        _activeSequence = (ConfigurableTestSequence<TStationConfig, TProductConfig, TTestConfig>)Activator.CreateInstance(Assembly.GetEntryAssembly().GetType(sequence.FullTypeName));
                     }
                     else
                     {
+                        SequenceConfigCommon sequence = (SequenceConfigCommon)sequenceConfig;
                         List<CodeCompileUnit> codeCompileUnits = new List<CodeCompileUnit> { new BasicCodeParser(sequence.AssemblyReferences.ToArray()).Parse(new StringReader(sequence.SourceCode)) };
 
                         IEnumerable<CodeCompileUnit> additionalCodeCompileUnits = GenerateAdditionalCodeCompileUnits(sequence.Namespace.Replace(".Sequences", ""));

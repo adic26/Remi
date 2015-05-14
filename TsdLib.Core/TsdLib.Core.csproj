@@ -59,6 +59,7 @@
     <Compile Include="Measurements\ITestInfo.cs" />
     <Compile Include="Measurements\ITestResults.cs" />
     <Compile Include="Measurements\ITestSummary.cs" />
+    <Compile Include="TestSystem\ITestSequence.cs" />
     <Compile Include="UI\IConfigControl.cs" />
     <Compile Include="UI\IMeasurementDisplayControl.cs" />
     <Compile Include="UI\IProgressControl.cs" />

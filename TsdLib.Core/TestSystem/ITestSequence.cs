@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TsdLib.TestSystem.TestSequence
+namespace TsdLib.TestSystem
 {
     public interface ITestSequence
     {
