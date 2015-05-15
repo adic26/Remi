@@ -24,13 +24,22 @@ namespace TsdLib.Configuration
         /// <param name="sequenceFolder">Full path to the folder where sequence class files are located.</param>
         /// <param name="storeInDatabase">True to store the sequence configuration in the shared config location.</param>
         /// <param name="updateVsSequenceFiles">True to update the class files in the sequenceFolder.</param>
-        public static void SynchronizeSequences(ITestDetails testDetails, IConfigConnection sharedConfigConnection, string sequenceFolder, bool storeInDatabase, bool updateVsSequenceFiles)
+        /// <param name="excludeAssemblyReferences">A collection of assembly names to exclude from the refences. These would normally be dll files that appear in the output directory but should not be referenced.</param>
+        /// <param name="additionalAssemblyReferences">A collection of assembly names to exclude from the refences. These would normally be .NET Framework libraries that do not get copied to the ouput directory.</param>
+        public static void SynchronizeSequences(ITestDetails testDetails, IConfigConnection sharedConfigConnection, string sequenceFolder, bool storeInDatabase, bool updateVsSequenceFiles, IEnumerable<string> excludeAssemblyReferences = null, IEnumerable<string> additionalAssemblyReferences = null)
         {
             ConfigManager<SequenceConfigCommon> sequenceConfigManager = new ConfigManager<SequenceConfigCommon>(testDetails, sharedConfigConnection);
 
             HashSet<string> assemblyReferences = new HashSet<string>(AppDomain.CurrentDomain.GetAssemblies().Select(asy => Path.GetFileName(asy.GetName().CodeBase)), StringComparer.InvariantCultureIgnoreCase) { Path.GetFileName(Assembly.GetEntryAssembly().GetName().CodeBase) };
             foreach (string fileName in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll").Select(Path.GetFileName))
                 assemblyReferences.Add(fileName);
+
+            if (excludeAssemblyReferences != null)
+                assemblyReferences.RemoveWhere(excludeAssemblyReferences.Contains);
+
+            if (additionalAssemblyReferences != null)
+                foreach (string additionalAssemblyReference in additionalAssemblyReferences)
+                    assemblyReferences.Add(additionalAssemblyReference);
 
             if (updateVsSequenceFiles)
             {

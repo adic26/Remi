@@ -9,6 +9,6 @@ namespace TsdLib.Configuration
 
         string FullTypeName { get; }
         //string ClassName { get; }
-        //string Namespace { get; }
+        string Namespace { get; }
     }
 }

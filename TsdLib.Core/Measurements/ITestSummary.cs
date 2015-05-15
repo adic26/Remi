@@ -5,7 +5,8 @@ namespace TsdLib.Measurements
 {
     public interface ITestSummary : IXmlSerializable
     {
-        DateTime DateStarted { get; }
+        DateTime DateStarted { get; set; }
+        DateTime DateCompleted { get; set; }
 
         string ToString(string rowSeparator, string columnSeparator);
     }

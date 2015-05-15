@@ -10,6 +10,7 @@ namespace TsdLib.Configuration
             FullTypeName = fullSequenceTypeName;
 
             Name = fullSequenceTypeName.Split('.').LastOrDefault() ?? fullSequenceTypeName;
+            Namespace = fullSequenceTypeName.Replace(Name, "");
         }
 
         public string SourceCode { get; private set; }
@@ -33,5 +34,7 @@ namespace TsdLib.Configuration
         {
             return Name;
         }
+
+        public string Namespace { get; private set; }
     }
 }

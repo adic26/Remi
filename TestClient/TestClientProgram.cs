@@ -57,7 +57,8 @@ namespace TestClient
 
             if (args.Contains(SeqFolderArg))
             {
-                SequenceSync.SynchronizeSequences(testDetails, sharedConfigConnection, getConfigValue(SeqFolderArg), true, false);
+                if (!localDomain)
+                    SequenceSync.SynchronizeSequences(testDetails, sharedConfigConnection, getConfigValue(SeqFolderArg), true, false, new []{"libRtas.dll"}, new []{"System.Data.dll"});
                 return;
             }
 
