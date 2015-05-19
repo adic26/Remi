@@ -41,7 +41,7 @@
             this.button_Cancel.Name = "button_Cancel";
             this.button_Cancel.Size = new System.Drawing.Size(84, 23);
             this.button_Cancel.TabIndex = 3;
-            this.button_Cancel.Text = "Cancel";
+            this.button_Cancel.Text = "&Cancel";
             this.button_Cancel.UseVisualStyleBackColor = true;
             // 
             // button_OK
@@ -52,7 +52,7 @@
             this.button_OK.Name = "button_OK";
             this.button_OK.Size = new System.Drawing.Size(84, 23);
             this.button_OK.TabIndex = 2;
-            this.button_OK.Text = "OK";
+            this.button_OK.Text = "&OK";
             this.button_OK.UseVisualStyleBackColor = true;
             // 
             // comboBox
@@ -66,15 +66,18 @@
             this.comboBox.Size = new System.Drawing.Size(251, 21);
             this.comboBox.TabIndex = 4;
             // 
-            // PromoteModeForm
+            // ModeEditorForm
             // 
+            this.AcceptButton = this.button_OK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.button_Cancel;
             this.ClientSize = new System.Drawing.Size(289, 124);
             this.Controls.Add(this.comboBox);
             this.Controls.Add(this.button_Cancel);
             this.Controls.Add(this.button_OK);
-            this.Name = "PromoteModeForm";
+            this.Name = "ModeEditorForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Enter Target Operating Mode";
             this.ResumeLayout(false);
 

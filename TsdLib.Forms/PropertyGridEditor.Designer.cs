@@ -54,7 +54,7 @@
             this.button_OK.Name = "button_OK";
             this.button_OK.Size = new System.Drawing.Size(556, 57);
             this.button_OK.TabIndex = 1;
-            this.button_OK.Text = "OK";
+            this.button_OK.Text = "&OK";
             this.button_OK.UseVisualStyleBackColor = true;
             // 
             // splitContainer1
@@ -77,12 +77,14 @@
             // 
             // PropertyGridEditor
             // 
+            this.AcceptButton = this.button_OK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(556, 670);
             this.ControlBox = false;
             this.Controls.Add(this.splitContainer1);
             this.Name = "PropertyGridEditor";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Object Editor";
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);

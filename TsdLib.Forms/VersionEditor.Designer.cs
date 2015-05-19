@@ -48,7 +48,7 @@
             this.button_OK.Name = "button_OK";
             this.button_OK.Size = new System.Drawing.Size(97, 23);
             this.button_OK.TabIndex = 0;
-            this.button_OK.Text = "OK";
+            this.button_OK.Text = "&OK";
             this.button_OK.UseVisualStyleBackColor = true;
             // 
             // button_Cancel
@@ -59,7 +59,7 @@
             this.button_Cancel.Name = "button_Cancel";
             this.button_Cancel.Size = new System.Drawing.Size(94, 23);
             this.button_Cancel.TabIndex = 1;
-            this.button_Cancel.Text = "Cancel";
+            this.button_Cancel.Text = "&Cancel";
             this.button_Cancel.UseVisualStyleBackColor = true;
             // 
             // numericUpDown_Major
@@ -108,16 +108,19 @@
             this.groupBox_Minor.TabStop = false;
             this.groupBox_Minor.Text = "Minor";
             // 
-            // PromoteVersionForm
+            // VersionEditorForm
             // 
+            this.AcceptButton = this.button_OK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.button_Cancel;
             this.ClientSize = new System.Drawing.Size(243, 133);
             this.Controls.Add(this.groupBox_Minor);
             this.Controls.Add(this.groupBox_Major);
             this.Controls.Add(this.button_Cancel);
             this.Controls.Add(this.button_OK);
-            this.Name = "PromoteVersionForm";
+            this.Name = "VersionEditorForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Enter Target Version";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Major)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Minor)).EndInit();

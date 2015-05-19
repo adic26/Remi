@@ -62,7 +62,7 @@
             this.button_Cancel.Name = "button_Cancel";
             this.button_Cancel.Size = new System.Drawing.Size(75, 23);
             this.button_Cancel.TabIndex = 9;
-            this.button_Cancel.Text = "Cancel";
+            this.button_Cancel.Text = "&Cancel";
             this.button_Cancel.UseVisualStyleBackColor = true;
             // 
             // button_Ok
@@ -72,7 +72,7 @@
             this.button_Ok.Name = "button_Ok";
             this.button_Ok.Size = new System.Drawing.Size(75, 23);
             this.button_Ok.TabIndex = 8;
-            this.button_Ok.Text = "OK";
+            this.button_Ok.Text = "&OK";
             this.button_Ok.UseVisualStyleBackColor = true;
             // 
             // radioButton_StoreInDatabase
@@ -97,8 +97,10 @@
             // 
             // ConfigItemCreateForm
             // 
+            this.AcceptButton = this.button_Ok;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.button_Cancel;
             this.ClientSize = new System.Drawing.Size(211, 167);
             this.Controls.Add(this.radioButton_LocalOnly);
             this.Controls.Add(this.label1);
@@ -107,6 +109,7 @@
             this.Controls.Add(this.radioButton_StoreInDatabase);
             this.Controls.Add(this.textBox_Name);
             this.Name = "ConfigItemCreateForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.ResumeLayout(false);
             this.PerformLayout();
 
