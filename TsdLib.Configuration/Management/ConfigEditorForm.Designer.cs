@@ -62,7 +62,7 @@
             this.button_OK.Name = "button_OK";
             this.button_OK.Size = new System.Drawing.Size(124, 39);
             this.button_OK.TabIndex = 13;
-            this.button_OK.Text = "OK";
+            this.button_OK.Text = "&OK";
             this.button_OK.UseVisualStyleBackColor = true;
             // 
             // button_Cancel
@@ -73,7 +73,7 @@
             this.button_Cancel.Name = "button_Cancel";
             this.button_Cancel.Size = new System.Drawing.Size(124, 39);
             this.button_Cancel.TabIndex = 14;
-            this.button_Cancel.Text = "Cancel";
+            this.button_Cancel.Text = "&Cancel";
             this.button_Cancel.UseVisualStyleBackColor = true;
             // 
             // label3
@@ -295,8 +295,10 @@
             // 
             // ConfigEditorForm
             // 
+            this.AcceptButton = this.button_OK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.button_Cancel;
             this.ClientSize = new System.Drawing.Size(514, 637);
             this.Controls.Add(this.groupBox_ConfigSelection);
             this.Controls.Add(this.propertyGrid_Settings);
@@ -304,6 +306,7 @@
             this.Controls.Add(this.button_Cancel);
             this.Controls.Add(this.button_OK);
             this.Name = "ConfigEditorForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Config Editor";
             this.groupBox_TestSystemIdentity.ResumeLayout(false);
             this.tableLayoutPanel_TestSystemIdentity.ResumeLayout(false);
